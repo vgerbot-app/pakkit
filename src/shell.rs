@@ -721,6 +721,7 @@ impl AppView {
             )
             .children(routes.into_iter().map(|(key, label, glyph, route)| {
                 SidebarMenuItem::new(label)
+                    .min_h(px(38.))
                     .icon(icon(glyph, px(16.), p.muted))
                     .active(active == key)
                     .collapsed(collapsed)
