@@ -85,7 +85,12 @@ pub struct SearchFilters {
 pub const SOURCE_ALL: &str = "all";
 
 /// `winget search`
-pub fn search(query: &str, source: Option<&str>, filters: SearchFilters, count: Option<u32>) -> Vec<String> {
+pub fn search(
+    query: &str,
+    source: Option<&str>,
+    filters: SearchFilters,
+    count: Option<u32>,
+) -> Vec<String> {
     let mut args = vec!["search".to_owned()];
     if !query.is_empty() {
         args.push("-q".into());
@@ -177,9 +182,10 @@ pub fn install(id: &str, options: &InstallOptions) -> Vec<String> {
     if options.silent {
         args.push("--silent".into());
     }
+    // `--accept-source-agreements` is a common flag; only the package
+    // agreement here depends on the user's consent toggle.
     if options.accept {
         args.push("--accept-package-agreements".into());
-        args.push("--accept-source-agreements".into());
     }
     args
 }
@@ -225,11 +231,7 @@ pub fn export_json(path: &std::path::Path, source: Option<&str>) -> Vec<String> 
 
 /// `winget import -i <path>`
 pub fn import_json(path: &std::path::Path) -> Vec<String> {
-    vec![
-        "import".to_owned(),
-        "-i".into(),
-        path.display().to_string(),
-    ]
+    vec!["import".to_owned(), "-i".into(), path.display().to_string()]
 }
 
 /// `winget source list`
@@ -324,11 +326,17 @@ mod tests {
     #[test]
     fn count_is_clamped_to_the_documented_range() {
         let args = search("vscode", None, SearchFilters::default(), Some(5000));
-        let index = args.iter().position(|a| a == "--count").expect("--count emitted");
+        let index = args
+            .iter()
+            .position(|a| a == "--count")
+            .expect("--count emitted");
         assert_eq!(args[index + 1], "1000");
 
         let args = search("vscode", None, SearchFilters::default(), Some(0));
-        let index = args.iter().position(|a| a == "--count").expect("--count emitted");
+        let index = args
+            .iter()
+            .position(|a| a == "--count")
+            .expect("--count emitted");
         assert_eq!(args[index + 1], "1");
     }
 
@@ -338,7 +346,10 @@ mod tests {
         assert!(!args.iter().any(|a| a == "--source"));
 
         let args = search("vscode", Some("winget"), SearchFilters::default(), None);
-        let index = args.iter().position(|a| a == "--source").expect("--source emitted");
+        let index = args
+            .iter()
+            .position(|a| a == "--source")
+            .expect("--source emitted");
         assert_eq!(args[index + 1], "winget");
     }
 
@@ -394,8 +405,9 @@ mod tests {
                 "--scope",
                 "machine",
                 "--silent",
+                // `--accept-source-agreements` is added by the runner as a
+                // common flag; only the package agreement lives here.
                 "--accept-package-agreements",
-                "--accept-source-agreements",
             ]
         );
     }
@@ -407,13 +419,21 @@ mod tests {
             ..InstallOptions::default()
         };
         let args = install("Git.Git", &options);
-        let index = args.iter().position(|a| a == "--location").expect("--location emitted");
+        let index = args
+            .iter()
+            .position(|a| a == "--location")
+            .expect("--location emitted");
         assert_eq!(args[index + 1], "D:\\Software");
     }
 
     #[test]
     fn source_add_names_the_trust_level_explicitly() {
-        let args = source_add("MyCompany", "https://nexus.internal/winget", "Microsoft.Rest", false);
+        let args = source_add(
+            "MyCompany",
+            "https://nexus.internal/winget",
+            "Microsoft.Rest",
+            false,
+        );
         assert_eq!(
             args,
             vec![

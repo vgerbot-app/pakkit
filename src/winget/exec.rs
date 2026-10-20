@@ -8,20 +8,37 @@ use std::{
     process::{Command, Output as ProcOutput, Stdio},
 };
 
-use super::exit::{is_benign, WingetError};
+use super::exit::{WingetError, is_benign};
 
-/// Flags every winget invocation carries.
-///
-/// These exist on every supported winget build. Notably absent on purpose:
-/// `--output-locale`, `--no-progress` and `--no-vt` are *not* winget flags —
-/// passing them is a hard argument error — so locale-stable parsing is done by
-/// reading the header row instead (see [`super::parse`]).
-pub const BASE_FLAGS: &[&str] = &[
+/// Flags every command accepts except `source`, which takes no agreement
+/// flags at all.
+const COMMON_FLAGS: &[&str] = &[
     "--disable-interactivity",
     "--accept-source-agreements",
-    "--accept-package-agreements",
     "--nowarn",
 ];
+
+/// `winget source …` is the one family with no agreement flags.
+const SOURCE_FLAGS: &[&str] = &["--disable-interactivity", "--nowarn"];
+
+/// The flags `command` accepts.
+///
+/// winget validates options per command and rejects the whole invocation with
+/// "Argument name was not recognized" when handed one it does not know, so
+/// this is derived from the subcommand rather than applied blindly.
+///
+/// `--accept-package-agreements` is deliberately absent: only the install
+/// family accepts it, and it must stay tied to the user's consent toggle, so
+/// [`super::install`] emits it. Notably absent on purpose: `--output-locale`,
+/// `--no-progress` and `--no-vt` are *not* winget flags — passing them is a
+/// hard argument error — so locale-stable parsing reads the header row instead
+/// (see [`super::parse`]).
+fn base_flags_for(command: &str) -> &'static [&'static str] {
+    match command {
+        "source" => SOURCE_FLAGS,
+        _ => COMMON_FLAGS,
+    }
+}
 
 /// `CREATE_NO_WINDOW` — run the child without allocating a console.
 #[cfg(windows)]
@@ -116,7 +133,7 @@ impl Winget {
         )
     }
 
-    /// Spawn winget with `BASE_FLAGS` plus `args` and capture its output.
+    /// Spawn winget with the command's agreement flags plus `args`.
     pub fn run(&self, args: &[&str]) -> Result<Output, WingetError> {
         self.run_with(args, true)
     }
@@ -130,10 +147,21 @@ impl Winget {
 
     fn run_with(&self, args: &[&str], base_flags: bool) -> Result<Output, WingetError> {
         let mut command = Command::new(&self.exe);
-        if base_flags {
-            command.args(BASE_FLAGS);
+        if base_flags && let Some((verb_or_command, rest)) = args.split_first() {
+            command.arg(*verb_or_command);
+            // `source` carries a sub-verb; its flags follow the sub-verb.
+            let (command_name, rest) = match (*verb_or_command, rest.split_first()) {
+                ("source", Some((verb, rest))) => {
+                    command.arg(*verb);
+                    ("source", rest)
+                }
+                _ => (*verb_or_command, rest),
+            };
+            command.args(base_flags_for(command_name));
+            command.args(rest);
+        } else {
+            command.args(args);
         }
-        command.args(args);
         command
             .stdin(Stdio::null())
             .stdout(Stdio::piped())
@@ -216,11 +244,31 @@ mod tests {
     use crate::winget::exit::format_code;
 
     #[test]
-    fn base_flags_never_contain_flags_winget_rejects() {
+    fn flags_never_contain_options_winget_rejects() {
         // These are not winget options; including any of them makes every
         // invocation fail with "Argument name was not recognized".
-        for bad in ["--output-locale", "--no-progress", "--no-vt"] {
-            assert!(!BASE_FLAGS.contains(&bad), "{bad} must not be in BASE_FLAGS");
+        for flags in [COMMON_FLAGS, SOURCE_FLAGS] {
+            for bad in [
+                "--output-locale",
+                "--no-progress",
+                "--no-vt",
+                "--accept-package-agreements",
+            ] {
+                assert!(!flags.contains(&bad), "{bad} must not be in {flags:?}");
+            }
+        }
+    }
+
+    #[test]
+    fn source_takes_no_agreement_flags() {
+        // `winget source …` rejects every agreement flag, so the source family
+        // would otherwise fail with "Argument name was not recognized".
+        assert_eq!(base_flags_for("source"), SOURCE_FLAGS);
+        assert!(!SOURCE_FLAGS.contains(&"--accept-source-agreements"));
+        // Everything else takes the source agreement.
+        for command in ["list", "search", "show", "export", "install", "upgrade"] {
+            assert_eq!(base_flags_for(command), COMMON_FLAGS, "{command}");
+            assert!(COMMON_FLAGS.contains(&"--accept-source-agreements"));
         }
     }
 
@@ -229,7 +277,8 @@ mod tests {
         let output = Output {
             status: 0x8A15_0019,
             stdout: String::new(),
-            stderr: "Windows Package Manager v1.29.380\n© 2026 Microsoft.\n\n需要管理员权限\n".into(),
+            stderr: "Windows Package Manager v1.29.380\n© 2026 Microsoft.\n\n需要管理员权限\n"
+                .into(),
         };
         assert_eq!(first_message(&output), "需要管理员权限");
     }
