@@ -6,7 +6,9 @@
 //! and then projected onto `ThemeColor` so built-in components inherit the
 //! right colours.
 
-use gpui_kit::component::{Theme, ThemeMode};
+use std::{rc::Rc, sync::LazyLock};
+
+use gpui_kit::component::{Theme, ThemeConfig, ThemeMode, ThemeSet};
 use gpui_kit::{App, Global, Hsla, px};
 
 /// `#rrggbb` → `Hsla`, the way gpui's `rgba` accepts `0xRRGGBBAA`.
@@ -161,11 +163,37 @@ pub fn palette(cx: &App) -> Palette {
 }
 
 /// Install the global and switch gpui-kit to the prototype's default (dark).
+///
+/// The bundled `themes/wingetgui.json` is applied first so that the tokens
+/// [`apply`] does not name (the built-in components' own colours) still follow
+/// the prototype instead of gpui-kit's default dark theme.
 pub fn init(cx: &mut App) {
-    // The prototype ships `<html class="dark">`, so dark is the startup mode.
+    // `Theme::update` needs the global, which `change` installs.
     Theme::change(ThemeMode::Dark, None, cx);
+    install_bundled_theme(cx);
     cx.set_global(Palette::dark());
     apply(cx);
+}
+
+/// The parsed `themes/wingetgui.json`, baked in so the app themes itself
+/// regardless of the working directory it was launched from.
+fn bundled_theme() -> Option<&'static ThemeConfig> {
+    static CONFIG: LazyLock<Option<ThemeConfig>> = LazyLock::new(|| {
+        let set: ThemeSet = serde_json::from_str(include_str!("../themes/wingetgui.json")).ok()?;
+        set.themes.into_iter().find(|theme| theme.mode.is_dark())
+    });
+    CONFIG.as_ref()
+}
+
+/// Load the bundled theme set into the registry and make its dark theme current.
+fn install_bundled_theme(cx: &mut App) {
+    let Some(config) = bundled_theme() else {
+        // A missing or malformed file is not fatal: `apply` still carries the
+        // prototype palette the widgets read directly.
+        return;
+    };
+    let config = Rc::new(config.clone());
+    Theme::update(cx, |theme| theme.apply_config(&config));
 }
 
 /// Project the stored [`Palette`] onto `ThemeColor` and the font/radius tokens.
@@ -379,5 +407,16 @@ mod tests {
             let value = u32::from_str_radix(&swatch[1..], 16).expect("swatch is hex");
             assert!(value <= 0xffffff);
         }
+    }
+
+    #[test]
+    fn the_bundled_theme_tracks_the_palette() {
+        // The file is embedded, so a typo or a drift from `Palette` would
+        // silently leave the built-in components on gpui-kit's defaults.
+        let theme = bundled_theme().expect("themes/wingetgui.json parses");
+        assert_eq!(theme.colors.background.as_deref(), Some("#0e1014"));
+        assert_eq!(theme.colors.accent.as_deref(), Some("#4f8cff"));
+        assert_eq!(theme.radius, Some(9));
+        assert_eq!(theme.font_family.as_deref(), Some("Segoe UI Variable Text"));
     }
 }
