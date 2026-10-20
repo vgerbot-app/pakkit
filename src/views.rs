@@ -1,0 +1,1948 @@
+//! The seven routes. Each function renders from an [`AppState`] snapshot and
+//! routes every action back through [`AppView`]'s listeners, so the views stay
+//! free of task bookkeeping.
+
+use crate::dialogs;
+use crate::icons::{IconKey, icon};
+use crate::model::{CategoryId, Package};
+use crate::queue::QueueAction;
+use crate::shell::AppView;
+use crate::state::{AppState, Route, SearchSource};
+use crate::theme::Palette;
+use crate::widgets::{self, BtnKind, BtnSize, PillKind};
+use gpui_kit::component::input::InputState;
+use gpui_kit::component::{Disableable as _, StyledExt as _};
+use gpui_kit::prelude::{
+    FluentBuilder as _, InteractiveElement as _, StatefulInteractiveElement as _,
+};
+use gpui_kit::{
+    AnyElement, App, Context, Entity, Hsla, IntoElement, ParentElement as _, SharedString,
+    Styled as _, Window, div, px, relative,
+};
+
+/// The shell-owned input entities the settings view embeds. They cannot be
+/// read through `cx.entity()` during render — the view is already borrowed —
+/// so the shell passes them down.
+#[derive(Clone)]
+pub struct ShellInputs {
+    pub install_location: Entity<InputState>,
+    pub proxy: Entity<InputState>,
+    pub winget_path: Entity<InputState>,
+}
+
+/// Dispatch to the active route's renderer.
+pub fn render(state: &AppState, inputs: &ShellInputs, cx: &mut Context<AppView>) -> AnyElement {
+    let p = crate::theme::palette(cx);
+    match state.route {
+        Route::Home => home(state, &p, cx),
+        Route::Categories => categories(state, &p, cx),
+        Route::Category(id) => category_detail(state, &p, id, cx),
+        Route::Search => search(state, &p, cx),
+        Route::Installed => installed(state, &p, cx),
+        Route::Updates => updates(state, &p, cx),
+        Route::Sources => sources(state, &p, cx),
+        Route::Settings => settings(state, inputs, &p, cx),
+    }
+}
+
+// ------------------------------------------------------------------- 发现
+
+fn home(state: &AppState, p: &Palette, cx: &mut Context<AppView>) -> AnyElement {
+    let mut children: Vec<AnyElement> = vec![
+        widgets::page_head(
+            p,
+            "发现",
+            Some("内置分类 + winget 官方源实时检索".into()),
+            vec![
+                widgets::btn(
+                    cx,
+                    p,
+                    "home-check",
+                    BtnKind::Soft,
+                    BtnSize::Regular,
+                    "检查更新",
+                )
+                .on_click(cx.listener(|this, _, _, cx| this.refresh_updates(cx)))
+                .into_any_element(),
+                widgets::btn(
+                    cx,
+                    p,
+                    "home-sync",
+                    BtnKind::Soft,
+                    BtnSize::Regular,
+                    "同步源",
+                )
+                .on_click(cx.listener(|this, _, window, cx| this.sync_sources(None, window, cx)))
+                .into_any_element(),
+            ],
+        )
+        .into_any_element(),
+    ];
+
+    children.push(
+        div()
+            .px(px(24.))
+            .child(hero(state, p, cx))
+            .into_any_element(),
+    );
+
+    // 常用分类
+    children.push(
+        widgets::page_body()
+            .child(section_head(
+                p,
+                "常用分类",
+                Some(("查看全部 ›", Route::Categories)),
+                cx,
+            ))
+            .child(
+                div().flex().flex_wrap().gap(px(12.)).children(
+                    CategoryId::ALL
+                        .iter()
+                        .map(|id| category_tile(state, p, *id, cx)),
+                ),
+            )
+            .into_any_element(),
+    );
+
+    // 高分精选
+    let featured = state.featured();
+    if !featured.is_empty() {
+        children.push(
+            widgets::page_body()
+                .child(widgets::section_label(p, "高分精选"))
+                .child(
+                    div()
+                        .flex()
+                        .flex_wrap()
+                        .gap(px(12.))
+                        .children(featured.iter().map(|pkg| package_card(state, p, pkg, cx))),
+                )
+                .into_any_element(),
+        );
+    }
+
+    // 最近更新
+    let recent = state.recently_updated();
+    if !recent.is_empty() {
+        children.push(
+            widgets::page_body()
+                .child(widgets::section_label(p, "最近更新"))
+                .child(
+                    widgets::card(p).children(
+                        recent
+                            .iter()
+                            .enumerate()
+                            .map(|(ix, pkg)| recent_row(p, pkg, ix > 0, cx)),
+                    ),
+                )
+                .into_any_element(),
+        );
+    }
+
+    if state.winget_error.is_some() {
+        children.insert(1, winget_missing(p, cx));
+    }
+
+    div()
+        .flex()
+        .flex_col()
+        .children(children)
+        .into_any_element()
+}
+
+/// The hero panel: glow, chip, headline, copy, buttons, three stat tiles.
+fn hero(state: &AppState, p: &Palette, cx: &mut Context<AppView>) -> AnyElement {
+    widgets::card(p)
+        .relative()
+        .overflow_hidden()
+        .rounded(px(18.))
+        .p(px(24.))
+        .child(
+            div()
+                .absolute()
+                .top(px(-80.))
+                .left(px(-40.))
+                .size(px(260.))
+                .rounded(px(9999.))
+                .bg(Hsla { a: 0.16, ..p.accent }),
+        )
+        .child(
+            div()
+                .absolute()
+                .bottom(px(-90.))
+                .right(px(-40.))
+                .size(px(240.))
+                .rounded(px(9999.))
+                .bg(Hsla { a: 0.16, ..p.accent2 }),
+        )
+        .child(
+            div()
+                .relative()
+                .flex()
+                .flex_wrap()
+                .gap(px(24.))
+                .items_center()
+                .child(
+                    div()
+                        .flex_1()
+                        .min_w(px(320.))
+                        .child(
+                            widgets::pill(p, PillKind::Accent, "基于 winget CLI · 无需手动下载安装包"),
+                        )
+                        .child(
+                            div()
+                                .text_size(px(24.))
+                                .font_semibold()
+                                .mt(px(12.))
+                                .child("在 Windows 上优雅地安装软件"),
+                        )
+                        .child(
+                            div()
+                                .text_size(px(13.))
+                                .line_height(relative(1.6))
+                                .text_color(p.ink2)
+                                .mt(px(8.))
+                                .child("检索 winget 官方源与 msstore，一键安装、升级与卸载。全部操作都会映射为可复制的 winget 命令行，透明可控。"),
+                        )
+                        .child(
+                            div()
+                                .flex()
+                                .gap(px(8.))
+                                .mt(px(16.))
+                                .child(
+                                    widgets::btn(cx, p, "hero-installed", BtnKind::Primary, BtnSize::Regular, "管理已安装")
+                                        .on_click(cx.listener(|this, _, window, cx| {
+                                            this.navigate(Route::Installed, window, cx);
+                                        })),
+                                )
+                                .child(
+                                    widgets::btn(cx, p, "hero-sources", BtnKind::Outline, BtnSize::Regular, "管理源")
+                                        .on_click(cx.listener(|this, _, window, cx| {
+                                            this.navigate(Route::Sources, window, cx);
+                                        })),
+                                ),
+                        ),
+                )
+                .child(
+                    div()
+                        .flex()
+                        .gap(px(10.))
+                        .child(widgets::stat_tile(p, IconKey::Source, state.sources.len().to_string(), "源数量"))
+                        .child(widgets::stat_tile(p, IconKey::Package, state.catalog_label(), "可用包"))
+                        .child(widgets::stat_tile(p, IconKey::Check, state.installed_count().to_string(), "已安装")),
+                ),
+        )
+        .into_any_element()
+}
+
+/// `.cat-tile` — icon chip, name, description, then a bordered tag footer.
+fn category_tile(
+    state: &AppState,
+    p: &Palette,
+    id: CategoryId,
+    cx: &mut Context<AppView>,
+) -> AnyElement {
+    let count = state.category_count(id);
+    let tag = crate::model::CATEGORY_TAGS
+        .iter()
+        .find(|(c, _)| *c == id)
+        .and_then(|(_, tags)| tags.first().copied())
+        .unwrap_or("software");
+
+    widgets::card_hover(
+        p,
+        widgets::card(p)
+            .w(px(230.))
+            .flex_none()
+            .flex()
+            .flex_col()
+            .p(px(14.))
+            .gap(px(10.))
+            .child(
+                div()
+                    .flex()
+                    .items_center()
+                    .gap(px(10.))
+                    .child(widgets::category_chip(p, id))
+                    .child(
+                        div()
+                            .flex_1()
+                            .min_w_0()
+                            .child(div().text_size(px(13.5)).font_semibold().child(id.label()))
+                            .child(
+                                div()
+                                    .text_size(px(11.5))
+                                    .text_color(p.muted)
+                                    .truncate()
+                                    .child(id.description()),
+                            ),
+                    ),
+            )
+            .child(
+                div()
+                    .flex()
+                    .items_center()
+                    .gap(px(6.))
+                    .pt(px(10.))
+                    .border_t_1()
+                    .border_color(p.line)
+                    .child(widgets::pill(p, PillKind::Line, tag))
+                    .child(
+                        div()
+                            .ml_auto()
+                            .text_size(px(11.))
+                            .text_color(p.muted)
+                            .child(format!("{count} 个")),
+                    ),
+            ),
+    )
+    .id(SharedString::from(format!("cat-{}", id.key())))
+    .cursor_pointer()
+    .on_click(cx.listener(move |this, _, window, cx| {
+        this.navigate(Route::Category(id), window, cx);
+    }))
+    .into_any_element()
+}
+
+/// `pkgRow` — the approved two-row package card.
+fn package_card(
+    state: &AppState,
+    p: &Palette,
+    pkg: &Package,
+    cx: &mut Context<AppView>,
+) -> AnyElement {
+    let busy = crate::queue::is_busy(state, &pkg.id);
+    let action = widgets::package_action(pkg);
+    let (label, _) = widgets::install_label(pkg, busy, action);
+    let id = pkg.id.clone();
+
+    widgets::card_hover(
+        p,
+        widgets::card(p)
+            .w(px(280.))
+            .flex_none()
+            .flex()
+            .flex_col()
+            .p(px(14.))
+            .gap(px(10.))
+            .child(
+                div()
+                    .flex()
+                    .items_start()
+                    .gap(px(10.))
+                    .child(widgets::pkg_chip(p, pkg, 44., 22.))
+                    .child(
+                        div()
+                            .flex_1()
+                            .min_w_0()
+                            .child(
+                                div()
+                                    .text_size(px(13.))
+                                    .font_semibold()
+                                    .truncate()
+                                    .child(pkg.name.clone()),
+                            )
+                            .child(
+                                div()
+                                    .text_size(px(11.5))
+                                    .text_color(p.muted)
+                                    .truncate()
+                                    .child(pkg.publisher.clone()),
+                            ),
+                    )
+                    .child(
+                        div()
+                            .flex()
+                            .flex_col()
+                            .items_end()
+                            .gap(px(4.))
+                            .when(pkg.installed, |this| {
+                                this.child(widgets::pill(p, PillKind::Ok, "已安装"))
+                            })
+                            .when(pkg.available.is_some(), |this| {
+                                this.child(widgets::pill(p, PillKind::Accent, "可更新"))
+                            }),
+                    ),
+            )
+            .child(
+                div()
+                    .flex()
+                    .items_center()
+                    .text_size(px(11.))
+                    .child(widgets::meta_item(
+                        p,
+                        IconKey::Terminal,
+                        pkg.version.clone(),
+                    ))
+                    .when_some(pkg.size.clone(), |this, size| {
+                        this.child(widgets::meta_item(p, IconKey::File, size))
+                    })
+                    .when_some(pkg.rating, |this, rating| {
+                        this.child(widgets::stars(p, rating))
+                    }),
+            )
+            .child(
+                div()
+                    .flex()
+                    .items_center()
+                    .gap(px(8.))
+                    .pt(px(10.))
+                    .border_t_1()
+                    .border_color(p.line)
+                    .child(
+                        widgets::btn(
+                            cx,
+                            p,
+                            SharedString::from(format!("inst-{id}")),
+                            BtnKind::Primary,
+                            BtnSize::Small,
+                            label,
+                        )
+                        .disabled(busy)
+                        .on_click(cx.listener({
+                            let id = id.clone();
+                            move |this, _, window, cx| {
+                                this.enqueue(&id, action, window, cx);
+                            }
+                        })),
+                    )
+                    .child(widgets::pill(p, PillKind::Line, pkg.category.label()))
+                    .child(
+                        div()
+                            .id(SharedString::from(format!("open-{id}")))
+                            .ml_auto()
+                            .text_size(px(11.5))
+                            .text_color(p.accent)
+                            .cursor_pointer()
+                            .hover(move |this| this.underline())
+                            .on_click(cx.listener(move |this, _, window, cx| {
+                                dialogs::pkg_detail(this, &id, window, cx);
+                            }))
+                            .child("查看详情 ›"),
+                    ),
+            ),
+    )
+    .into_any_element()
+}
+
+/// One row of the 最近更新 card, divided by a hairline.
+fn recent_row(p: &Palette, pkg: &Package, divided: bool, cx: &mut Context<AppView>) -> AnyElement {
+    let id = pkg.id.clone();
+    let installed = pkg.installed;
+    div()
+        .id(SharedString::from(format!("recent-{id}")))
+        .flex()
+        .items_center()
+        .gap(px(10.))
+        .px(px(14.))
+        .py(px(10.))
+        .when(divided, |this| this.border_t_1().border_color(p.line))
+        .cursor_pointer()
+        .child(widgets::pkg_chip(p, pkg, 32., 16.))
+        .child(
+            div()
+                .flex_1()
+                .min_w_0()
+                .child(
+                    div()
+                        .text_size(px(12.5))
+                        .font_medium()
+                        .truncate()
+                        .child(pkg.name.clone()),
+                )
+                .child(
+                    div()
+                        .text_size(px(11.5))
+                        .text_color(p.muted)
+                        .truncate()
+                        .child(pkg.publisher.clone()),
+                ),
+        )
+        .when(installed, |this| {
+            this.child(widgets::pill(p, PillKind::Ok, "已安装"))
+        })
+        .child(widgets::pill(p, PillKind::Line, pkg.version.clone()))
+        .child(
+            div()
+                .w(px(80.))
+                .text_right()
+                .text_size(px(11.))
+                .text_color(p.muted)
+                .child(pkg.updated.clone().unwrap_or_else(|| "—".to_owned())),
+        )
+        .on_click(cx.listener(move |this, _, window, cx| {
+            dialogs::pkg_detail(this, &id, window, cx);
+        }))
+        .into_any_element()
+}
+
+// ------------------------------------------------------------------- 分类
+
+fn categories(_state: &AppState, p: &Palette, cx: &mut Context<AppView>) -> AnyElement {
+    let head = widgets::page_head(
+        p,
+        "分类",
+        Some(
+            format!(
+                "共 {} 个内置分类，数据来自 winget 源标签映射",
+                CategoryId::ALL.len()
+            )
+            .into(),
+        ),
+        Vec::new(),
+    );
+
+    div()
+        .flex()
+        .flex_col()
+        .child(head)
+        .child(
+            widgets::page_body().child(
+                div().flex().flex_wrap().gap(px(12.)).children(
+                    CategoryId::ALL
+                        .iter()
+                        .map(|id| category_tile(_state, p, *id, cx)),
+                ),
+            ),
+        )
+        .into_any_element()
+}
+
+fn category_detail(
+    state: &AppState,
+    p: &Palette,
+    id: CategoryId,
+    cx: &mut Context<AppView>,
+) -> AnyElement {
+    let color = Palette::from_hex(id.color());
+    let packages = state.category_packages(id);
+    let items = widgets::category_sort_items();
+    let others: Vec<CategoryId> = CategoryId::ALL
+        .iter()
+        .copied()
+        .filter(|c| *c != id)
+        .take(5)
+        .collect();
+    let install_all: Vec<String> = packages
+        .iter()
+        .filter(|pkg| !pkg.installed)
+        .map(|pkg| pkg.id.clone())
+        .collect();
+
+    let mut children: Vec<AnyElement> = vec![
+        div()
+            .px(px(24.))
+            .pt(px(20.))
+            .child(
+                div()
+                    .id("cat-back")
+                    .flex()
+                    .items_center()
+                    .gap(px(4.))
+                    .text_size(px(12.5))
+                    .text_color(p.muted)
+                    .cursor_pointer()
+                    .hover(move |this| this.text_color(p.ink))
+                    .on_click(cx.listener(|this, _, window, cx| {
+                        this.navigate(Route::Categories, window, cx);
+                    }))
+                    .child(icon(IconKey::Back, px(13.), p.muted))
+                    .child("返回分类"),
+            )
+            .into_any_element(),
+    ];
+
+    // Hero banner tinted by the category colour.
+    children.push(
+        div()
+            .px(px(24.))
+            .pt(px(12.))
+            .child(
+                widgets::card(p)
+                    .relative()
+                    .overflow_hidden()
+                    .rounded(px(18.))
+                    .p(px(20.))
+                    .child(
+                        div()
+                            .absolute()
+                            .top(px(-70.))
+                            .right(px(-30.))
+                            .size(px(240.))
+                            .rounded(px(9999.))
+                            .bg(Hsla { a: 0.18, ..color }),
+                    )
+                    .child(
+                        div()
+                            .relative()
+                            .flex()
+                            .items_center()
+                            .gap(px(14.))
+                            .child(widgets::tinted_chip(p, id.icon(), id.color(), 52., 26.))
+                            .child(
+                                div()
+                                    .flex_1()
+                                    .min_w_0()
+                                    .child(
+                                        div().text_size(px(20.)).font_semibold().child(id.label()),
+                                    )
+                                    .child(
+                                        div()
+                                            .text_size(px(12.5))
+                                            .text_color(p.ink2)
+                                            .child(id.description()),
+                                    )
+                                    .child(div().mt(px(6.)).child(widgets::pill(
+                                        p,
+                                        PillKind::Line,
+                                        format!("{} 个软件包", packages.len()),
+                                    ))),
+                            )
+                            .child(
+                                widgets::btn(
+                                    cx,
+                                    p,
+                                    "cat-install-all",
+                                    BtnKind::Primary,
+                                    BtnSize::Regular,
+                                    "安装全部",
+                                )
+                                .disabled(install_all.is_empty())
+                                .on_click(cx.listener(
+                                    move |this, _, window, cx| {
+                                        for id in &install_all {
+                                            this.enqueue(id, QueueAction::Install, window, cx);
+                                        }
+                                    },
+                                )),
+                            ),
+                    ),
+            )
+            .into_any_element(),
+    );
+
+    children.push(
+        widgets::page_body()
+            .child(
+                div()
+                    .flex()
+                    .items_center()
+                    .flex_wrap()
+                    .gap(px(10.))
+                    .child(
+                        div()
+                            .flex()
+                            .items_center()
+                            .gap(px(8.))
+                            .child(widgets::section_label(p, "排序"))
+                            .child(widgets::seg_control(
+                                p,
+                                "cat-sort",
+                                &items,
+                                state.category_sort,
+                                seg_handler(cx, |this, value, _, cx| {
+                                    this.state.category_sort = value;
+                                    cx.notify();
+                                }),
+                            )),
+                    )
+                    .child(div().ml_auto().flex().items_center().gap(px(6.)).children(
+                        others.iter().map(|other| {
+                            let other = *other;
+                            widgets::pill_button(
+                                p,
+                                SharedString::from(format!("sib-{}", other.key())),
+                                other.label(),
+                                cx.listener(move |this, _, window, cx| {
+                                    this.navigate(Route::Category(other), window, cx);
+                                }),
+                            )
+                        }),
+                    )),
+            )
+            .child(
+                div()
+                    .pt(px(14.))
+                    .flex()
+                    .flex_wrap()
+                    .gap(px(12.))
+                    .children(packages.iter().map(|pkg| package_card(state, p, pkg, cx))),
+            )
+            .into_any_element(),
+    );
+
+    div()
+        .flex()
+        .flex_col()
+        .children(children)
+        .into_any_element()
+}
+
+// ------------------------------------------------------------------- 搜索
+
+fn search(state: &AppState, p: &Palette, cx: &mut Context<AppView>) -> AnyElement {
+    let results = state.filtered();
+    let title = if state.query.trim().is_empty() {
+        "全部软件包".to_owned()
+    } else {
+        format!("搜索 \u{201c}{}\u{201d}", state.query.trim())
+    };
+    let subtitle = format!(
+        "{} 个结果 · 来源 {}",
+        results.len(),
+        state.search_source.label()
+    );
+
+    let head = widgets::page_head(
+        p,
+        title,
+        Some(subtitle.into()),
+        vec![
+            widgets::btn(
+                cx,
+                p,
+                "adv-filter",
+                BtnKind::Soft,
+                BtnSize::Regular,
+                "高级筛选",
+            )
+            .on_click(cx.listener(|this, _, window, cx| {
+                dialogs::advanced_search(this, window, cx);
+            }))
+            .into_any_element(),
+        ],
+    );
+
+    let sources = widgets::source_items(&state.sources);
+    let statuses = widgets::status_items();
+    let sorts = widgets::sort_items();
+    let command = state.search_command();
+    let command_for_copy = command.clone();
+
+    let filter_card = widgets::card(p)
+        .mx(px(24.))
+        .p(px(10.))
+        .flex()
+        .items_center()
+        .flex_wrap()
+        .gap(px(10.))
+        .child(widgets::seg_control(
+            p,
+            "src-seg",
+            &sources,
+            state.search_source,
+            seg_handler(cx, |this, value, window, cx| {
+                this.set_search_source(value, window, cx);
+            }),
+        ))
+        .child(div().w(px(1.)).h(px(20.)).bg(p.line))
+        .child(widgets::seg_control(
+            p,
+            "status-seg",
+            &statuses,
+            state.search_filter,
+            seg_handler(cx, |this, value, _, cx| {
+                this.state.search_filter = value;
+                cx.notify();
+            }),
+        ))
+        .child(div().ml_auto().child(widgets::seg_control(
+            p,
+            "sort-seg",
+            &sorts,
+            state.sort,
+            seg_handler(cx, |this, value, _, cx| {
+                this.state.sort = value;
+                cx.notify();
+            }),
+        )));
+
+    let command_line = div()
+        .mx(px(24.))
+        .mt(px(10.))
+        .flex()
+        .items_center()
+        .gap(px(6.))
+        .child(icon(IconKey::Terminal, px(12.), p.muted))
+        .child(widgets::mono(p).child(command).into_any_element())
+        .child(
+            widgets::icon_btn("copy-command", IconKey::Copy, 24., p.muted).on_click(cx.listener(
+                move |this, _, window, cx| {
+                    this.copy(&command_for_copy, window, cx);
+                },
+            )),
+        );
+
+    let body = if results.is_empty() {
+        widgets::page_body().child(widgets::empty_state(
+            p,
+            IconKey::Search,
+            if state.query.trim().is_empty() {
+                "暂无软件包".to_owned()
+            } else {
+                "未找到匹配的软件包".to_owned()
+            },
+            "换个关键词，或切换到全部源重新检索。",
+            vec![
+                widgets::btn(
+                    cx,
+                    p,
+                    "empty-all-src",
+                    BtnKind::Primary,
+                    BtnSize::Regular,
+                    "在全部源中搜索",
+                )
+                .on_click(cx.listener(|this, _, window, cx| {
+                    this.set_search_source(SearchSource::All, window, cx);
+                }))
+                .into_any_element(),
+                widgets::btn(
+                    cx,
+                    p,
+                    "empty-sources",
+                    BtnKind::Outline,
+                    BtnSize::Regular,
+                    "管理源",
+                )
+                .on_click(cx.listener(|this, _, window, cx| {
+                    this.navigate(Route::Sources, window, cx);
+                }))
+                .into_any_element(),
+            ],
+        ))
+    } else {
+        widgets::page_body().child(
+            div()
+                .flex()
+                .flex_wrap()
+                .gap(px(12.))
+                .children(results.iter().map(|pkg| package_card(state, p, pkg, cx))),
+        )
+    };
+
+    div()
+        .flex()
+        .flex_col()
+        .child(head)
+        .child(filter_card)
+        .child(command_line)
+        .child(body)
+        .into_any_element()
+}
+
+// ------------------------------------------------------------------- 已安装
+
+fn installed(state: &AppState, p: &Palette, cx: &mut Context<AppView>) -> AnyElement {
+    let rows = state.installed();
+    let all_ids: Vec<String> = rows.iter().map(|pkg| pkg.id.clone()).collect();
+
+    let head = widgets::page_head(
+        p,
+        "已安装",
+        Some(format!("{} 个软件通过 winget 管理", rows.len()).into()),
+        vec![
+            widgets::btn(
+                cx,
+                p,
+                "export-manifest",
+                BtnKind::Soft,
+                BtnSize::Regular,
+                "导出清单",
+            )
+            .on_click(cx.listener(|this, _, window, cx| {
+                dialogs::export_manifest(this, window, cx);
+            }))
+            .into_any_element(),
+            widgets::btn(
+                cx,
+                p,
+                "upgrade-all",
+                BtnKind::Primary,
+                BtnSize::Regular,
+                "全部升级",
+            )
+            .disabled(all_ids.is_empty())
+            .on_click(cx.listener(move |this, _, window, cx| {
+                for id in &all_ids {
+                    this.enqueue(id, QueueAction::Upgrade, window, cx);
+                }
+            }))
+            .into_any_element(),
+        ],
+    );
+
+    let header = div()
+        .flex()
+        .items_center()
+        .gap(px(12.))
+        .px(px(14.))
+        .py(px(9.))
+        .text_size(px(11.))
+        .text_color(p.muted)
+        .bg(Hsla {
+            a: 0.6,
+            ..p.surface2
+        })
+        .border_b_1()
+        .border_color(p.line)
+        .child(div().flex_1().child("软件包"))
+        .child(div().w(px(110.)).child("版本"))
+        .child(div().w(px(70.)).text_right().child("大小"))
+        .child(div().w(px(120.)).text_right().child("操作"));
+
+    let body = if rows.is_empty() {
+        widgets::page_body().child(widgets::empty_state(
+            p,
+            IconKey::Check,
+            "尚无已安装记录".to_owned(),
+            "安装软件包后，这里会列出 winget 管理的内容。",
+            Vec::new(),
+        ))
+    } else {
+        div().px(px(24.)).pb(px(32.)).child(
+            widgets::card(p)
+                .child(header)
+                .children(
+                    rows.iter()
+                        .enumerate()
+                        .map(|(ix, pkg)| installed_row(state, p, pkg, ix > 0, cx)),
+                )
+                .child(
+                    div()
+                        .flex()
+                        .items_center()
+                        .gap(px(6.))
+                        .px(px(14.))
+                        .py(px(10.))
+                        .border_t_1()
+                        .border_color(p.line)
+                        .text_size(px(11.))
+                        .text_color(p.muted)
+                        .child(icon(IconKey::Shield, px(12.), p.muted))
+                        .child(
+                            "卸载需要管理员权限时会返回 0x8A150019，请以管理员身份运行 winget。",
+                        ),
+                ),
+        )
+    };
+
+    div()
+        .flex()
+        .flex_col()
+        .child(head)
+        .child(body)
+        .into_any_element()
+}
+
+fn installed_row(
+    state: &AppState,
+    p: &Palette,
+    pkg: &Package,
+    divided: bool,
+    cx: &mut Context<AppView>,
+) -> AnyElement {
+    let id = pkg.id.clone();
+    let busy = crate::queue::is_busy(state, &pkg.id);
+    let ter_id = pkg.id.clone();
+    div()
+        .flex()
+        .items_center()
+        .gap(px(12.))
+        .px(px(14.))
+        .py(px(10.))
+        .when(divided, |this| this.border_t_1().border_color(p.line))
+        .child(widgets::pkg_chip(p, pkg, 36., 18.))
+        .child(
+            div()
+                .flex_1()
+                .min_w_0()
+                .child(
+                    div()
+                        .text_size(px(12.5))
+                        .font_medium()
+                        .truncate()
+                        .child(pkg.name.clone()),
+                )
+                .child(
+                    div()
+                        .text_size(px(11.))
+                        .font_family("Cascadia Code")
+                        .text_color(p.muted)
+                        .truncate()
+                        .child(pkg.id.clone()),
+                ),
+        )
+        .child(
+            div()
+                .w(px(110.))
+                .text_size(px(11.5))
+                .font_family("Cascadia Code")
+                .text_color(p.ink2)
+                .truncate()
+                .child(pkg.version.clone()),
+        )
+        .child(
+            div()
+                .w(px(70.))
+                .text_right()
+                .text_size(px(11.5))
+                .text_color(p.muted)
+                .child(pkg.size.clone().unwrap_or_else(|| "—".to_owned())),
+        )
+        .child(
+            div()
+                .w(px(120.))
+                .flex()
+                .justify_end()
+                .gap(px(6.))
+                .child(
+                    widgets::btn(
+                        cx,
+                        p,
+                        SharedString::from(format!("up-{id}")),
+                        BtnKind::Soft,
+                        BtnSize::Small,
+                        "升级",
+                    )
+                    .disabled(busy)
+                    .on_click(cx.listener(move |this, _, window, cx| {
+                        this.enqueue(&id, QueueAction::Upgrade, window, cx);
+                    })),
+                )
+                .child(
+                    widgets::icon_btn(
+                        SharedString::from(format!("rm-{ter_id}")),
+                        IconKey::Trash,
+                        28.,
+                        p.muted,
+                    )
+                    .on_click(cx.listener(move |this, _, window, cx| {
+                        dialogs::confirm_uninstall(this, &ter_id, window, cx);
+                    })),
+                ),
+        )
+        .into_any_element()
+}
+
+// ------------------------------------------------------------------- 更新
+
+fn updates(state: &AppState, p: &Palette, cx: &mut Context<AppView>) -> AnyElement {
+    let rows = state.updates();
+    let all_ids: Vec<String> = rows.iter().map(|pkg| pkg.id.clone()).collect();
+
+    let head = widgets::page_head(
+        p,
+        "更新",
+        Some(format!("{} 个可用更新", rows.len()).into()),
+        vec![
+            widgets::btn(
+                cx,
+                p,
+                "update-all",
+                BtnKind::Primary,
+                BtnSize::Regular,
+                "全部更新",
+            )
+            .disabled(all_ids.is_empty())
+            .on_click(cx.listener(move |this, _, window, cx| {
+                for id in &all_ids {
+                    this.enqueue(id, QueueAction::Upgrade, window, cx);
+                }
+            }))
+            .into_any_element(),
+        ],
+    );
+
+    let body = if rows.is_empty() {
+        widgets::page_body().child(widgets::empty_state(
+            p,
+            IconKey::Refresh,
+            "全部为最新版本".to_owned(),
+            "运行 winget list --upgrade-available 可再次检查。",
+            Vec::new(),
+        ))
+    } else {
+        widgets::page_body().child(
+            div()
+                .flex()
+                .flex_col()
+                .gap(px(10.))
+                .children(rows.iter().map(|pkg| update_card(state, p, pkg, cx))),
+        )
+    };
+
+    div()
+        .flex()
+        .flex_col()
+        .child(head)
+        .child(body)
+        .into_any_element()
+}
+
+fn update_card(
+    state: &AppState,
+    p: &Palette,
+    pkg: &Package,
+    cx: &mut Context<AppView>,
+) -> AnyElement {
+    let id = pkg.id.clone();
+    let busy = crate::queue::is_busy(state, &pkg.id);
+    let available = pkg.available.clone().unwrap_or_default();
+    let delta = pkg.upgrade_delta().unwrap_or_default().to_owned();
+
+    widgets::card_hover(
+        p,
+        widgets::card(p)
+            .p(px(14.))
+            .flex()
+            .items_center()
+            .gap(px(14.))
+            .child(widgets::pkg_chip(p, pkg, 44., 22.))
+            .child(
+                div()
+                    .flex_1()
+                    .min_w_0()
+                    .child(
+                        div()
+                            .text_size(px(13.5))
+                            .font_semibold()
+                            .truncate()
+                            .child(pkg.name.clone()),
+                    )
+                    .child(
+                        div()
+                            .flex()
+                            .items_center()
+                            .gap(px(6.))
+                            .mt(px(4.))
+                            .text_size(px(11.5))
+                            .font_family("Cascadia Code")
+                            .text_color(p.muted)
+                            .child(div().text_color(p.muted).child(strike(&pkg.version)))
+                            .child(icon(IconKey::Chevron, px(12.), p.muted))
+                            .child(div().text_color(p.ok).child(available))
+                            .when(!delta.is_empty(), |this| {
+                                this.child(widgets::pill(p, PillKind::Accent, delta.clone()))
+                            }),
+                    ),
+            )
+            .child(
+                widgets::btn(
+                    cx,
+                    p,
+                    SharedString::from(format!("upd-{id}")),
+                    BtnKind::Primary,
+                    BtnSize::Small,
+                    "更新",
+                )
+                .disabled(busy)
+                .on_click(cx.listener(move |this, _, window, cx| {
+                    this.enqueue(&id, QueueAction::Upgrade, window, cx);
+                })),
+            ),
+    )
+    .into_any_element()
+}
+
+/// The prototype strikes the old version through; gpui has no strikethrough
+/// styling on `Div`, so the version is bracketed instead.
+fn strike(text: &str) -> String {
+    format!("‹{text}›")
+}
+
+// ------------------------------------------------------------------- 源管理
+
+fn sources(state: &AppState, p: &Palette, cx: &mut Context<AppView>) -> AnyElement {
+    let head = widgets::page_head(
+        p,
+        "源管理",
+        Some("winget 从多个源检索软件包，可添加企业内部源".into()),
+        vec![
+            widgets::btn(
+                cx,
+                p,
+                "sync-all-src",
+                BtnKind::Soft,
+                BtnSize::Regular,
+                "全部更新",
+            )
+            .on_click(cx.listener(|this, _, window, cx| this.sync_sources(None, window, cx)))
+            .into_any_element(),
+            widgets::btn(
+                cx,
+                p,
+                "add-src",
+                BtnKind::Primary,
+                BtnSize::Regular,
+                "添加源",
+            )
+            .on_click(cx.listener(|this, _, window, cx| {
+                dialogs::add_source(this, window, cx);
+            }))
+            .into_any_element(),
+        ],
+    );
+
+    let body = if state.sources.is_empty() {
+        widgets::page_body().child(widgets::empty_state(
+            p,
+            IconKey::Source,
+            "尚未读取到源".to_owned(),
+            "请确认 winget 可用后点击“全部更新”。",
+            Vec::new(),
+        ))
+    } else {
+        widgets::page_body().child(
+            div().flex().flex_col().gap(px(10.)).children(
+                state
+                    .sources
+                    .iter()
+                    .map(|source| source_card(state, p, source, cx)),
+            ),
+        )
+    };
+
+    div()
+        .flex()
+        .flex_col()
+        .child(head)
+        .child(body)
+        .child(
+            div().px(px(24.)).pb(px(32.)).child(
+                div()
+                    .border_1()
+                    .border_dashed()
+                    .border_color(p.line_strong)
+                    .rounded(px(12.))
+                    .p(px(14.))
+                    .flex()
+                    .items_center()
+                    .gap(px(8.))
+                    .text_size(px(11.5))
+                    .text_color(p.muted)
+                    .child(icon(IconKey::Terminal, px(13.), p.muted))
+                    .child("等价命令：")
+                    .child(widgets::code_chip(
+                        p,
+                        "winget source add --name <name> --arg <url>",
+                    )),
+            ),
+        )
+        .into_any_element()
+}
+
+fn source_card(
+    state: &AppState,
+    p: &Palette,
+    source: &crate::model::Source,
+    cx: &mut Context<AppView>,
+) -> AnyElement {
+    let name = source.name.clone();
+    let is_default = state.default_source == source.name;
+    let edit_name = source.name.clone();
+    let remove_name = source.name.clone();
+    let sync_name = source.name.clone();
+    let set_name = source.name.clone();
+
+    widgets::card(p)
+        .p(px(14.))
+        .flex()
+        .items_center()
+        .gap(px(14.))
+        .child(widgets::tinted_chip(
+            p,
+            IconKey::Source,
+            "#4f8cff",
+            44.,
+            22.,
+        ))
+        .child(
+            div()
+                .flex_1()
+                .min_w_0()
+                .child(
+                    div()
+                        .flex()
+                        .items_center()
+                        .gap(px(8.))
+                        .child(div().text_size(px(14.)).font_semibold().child(name.clone()))
+                        .child(if source.trusted {
+                            widgets::pill(p, PillKind::Ok, "受信任")
+                        } else {
+                            widgets::pill(p, PillKind::Warn, "未验证")
+                        })
+                        .when(is_default, |this| {
+                            this.child(widgets::pill(p, PillKind::Accent, "默认"))
+                        }),
+                )
+                .child(
+                    div()
+                        .text_size(px(11.5))
+                        .font_family("Cascadia Code")
+                        .text_color(p.muted)
+                        .truncate()
+                        .child(source.url.clone()),
+                )
+                .child(
+                    div()
+                        .flex()
+                        .items_center()
+                        .gap(px(12.))
+                        .mt(px(6.))
+                        .text_size(px(11.))
+                        .child(widgets::meta_item(
+                            p,
+                            IconKey::Grid,
+                            format!(
+                                "{} 个包",
+                                source
+                                    .packages
+                                    .map_or_else(|| "—".to_owned(), |n| n.to_string())
+                            ),
+                        ))
+                        .child(widgets::meta_item(
+                            p,
+                            IconKey::Clock,
+                            source.updated.clone().unwrap_or_else(|| "—".to_owned()),
+                        ))
+                        .child(widgets::meta_item(
+                            p,
+                            IconKey::Shield,
+                            if source.ty.is_empty() {
+                                "—".to_owned()
+                            } else {
+                                source.ty.clone()
+                            },
+                        )),
+                ),
+        )
+        .child(
+            div()
+                .flex()
+                .items_center()
+                .gap(px(6.))
+                .child(
+                    widgets::btn(
+                        cx,
+                        p,
+                        SharedString::from(format!("sync-{sync_name}")),
+                        BtnKind::Soft,
+                        BtnSize::Small,
+                        "更新",
+                    )
+                    .on_click(cx.listener(move |this, _, window, cx| {
+                        this.sync_sources(Some(sync_name.clone()), window, cx);
+                    })),
+                )
+                .when(!is_default, |this| {
+                    this.child(
+                        widgets::btn(
+                            cx,
+                            p,
+                            SharedString::from(format!("def-{set_name}")),
+                            BtnKind::Outline,
+                            BtnSize::Small,
+                            "设为默认",
+                        )
+                        .on_click(cx.listener(move |this, _, _, cx| {
+                            this.state.default_source = set_name.clone();
+                            this.state.settings.default_source = set_name.clone();
+                            cx.notify();
+                        })),
+                    )
+                })
+                .child(
+                    widgets::icon_btn(
+                        SharedString::from(format!("edit-{edit_name}")),
+                        IconKey::Edit,
+                        28.,
+                        p.muted,
+                    )
+                    .on_click(cx.listener(move |this, _, window, cx| {
+                        dialogs::edit_source(this, &edit_name, window, cx);
+                    })),
+                )
+                .child(
+                    widgets::icon_btn(
+                        SharedString::from(format!("del-{remove_name}")),
+                        IconKey::Trash,
+                        28.,
+                        p.danger,
+                    )
+                    .on_click(cx.listener(move |this, _, window, cx| {
+                        dialogs::confirm_remove_source(this, &remove_name, window, cx);
+                    })),
+                ),
+        )
+        .into_any_element()
+}
+
+// ------------------------------------------------------------------- 设置
+
+fn settings(
+    state: &AppState,
+    inputs: &ShellInputs,
+    p: &Palette,
+    cx: &mut Context<AppView>,
+) -> AnyElement {
+    let head = widgets::page_head(
+        p,
+        "设置",
+        Some("所有选项将映射为 winget 命令行参数".into()),
+        Vec::new(),
+    );
+
+    let install_card = settings_card(
+        p,
+        "安装默认值",
+        "安装与升级时默认附带的参数。",
+        vec![
+            row_shell_plain(
+                p,
+                "默认来源",
+                "winget install --source <name>",
+                default_source_control(state, p, cx),
+            ),
+            seg_row(
+                p,
+                "系统架构",
+                "winget install --architecture <arch>",
+                arch_segments(state, p, cx),
+            ),
+            seg_row(
+                p,
+                "安装范围",
+                "winget install --scope <scope>",
+                scope_segments(state, p, cx),
+            ),
+            field_row(
+                p,
+                "自定义安装位置",
+                "winget install --location <path>",
+                input_field(p, &inputs.install_location),
+            ),
+            switch_field_row(
+                cx,
+                p,
+                "自动接受协议",
+                "winget install --accept-package-agreements",
+                state.settings.accept_agreements,
+                |this, value, cx| {
+                    this.state.settings.accept_agreements = value;
+                    cx.notify();
+                },
+            ),
+            switch_field_row(
+                cx,
+                p,
+                "静默安装",
+                "winget install --silent",
+                state.settings.silent,
+                |this, value, cx| {
+                    this.state.settings.silent = value;
+                    cx.notify();
+                },
+            ),
+        ],
+    );
+
+    let queue_card = settings_card(
+        p,
+        "更新与队列",
+        "检查更新与并发策略。",
+        vec![
+            switch_field_row(
+                cx,
+                p,
+                "自动检查更新",
+                "启动时运行 winget list --upgrade-available",
+                state.settings.auto_check_updates,
+                |this, value, cx| {
+                    this.state.settings.auto_check_updates = value;
+                    cx.notify();
+                },
+            ),
+            seg_row(
+                p,
+                "并发任务数",
+                "同时运行的安装任务数量",
+                concurrency_segments(state, p, cx),
+            ),
+        ],
+    );
+
+    let appearance_card = settings_card(
+        p,
+        "外观",
+        "主题与强调色。",
+        vec![
+            seg_row(
+                p,
+                "主题",
+                "深色 / 浅色 / 跟随系统",
+                theme_segments(state, p, cx),
+            ),
+            accent_row(p, state, cx),
+            switch_field_row(
+                cx,
+                p,
+                "减少动画",
+                "关闭进度条的动态效果",
+                state.settings.reduce_motion,
+                |this, value, cx| {
+                    this.state.settings.reduce_motion = value;
+                    cx.notify();
+                },
+            ),
+        ],
+    );
+
+    let advanced_card = settings_card(
+        p,
+        "系统与高级",
+        "winget 路径、代理与统计。",
+        vec![
+            field_row(
+                p,
+                "winget 路径",
+                "留空则自动检测",
+                input_field(p, &inputs.winget_path),
+            ),
+            field_row(
+                p,
+                "代理服务器",
+                "HTTP 代理地址",
+                input_field(p, &inputs.proxy),
+            ),
+            switch_field_row(
+                cx,
+                p,
+                "使用统计",
+                "允许匿名使用数据",
+                state.settings.telemetry,
+                |this, value, cx| {
+                    this.state.settings.telemetry = value;
+                    cx.notify();
+                },
+            ),
+        ],
+    );
+
+    let about_card = about(p, state, cx);
+
+    div()
+        .flex()
+        .flex_col()
+        .child(head)
+        .child(
+            widgets::page_body().child(
+                div()
+                    .flex()
+                    .flex_wrap()
+                    .gap(px(14.))
+                    .child(
+                        div()
+                            .flex_1()
+                            .min_w(px(380.))
+                            .flex()
+                            .flex_col()
+                            .gap(px(14.))
+                            .child(install_card)
+                            .child(queue_card),
+                    )
+                    .child(
+                        div()
+                            .flex_1()
+                            .min_w(px(380.))
+                            .flex()
+                            .flex_col()
+                            .gap(px(14.))
+                            .child(appearance_card)
+                            .child(advanced_card)
+                            .child(about_card),
+                    ),
+            ),
+        )
+        .into_any_element()
+}
+
+fn settings_card(p: &Palette, title: &str, description: &str, rows: Vec<AnyElement>) -> AnyElement {
+    widgets::card(p)
+        .flex_1()
+        .child(
+            div()
+                .px(px(16.))
+                .py(px(14.))
+                .child(
+                    div()
+                        .text_size(px(14.))
+                        .font_semibold()
+                        .child(title.to_owned()),
+                )
+                .child(
+                    div()
+                        .text_size(px(12.))
+                        .text_color(p.muted)
+                        .mt(px(2.))
+                        .child(description.to_owned()),
+                ),
+        )
+        .children(rows)
+        .into_any_element()
+}
+
+/// One settings row: label + hint on the left, control on the right.
+fn row_shell(p: &Palette, label: &str, hint: &str, control: AnyElement) -> AnyElement {
+    div()
+        .flex()
+        .items_center()
+        .gap(px(14.))
+        .px(px(16.))
+        .py(px(11.))
+        .border_t_1()
+        .border_color(p.line)
+        .child(
+            div()
+                .flex_1()
+                .min_w_0()
+                .child(
+                    div()
+                        .text_size(px(13.))
+                        .font_medium()
+                        .child(label.to_owned()),
+                )
+                .child(
+                    div()
+                        .text_size(px(11.5))
+                        .text_color(p.muted)
+                        .truncate()
+                        .child(hint.to_owned()),
+                ),
+        )
+        .child(control)
+        .into_any_element()
+}
+
+/// A settings row whose control is a segment control.
+fn seg_row(p: &Palette, label: &str, hint: &str, control: AnyElement) -> AnyElement {
+    row_shell(p, label, hint, control)
+}
+
+/// A settings row whose control is a text field.
+fn field_row(p: &Palette, label: &str, hint: &str, control: AnyElement) -> AnyElement {
+    row_shell(p, label, hint, control)
+}
+
+/// A settings row whose control is a list of choices rather than a segment.
+fn row_shell_plain(p: &Palette, label: &str, hint: &str, control: AnyElement) -> AnyElement {
+    row_shell(p, label, hint, control)
+}
+
+fn switch_field_row(
+    cx: &mut Context<AppView>,
+    p: &Palette,
+    label: &str,
+    hint: &str,
+    checked: bool,
+    on_change: impl Fn(&mut AppView, bool, &mut Context<AppView>) + 'static,
+) -> AnyElement {
+    let view = cx.entity().downgrade();
+    let listener = move |value: &bool, _: &mut Window, cx: &mut App| {
+        let value = *value;
+        let _ = view.update(cx, |this, cx| on_change(this, value, cx));
+    };
+    let control = widgets::switch_row(
+        p,
+        SharedString::from(format!("sw-{label}")),
+        checked,
+        listener,
+    );
+    row_shell(p, label, hint, control.into_any_element())
+}
+
+fn default_source_control(state: &AppState, p: &Palette, cx: &mut Context<AppView>) -> AnyElement {
+    let names: Vec<String> = if state.sources.is_empty() {
+        vec!["winget".to_owned(), "msstore".to_owned()]
+    } else {
+        state.sources.iter().map(|s| s.name.clone()).collect()
+    };
+    div()
+        .flex()
+        .gap(px(6.))
+        .children(names.iter().map(|name| {
+            let key = name.clone();
+            let label = name.clone();
+            let on = state.default_source == *name;
+            div()
+                .id(SharedString::from(format!("dsrc-{name}")))
+                .text_size(px(11.5))
+                .px(px(10.))
+                .py(px(5.))
+                .rounded(px(7.))
+                .border_1()
+                .border_color(if on { p.accent } else { p.line })
+                .bg(if on {
+                    p.tint(p.accent, 0.14)
+                } else {
+                    p.surface2
+                })
+                .text_color(if on { p.accent } else { p.ink2 })
+                .cursor_pointer()
+                .on_click(cx.listener(move |this, _, _, cx| {
+                    this.state.default_source = key.clone();
+                    this.state.settings.default_source = key.clone();
+                    cx.notify();
+                }))
+                .child(label)
+        }))
+        .into_any_element()
+}
+
+fn arch_segments(state: &AppState, p: &Palette, cx: &mut Context<AppView>) -> AnyElement {
+    let items = widgets::arch_items();
+    widgets::seg_control(
+        p,
+        "arch-seg",
+        &items,
+        state.settings.arch,
+        seg_handler(cx, |this, value, _, cx| {
+            this.state.settings.arch = value;
+            cx.notify();
+        }),
+    )
+    .into_any_element()
+}
+
+fn scope_segments(state: &AppState, p: &Palette, cx: &mut Context<AppView>) -> AnyElement {
+    let items = widgets::scope_items();
+    widgets::seg_control(
+        p,
+        "scope-seg",
+        &items,
+        state.settings.scope,
+        seg_handler(cx, |this, value, _, cx| {
+            this.state.settings.scope = value;
+            cx.notify();
+        }),
+    )
+    .into_any_element()
+}
+
+fn concurrency_segments(state: &AppState, p: &Palette, cx: &mut Context<AppView>) -> AnyElement {
+    let items = widgets::concurrency_items();
+    widgets::seg_control(
+        p,
+        "conc-seg",
+        &items,
+        state.settings.concurrency,
+        seg_handler(cx, |this, value, _, cx| {
+            this.state.settings.concurrency = value;
+            cx.notify();
+        }),
+    )
+    .into_any_element()
+}
+
+fn theme_segments(state: &AppState, p: &Palette, cx: &mut Context<AppView>) -> AnyElement {
+    let items = widgets::theme_items();
+    widgets::seg_control(
+        p,
+        "theme-seg",
+        &items,
+        state.settings.theme,
+        seg_handler(cx, |this, value, _, cx| {
+            this.state.settings.theme = value;
+            crate::theme::set_mode(cx, value);
+            cx.notify();
+        }),
+    )
+    .into_any_element()
+}
+
+fn accent_row(p: &Palette, state: &AppState, cx: &mut Context<AppView>) -> AnyElement {
+    let selected = state.settings.accent.clone();
+    let swatches = crate::theme::ACCENT_SWATCHES;
+    row_shell(
+        p,
+        "强调色",
+        "影响按钮、进度条与选中态",
+        div()
+            .flex()
+            .gap(px(8.))
+            .children(swatches.iter().map(|hex| {
+                let hex = (*hex).to_owned();
+                let color = Palette::from_hex(&hex);
+                let on = selected.eq_ignore_ascii_case(&hex);
+                let key = hex.clone();
+                div()
+                    .id(SharedString::from(format!("swatch-{hex}")))
+                    .size(px(20.))
+                    .rounded(px(9999.))
+                    .bg(color)
+                    .border_2()
+                    .border_color(if on { p.ink } else { p.line })
+                    .cursor_pointer()
+                    .on_click(cx.listener(move |this, _, _, cx| {
+                        this.set_accent(&key, cx);
+                    }))
+            }))
+            .into_any_element(),
+    )
+}
+
+/// `seg_control` reports the picked value by value, while `cx.listener`
+/// produces a reference-taking closure. This adapts one to the other.
+fn seg_handler<T: Copy + 'static>(
+    cx: &Context<AppView>,
+    on_select: impl Fn(&mut AppView, T, &mut Window, &mut Context<AppView>) + 'static,
+) -> impl Fn(T, &mut Window, &mut App) + 'static {
+    let view = cx.entity().downgrade();
+    move |value: T, window, cx| {
+        let _ = view.update(cx, |this, cx| on_select(this, value, window, cx));
+    }
+}
+
+/// The three settings text fields live on `AppView`; the shell passes the
+/// entities down so the renderer never re-borrows the view.
+fn input_field(p: &Palette, input: &Entity<InputState>) -> AnyElement {
+    widgets::field(p, input).w(px(200.)).into_any_element()
+}
+
+fn about(p: &Palette, state: &AppState, cx: &mut Context<AppView>) -> AnyElement {
+    let version = if state.winget_version.is_empty() {
+        "未检测".to_owned()
+    } else {
+        state.winget_version.clone()
+    };
+    settings_card(
+        p,
+        "关于",
+        "WingetGUI v0.1.0-prototype · Rust + GPUI · MIT License",
+        vec![
+            div()
+                .flex()
+                .items_center()
+                .gap(px(14.))
+                .px(px(16.))
+                .py(px(14.))
+                .border_t_1()
+                .border_color(p.line)
+                .child(
+                    div()
+                        .size(px(48.))
+                        .rounded(px(14.))
+                        .flex()
+                        .items_center()
+                        .justify_center()
+                        .bg(p.accent)
+                        .child(icon(IconKey::Download, px(24.), p.on_accent)),
+                )
+                .child(
+                    div()
+                        .flex_1()
+                        .min_w_0()
+                        .child(div().text_size(px(13.5)).font_semibold().child("WingetGUI"))
+                        .child(
+                            div()
+                                .text_size(px(11.5))
+                                .text_color(p.muted)
+                                .child("Rust + GPUI · MIT License"),
+                        ),
+                )
+                .child(
+                    div().flex().gap(px(6.)).child(
+                        widgets::btn(
+                            cx,
+                            p,
+                            "about-redetect",
+                            BtnKind::Outline,
+                            BtnSize::Small,
+                            "检测",
+                        )
+                        .on_click(cx.listener(|this, _, _, cx| this.redetect_winget(cx))),
+                    ),
+                )
+                .into_any_element(),
+            div()
+                .flex()
+                .items_center()
+                .gap(px(8.))
+                .px(px(16.))
+                .py(px(11.))
+                .border_t_1()
+                .border_color(p.line)
+                .text_size(px(12.))
+                .text_color(p.muted)
+                .child("当前 winget 版本")
+                .child(widgets::code_chip(p, version))
+                .into_any_element(),
+        ],
+    )
+}
+
+// --------------------------------------------------------------- helpers
+
+fn section_head(
+    p: &Palette,
+    title: &str,
+    link: Option<(&'static str, Route)>,
+    cx: &mut Context<AppView>,
+) -> AnyElement {
+    let mut head = div()
+        .flex()
+        .items_center()
+        .gap(px(8.))
+        .pb(px(10.))
+        .child(widgets::section_label(p, title));
+    if let Some((label, route)) = link {
+        head = head.child(
+            div()
+                .id(SharedString::from(format!("link-{label}")))
+                .text_size(px(12.))
+                .text_color(p.accent)
+                .cursor_pointer()
+                .on_click(cx.listener(move |this, _, window, cx| {
+                    this.navigate(route, window, cx);
+                }))
+                .child(label),
+        );
+    }
+    head.into_any_element()
+}
+
+fn winget_missing(p: &Palette, cx: &mut Context<AppView>) -> AnyElement {
+    div()
+        .px(px(24.))
+        .pb(px(16.))
+        .child(
+            widgets::card(p)
+                .p(px(14.))
+                .flex()
+                .items_center()
+                .gap(px(10.))
+                .border_color(p.tint(p.warn, 0.4))
+                .child(icon(IconKey::Warning, px(16.), p.warn))
+                .child(
+                    div()
+                        .flex_1()
+                        .text_size(px(12.5))
+                        .text_color(p.ink2)
+                        .child("未检测到 winget，请在“设置 → 系统与高级”中指定路径后点击检测。"),
+                )
+                .child(
+                    widgets::btn(
+                        cx,
+                        p,
+                        "go-settings",
+                        BtnKind::Soft,
+                        BtnSize::Small,
+                        "前往设置",
+                    )
+                    .on_click(cx.listener(|this, _, window, cx| {
+                        this.navigate(Route::Settings, window, cx);
+                    })),
+                ),
+        )
+        .into_any_element()
+}
