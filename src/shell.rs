@@ -53,6 +53,20 @@ pub struct AppView {
     ticker: Option<Task<()>>,
     /// The search debounce timer, replaced on each keystroke.
     debounce: Option<Task<()>>,
+    /// The in-flight keystroke search. Replaced on every query, so a stale
+    /// search never runs to completion alongside its successor. (The blocking
+    /// winget child itself cannot be killed once spawned — dropping the task
+    /// only discards its result, and the epoch below guards the apply step.)
+    search_task: Option<Task<()>>,
+    /// Monotonic catalogue-query id, bumped by every search or full refresh.
+    /// A result that arrives with an older id is dropped, so out-of-order
+    /// completions cannot overwrite a newer query's list.
+    search_epoch: u64,
+    /// Cached `winget list` rows and installed ids from the last full refresh.
+    /// Keystroke searches merge against these instead of re-running `list`
+    /// and `export` on every pause.
+    list_rows: Vec<winget::ListRow>,
+    installed_ids: Vec<String>,
     _subscriptions: Vec<Subscription>,
 }
 
@@ -76,6 +90,10 @@ impl AppView {
             refresh_tasks: Vec::new(),
             ticker: None,
             debounce: None,
+            search_task: None,
+            search_epoch: 0,
+            list_rows: Vec::new(),
+            installed_ids: Vec::new(),
             _subscriptions: Vec::new(),
         };
 
@@ -97,7 +115,7 @@ impl AppView {
                 InputEvent::PressEnter { .. } => {
                     this.debounce = None;
                     this.navigate(Route::Search, window, cx);
-                    this.refresh_packages(cx);
+                    this.refresh_search(cx);
                 }
                 InputEvent::Focus | InputEvent::Blur => cx.notify(),
             },
@@ -204,7 +222,64 @@ impl AppView {
             cx.background_executor()
                 .timer(Duration::from_millis(180))
                 .await;
-            let _ = this.update(cx, |this, cx| this.refresh_packages(cx));
+            let _ = this.update(cx, |this, cx| this.refresh_search(cx));
+        }));
+    }
+
+    /// Run only `winget search`, merging against the cached installed data.
+    ///
+    /// Keystrokes, Enter, the source pill and the advanced filters land here;
+    /// the expensive `list`/`export` sweep stays with [`Self::refresh_packages`]
+    /// (startup, redetect), while install/uninstall mutations keep the caches
+    /// in sync directly.
+    pub fn refresh_search(&mut self, cx: &mut Context<Self>) {
+        let Some(winget) = self.winget.clone() else {
+            cx.notify();
+            return;
+        };
+        let query = self.state.query.clone();
+        let source = self.state.search_source.arg().to_owned();
+        let settings = self.state.settings.clone();
+
+        // Cancel the previous keystroke search and invalidate its result.
+        self.search_task = None;
+        self.search_epoch += 1;
+        let epoch = self.search_epoch;
+
+        // `winget search` with an empty query matches nothing — skip the
+        // process entirely and show just the cached installed packages.
+        if query.trim().is_empty() {
+            self.state.packages = merge_catalog(&[], &self.list_rows, &self.installed_ids);
+            self.state.status = self.state.status_for(self.state.route);
+            cx.notify();
+            return;
+        }
+
+        self.state.status = "正在检索…".to_owned();
+        cx.notify();
+
+        self.search_task = Some(cx.spawn(async move |this, cx| {
+            let search = cx
+                .background_spawn(async move {
+                    let args =
+                        winget::search(&query, Some(&source), settings.search_filters(), None);
+                    let refs: Vec<&str> = args.iter().map(String::as_str).collect();
+                    winget
+                        .run(&refs)
+                        .map(|out| winget::parse_search(&out.stdout))
+                        .unwrap_or_default()
+                })
+                .await;
+
+            let _ = this.update(cx, |this, cx| {
+                if epoch != this.search_epoch {
+                    // A newer query (or a full refresh) superseded this one.
+                    return;
+                }
+                this.state.packages = merge_catalog(&search, &this.list_rows, &this.installed_ids);
+                this.state.status = this.state.status_for(this.state.route);
+                cx.notify();
+            });
         }));
     }
 
@@ -228,7 +303,7 @@ impl AppView {
             Notification::info(format!("搜索源：{}", source.label())),
             cx,
         );
-        self.refresh_packages(cx);
+        self.refresh_search(cx);
     }
 
     /// Track a refresh future, pruning the ones that have already finished.
@@ -248,19 +323,34 @@ impl AppView {
         let source = self.state.search_source.arg().to_owned();
         let settings = self.state.settings.clone();
 
+        // Supersede any in-flight keystroke search — its result would be
+        // stale once this full sweep lands.
+        self.search_task = None;
+        self.search_epoch += 1;
+        let epoch = self.search_epoch;
+
         self.state.status = "正在检索…".to_owned();
         cx.notify();
 
         self.spawn_refresh(cx.spawn(async move |this, cx| {
             let (search, list, installed) = cx
                 .background_spawn(async move {
-                    let args =
-                        winget::search(&query, Some(&source), settings.search_filters(), None);
-                    let refs: Vec<&str> = args.iter().map(String::as_str).collect();
-                    let search = winget
-                        .run(&refs)
-                        .map(|out| winget::parse_search(&out.stdout))
-                        .unwrap_or_default();
+                    // An empty query matches nothing; skip the process.
+                    let search = if query.trim().is_empty() {
+                        Vec::new()
+                    } else {
+                        let args = winget::search(
+                            &query,
+                            Some(&source),
+                            settings.search_filters(),
+                            None,
+                        );
+                        let refs: Vec<&str> = args.iter().map(String::as_str).collect();
+                        winget
+                            .run(&refs)
+                            .map(|out| winget::parse_search(&out.stdout))
+                            .unwrap_or_default()
+                    };
 
                     let args = winget::list(None);
                     let refs: Vec<&str> = args.iter().map(String::as_str).collect();
@@ -274,8 +364,15 @@ impl AppView {
                 .await;
 
             let _ = this.update(cx, |this, cx| {
-                this.state.packages = merge_catalog(&search, &list, &installed);
-                this.state.status = this.state.status_for(this.state.route);
+                // The installed-data caches always move forward; the visible
+                // list only when no newer query has been issued since.
+                this.list_rows = list;
+                this.installed_ids = installed;
+                if epoch == this.search_epoch {
+                    this.state.packages =
+                        merge_catalog(&search, &this.list_rows, &this.installed_ids);
+                    this.state.status = this.state.status_for(this.state.route);
+                }
                 cx.notify();
             });
         }));
@@ -470,6 +567,22 @@ impl AppView {
                     .await;
                 let _ = this.update(cx, |this, cx| {
                     queue::complete(&mut this.state, uid, result);
+                    // Keep the keystroke-search cache in step with the queue:
+                    // a successful install joins the installed set.
+                    if let Some(item) = this
+                        .state
+                        .queue
+                        .iter()
+                        .find(|item| item.uid == uid)
+                        .filter(|item| {
+                            item.state == QueueState::Done && item.action == QueueAction::Install
+                        })
+                    {
+                        let key = item.id.to_lowercase();
+                        if !this.installed_ids.contains(&key) {
+                            this.installed_ids.push(key);
+                        }
+                    }
                     this.pump(cx);
                     cx.notify();
                 });
@@ -595,6 +708,7 @@ impl AppView {
                 let ok = result.as_ref().map(|out| out.success()).unwrap_or(false);
                 if ok {
                     this.state.mark_uninstalled(&id);
+                    this.installed_ids.retain(|key| key != &id.to_lowercase());
                     window.push_notification(Notification::success("已卸载"), cx);
                 } else {
                     let message = result

@@ -363,7 +363,7 @@ pub fn advanced_search(view: &mut AppView, window: &mut Window, cx: &mut Context
                         let next = apply_filters.get();
                         let _ = apply_view.update(cx, |this, cx| {
                             this.state.settings.set_search_filters(next);
-                            this.refresh_packages(cx);
+                            this.refresh_search(cx);
                             cx.notify();
                         });
                         window.close_dialog(cx);
