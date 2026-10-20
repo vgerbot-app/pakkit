@@ -659,7 +659,7 @@ impl AppView {
             .h(px(52.))
             .px(px(10.))
             .bg(p.surface)
-            .child(brand_row(p))
+            // .child(brand_row(p))
             .child(
                 div().flex_1().flex().items_center().justify_center().child(
                     div().w_full().max_w(px(560.)).h(px(34.)).child(
@@ -745,6 +745,7 @@ impl AppView {
     fn main_pane(&self, p: &Palette, cx: &mut Context<Self>) -> impl IntoElement {
         v_flex()
             .flex_1()
+            .h_full()
             .min_w_0()
             .child(
                 div()
