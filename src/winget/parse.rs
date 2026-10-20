@@ -197,10 +197,7 @@ fn split_table(text: &str) -> Option<(Vec<String>, Vec<Vec<String>>)> {
         .iter()
         .enumerate()
         .find(|(i, line)| {
-            !line.trim().is_empty()
-                && lines
-                    .get(i + 1)
-                    .is_some_and(|next| is_separator(next))
+            !line.trim().is_empty() && lines.get(i + 1).is_some_and(|next| is_separator(next))
         })
         .map(|(i, _)| i);
 
@@ -283,10 +280,7 @@ pub fn parse_search(text: &str) -> Vec<SearchRow> {
     let match_kind = column(&headers, "Match");
 
     let get = |row: &[String], index: Option<usize>| {
-        index
-            .and_then(|i| row.get(i))
-            .cloned()
-            .unwrap_or_default()
+        index.and_then(|i| row.get(i)).cloned().unwrap_or_default()
     };
 
     rows.iter()
@@ -296,13 +290,14 @@ pub fn parse_search(text: &str) -> Vec<SearchRow> {
             if id.is_empty() {
                 return None;
             }
-            let match_kind = match_kind
-                .and_then(|i| row.get(i))
-                .and_then(|cell| match cell.split_once(':') {
-                    Some((kind, value)) => Some(format!("{}: {}", kind.trim(), value.trim())),
-                    None if cell.is_empty() => None,
-                    None => Some(cell.clone()),
-                });
+            let match_kind =
+                match_kind
+                    .and_then(|i| row.get(i))
+                    .and_then(|cell| match cell.split_once(':') {
+                        Some((kind, value)) => Some(format!("{}: {}", kind.trim(), value.trim())),
+                        None if cell.is_empty() => None,
+                        None => Some(cell.clone()),
+                    });
             Some(SearchRow {
                 name: get(row, name),
                 id,
@@ -326,10 +321,7 @@ pub fn parse_list(text: &str) -> Vec<ListRow> {
     let source = column(&headers, "Source");
 
     let get = |row: &[String], index: Option<usize>| {
-        index
-            .and_then(|i| row.get(i))
-            .cloned()
-            .unwrap_or_default()
+        index.and_then(|i| row.get(i)).cloned().unwrap_or_default()
     };
 
     rows.iter()
@@ -365,10 +357,7 @@ pub fn parse_source_list(text: &str) -> Vec<SourceRow> {
     let explicit = column(&headers, "Explicit");
 
     let get = |row: &[String], index: Option<usize>| {
-        index
-            .and_then(|i| row.get(i))
-            .cloned()
-            .unwrap_or_default()
+        index.and_then(|i| row.get(i)).cloned().unwrap_or_default()
     };
 
     rows.iter()
@@ -573,7 +562,10 @@ mod tests {
     #[test]
     fn source_list_reports_explicit_flags() {
         let rows = parse_source_list(SOURCES);
-        let winget = rows.iter().find(|r| r.name == "winget").expect("winget source");
+        let winget = rows
+            .iter()
+            .find(|r| r.name == "winget")
+            .expect("winget source");
         let msstore = rows
             .iter()
             .find(|r| r.name == "msstore")

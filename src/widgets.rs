@@ -7,15 +7,17 @@
 
 use std::rc::Rc;
 
-use gpui_kit::prelude::{FluentBuilder as _, InteractiveElement as _, StatefulInteractiveElement as _};
-use gpui_kit::{
-    AnyElement, App, BoxShadow, ClickEvent, Div, ElementId, Hsla, ParentElement as _, Pixels, Rgba,
-    SharedString, Stateful, Styled as _, Window, div, point, px, relative,
-};
 use gpui_kit::component::button::{Button, ButtonCustomVariant, ButtonVariants as _};
 use gpui_kit::component::input::{Input, InputState};
 use gpui_kit::component::switch::Switch;
 use gpui_kit::component::{StyledExt as _, h_flex};
+use gpui_kit::prelude::{
+    FluentBuilder as _, InteractiveElement as _, StatefulInteractiveElement as _,
+};
+use gpui_kit::{
+    AnyElement, App, BoxShadow, ClickEvent, Div, ElementId, Hsla, ParentElement as _, Pixels, Rgba,
+    SharedString, Stateful, Styled as _, Window, div, point, px, relative,
+};
 
 use crate::icons::{IconKey, icon};
 use crate::model::{Package, Source};
@@ -155,8 +157,11 @@ pub fn btn(
         }
         BtnKind::Soft => Button::new(id).custom(custom(p.surface3, p.ink, p.surface3)),
         BtnKind::Outline => Button::new(id).custom(custom(p.surface, p.ink2, p.surface3)),
-        BtnKind::Danger => Button::new(id)
-            .custom(custom(p.tint(p.danger, 0.14), p.danger, p.tint(p.danger, 0.22))),
+        BtnKind::Danger => Button::new(id).custom(custom(
+            p.tint(p.danger, 0.14),
+            p.danger,
+            p.tint(p.danger, 0.22),
+        )),
     };
     button
         .label(label)
@@ -188,25 +193,34 @@ fn brighten(color: Hsla, factor: f32) -> Hsla {
 }
 
 /// `.btn-ghost` — borderless, 12 px, muted, darkening to `ink` on hover.
-pub fn btn_ghost(p: &Palette, id: impl Into<ElementId>, label: impl Into<SharedString>) -> Button {
+///
+/// The hover colours come from a custom variant, never from `Div::hover`:
+/// `Button` forwards `InteractiveElement` to its base div, and `Button::render`
+/// registers the base's hover style itself — setting one here would panic with
+/// "hover style already set".
+pub fn btn_ghost(
+    cx: &App,
+    p: &Palette,
+    id: impl Into<ElementId>,
+    label: impl Into<SharedString>,
+) -> Button {
     Button::new(id)
         .label(label)
-        .ghost()
+        .custom(
+            ButtonCustomVariant::new(cx)
+                .color(Hsla::default())
+                .foreground(p.muted)
+                .hover(p.surface3)
+                .active(p.surface3),
+        )
         .text_size(px(12.))
         .px(px(9.))
         .py(px(4.))
         .rounded(px(7.))
-        .text_color(p.muted)
-        .hover(move |this| this.text_color(p.ink))
 }
 
 /// `.icon-btn` — a square, borderless icon hit target.
-pub fn icon_btn(
-    id: impl Into<ElementId>,
-    key: IconKey,
-    side: f32,
-    color: Hsla,
-) -> Button {
+pub fn icon_btn(id: impl Into<ElementId>, key: IconKey, side: f32, color: Hsla) -> Button {
     Button::new(id)
         .icon(icon(key, px(side * 0.6), color))
         .ghost()
@@ -387,12 +401,7 @@ pub fn page_head(
         .child(
             div()
                 .min_w_0()
-                .child(
-                    div()
-                        .text_size(px(21.))
-                        .font_semibold()
-                        .child(title.into()),
-                )
+                .child(div().text_size(px(21.)).font_semibold().child(title.into()))
                 .when_some(subtitle, |this, subtitle| {
                     this.child(
                         div()

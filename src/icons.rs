@@ -174,7 +174,10 @@ mod tests {
                 svg.contains("stroke=\"currentColor\""),
                 "{key:?} must stroke with currentColor"
             );
-            assert!(svg.contains("viewBox=\"0 0 24 24\""), "{key:?} is not 24x24");
+            assert!(
+                svg.contains("viewBox=\"0 0 24 24\""),
+                "{key:?} is not 24x24"
+            );
         }
     }
 

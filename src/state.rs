@@ -78,7 +78,11 @@ impl SearchSource {
 
     /// The source options the search filter card offers, live sources first.
     pub fn all() -> [SearchSource; 3] {
-        [SearchSource::Winget, SearchSource::MsStore, SearchSource::All]
+        [
+            SearchSource::Winget,
+            SearchSource::MsStore,
+            SearchSource::All,
+        ]
     }
 }
 
@@ -200,6 +204,8 @@ pub struct Settings {
     pub proxy: String,
     pub language: String,
     pub telemetry: bool,
+    /// The 高级筛选 flags; none on by default, as the prototype's checkboxes.
+    pub filters: SearchFilters,
 }
 
 impl Default for Settings {
@@ -222,6 +228,7 @@ impl Default for Settings {
             proxy: String::new(),
             language: "zh-CN".to_owned(),
             telemetry: false,
+            filters: SearchFilters::default(),
         }
     }
 }
@@ -239,15 +246,19 @@ impl Settings {
         }
     }
 
-    /// The search filters the advanced-search dialog writes; none are on by
-    /// default, matching the prototype's unchecked default.
+    /// The search filters the advanced-search dialog writes.
     pub fn search_filters(&self) -> SearchFilters {
-        SearchFilters::default()
+        self.filters
     }
 
     /// Concurrency clamped to the segment control's range.
     pub fn effective_concurrency(&self) -> usize {
         self.concurrency.clamp(1, 3) as usize
+    }
+
+    /// Replace the advanced-search flags, as the 高级筛选 dialog does.
+    pub fn set_search_filters(&mut self, filters: SearchFilters) {
+        self.filters = filters;
     }
 }
 
@@ -404,6 +415,38 @@ impl AppState {
         format!("winget {}", args.join(" "))
     }
 
+    /// The `winget export` document for the installed packages, pretty-printed
+    /// so the dialog can show (and copy) real JSON.
+    pub fn export_skeleton(&self) -> String {
+        let packages: Vec<serde_json::Value> = self
+            .installed()
+            .iter()
+            .map(|pkg| {
+                serde_json::json!({
+                    "PackageIdentifier": pkg.id,
+                    "Version": pkg.version,
+                })
+            })
+            .collect();
+        let document = serde_json::json!({
+            "$schema": "https://aka.ms/winget-packages.schema.2.0.json",
+            "CreationDate": "",
+            "Sources": [
+                {
+                    "Packages": packages,
+                    "SourceDetails": {
+                        "Argument": "https://cdn.winget.microsoft.com/cache",
+                        "Identifier": "Microsoft.Winget.Source_8wekyb3d8bbwe",
+                        "Name": "winget",
+                        "Type": "Microsoft.PreIndexed.Package"
+                    }
+                }
+            ],
+            "WinGetVersion": self.winget_version,
+        });
+        serde_json::to_string_pretty(&document).unwrap_or_default()
+    }
+
     /// Take the next queue handle. Monotonic by construction.
     pub fn next_queue_uid(&mut self) -> u64 {
         self.queue_uid += 1;
@@ -448,7 +491,10 @@ impl AppState {
     /// Apply a `winget list`-derived upgrade to a package. Used after an
     /// upgrade succeeds so the row drops out of the updates view immediately.
     pub fn mark_update_applied(&mut self, id: &str) {
-        if let Some(pkg) = self.packages.iter_mut().find(|p| p.key() == id.to_lowercase())
+        if let Some(pkg) = self
+            .packages
+            .iter_mut()
+            .find(|p| p.key() == id.to_lowercase())
             && let Some(available) = pkg.available.take()
         {
             pkg.version = available;
@@ -457,14 +503,22 @@ impl AppState {
 
     /// Mark a package installed, the way `pump` does on success.
     pub fn mark_installed(&mut self, id: &str) {
-        if let Some(pkg) = self.packages.iter_mut().find(|p| p.key() == id.to_lowercase()) {
+        if let Some(pkg) = self
+            .packages
+            .iter_mut()
+            .find(|p| p.key() == id.to_lowercase())
+        {
             pkg.installed = true;
         }
     }
 
     /// Mark a package uninstalled.
     pub fn mark_uninstalled(&mut self, id: &str) {
-        if let Some(pkg) = self.packages.iter_mut().find(|p| p.key() == id.to_lowercase()) {
+        if let Some(pkg) = self
+            .packages
+            .iter_mut()
+            .find(|p| p.key() == id.to_lowercase())
+        {
             pkg.installed = false;
             pkg.available = None;
         }
@@ -549,8 +603,13 @@ mod tests {
 
     #[test]
     fn status_filter_partitions_on_installed_state() {
-        let mut state = AppState::default();
-        state.packages = vec![pkg("A", "Alpha", CategoryId::Dev), pkg("B", "Beta", CategoryId::Dev)];
+        let mut state = AppState {
+            packages: vec![
+                pkg("A", "Alpha", CategoryId::Dev),
+                pkg("B", "Beta", CategoryId::Dev),
+            ],
+            ..AppState::default()
+        };
         state.packages[0].installed = true;
 
         state.search_filter = StatusFilter::Installed;
@@ -570,7 +629,11 @@ mod tests {
     #[test]
     fn query_matches_name_id_publisher_description_and_tags() {
         let mut state = AppState::default();
-        let mut vscode = pkg("Microsoft.VisualStudioCode", "Visual Studio Code", CategoryId::Dev);
+        let mut vscode = pkg(
+            "Microsoft.VisualStudioCode",
+            "Visual Studio Code",
+            CategoryId::Dev,
+        );
         vscode.publisher = "Microsoft Corporation".into();
         vscode.description = Some("Code editor".into());
         vscode.tags = vec!["editor".into()];
@@ -595,8 +658,13 @@ mod tests {
 
     #[test]
     fn an_empty_query_lists_every_package() {
-        let mut state = AppState::default();
-        state.packages = vec![pkg("A", "Alpha", CategoryId::Dev), pkg("B", "Beta", CategoryId::Dev)];
+        let mut state = AppState {
+            packages: vec![
+                pkg("A", "Alpha", CategoryId::Dev),
+                pkg("B", "Beta", CategoryId::Dev),
+            ],
+            ..AppState::default()
+        };
         state.query = "   ".into();
         assert_eq!(state.filtered().len(), 2);
     }
@@ -615,7 +683,11 @@ mod tests {
 
         state.sort = SortMode::Relevance;
         let ids: Vec<&str> = state.filtered().iter().map(|p| p.id.as_str()).collect();
-        assert_eq!(ids, vec!["C", "B", "A"], "installed first, then rating desc");
+        assert_eq!(
+            ids,
+            vec!["C", "B", "A"],
+            "installed first, then rating desc"
+        );
     }
 
     #[test]
@@ -634,12 +706,14 @@ mod tests {
 
     #[test]
     fn category_packages_are_a_partition() {
-        let mut state = AppState::default();
-        state.packages = vec![
-            pkg("A", "Alpha", CategoryId::Dev),
-            pkg("B", "Beta", CategoryId::Office),
-            pkg("C", "Gamma", CategoryId::Dev),
-        ];
+        let state = AppState {
+            packages: vec![
+                pkg("A", "Alpha", CategoryId::Dev),
+                pkg("B", "Beta", CategoryId::Office),
+                pkg("C", "Gamma", CategoryId::Dev),
+            ],
+            ..AppState::default()
+        };
         assert_eq!(state.category_packages(CategoryId::Dev).len(), 2);
         assert_eq!(state.category_packages(CategoryId::Office).len(), 1);
         assert_eq!(state.category_packages(CategoryId::Game).len(), 0);
@@ -649,16 +723,22 @@ mod tests {
             .into_iter()
             .map(|c| state.category_count(c))
             .sum();
-        assert_eq!(total, state.packages.len(), "every package has one category");
+        assert_eq!(
+            total,
+            state.packages.len(),
+            "every package has one category"
+        );
     }
 
     #[test]
     fn category_sort_name_is_alphabetical() {
-        let mut state = AppState::default();
-        state.packages = vec![
-            pkg("A", "Zeta", CategoryId::Dev),
-            pkg("B", "Alpha", CategoryId::Dev),
-        ];
+        let mut state = AppState {
+            packages: vec![
+                pkg("A", "Zeta", CategoryId::Dev),
+                pkg("B", "Alpha", CategoryId::Dev),
+            ],
+            ..AppState::default()
+        };
         state.category_sort = CategorySort::Name;
         let names: Vec<&str> = state
             .category_packages(CategoryId::Dev)
@@ -670,14 +750,18 @@ mod tests {
 
     #[test]
     fn installed_and_updates_views_agree_with_the_flags() {
-        let mut state = AppState::default();
-        let mut a = pkg("A", "Alpha", CategoryId::Dev);
-        a.installed = true;
-        let mut b = pkg("B", "Beta", CategoryId::Dev);
-        b.installed = true;
-        b.available = Some("2.0".into());
-        let c = pkg("C", "Gamma", CategoryId::Dev);
-        state.packages = vec![a, b, c];
+        let state = AppState {
+            packages: {
+                let mut a = pkg("A", "Alpha", CategoryId::Dev);
+                a.installed = true;
+                let mut b = pkg("B", "Beta", CategoryId::Dev);
+                b.installed = true;
+                b.available = Some("2.0".into());
+                let c = pkg("C", "Gamma", CategoryId::Dev);
+                vec![a, b, c]
+            },
+            ..AppState::default()
+        };
 
         assert_eq!(state.installed().len(), 2);
         assert_eq!(state.installed_count(), 2);
@@ -688,14 +772,16 @@ mod tests {
 
     #[test]
     fn featured_keeps_only_high_ratings_and_caps_at_six() {
-        let mut state = AppState::default();
-        state.packages = (0..8)
-            .map(|i| {
-                let mut p = pkg(&format!("P{i}"), &format!("Pkg {i}"), CategoryId::Dev);
-                p.rating = Some(5.0);
-                p
-            })
-            .collect();
+        let mut state = AppState {
+            packages: (0..8)
+                .map(|i| {
+                    let mut p = pkg(&format!("P{i}"), &format!("Pkg {i}"), CategoryId::Dev);
+                    p.rating = Some(5.0);
+                    p
+                })
+                .collect(),
+            ..AppState::default()
+        };
         state.packages.push({
             let mut low = pkg("Low", "Low", CategoryId::Dev);
             low.rating = Some(3.0);
@@ -708,12 +794,14 @@ mod tests {
 
     #[test]
     fn install_options_follow_the_settings() {
-        let mut settings = Settings::default();
-        settings.default_source = "msstore".into();
-        settings.arch = Arch::Arm64;
-        settings.scope = Scope::Machine;
-        settings.silent = false;
-        settings.install_location = "  D:\\Software  ".into();
+        let settings = Settings {
+            default_source: "msstore".into(),
+            arch: Arch::Arm64,
+            scope: Scope::Machine,
+            silent: false,
+            install_location: "  D:\\Software  ".into(),
+            ..Settings::default()
+        };
 
         let options = settings.install_options();
         assert_eq!(options.source.as_deref(), Some("msstore"));
@@ -725,17 +813,24 @@ mod tests {
 
     #[test]
     fn a_blank_location_is_not_passed_to_winget() {
-        let mut settings = Settings::default();
-        settings.install_location = "   ".into();
+        let settings = Settings {
+            install_location: "   ".into(),
+            ..Settings::default()
+        };
         assert_eq!(settings.install_options().location, None);
     }
 
     #[test]
     fn install_command_line_reflects_the_settings() {
-        let mut state = AppState::default();
-        state.settings.default_source = "winget".into();
-        state.settings.arch = Arch::X86;
-        state.settings.scope = Scope::User;
+        let state = AppState {
+            settings: Settings {
+                default_source: "winget".into(),
+                arch: Arch::X86,
+                scope: Scope::User,
+                ..Settings::default()
+            },
+            ..AppState::default()
+        };
 
         let command = state.install_command("Microsoft.PowerToys");
         assert!(command.starts_with("winget install --id Microsoft.PowerToys"));
@@ -747,9 +842,11 @@ mod tests {
 
     #[test]
     fn search_command_line_names_the_selected_source() {
-        let mut state = AppState::default();
-        state.query = "vscode".into();
-        state.search_source = SearchSource::All;
+        let mut state = AppState {
+            query: "vscode".into(),
+            search_source: SearchSource::All,
+            ..AppState::default()
+        };
         let command = state.search_command();
         assert!(command.starts_with("winget search -q vscode"));
         assert!(
@@ -763,8 +860,10 @@ mod tests {
 
     #[test]
     fn concurrency_is_clamped_to_the_segment_range() {
-        let mut settings = Settings::default();
-        settings.concurrency = 0;
+        let mut settings = Settings {
+            concurrency: 0,
+            ..Settings::default()
+        };
         assert_eq!(settings.effective_concurrency(), 1);
         settings.concurrency = 9;
         assert_eq!(settings.effective_concurrency(), 3);
@@ -774,12 +873,16 @@ mod tests {
 
     #[test]
     fn marking_updates_and_installs_moves_rows_between_views() {
-        let mut state = AppState::default();
-        let mut b = pkg("B", "Beta", CategoryId::Dev);
-        b.installed = true;
-        b.available = Some("2.0".into());
-        b.version = "1.0".into();
-        state.packages = vec![b];
+        let mut state = AppState {
+            packages: {
+                let mut b = pkg("B", "Beta", CategoryId::Dev);
+                b.installed = true;
+                b.available = Some("2.0".into());
+                b.version = "1.0".into();
+                vec![b]
+            },
+            ..AppState::default()
+        };
 
         assert_eq!(state.updates().len(), 1);
         state.mark_update_applied("b");

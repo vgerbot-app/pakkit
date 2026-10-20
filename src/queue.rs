@@ -171,7 +171,10 @@ pub fn startable(state: &AppState) -> Vec<usize> {
         .iter()
         .filter(|item| item.state == QueueState::Running)
         .count();
-    let slots = state.settings.effective_concurrency().saturating_sub(running);
+    let slots = state
+        .settings
+        .effective_concurrency()
+        .saturating_sub(running);
     state
         .queue
         .iter()
@@ -320,17 +323,18 @@ mod tests {
     }
 
     fn state_with(ids: &[&str]) -> AppState {
-        let mut state = AppState::default();
-        state.packages = ids
-            .iter()
-            .map(|id| Package {
-                id: (*id).to_owned(),
-                name: (*id).to_owned(),
-                category: CategoryId::Dev,
-                ..Package::default()
-            })
-            .collect();
-        state
+        AppState {
+            packages: ids
+                .iter()
+                .map(|id| Package {
+                    id: (*id).to_owned(),
+                    name: (*id).to_owned(),
+                    category: CategoryId::Dev,
+                    ..Package::default()
+                })
+                .collect(),
+            ..AppState::default()
+        }
     }
 
     #[test]
@@ -517,16 +521,18 @@ mod tests {
 
     #[test]
     fn an_upgrade_advances_the_version_and_drops_the_row_from_updates() {
-        let mut state = AppState::default();
-        state.packages = vec![Package {
-            id: "A".into(),
-            name: "A".into(),
-            version: "1.0".into(),
-            available: Some("2.0".into()),
-            installed: true,
-            category: CategoryId::Dev,
-            ..Package::default()
-        }];
+        let mut state = AppState {
+            packages: vec![Package {
+                id: "A".into(),
+                name: "A".into(),
+                version: "1.0".into(),
+                available: Some("2.0".into()),
+                installed: true,
+                category: CategoryId::Dev,
+                ..Package::default()
+            }],
+            ..AppState::default()
+        };
         let Enqueued::Added(uid) = enqueue(&mut state, "A", QueueAction::Upgrade) else {
             panic!("enqueue");
         };
@@ -659,6 +665,9 @@ mod tests {
         assert!(line.starts_with("winget install --id A --exact"));
         // `--source winget` legitimately repeats the word, but never the
         // leading prefix.
-        assert_eq!(line.split(' ').take(2).collect::<Vec<_>>(), ["winget", "install"]);
+        assert_eq!(
+            line.split(' ').take(2).collect::<Vec<_>>(),
+            ["winget", "install"]
+        );
     }
 }

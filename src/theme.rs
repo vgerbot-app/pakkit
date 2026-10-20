@@ -17,8 +17,20 @@ const fn h(hex: u32) -> Hsla {
     let g = ((hex >> 8) & 0xff) as f32 / 255.;
     let b = (hex & 0xff) as f32 / 255.;
 
-    let max = if r > g { if r > b { r } else { b } } else if g > b { g } else { b };
-    let min = if r < g { if r < b { r } else { b } } else if g < b { g } else { b };
+    let max = if r > g {
+        if r > b { r } else { b }
+    } else if g > b {
+        g
+    } else {
+        b
+    };
+    let min = if r < g {
+        if r < b { r } else { b }
+    } else if g < b {
+        g
+    } else {
+        b
+    };
     let l = (max + min) / 2.;
     let d = max - min;
 
@@ -124,10 +136,7 @@ impl Palette {
 
     /// `accent` at `alpha`, matching Tailwind's `color-mix(… N%, transparent)`.
     pub fn tint(&self, color: Hsla, alpha: f32) -> Hsla {
-        Hsla {
-            a: alpha,
-            ..color
-        }
+        Hsla { a: alpha, ..color }
     }
 
     /// A category tile colour from [`crate::model::CategoryId::color`].
@@ -201,13 +210,19 @@ pub fn apply(cx: &mut App) {
         theme.colors.list_active_border = p.accent;
         theme.colors.progress_bar = p.accent;
         theme.colors.skeleton = p.surface3;
-        theme.colors.scrollbar = Hsla { a: 0., ..p.line_strong };
+        theme.colors.scrollbar = Hsla {
+            a: 0.,
+            ..p.line_strong
+        };
         theme.colors.scrollbar_thumb = p.line_strong;
         theme.colors.scrollbar_thumb_hover = p.muted;
         theme.colors.switch = p.tint(p.accent, 0.85);
         theme.colors.switch_thumb = h(0xffffff);
         // `app.css`'s backdrop: rgba(4,6,10,.5).
-        theme.colors.overlay = Hsla { a: 0.5, ..h(0x0406_0a) };
+        theme.colors.overlay = Hsla {
+            a: 0.5,
+            ..h(0x04_06_0a)
+        };
 
         theme.radius = px(9.);
         theme.radius_lg = px(14.);

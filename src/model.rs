@@ -267,6 +267,12 @@ pub struct Package {
     pub installed: bool,
     pub rating: Option<f32>,
     pub installs: Option<u64>,
+    /// How winget matched this row in the last search, e.g. `Moniker: vscode`.
+    ///
+    /// Search results come from winget's own matching, which reaches monikers
+    /// and tags a substring filter over name/id cannot; carrying the match
+    /// keeps a row that legitimately matched visible.
+    pub match_kind: Option<String>,
 }
 
 impl Package {
@@ -284,6 +290,7 @@ impl Package {
             version: row.version.clone(),
             source,
             category,
+            match_kind: row.match_kind.clone(),
             ..Self::default()
         }
     }
@@ -362,9 +369,18 @@ impl Package {
 
     /// Whether the package matches a lowercased query, the way the prototype's
     /// search box filters: name, id, publisher, description and tags.
+    ///
+    /// A `match_kind` from `winget search` wins outright — winget matched on a
+    /// moniker, tag or command the visible fields do not contain, and dropping
+    /// such a row would contradict the result count winget reported.
     pub fn matches(&self, query: &str) -> bool {
         fn hit(haystack: &str, query: &str) -> bool {
             haystack.to_lowercase().contains(query)
+        }
+        if let Some(kind) = self.match_kind.as_deref()
+            && hit(kind, query)
+        {
+            return true;
         }
         hit(&self.name, query)
             || hit(&self.id, query)
