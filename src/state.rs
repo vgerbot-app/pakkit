@@ -5,6 +5,8 @@
 //! unit-testable without a window. [`crate::shell::AppView`] owns one of these
 //! and drives the live winget calls.
 
+use serde::{Deserialize, Serialize};
+
 use crate::model::{CategoryId, Package, Source};
 use crate::theme::ModeChoice;
 use crate::winget::{Arch, InstallOptions, Scope, SearchFilters};
@@ -59,11 +61,11 @@ impl SearchSource {
     }
 
     /// The label the titlebar pill and the search segments show.
-    pub const fn label(self) -> &'static str {
+    pub fn label(self) -> String {
         match self {
-            SearchSource::Winget => "winget",
-            SearchSource::MsStore => "msstore",
-            SearchSource::All => "全部源",
+            SearchSource::Winget => "winget".to_owned(),
+            SearchSource::MsStore => "msstore".to_owned(),
+            SearchSource::All => tr!("source.all"),
         }
     }
 
@@ -102,11 +104,11 @@ impl StatusFilter {
         StatusFilter::NotInstalled,
     ];
 
-    pub const fn label(self) -> &'static str {
+    pub fn label(self) -> String {
         match self {
-            StatusFilter::All => "全部",
-            StatusFilter::Installed => "已安装",
-            StatusFilter::NotInstalled => "未安装",
+            StatusFilter::All => tr!("filter.all"),
+            StatusFilter::Installed => tr!("filter.installed"),
+            StatusFilter::NotInstalled => tr!("filter.not_installed"),
         }
     }
 
@@ -131,11 +133,11 @@ pub enum SortMode {
 impl SortMode {
     pub const ALL: [SortMode; 3] = [SortMode::Relevance, SortMode::Rating, SortMode::Updated];
 
-    pub const fn label(self) -> &'static str {
+    pub fn label(self) -> String {
         match self {
-            SortMode::Relevance => "相关度",
-            SortMode::Rating => "评分",
-            SortMode::Updated => "最新",
+            SortMode::Relevance => tr!("sort.relevance"),
+            SortMode::Rating => tr!("sort.rating"),
+            SortMode::Updated => tr!("sort.updated"),
         }
     }
 
@@ -166,12 +168,12 @@ impl CategorySort {
         CategorySort::Name,
     ];
 
-    pub const fn label(self) -> &'static str {
+    pub fn label(self) -> String {
         match self {
-            CategorySort::Popular => "热门",
-            CategorySort::Rating => "评分",
-            CategorySort::Updated => "最新",
-            CategorySort::Name => "名称",
+            CategorySort::Popular => tr!("sort.popular"),
+            CategorySort::Rating => tr!("sort.rating"),
+            CategorySort::Updated => tr!("sort.updated"),
+            CategorySort::Name => tr!("sort.name"),
         }
     }
 
@@ -185,9 +187,64 @@ impl CategorySort {
     }
 }
 
+/// A UI language the app ships, in the order the settings segments show them.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
+pub enum Language {
+    #[default]
+    ZhCN,
+    ZhTW,
+    En,
+    Ja,
+    Ko,
+}
+
+impl Language {
+    pub const ALL: [Language; 5] = [
+        Language::ZhCN,
+        Language::ZhTW,
+        Language::En,
+        Language::Ja,
+        Language::Ko,
+    ];
+
+    /// The BCP-47 tag rust-i18n and the locale filenames use.
+    pub const fn tag(self) -> &'static str {
+        match self {
+            Language::ZhCN => "zh-CN",
+            Language::ZhTW => "zh-TW",
+            Language::En => "en",
+            Language::Ja => "ja",
+            Language::Ko => "ko",
+        }
+    }
+
+    /// The native endonym the selector shows — language names are never
+    /// translated, so a user can always find their own.
+    pub const fn native_name(self) -> &'static str {
+        match self {
+            Language::ZhCN => "简体中文",
+            Language::ZhTW => "繁體中文",
+            Language::En => "English",
+            Language::Ja => "日本語",
+            Language::Ko => "한국어",
+        }
+    }
+
+    pub fn from_tag(tag: &str) -> Self {
+        Self::ALL
+            .into_iter()
+            .find(|l| l.tag() == tag)
+            .unwrap_or_default()
+    }
+}
+
 /// Every option the settings screen writes, and the single source of truth for
 /// the command line the queue runs.
-#[derive(Debug, Clone, PartialEq)]
+///
+/// Persisted as JSON (see [`crate::config`]); `#[serde(default)]` keeps a
+/// partial or older file loadable by filling new fields from [`Default`].
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[serde(default)]
 pub struct Settings {
     pub default_source: String,
     pub arch: Arch,
@@ -303,7 +360,7 @@ impl Default for AppState {
             default_source: "winget".to_owned(),
             settings: Settings::default(),
             queue_open: false,
-            status: "就绪".to_owned(),
+            status: tr!("status.ready"),
             winget_version: String::new(),
             winget_error: None,
         }
@@ -462,20 +519,20 @@ impl AppState {
     /// The status-bar text for `route`, matching the prototype's `render()`.
     pub fn status_for(&self, route: Route) -> String {
         match route {
-            Route::Home => "就绪".to_owned(),
-            Route::Categories => format!("分类 {}", CategoryId::ALL.len()),
-            Route::Category(id) => format!("分类 · {}", id.label()),
+            Route::Home => tr!("status.ready"),
+            Route::Categories => tr!("status.categories_count", count = CategoryId::ALL.len()),
+            Route::Category(id) => tr!("status.category_item", name = id.label()),
             Route::Search => {
                 if self.query.trim().is_empty() {
-                    "全部软件包".to_owned()
+                    tr!("status.all_packages")
                 } else {
-                    format!("搜索：{}", self.query.trim())
+                    tr!("status.searching", query = self.query.trim())
                 }
             }
-            Route::Installed => "已安装管理".to_owned(),
-            Route::Updates => "检查更新".to_owned(),
-            Route::Sources => format!("源 {}", self.sources.len()),
-            Route::Settings => "设置".to_owned(),
+            Route::Installed => tr!("status.installed_mgmt"),
+            Route::Updates => tr!("status.check_updates"),
+            Route::Sources => tr!("status.sources_count", count = self.sources.len()),
+            Route::Settings => tr!("status.settings"),
         }
     }
 
@@ -570,6 +627,7 @@ mod tests {
 
     #[test]
     fn status_text_matches_the_prototype_router() {
+        crate::ensure_zh_locale();
         let mut state = AppState::default();
         assert_eq!(state.status_for(Route::Home), "就绪");
         assert_eq!(state.status_for(Route::Categories), "分类 8");
@@ -588,6 +646,7 @@ mod tests {
 
     #[test]
     fn set_route_also_refreshes_the_status_text() {
+        crate::ensure_zh_locale();
         let mut state = AppState::default();
         state.set_route(Route::Updates);
         assert_eq!(state.route, Route::Updates);

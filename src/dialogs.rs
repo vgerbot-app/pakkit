@@ -20,6 +20,7 @@ use gpui_kit::{
 use std::cell::Cell;
 use std::rc::Rc;
 
+
 use crate::icons::{IconKey, icon};
 use crate::shell::AppView;
 use crate::theme::Palette;
@@ -95,10 +96,14 @@ pub fn pkg_detail(view: &mut AppView, id: &str, window: &mut Window, cx: &mut Co
                                     .flex_wrap()
                                     .gap(px(6.))
                                     .when(pkg.installed, |this| {
-                                        this.child(widgets::pill(&p, PillKind::Ok, "已安装"))
+                                        this.child(widgets::pill(&p, PillKind::Ok, tr!("pkg.installed")))
                                     })
                                     .when(pkg.available.is_some(), |this| {
-                                        this.child(widgets::pill(&p, PillKind::Accent, "可更新"))
+                                        this.child(widgets::pill(
+                                            &p,
+                                            PillKind::Accent,
+                                            tr!("pkg.updatable"),
+                                        ))
                                     })
                                     .child(widgets::pill(&p, PillKind::Line, pkg.source_label()))
                                     .when_some(pkg.tags.first().cloned(), |this, tag| {
@@ -114,7 +119,7 @@ pub fn pkg_detail(view: &mut AppView, id: &str, window: &mut Window, cx: &mut Co
                             .child(
                                 pkg.description
                                     .clone()
-                                    .unwrap_or_else(|| "暂无描述。".to_owned()),
+                                    .unwrap_or_else(|| tr!("dialog.no_description")),
                             ),
                     )
                     .when_some(pkg.rating, |this, rating| {
@@ -128,7 +133,7 @@ pub fn pkg_detail(view: &mut AppView, id: &str, window: &mut Window, cx: &mut Co
                                 .flex()
                                 .flex_col()
                                 .gap(px(8.))
-                                .child(widgets::section_label(&p, "同类推荐"))
+                                .child(widgets::section_label(&p, tr!("dialog.related")))
                                 .children(related.iter().map(|rel| {
                                     div()
                                         .flex()
@@ -169,7 +174,7 @@ pub fn pkg_detail(view: &mut AppView, id: &str, window: &mut Window, cx: &mut Co
                             "detail-copy",
                             BtnKind::Outline,
                             BtnSize::Regular,
-                            "复制命令",
+                            tr!("dialog.copy_command"),
                         )
                         .on_click(move |_, window, cx| {
                             let _ = copy_view.update(cx, |this, cx| {
@@ -185,7 +190,7 @@ pub fn pkg_detail(view: &mut AppView, id: &str, window: &mut Window, cx: &mut Co
                                 "detail-uninstall",
                                 BtnKind::Danger,
                                 BtnSize::Regular,
-                                "卸载",
+                                tr!("common.uninstall"),
                             )
                             .on_click({
                                 let id = uninstall_id.clone();
@@ -205,7 +210,7 @@ pub fn pkg_detail(view: &mut AppView, id: &str, window: &mut Window, cx: &mut Co
                                 "detail-install",
                                 BtnKind::Primary,
                                 BtnSize::Regular,
-                                label,
+                                label.clone(),
                             )
                             .disabled(busy)
                             .on_click({
@@ -224,25 +229,28 @@ pub fn pkg_detail(view: &mut AppView, id: &str, window: &mut Window, cx: &mut Co
 
 /// The 8-field stat grid the detail dialog shows.
 fn stat_grid(p: &Palette, pkg: &crate::model::Package) -> impl IntoElement {
-    let fields: [(&str, String); 8] = [
-        ("版本", pkg.version.clone()),
-        ("发布者", non_empty(&pkg.publisher)),
-        ("体积", pkg.size.clone().unwrap_or_else(|| "—".to_owned())),
+    let fields: [(String, String); 8] = [
+        (tr!("dialog.version"), pkg.version.clone()),
+        (tr!("dialog.publisher"), non_empty(&pkg.publisher)),
         (
-            "许可",
+            tr!("dialog.size"),
+            pkg.size.clone().unwrap_or_else(|| "—".to_owned()),
+        ),
+        (
+            tr!("dialog.license"),
             pkg.license.clone().unwrap_or_else(|| "—".to_owned()),
         ),
         (
-            "更新日期",
+            tr!("dialog.updated"),
             pkg.updated.clone().unwrap_or_else(|| "—".to_owned()),
         ),
         (
-            "累计安装",
+            tr!("dialog.installs"),
             pkg.installs
                 .map_or_else(|| "—".to_owned(), |n| n.to_string()),
         ),
-        ("来源", pkg.source_label().to_owned()),
-        ("分类", pkg.category.label().to_owned()),
+        (tr!("dialog.source"), pkg.source_label().to_owned()),
+        (tr!("dialog.category"), pkg.category.label()),
     ];
 
     div()
@@ -274,7 +282,7 @@ fn command_block(
         .flex()
         .flex_col()
         .gap(px(6.))
-        .child(widgets::section_label(p, "等价命令"))
+        .child(widgets::section_label(p, tr!("dialog.equivalent_command")))
         .child(
             div()
                 .flex()
@@ -318,14 +326,14 @@ pub fn advanced_search(view: &mut AppView, window: &mut Window, cx: &mut Context
         let apply_filters = filters.clone();
         dialog
             .w(px(520.))
-            .title("高级筛选")
+            .title(tr!("dialog.advanced_filter"))
             .child(
                 div().flex().flex_col().gap(px(6.)).children(
                     [
-                        ("--exact", "仅匹配完全一致的名称或 ID"),
-                        ("--moniker", "使用软件包的别名检索"),
-                        ("--tag", "按源标签检索"),
-                        ("--command", "按可执行命令检索"),
+                        ("--exact", tr!("dialog.exact_hint")),
+                        ("--moniker", tr!("dialog.moniker_hint")),
+                        ("--tag", tr!("dialog.tag_hint")),
+                        ("--command", tr!("dialog.command_hint")),
                     ]
                     .map(|(flag, hint)| {
                         let cell = filters.clone();
@@ -357,12 +365,13 @@ pub fn advanced_search(view: &mut AppView, window: &mut Window, cx: &mut Context
                         "filter-apply",
                         BtnKind::Primary,
                         BtnSize::Regular,
-                        "应用筛选",
+                        tr!("dialog.apply"),
                     )
                     .on_click(move |_, window, cx| {
                         let next = apply_filters.get();
                         let _ = apply_view.update(cx, |this, cx| {
                             this.state.settings.set_search_filters(next);
+                            this.persist_settings();
                             this.refresh_search(cx);
                             cx.notify();
                         });
@@ -376,7 +385,7 @@ pub fn advanced_search(view: &mut AppView, window: &mut Window, cx: &mut Context
 fn filter_row(
     p: &Palette,
     flag: &'static str,
-    hint: &'static str,
+    hint: String,
     checked: bool,
     on_change: impl Fn(bool) + 'static,
 ) -> impl IntoElement {
@@ -409,7 +418,8 @@ fn filter_row(
 /// 添加源 — validates the name is present and unused, then runs `source add`.
 pub fn add_source(view: &mut AppView, window: &mut Window, cx: &mut Context<AppView>) {
     let _ = view;
-    let name_input = cx.new(|cx| InputState::new(window, cx).placeholder("例如 contoso"));
+    let name_input =
+        cx.new(|cx| InputState::new(window, cx).placeholder(tr!("placeholder.source_name")));
     let url_input =
         cx.new(|cx| InputState::new(window, cx).placeholder("https://example.com/index.json"));
     let this = cx.weak_entity();
@@ -421,7 +431,7 @@ pub fn add_source(view: &mut AppView, window: &mut Window, cx: &mut Context<AppV
         let submit_view = this.clone();
         dialog
             .w(px(560.))
-            .title("添加源")
+            .title(tr!("dialog.add_source"))
             .child(
                 div()
                     .flex()
@@ -429,12 +439,12 @@ pub fn add_source(view: &mut AppView, window: &mut Window, cx: &mut Context<AppV
                     .gap(px(12.))
                     .child(form_field(
                         &p,
-                        "源名称",
+                        &tr!("dialog.source_name"),
                         Input::new(&name_input).into_any_element(),
                     ))
                     .child(form_field(
                         &p,
-                        "源地址 (URL)",
+                        &tr!("dialog.source_url"),
                         Input::new(&url_input).into_any_element(),
                     ))
                     .child(
@@ -450,7 +460,7 @@ pub fn add_source(view: &mut AppView, window: &mut Window, cx: &mut Context<AppV
                             .text_size(px(11.5))
                             .text_color(p.warn)
                             .child(icon(IconKey::Warning, px(14.), p.warn))
-                            .child("添加与删除源需要管理员权限，失败时会返回 0x8A150019。"),
+                            .child(tr!("dialog.source_admin_hint")),
                     ),
             )
             .footer(
@@ -461,7 +471,7 @@ pub fn add_source(view: &mut AppView, window: &mut Window, cx: &mut Context<AppV
                         "src-add-ok",
                         BtnKind::Primary,
                         BtnSize::Regular,
-                        "添加",
+                        tr!("common.add"),
                     )
                     .on_click(move |_, _window, cx| {
                         let name = name_input.read(cx).value().to_string();
@@ -469,7 +479,10 @@ pub fn add_source(view: &mut AppView, window: &mut Window, cx: &mut Context<AppV
                         let trimmed = name.trim().to_owned();
                         let _ = submit_view.update_in(cx, |this, window, cx| {
                             if trimmed.is_empty() {
-                                window.push_notification(Notification::error("源名称不能为空"), cx);
+                                window.push_notification(
+                                    Notification::error(tr!("notification.source_name_empty")),
+                                    cx,
+                                );
                                 return;
                             }
                             if this
@@ -479,7 +492,10 @@ pub fn add_source(view: &mut AppView, window: &mut Window, cx: &mut Context<AppV
                                 .any(|s| s.name.eq_ignore_ascii_case(&trimmed))
                             {
                                 window.push_notification(
-                                    Notification::error(format!("源 {trimmed} 已存在")),
+                                    Notification::error(tr!(
+                                        "notification.source_exists",
+                                        name = trimmed
+                                    )),
                                     cx,
                                 );
                                 return;
@@ -490,7 +506,7 @@ pub fn add_source(view: &mut AppView, window: &mut Window, cx: &mut Context<AppV
                                 "Microsoft.PreIndexed.Package",
                                 true,
                             );
-                            this.run_source_op(args, "源已添加", window, cx);
+                            this.run_source_op(args, &tr!("notification.source_added"), window, cx);
                             window.close_dialog(cx);
                         });
                     }),
@@ -526,14 +542,14 @@ pub fn edit_source(view: &mut AppView, name: &str, window: &mut Window, cx: &mut
         let source_name = source_name.clone();
         dialog
             .w(px(560.))
-            .title(format!("编辑源 · {source_name}"))
+            .title(tr!("dialog.edit_source_title", name = source_name))
             .child(
                 div()
                     .flex()
                     .flex_col()
                     .gap(px(12.))
-                    .child(readonly_field(&p, "源地址 (URL)", &source_url))
-                    .child(readonly_field(&p, "类型", &source_ty))
+                    .child(readonly_field(&p, &tr!("dialog.source_url"), &source_url))
+                    .child(readonly_field(&p, &tr!("dialog.source_type"), &source_ty))
                     .child(
                         div()
                             .flex()
@@ -551,13 +567,13 @@ pub fn edit_source(view: &mut AppView, name: &str, window: &mut Window, cx: &mut
                                         div()
                                             .text_size(px(12.))
                                             .text_color(p.ink2)
-                                            .child("从发现中排除 (--explicit)"),
+                                            .child(tr!("dialog.explicit_label")),
                                     )
                                     .child(
                                         div()
                                             .text_size(px(11.))
                                             .text_color(p.muted)
-                                            .child("开启后该源不参与 search 与 list 的默认结果。"),
+                                            .child(tr!("dialog.explicit_hint")),
                                     ),
                             )
                             .child(widgets::switch_row(&p, "src-explicit", explicit.get(), {
@@ -574,14 +590,14 @@ pub fn edit_source(view: &mut AppView, name: &str, window: &mut Window, cx: &mut
                         "src-edit-ok",
                         BtnKind::Primary,
                         BtnSize::Regular,
-                        "保存",
+                        tr!("common.save"),
                     )
                     .on_click(move |_, _window, cx| {
                         let flag = explicit.get();
                         let name = source_name.clone();
                         let _ = save_view.update_in(cx, |this, window, cx| {
                             let args = winget::source_edit(&name, Some(flag));
-                            this.run_source_op(args, "源已更新", window, cx);
+                            this.run_source_op(args, &tr!("notification.source_updated"), window, cx);
                             window.close_dialog(cx);
                         });
                     }),
@@ -615,7 +631,7 @@ pub fn confirm_uninstall(
         let run_view = this.clone();
         let pkg_id = pkg_id.clone();
         alert
-            .title(format!("卸载 {}", pkg.name))
+            .title(tr!("dialog.uninstall_title", name = pkg.name))
             .description(
                 div()
                     .flex()
@@ -625,13 +641,13 @@ pub fn confirm_uninstall(
                         div()
                             .text_size(px(12.5))
                             .text_color(p.ink2)
-                            .child("该操作会从系统中移除该软件包，且不可撤销。"),
+                            .child(tr!("dialog.uninstall_body")),
                     )
                     .child(widgets::code_chip(&p, command.clone())),
             )
-            .ok_text("卸载")
+            .ok_text(tr!("common.uninstall"))
             .ok_variant(ButtonVariant::Danger)
-            .cancel_text("取消")
+            .cancel_text(tr!("common.cancel"))
             .show_cancel(true)
             .on_ok(move |_: &ClickEvent, _window, cx| {
                 let id = pkg_id.clone();
@@ -659,16 +675,16 @@ pub fn confirm_remove_source(
         let run_view = this.clone();
         let source_name = source_name.clone();
         alert
-            .title(format!("删除源 {source_name}"))
+            .title(tr!("dialog.remove_source_title", name = source_name))
             .description(
                 div()
                     .text_size(px(12.5))
                     .text_color(p.ink2)
-                    .child("删除后该源下的软件包将不再可检索，操作不可撤销。"),
+                    .child(tr!("dialog.remove_source_body")),
             )
-            .ok_text("删除")
+            .ok_text(tr!("common.delete"))
             .ok_variant(ButtonVariant::Danger)
-            .cancel_text("取消")
+            .cancel_text(tr!("common.cancel"))
             .show_cancel(true)
             .on_ok(move |_: &ClickEvent, _window, cx| {
                 let name = source_name.clone();
@@ -676,9 +692,10 @@ pub fn confirm_remove_source(
                     if this.state.default_source == name {
                         this.state.default_source = "winget".to_owned();
                         this.state.settings.default_source = "winget".to_owned();
+                        this.persist_settings();
                     }
                     let args = winget::source_remove(&name);
-                    this.run_source_op(args, "源已删除", window, cx);
+                    this.run_source_op(args, &tr!("notification.source_removed"), window, cx);
                 });
                 true
             })
@@ -696,16 +713,17 @@ pub fn export_manifest(view: &mut AppView, window: &mut Window, cx: &mut Context
         let copy_view = this.clone();
         dialog
             .w(px(640.))
-            .title("导出清单")
+            .title(tr!("dialog.export_title"))
             .child(
                 div()
                     .flex()
                     .flex_col()
                     .gap(px(10.))
                     .child(
-                        div().text_size(px(12.5)).text_color(p.ink2).child(
-                            "以下为 winget export 生成的清单结构，可保存为 JSON 后重新导入。",
-                        ),
+                        div()
+                            .text_size(px(12.5))
+                            .text_color(p.ink2)
+                            .child(tr!("dialog.export_body")),
                     )
                     .child(
                         div()
@@ -731,7 +749,7 @@ pub fn export_manifest(view: &mut AppView, window: &mut Window, cx: &mut Context
                         "json-copy",
                         BtnKind::Outline,
                         BtnSize::Regular,
-                        "复制 JSON",
+                        tr!("dialog.copy_json"),
                     )
                     .on_click(move |_, window, cx| {
                         let _ = copy_view.update(cx, |this, cx| {

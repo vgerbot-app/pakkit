@@ -4,6 +4,7 @@
 //! rating, an install count and an "updated" date, which no winget source
 //! provides. Those stay `Option` and render as `—` when absent.
 
+
 use crate::icons::IconKey;
 use crate::winget::{ListRow, PackageDetail, SearchRow, SourceExport};
 
@@ -36,16 +37,16 @@ impl CategoryId {
         CategoryId::Driver,
     ];
 
-    pub const fn label(self) -> &'static str {
+    pub fn label(self) -> String {
         match self {
-            CategoryId::Dev => "编程开发",
-            CategoryId::Office => "办公软件",
-            CategoryId::Media => "影音娱乐",
-            CategoryId::Tools => "实用工具",
-            CategoryId::Science => "科学计算",
-            CategoryId::Game => "游戏平台",
-            CategoryId::Net => "网络通信",
-            CategoryId::Driver => "驱动运行库",
+            CategoryId::Dev => tr!("category.dev.label"),
+            CategoryId::Office => tr!("category.office.label"),
+            CategoryId::Media => tr!("category.media.label"),
+            CategoryId::Tools => tr!("category.tools.label"),
+            CategoryId::Science => tr!("category.science.label"),
+            CategoryId::Game => tr!("category.game.label"),
+            CategoryId::Net => tr!("category.net.label"),
+            CategoryId::Driver => tr!("category.driver.label"),
         }
     }
 
@@ -76,30 +77,30 @@ impl CategoryId {
         }
     }
 
-    pub const fn description(self) -> &'static str {
+    pub fn description(self) -> String {
         match self {
-            CategoryId::Dev => "IDE、编译器、运行时与版本控制",
-            CategoryId::Office => "文档、表格、演示与协作套件",
-            CategoryId::Media => "播放器、剪辑、直播与音乐",
-            CategoryId::Tools => "压缩、截图、系统增强与清理",
-            CategoryId::Science => "数值分析、统计与数据可视化",
-            CategoryId::Game => "游戏启动器、运行库与加速器",
-            CategoryId::Net => "浏览器、下载、远程与 VPN",
-            CategoryId::Driver => "驱动、.NET/VC++ 运行库与固件",
+            CategoryId::Dev => tr!("category.dev.desc"),
+            CategoryId::Office => tr!("category.office.desc"),
+            CategoryId::Media => tr!("category.media.desc"),
+            CategoryId::Tools => tr!("category.tools.desc"),
+            CategoryId::Science => tr!("category.science.desc"),
+            CategoryId::Game => tr!("category.game.desc"),
+            CategoryId::Net => tr!("category.net.desc"),
+            CategoryId::Driver => tr!("category.driver.desc"),
         }
     }
 
     /// The short tag the prototype shows as a pill on the tile footer.
-    pub const fn tag(self) -> &'static str {
+    pub fn tag(self) -> String {
         match self {
-            CategoryId::Dev => "开发工具",
-            CategoryId::Office => "办公效率",
-            CategoryId::Media => "多媒体",
-            CategoryId::Tools => "系统工具",
-            CategoryId::Science => "科研",
-            CategoryId::Game => "娱乐",
-            CategoryId::Net => "网络",
-            CategoryId::Driver => "系统",
+            CategoryId::Dev => tr!("category.dev.tag"),
+            CategoryId::Office => tr!("category.office.tag"),
+            CategoryId::Media => tr!("category.media.tag"),
+            CategoryId::Tools => tr!("category.tools.tag"),
+            CategoryId::Science => tr!("category.science.tag"),
+            CategoryId::Game => tr!("category.game.tag"),
+            CategoryId::Net => tr!("category.net.tag"),
+            CategoryId::Driver => tr!("category.driver.tag"),
         }
     }
 

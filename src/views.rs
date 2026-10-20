@@ -2,12 +2,13 @@
 //! routes every action back through [`AppView`]'s listeners, so the views stay
 //! free of task bookkeeping.
 
+
 use crate::dialogs;
 use crate::icons::{IconKey, icon};
 use crate::model::{CategoryId, Package};
 use crate::queue::QueueAction;
 use crate::shell::AppView;
-use crate::state::{AppState, Route, SearchSource};
+use crate::state::{AppState, Language, Route, SearchSource};
 use crate::theme::Palette;
 use crate::widgets::{self, BtnKind, BtnSize, PillKind};
 use gpui_kit::component::input::InputState;
@@ -51,8 +52,8 @@ fn home(state: &AppState, p: &Palette, cx: &mut Context<AppView>) -> AnyElement 
     let mut children: Vec<AnyElement> = vec![
         widgets::page_head(
             p,
-            "发现",
-            Some("内置分类 + winget 官方源实时检索".into()),
+            tr!("nav.home"),
+            Some(tr!("home.subtitle").into()),
             vec![
                 widgets::btn(
                     cx,
@@ -60,7 +61,7 @@ fn home(state: &AppState, p: &Palette, cx: &mut Context<AppView>) -> AnyElement 
                     "home-check",
                     BtnKind::Soft,
                     BtnSize::Regular,
-                    "检查更新",
+                    tr!("home.check_updates"),
                 )
                 .on_click(cx.listener(|this, _, _, cx| this.refresh_updates(cx)))
                 .into_any_element(),
@@ -70,7 +71,7 @@ fn home(state: &AppState, p: &Palette, cx: &mut Context<AppView>) -> AnyElement 
                     "home-sync",
                     BtnKind::Soft,
                     BtnSize::Regular,
-                    "同步源",
+                    tr!("home.sync_sources"),
                 )
                 .on_click(cx.listener(|this, _, window, cx| this.sync_sources(None, window, cx)))
                 .into_any_element(),
@@ -91,8 +92,8 @@ fn home(state: &AppState, p: &Palette, cx: &mut Context<AppView>) -> AnyElement 
         widgets::page_body()
             .child(section_head(
                 p,
-                "常用分类",
-                Some(("查看全部 ›", Route::Categories)),
+                &tr!("home.categories_section"),
+                Some((tr!("home.view_all"), Route::Categories)),
                 cx,
             ))
             .child(
@@ -110,7 +111,7 @@ fn home(state: &AppState, p: &Palette, cx: &mut Context<AppView>) -> AnyElement 
     if !featured.is_empty() {
         children.push(
             widgets::page_body()
-                .child(widgets::section_label(p, "高分精选"))
+                .child(widgets::section_label(p, tr!("home.featured")))
                 .child(
                     div()
                         .flex()
@@ -127,7 +128,7 @@ fn home(state: &AppState, p: &Palette, cx: &mut Context<AppView>) -> AnyElement 
     if !recent.is_empty() {
         children.push(
             widgets::page_body()
-                .child(widgets::section_label(p, "最近更新"))
+                .child(widgets::section_label(p, tr!("home.recent")))
                 .child(
                     widgets::card(p).children(
                         recent
@@ -188,14 +189,14 @@ fn hero(state: &AppState, p: &Palette, cx: &mut Context<AppView>) -> AnyElement 
                         .flex_1()
                         .min_w(px(320.))
                         .child(
-                            widgets::pill(p, PillKind::Accent, "基于 winget CLI · 无需手动下载安装包"),
+                            widgets::pill(p, PillKind::Accent, tr!("home.hero_pill")),
                         )
                         .child(
                             div()
                                 .text_size(px(24.))
                                 .font_semibold()
                                 .mt(px(12.))
-                                .child("在 Windows 上优雅地安装软件"),
+                                .child(tr!("home.hero_title")),
                         )
                         .child(
                             div()
@@ -203,7 +204,7 @@ fn hero(state: &AppState, p: &Palette, cx: &mut Context<AppView>) -> AnyElement 
                                 .line_height(relative(1.6))
                                 .text_color(p.ink2)
                                 .mt(px(8.))
-                                .child("检索 winget 官方源与 msstore，一键安装、升级与卸载。全部操作都会映射为可复制的 winget 命令行，透明可控。"),
+                                .child(tr!("home.hero_body")),
                         )
                         .child(
                             div()
@@ -211,13 +212,13 @@ fn hero(state: &AppState, p: &Palette, cx: &mut Context<AppView>) -> AnyElement 
                                 .gap(px(8.))
                                 .mt(px(16.))
                                 .child(
-                                    widgets::btn(cx, p, "hero-installed", BtnKind::Primary, BtnSize::Regular, "管理已安装")
+                                    widgets::btn(cx, p, "hero-installed", BtnKind::Primary, BtnSize::Regular, tr!("home.manage_installed"))
                                         .on_click(cx.listener(|this, _, window, cx| {
                                             this.navigate(Route::Installed, window, cx);
                                         })),
                                 )
                                 .child(
-                                    widgets::btn(cx, p, "hero-sources", BtnKind::Outline, BtnSize::Regular, "管理源")
+                                    widgets::btn(cx, p, "hero-sources", BtnKind::Outline, BtnSize::Regular, tr!("home.manage_sources"))
                                         .on_click(cx.listener(|this, _, window, cx| {
                                             this.navigate(Route::Sources, window, cx);
                                         })),
@@ -228,9 +229,9 @@ fn hero(state: &AppState, p: &Palette, cx: &mut Context<AppView>) -> AnyElement 
                     div()
                         .flex()
                         .gap(px(10.))
-                        .child(widgets::stat_tile(p, IconKey::Source, state.sources.len().to_string(), "源数量"))
-                        .child(widgets::stat_tile(p, IconKey::Package, state.catalog_label(), "可用包"))
-                        .child(widgets::stat_tile(p, IconKey::Check, state.installed_count().to_string(), "已安装")),
+                        .child(widgets::stat_tile(p, IconKey::Source, state.sources.len().to_string(), tr!("home.stat_sources")))
+                        .child(widgets::stat_tile(p, IconKey::Package, state.catalog_label(), tr!("home.stat_packages")))
+                        .child(widgets::stat_tile(p, IconKey::Check, state.installed_count().to_string(), tr!("home.stat_installed"))),
                 ),
         )
         .into_any_element()
@@ -293,7 +294,7 @@ fn category_tile(
                             .ml_auto()
                             .text_size(px(11.))
                             .text_color(p.muted)
-                            .child(format!("{count} 个")),
+                            .child(tr!("category.count", count = count)),
                     ),
             ),
     )
@@ -358,10 +359,10 @@ fn package_card(
                             .items_end()
                             .gap(px(4.))
                             .when(pkg.installed, |this| {
-                                this.child(widgets::pill(p, PillKind::Ok, "已安装"))
+                                this.child(widgets::pill(p, PillKind::Ok, tr!("pkg.installed")))
                             })
                             .when(pkg.available.is_some(), |this| {
-                                this.child(widgets::pill(p, PillKind::Accent, "可更新"))
+                                this.child(widgets::pill(p, PillKind::Accent, tr!("pkg.updatable")))
                             }),
                     ),
             )
@@ -419,7 +420,7 @@ fn package_card(
                             .on_click(cx.listener(move |this, _, window, cx| {
                                 dialogs::pkg_detail(this, &id, window, cx);
                             }))
-                            .child("查看详情 ›"),
+                            .child(tr!("pkg.details")),
                     ),
             ),
     )
@@ -460,7 +461,7 @@ fn recent_row(p: &Palette, pkg: &Package, divided: bool, cx: &mut Context<AppVie
                 ),
         )
         .when(installed, |this| {
-            this.child(widgets::pill(p, PillKind::Ok, "已安装"))
+            this.child(widgets::pill(p, PillKind::Ok, tr!("pkg.installed")))
         })
         .child(widgets::pill(p, PillKind::Line, pkg.version.clone()))
         .child(
@@ -482,14 +483,8 @@ fn recent_row(p: &Palette, pkg: &Package, divided: bool, cx: &mut Context<AppVie
 fn categories(_state: &AppState, p: &Palette, cx: &mut Context<AppView>) -> AnyElement {
     let head = widgets::page_head(
         p,
-        "分类",
-        Some(
-            format!(
-                "共 {} 个内置分类，数据来自 winget 源标签映射",
-                CategoryId::ALL.len()
-            )
-            .into(),
-        ),
+        tr!("nav.categories"),
+        Some(tr!("categories.subtitle", count = CategoryId::ALL.len()).into()),
         Vec::new(),
     );
 
@@ -548,7 +543,7 @@ fn category_detail(
                         this.navigate(Route::Categories, window, cx);
                     }))
                     .child(icon(IconKey::Back, px(13.), p.muted))
-                    .child("返回分类"),
+                    .child(tr!("category.back")),
             )
             .into_any_element(),
     ];
@@ -596,7 +591,7 @@ fn category_detail(
                                     .child(div().mt(px(6.)).child(widgets::pill(
                                         p,
                                         PillKind::Line,
-                                        format!("{} 个软件包", packages.len()),
+                                        tr!("category.packages_count", count = packages.len()),
                                     ))),
                             )
                             .child(
@@ -606,7 +601,7 @@ fn category_detail(
                                     "cat-install-all",
                                     BtnKind::Primary,
                                     BtnSize::Regular,
-                                    "安装全部",
+                                    tr!("category.install_all"),
                                 )
                                 .disabled(install_all.is_empty())
                                 .on_click(cx.listener(
@@ -635,7 +630,7 @@ fn category_detail(
                             .flex()
                             .items_center()
                             .gap(px(8.))
-                            .child(widgets::section_label(p, "排序"))
+                            .child(widgets::section_label(p, tr!("category.sort_label")))
                             .child(widgets::seg_control(
                                 p,
                                 "cat-sort",
@@ -684,14 +679,14 @@ fn category_detail(
 fn search(state: &AppState, p: &Palette, cx: &mut Context<AppView>) -> AnyElement {
     let results = state.filtered();
     let title = if state.query.trim().is_empty() {
-        "全部软件包".to_owned()
+        tr!("status.all_packages")
     } else {
-        format!("搜索 \u{201c}{}\u{201d}", state.query.trim())
+        tr!("search.title_query", query = state.query.trim())
     };
-    let subtitle = format!(
-        "{} 个结果 · 来源 {}",
-        results.len(),
-        state.search_source.label()
+    let subtitle = tr!(
+        "search.results_count",
+        count = results.len(),
+        source = state.search_source.label()
     );
 
     let head = widgets::page_head(
@@ -705,7 +700,7 @@ fn search(state: &AppState, p: &Palette, cx: &mut Context<AppView>) -> AnyElemen
                 "adv-filter",
                 BtnKind::Soft,
                 BtnSize::Regular,
-                "高级筛选",
+                tr!("dialog.advanced_filter"),
             )
             .on_click(cx.listener(|this, _, window, cx| {
                 dialogs::advanced_search(this, window, cx);
@@ -779,11 +774,11 @@ fn search(state: &AppState, p: &Palette, cx: &mut Context<AppView>) -> AnyElemen
             p,
             IconKey::Search,
             if state.query.trim().is_empty() {
-                "暂无软件包".to_owned()
+                tr!("search.empty_none")
             } else {
-                "未找到匹配的软件包".to_owned()
+                tr!("search.empty_no_match")
             },
-            "换个关键词，或切换到全部源重新检索。",
+            tr!("search.empty_hint"),
             vec![
                 widgets::btn(
                     cx,
@@ -791,7 +786,7 @@ fn search(state: &AppState, p: &Palette, cx: &mut Context<AppView>) -> AnyElemen
                     "empty-all-src",
                     BtnKind::Primary,
                     BtnSize::Regular,
-                    "在全部源中搜索",
+                    tr!("search.search_all_sources"),
                 )
                 .on_click(cx.listener(|this, _, window, cx| {
                     this.set_search_source(SearchSource::All, window, cx);
@@ -803,7 +798,7 @@ fn search(state: &AppState, p: &Palette, cx: &mut Context<AppView>) -> AnyElemen
                     "empty-sources",
                     BtnKind::Outline,
                     BtnSize::Regular,
-                    "管理源",
+                    tr!("home.manage_sources"),
                 )
                 .on_click(cx.listener(|this, _, window, cx| {
                     this.navigate(Route::Sources, window, cx);
@@ -839,8 +834,8 @@ fn installed(state: &AppState, p: &Palette, cx: &mut Context<AppView>) -> AnyEle
 
     let head = widgets::page_head(
         p,
-        "已安装",
-        Some(format!("{} 个软件通过 winget 管理", rows.len()).into()),
+        tr!("nav.installed"),
+        Some(tr!("installed.subtitle", count = rows.len()).into()),
         vec![
             widgets::btn(
                 cx,
@@ -848,7 +843,7 @@ fn installed(state: &AppState, p: &Palette, cx: &mut Context<AppView>) -> AnyEle
                 "export-manifest",
                 BtnKind::Soft,
                 BtnSize::Regular,
-                "导出清单",
+                tr!("installed.export"),
             )
             .on_click(cx.listener(|this, _, window, cx| {
                 dialogs::export_manifest(this, window, cx);
@@ -860,7 +855,7 @@ fn installed(state: &AppState, p: &Palette, cx: &mut Context<AppView>) -> AnyEle
                 "upgrade-all",
                 BtnKind::Primary,
                 BtnSize::Regular,
-                "全部升级",
+                tr!("installed.upgrade_all"),
             )
             .disabled(all_ids.is_empty())
             .on_click(cx.listener(move |this, _, window, cx| {
@@ -886,17 +881,27 @@ fn installed(state: &AppState, p: &Palette, cx: &mut Context<AppView>) -> AnyEle
         })
         .border_b_1()
         .border_color(p.line)
-        .child(div().flex_1().child("软件包"))
-        .child(div().w(px(110.)).child("版本"))
-        .child(div().w(px(70.)).text_right().child("大小"))
-        .child(div().w(px(120.)).text_right().child("操作"));
+        .child(div().flex_1().child(tr!("installed.col_package")))
+        .child(div().w(px(110.)).child(tr!("installed.col_version")))
+        .child(
+            div()
+                .w(px(70.))
+                .text_right()
+                .child(tr!("installed.col_size")),
+        )
+        .child(
+            div()
+                .w(px(120.))
+                .text_right()
+                .child(tr!("installed.col_actions")),
+        );
 
     let body = if rows.is_empty() {
         widgets::page_body().child(widgets::empty_state(
             p,
             IconKey::Check,
-            "尚无已安装记录".to_owned(),
-            "安装软件包后，这里会列出 winget 管理的内容。",
+            tr!("installed.empty"),
+            tr!("installed.empty_hint"),
             Vec::new(),
         ))
     } else {
@@ -920,9 +925,7 @@ fn installed(state: &AppState, p: &Palette, cx: &mut Context<AppView>) -> AnyEle
                         .text_size(px(11.))
                         .text_color(p.muted)
                         .child(icon(IconKey::Shield, px(12.), p.muted))
-                        .child(
-                            "卸载需要管理员权限时会返回 0x8A150019，请以管理员身份运行 winget。",
-                        ),
+                        .child(tr!("installed.elevation_note")),
                 ),
         )
     };
@@ -1003,7 +1006,7 @@ fn installed_row(
                         SharedString::from(format!("up-{id}")),
                         BtnKind::Soft,
                         BtnSize::Small,
-                        "升级",
+                        tr!("installed.upgrade"),
                     )
                     .disabled(busy)
                     .on_click(cx.listener(move |this, _, window, cx| {
@@ -1033,8 +1036,8 @@ fn updates(state: &AppState, p: &Palette, cx: &mut Context<AppView>) -> AnyEleme
 
     let head = widgets::page_head(
         p,
-        "更新",
-        Some(format!("{} 个可用更新", rows.len()).into()),
+        tr!("nav.updates"),
+        Some(tr!("updates.subtitle", count = rows.len()).into()),
         vec![
             widgets::btn(
                 cx,
@@ -1042,7 +1045,7 @@ fn updates(state: &AppState, p: &Palette, cx: &mut Context<AppView>) -> AnyEleme
                 "update-all",
                 BtnKind::Primary,
                 BtnSize::Regular,
-                "全部更新",
+                tr!("updates.update_all"),
             )
             .disabled(all_ids.is_empty())
             .on_click(cx.listener(move |this, _, window, cx| {
@@ -1058,8 +1061,8 @@ fn updates(state: &AppState, p: &Palette, cx: &mut Context<AppView>) -> AnyEleme
         widgets::page_body().child(widgets::empty_state(
             p,
             IconKey::Refresh,
-            "全部为最新版本".to_owned(),
-            "运行 winget list --upgrade-available 可再次检查。",
+            tr!("updates.empty"),
+            tr!("updates.empty_hint"),
             Vec::new(),
         ))
     } else {
@@ -1134,7 +1137,7 @@ fn update_card(
                     SharedString::from(format!("upd-{id}")),
                     BtnKind::Primary,
                     BtnSize::Small,
-                    "更新",
+                    tr!("updates.update"),
                 )
                 .disabled(busy)
                 .on_click(cx.listener(move |this, _, window, cx| {
@@ -1156,8 +1159,8 @@ fn strike(text: &str) -> String {
 fn sources(state: &AppState, p: &Palette, cx: &mut Context<AppView>) -> AnyElement {
     let head = widgets::page_head(
         p,
-        "源管理",
-        Some("winget 从多个源检索软件包，可添加企业内部源".into()),
+        tr!("nav.sources"),
+        Some(tr!("sources.subtitle").into()),
         vec![
             widgets::btn(
                 cx,
@@ -1165,7 +1168,7 @@ fn sources(state: &AppState, p: &Palette, cx: &mut Context<AppView>) -> AnyEleme
                 "sync-all-src",
                 BtnKind::Soft,
                 BtnSize::Regular,
-                "全部更新",
+                tr!("updates.update_all"),
             )
             .on_click(cx.listener(|this, _, window, cx| this.sync_sources(None, window, cx)))
             .into_any_element(),
@@ -1175,7 +1178,7 @@ fn sources(state: &AppState, p: &Palette, cx: &mut Context<AppView>) -> AnyEleme
                 "add-src",
                 BtnKind::Primary,
                 BtnSize::Regular,
-                "添加源",
+                tr!("sources.add"),
             )
             .on_click(cx.listener(|this, _, window, cx| {
                 dialogs::add_source(this, window, cx);
@@ -1188,8 +1191,8 @@ fn sources(state: &AppState, p: &Palette, cx: &mut Context<AppView>) -> AnyEleme
         widgets::page_body().child(widgets::empty_state(
             p,
             IconKey::Source,
-            "尚未读取到源".to_owned(),
-            "请确认 winget 可用后点击“全部更新”。",
+            tr!("sources.empty"),
+            tr!("sources.empty_hint"),
             Vec::new(),
         ))
     } else {
@@ -1222,7 +1225,7 @@ fn sources(state: &AppState, p: &Palette, cx: &mut Context<AppView>) -> AnyEleme
                     .text_size(px(11.5))
                     .text_color(p.muted)
                     .child(icon(IconKey::Terminal, px(13.), p.muted))
-                    .child("等价命令：")
+                    .child(tr!("sources.equivalent_command"))
                     .child(widgets::code_chip(
                         p,
                         "winget source add --name <name> --arg <url>",
@@ -1268,12 +1271,12 @@ fn source_card(
                         .gap(px(8.))
                         .child(div().text_size(px(14.)).font_semibold().child(name.clone()))
                         .child(if source.trusted {
-                            widgets::pill(p, PillKind::Ok, "受信任")
+                            widgets::pill(p, PillKind::Ok, tr!("sources.trusted"))
                         } else {
-                            widgets::pill(p, PillKind::Warn, "未验证")
+                            widgets::pill(p, PillKind::Warn, tr!("sources.unverified"))
                         })
                         .when(is_default, |this| {
-                            this.child(widgets::pill(p, PillKind::Accent, "默认"))
+                            this.child(widgets::pill(p, PillKind::Accent, tr!("sources.default")))
                         }),
                 )
                 .child(
@@ -1294,9 +1297,9 @@ fn source_card(
                         .child(widgets::meta_item(
                             p,
                             IconKey::Grid,
-                            format!(
-                                "{} 个包",
-                                source
+                            tr!(
+                                "sources.packages_count",
+                                count = source
                                     .packages
                                     .map_or_else(|| "—".to_owned(), |n| n.to_string())
                             ),
@@ -1329,7 +1332,7 @@ fn source_card(
                         SharedString::from(format!("sync-{sync_name}")),
                         BtnKind::Soft,
                         BtnSize::Small,
-                        "更新",
+                        tr!("updates.update"),
                     )
                     .on_click(cx.listener(move |this, _, window, cx| {
                         this.sync_sources(Some(sync_name.clone()), window, cx);
@@ -1343,11 +1346,12 @@ fn source_card(
                             SharedString::from(format!("def-{set_name}")),
                             BtnKind::Outline,
                             BtnSize::Small,
-                            "设为默认",
+                            tr!("sources.set_default"),
                         )
                         .on_click(cx.listener(move |this, _, _, cx| {
                             this.state.default_source = set_name.clone();
                             this.state.settings.default_source = set_name.clone();
+                            this.persist_settings();
                             cx.notify();
                         })),
                     )
@@ -1388,59 +1392,61 @@ fn settings(
 ) -> AnyElement {
     let head = widgets::page_head(
         p,
-        "设置",
-        Some("所有选项将映射为 winget 命令行参数".into()),
+        tr!("nav.settings"),
+        Some(tr!("settings.subtitle").into()),
         Vec::new(),
     );
 
     let install_card = settings_card(
         p,
-        "安装默认值",
-        "安装与升级时默认附带的参数。",
+        &tr!("settings.install_defaults"),
+        &tr!("settings.install_defaults_hint"),
         vec![
             row_shell_plain(
                 p,
-                "默认来源",
+                &tr!("settings.default_source"),
                 "winget install --source <name>",
                 default_source_control(state, p, cx),
             ),
             seg_row(
                 p,
-                "系统架构",
+                &tr!("settings.arch"),
                 "winget install --architecture <arch>",
                 arch_segments(state, p, cx),
             ),
             seg_row(
                 p,
-                "安装范围",
+                &tr!("settings.scope"),
                 "winget install --scope <scope>",
                 scope_segments(state, p, cx),
             ),
             field_row(
                 p,
-                "自定义安装位置",
+                &tr!("settings.location"),
                 "winget install --location <path>",
                 input_field(p, &inputs.install_location),
             ),
             switch_field_row(
                 cx,
                 p,
-                "自动接受协议",
+                &tr!("settings.accept_agreements"),
                 "winget install --accept-package-agreements",
                 state.settings.accept_agreements,
                 |this, value, cx| {
                     this.state.settings.accept_agreements = value;
+                    this.persist_settings();
                     cx.notify();
                 },
             ),
             switch_field_row(
                 cx,
                 p,
-                "静默安装",
+                &tr!("settings.silent"),
                 "winget install --silent",
                 state.settings.silent,
                 |this, value, cx| {
                     this.state.settings.silent = value;
+                    this.persist_settings();
                     cx.notify();
                 },
             ),
@@ -1449,24 +1455,25 @@ fn settings(
 
     let queue_card = settings_card(
         p,
-        "更新与队列",
-        "检查更新与并发策略。",
+        &tr!("settings.updates_queue"),
+        &tr!("settings.updates_queue_hint"),
         vec![
             switch_field_row(
                 cx,
                 p,
-                "自动检查更新",
-                "启动时运行 winget list --upgrade-available",
+                &tr!("settings.auto_check"),
+                &tr!("settings.auto_check_hint"),
                 state.settings.auto_check_updates,
                 |this, value, cx| {
                     this.state.settings.auto_check_updates = value;
+                    this.persist_settings();
                     cx.notify();
                 },
             ),
             seg_row(
                 p,
-                "并发任务数",
-                "同时运行的安装任务数量",
+                &tr!("settings.concurrency"),
+                &tr!("settings.concurrency_hint"),
                 concurrency_segments(state, p, cx),
             ),
         ],
@@ -1474,24 +1481,31 @@ fn settings(
 
     let appearance_card = settings_card(
         p,
-        "外观",
-        "主题与强调色。",
+        &tr!("settings.appearance"),
+        &tr!("settings.appearance_hint"),
         vec![
             seg_row(
                 p,
-                "主题",
-                "深色 / 浅色 / 跟随系统",
+                &tr!("settings.theme"),
+                &tr!("settings.theme_hint"),
                 theme_segments(state, p, cx),
+            ),
+            seg_row(
+                p,
+                &tr!("settings.language"),
+                &tr!("settings.language_hint"),
+                language_segments(state, p, cx),
             ),
             accent_row(p, state, cx),
             switch_field_row(
                 cx,
                 p,
-                "减少动画",
-                "关闭进度条的动态效果",
+                &tr!("settings.reduce_motion"),
+                &tr!("settings.reduce_motion_hint"),
                 state.settings.reduce_motion,
                 |this, value, cx| {
                     this.state.settings.reduce_motion = value;
+                    this.persist_settings();
                     cx.notify();
                 },
             ),
@@ -1500,29 +1514,30 @@ fn settings(
 
     let advanced_card = settings_card(
         p,
-        "系统与高级",
-        "winget 路径、代理与统计。",
+        &tr!("settings.advanced"),
+        &tr!("settings.advanced_hint"),
         vec![
             field_row(
                 p,
-                "winget 路径",
-                "留空则自动检测",
+                &tr!("settings.winget_path"),
+                &tr!("settings.winget_path_hint"),
                 input_field(p, &inputs.winget_path),
             ),
             field_row(
                 p,
-                "代理服务器",
-                "HTTP 代理地址",
+                &tr!("settings.proxy"),
+                &tr!("settings.proxy_hint"),
                 input_field(p, &inputs.proxy),
             ),
             switch_field_row(
                 cx,
                 p,
-                "使用统计",
-                "允许匿名使用数据",
+                &tr!("settings.telemetry"),
+                &tr!("settings.telemetry_hint"),
                 state.settings.telemetry,
                 |this, value, cx| {
                     this.state.settings.telemetry = value;
+                    this.persist_settings();
                     cx.notify();
                 },
             ),
@@ -1692,6 +1707,7 @@ fn default_source_control(state: &AppState, p: &Palette, cx: &mut Context<AppVie
                 .on_click(cx.listener(move |this, _, _, cx| {
                     this.state.default_source = key.clone();
                     this.state.settings.default_source = key.clone();
+                    this.persist_settings();
                     cx.notify();
                 }))
                 .child(label)
@@ -1708,6 +1724,7 @@ fn arch_segments(state: &AppState, p: &Palette, cx: &mut Context<AppView>) -> An
         state.settings.arch,
         seg_handler(cx, |this, value, _, cx| {
             this.state.settings.arch = value;
+            this.persist_settings();
             cx.notify();
         }),
     )
@@ -1723,6 +1740,7 @@ fn scope_segments(state: &AppState, p: &Palette, cx: &mut Context<AppView>) -> A
         state.settings.scope,
         seg_handler(cx, |this, value, _, cx| {
             this.state.settings.scope = value;
+            this.persist_settings();
             cx.notify();
         }),
     )
@@ -1738,6 +1756,7 @@ fn concurrency_segments(state: &AppState, p: &Palette, cx: &mut Context<AppView>
         state.settings.concurrency,
         seg_handler(cx, |this, value, _, cx| {
             this.state.settings.concurrency = value;
+            this.persist_settings();
             cx.notify();
         }),
     )
@@ -1754,6 +1773,32 @@ fn theme_segments(state: &AppState, p: &Palette, cx: &mut Context<AppView>) -> A
         seg_handler(cx, |this, value, _, cx| {
             this.state.settings.theme = value;
             crate::theme::set_mode(cx, value);
+            this.persist_settings();
+            cx.notify();
+        }),
+    )
+    .into_any_element()
+}
+
+/// The language picker. Switching is immediate: `set_locale` retargets every
+/// `t!` call, and the `cx.notify()` re-render rebuilds the whole tree — the
+/// `AppView` is the single root view, so nothing keeps a stale translation.
+fn language_segments(state: &AppState, p: &Palette, cx: &mut Context<AppView>) -> AnyElement {
+    let items = widgets::language_items();
+    widgets::seg_control(
+        p,
+        "lang-seg",
+        &items,
+        Language::from_tag(&state.settings.language),
+        seg_handler(cx, |this, value: Language, window, cx| {
+            this.state.settings.language = value.tag().to_owned();
+            rust_i18n::set_locale(value.tag());
+            this.persist_settings();
+            // The search box's placeholder was baked into its InputState at
+            // construction; re-seed it so the chrome follows the language too.
+            this.search_input.update(cx, |input, cx| {
+                input.set_placeholder(tr!("search.placeholder"), window, cx);
+            });
             cx.notify();
         }),
     )
@@ -1765,8 +1810,8 @@ fn accent_row(p: &Palette, state: &AppState, cx: &mut Context<AppView>) -> AnyEl
     let swatches = crate::theme::ACCENT_SWATCHES;
     row_shell(
         p,
-        "强调色",
-        "影响按钮、进度条与选中态",
+        &tr!("settings.accent"),
+        &tr!("settings.accent_hint"),
         div()
             .flex()
             .gap(px(8.))
@@ -1811,13 +1856,13 @@ fn input_field(p: &Palette, input: &Entity<InputState>) -> AnyElement {
 
 fn about(p: &Palette, state: &AppState, cx: &mut Context<AppView>) -> AnyElement {
     let version = if state.winget_version.is_empty() {
-        "未检测".to_owned()
+        tr!("settings.not_detected")
     } else {
         state.winget_version.clone()
     };
     settings_card(
         p,
-        "关于",
+        &tr!("settings.about"),
         "WingetGUI v0.1.0-prototype · Rust + GPUI · MIT License",
         vec![
             div()
@@ -1858,7 +1903,7 @@ fn about(p: &Palette, state: &AppState, cx: &mut Context<AppView>) -> AnyElement
                             "about-redetect",
                             BtnKind::Outline,
                             BtnSize::Small,
-                            "检测",
+                            tr!("settings.detect"),
                         )
                         .on_click(cx.listener(|this, _, _, cx| this.redetect_winget(cx))),
                     ),
@@ -1874,7 +1919,7 @@ fn about(p: &Palette, state: &AppState, cx: &mut Context<AppView>) -> AnyElement
                 .border_color(p.line)
                 .text_size(px(12.))
                 .text_color(p.muted)
-                .child("当前 winget 版本")
+                .child(tr!("settings.winget_version"))
                 .child(widgets::code_chip(p, version))
                 .into_any_element(),
         ],
@@ -1886,7 +1931,7 @@ fn about(p: &Palette, state: &AppState, cx: &mut Context<AppView>) -> AnyElement
 fn section_head(
     p: &Palette,
     title: &str,
-    link: Option<(&'static str, Route)>,
+    link: Option<(String, Route)>,
     cx: &mut Context<AppView>,
 ) -> AnyElement {
     let mut head = div()
@@ -1905,7 +1950,7 @@ fn section_head(
                 .on_click(cx.listener(move |this, _, window, cx| {
                     this.navigate(route, window, cx);
                 }))
-                .child(label),
+                .child(label.clone()),
         );
     }
     head.into_any_element()
@@ -1928,7 +1973,7 @@ fn winget_missing(p: &Palette, cx: &mut Context<AppView>) -> AnyElement {
                         .flex_1()
                         .text_size(px(12.5))
                         .text_color(p.ink2)
-                        .child("未检测到 winget，请在“设置 → 系统与高级”中指定路径后点击检测。"),
+                        .child(tr!("home.winget_missing")),
                 )
                 .child(
                     widgets::btn(
@@ -1937,7 +1982,7 @@ fn winget_missing(p: &Palette, cx: &mut Context<AppView>) -> AnyElement {
                         "go-settings",
                         BtnKind::Soft,
                         BtnSize::Small,
-                        "前往设置",
+                        tr!("home.go_settings"),
                     )
                     .on_click(cx.listener(|this, _, window, cx| {
                         this.navigate(Route::Settings, window, cx);

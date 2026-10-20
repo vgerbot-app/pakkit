@@ -6,6 +6,8 @@
 
 use std::time::Duration;
 
+
+use crate::config;
 use crate::icons::{IconKey, icon};
 use crate::model::Package;
 use crate::queue::{self, Enqueued, QueueAction, QueueState};
@@ -72,16 +74,36 @@ pub struct AppView {
 
 impl AppView {
     pub fn new(window: &mut Window, cx: &mut Context<Self>) -> Self {
+        // The persisted settings decide the UI language and theme, so they are
+        // applied before the first translated string or widget is built.
+        let settings = config::load();
+        rust_i18n::set_locale(&settings.language);
+        theme::set_mode(cx, settings.theme);
+        theme::set_accent(cx, &settings.accent);
+
         let search_input =
-            cx.new(|cx| InputState::new(window, cx).placeholder("搜索软件包…   (Ctrl+K)"));
-        let install_location_input =
-            cx.new(|cx| InputState::new(window, cx).placeholder("D:\\Software"));
-        let proxy_input =
-            cx.new(|cx| InputState::new(window, cx).placeholder("http://127.0.0.1:7890"));
-        let winget_path_input =
-            cx.new(|cx| InputState::new(window, cx).placeholder("留空则自动检测"));
+            cx.new(|cx| InputState::new(window, cx).placeholder(tr!("search.placeholder")));
+        let install_location_input = cx.new(|cx| {
+            let mut input = InputState::new(window, cx).placeholder("D:\\Software");
+            input.set_value(settings.install_location.clone(), window, cx);
+            input
+        });
+        let proxy_input = cx.new(|cx| {
+            let mut input = InputState::new(window, cx).placeholder("http://127.0.0.1:7890");
+            input.set_value(settings.proxy.clone(), window, cx);
+            input
+        });
+        let winget_path_input = cx.new(|cx| {
+            let mut input = InputState::new(window, cx).placeholder(tr!("placeholder.winget_path"));
+            input.set_value(settings.winget_path.clone(), window, cx);
+            input
+        });
+        let state = AppState {
+            settings,
+            ..AppState::default()
+        };
         let mut view = Self {
-            state: AppState::default(),
+            state,
             winget: None,
             search_input: search_input.clone(),
             install_location_input: install_location_input.clone(),
@@ -132,6 +154,7 @@ impl AppView {
                             this.install_location_input.read(cx).value().to_string();
                         state.proxy = this.proxy_input.read(cx).value().to_string();
                         state.winget_path = this.winget_path_input.read(cx).value().to_string();
+                        this.persist_settings();
                         cx.notify();
                     }
                 },
@@ -148,7 +171,7 @@ impl AppView {
         let Ok(winget) = Winget::resolve(&self.state.settings.winget_path) else {
             let message = Winget::resolve(&self.state.settings.winget_path)
                 .err()
-                .map(|error| error.to_string())
+                .map(|error| error.localized())
                 .unwrap_or_default();
             self.state.winget_error = Some(message.clone());
             self.state.status = message;
@@ -177,7 +200,7 @@ impl AppView {
             Ok(winget) => {
                 self.winget = Some(winget.clone());
                 self.state.winget_error = None;
-                self.state.status = "已检测到 winget".to_owned();
+                self.state.status = tr!("status.winget_detected");
                 self.spawn_refresh(cx.spawn(async move |this, cx| {
                     let probe = winget.clone();
                     let version = cx
@@ -191,7 +214,7 @@ impl AppView {
                 }));
             }
             Err(error) => {
-                let message = error.to_string();
+                let message = error.localized();
                 self.state.winget_error = Some(message.clone());
                 self.state.status = message;
             }
@@ -255,7 +278,7 @@ impl AppView {
             return;
         }
 
-        self.state.status = "正在检索…".to_owned();
+        self.state.status = tr!("status.searching_catalog");
         cx.notify();
 
         self.search_task = Some(cx.spawn(async move |this, cx| {
@@ -300,7 +323,7 @@ impl AppView {
         }
         self.state.search_source = source;
         window.push_notification(
-            Notification::info(format!("搜索源：{}", source.label())),
+            Notification::info(tr!("notification.source_switched", source = source.label())),
             cx,
         );
         self.refresh_search(cx);
@@ -329,7 +352,7 @@ impl AppView {
         self.search_epoch += 1;
         let epoch = self.search_epoch;
 
-        self.state.status = "正在检索…".to_owned();
+        self.state.status = tr!("status.searching_catalog");
         cx.notify();
 
         self.spawn_refresh(cx.spawn(async move |this, cx| {
@@ -430,7 +453,7 @@ impl AppView {
                         this.state.packages.push(pkg);
                     }
                 }
-                this.state.status = "检查更新".to_owned();
+                this.state.status = tr!("status.check_updates");
                 cx.notify();
             });
         }));
@@ -486,7 +509,7 @@ impl AppView {
         let Some(winget) = self.winget.clone() else {
             return;
         };
-        self.state.status = "正在同步源…".to_owned();
+        self.state.status = tr!("status.sources_syncing");
         cx.notify();
         self.spawn_refresh(cx.spawn_in(window, async move |this, cx| {
             let result = cx
@@ -499,13 +522,16 @@ impl AppView {
 
             let _ = this.update_in(cx, |this, window, cx| {
                 match &result {
-                    Ok(_) => window.push_notification(Notification::success("源已同步"), cx),
+                    Ok(_) => window.push_notification(
+                        Notification::success(tr!("notification.sources_synced")),
+                        cx,
+                    ),
                     Err(error) => {
-                        window.push_notification(Notification::error(error.to_string()), cx)
+                        window.push_notification(Notification::error(error.localized()), cx)
                     }
                 }
                 this.refresh_sources(cx);
-                this.state.status = "就绪".to_owned();
+                this.state.status = tr!("status.ready");
                 cx.notify();
             });
         }));
@@ -531,15 +557,20 @@ impl AppView {
                     .map(|p| p.name.clone())
                     .unwrap_or_else(|| id.to_owned());
                 self.state.queue_open = true;
-                window.push_notification(Notification::info(format!("已加入队列：{name}")), cx);
+                window.push_notification(
+                    Notification::info(tr!("notification.enqueued", name = name)),
+                    cx,
+                );
                 self.pump(cx);
             }
-            Enqueued::Duplicate(name) => {
-                window.push_notification(Notification::warning(format!("{name} 已在队列中")), cx)
-            }
-            Enqueued::Unknown => {
-                window.push_notification(Notification::error("未找到该软件包"), cx)
-            }
+            Enqueued::Duplicate(name) => window.push_notification(
+                Notification::warning(tr!("notification.duplicate", name = name)),
+                cx,
+            ),
+            Enqueued::Unknown => window.push_notification(
+                Notification::error(tr!("notification.pkg_not_found")),
+                cx,
+            ),
         }
         cx.notify();
     }
@@ -644,14 +675,24 @@ impl AppView {
         let next = self.state.settings.theme.next();
         self.state.settings.theme = next;
         theme::set_mode(cx, next);
-        window.push_notification(Notification::info(format!("主题：{}", next.label())), cx);
+        self.persist_settings();
+        window.push_notification(
+            Notification::info(tr!("notification.theme_switched", theme = next.label())),
+            cx,
+        );
         cx.notify();
     }
 
     pub fn set_accent(&mut self, hex: &str, cx: &mut Context<Self>) {
         self.state.settings.accent = hex.to_owned();
         theme::set_accent(cx, hex);
+        self.persist_settings();
         cx.notify();
+    }
+
+    /// Write the current settings to disk; every mutation point calls this.
+    pub fn persist_settings(&self) {
+        config::save(&self.state.settings);
     }
 
     /// Run a `source …` mutation, then refresh the list.
@@ -677,7 +718,7 @@ impl AppView {
                 match &result {
                     Ok(_) => window.push_notification(Notification::success(success.clone()), cx),
                     Err(error) => {
-                        window.push_notification(Notification::error(error.to_string()), cx)
+                        window.push_notification(Notification::error(error.localized()), cx)
                     }
                 }
                 this.refresh_sources(cx);
@@ -709,22 +750,28 @@ impl AppView {
                 if ok {
                     this.state.mark_uninstalled(&id);
                     this.installed_ids.retain(|key| key != &id.to_lowercase());
-                    window.push_notification(Notification::success("已卸载"), cx);
+                    window.push_notification(
+                        Notification::success(tr!("notification.uninstalled")),
+                        cx,
+                    );
                 } else {
                     let message = result
                         .map(|out| {
                             let note = if winget::exit::needs_elevation(out.status) {
-                                "（需要管理员权限）"
+                                tr!("queue.elevation_note")
                             } else {
-                                ""
+                                String::new()
                             };
-                            format!(
-                                "卸载失败：{} {}{note}",
-                                winget::exit::format_code(out.status),
-                                winget::exit::describe(out.status)
+                            tr!(
+                                "notification.uninstall_failed_code",
+                                code = winget::exit::format_code(out.status),
+                                desc = winget::exit::describe(out.status),
+                                note = note
                             )
                         })
-                        .unwrap_or_else(|error| format!("卸载失败：{error}"));
+                        .unwrap_or_else(|error| {
+                            tr!("notification.uninstall_failed", error = error.localized())
+                        });
                     window.push_notification(Notification::error(message), cx);
                 }
                 cx.notify();
@@ -733,7 +780,7 @@ impl AppView {
     }
     pub fn copy(&mut self, text: &str, window: &mut Window, cx: &mut Context<Self>) {
         cx.write_to_clipboard(ClipboardItem::new_string(text.to_owned()));
-        window.push_notification(Notification::success("已复制到剪贴板"), cx);
+        window.push_notification(Notification::success(tr!("notification.copied")), cx);
     }
 }
 
@@ -796,14 +843,29 @@ impl AppView {
         let queue_count = queue::active_count(&self.state);
         let theme_label = self.state.settings.theme.label();
 
-        let routes = [
-            ("home", "发现", IconKey::Home, Route::Home),
-            ("categories", "分类", IconKey::Grid, Route::Categories),
-            ("search", "全部包", IconKey::Search, Route::Search),
-            ("installed", "已安装", IconKey::Check, Route::Installed),
-            ("updates", "更新", IconKey::Refresh, Route::Updates),
-            ("sources", "源管理", IconKey::Source, Route::Sources),
-            ("settings", "设置", IconKey::Settings, Route::Settings),
+        let routes: [(&str, String, IconKey, Route); 7] = [
+            ("home", tr!("nav.home"), IconKey::Home, Route::Home),
+            (
+                "categories",
+                tr!("nav.categories"),
+                IconKey::Grid,
+                Route::Categories,
+            ),
+            ("search", tr!("nav.search"), IconKey::Search, Route::Search),
+            (
+                "installed",
+                tr!("nav.installed"),
+                IconKey::Check,
+                Route::Installed,
+            ),
+            ("updates", tr!("nav.updates"), IconKey::Refresh, Route::Updates),
+            ("sources", tr!("nav.sources"), IconKey::Source, Route::Sources),
+            (
+                "settings",
+                tr!("nav.settings"),
+                IconKey::Settings,
+                Route::Settings,
+            ),
         ];
 
         Sidebar::new("app-sidebar")
@@ -817,7 +879,7 @@ impl AppView {
                         p,
                         collapsed,
                         IconKey::Theme,
-                        &format!("主题 · {theme_label}"),
+                        &format!("{} · {theme_label}", tr!("nav.theme")),
                         None,
                         cx.listener(|this, _, window, cx| this.cycle_theme(window, cx)),
                     ))
@@ -825,7 +887,7 @@ impl AppView {
                         p,
                         collapsed,
                         IconKey::Queue,
-                        "安装队列",
+                        &tr!("nav.queue"),
                         Some(queue_count),
                         cx.listener(|this, _, _, cx| {
                             this.state.queue_open = !this.state.queue_open;
@@ -902,8 +964,8 @@ impl AppView {
             .child(div().size(px(7.)).rounded(px(99.)).bg(dot))
             .child(self.state.status.clone())
             .child(div().text_color(p.line_strong).child("|"))
-            .child(format!("源 {}", self.state.sources.len()))
-            .child(format!("队列 {queue_len}"))
+            .child(tr!("status.sources_count", count = self.state.sources.len()))
+            .child(tr!("status.queue_count", count = queue_len))
             .child(
                 h_flex()
                     .ml_auto()
@@ -935,7 +997,12 @@ impl AppView {
                     .border_b_1()
                     .border_color(p.line)
                     .child(icon(IconKey::Queue, px(16.), p.accent))
-                    .child(div().text_size(px(13.)).font_semibold().child("安装队列"))
+                    .child(
+                        div()
+                            .text_size(px(13.))
+                            .font_semibold()
+                            .child(tr!("queue.title")),
+                    )
                     .child(widgets::pill(
                         p,
                         widgets::PillKind::Accent,
@@ -948,9 +1015,10 @@ impl AppView {
                             .items_center()
                             .gap(px(4.))
                             .child(
-                                widgets::btn_ghost(cx, p, "queue-clear", "清除").on_click(
-                                    cx.listener(|this, _, _, cx| this.clear_finished(cx)),
-                                ),
+                                widgets::btn_ghost(cx, p, "queue-clear", tr!("queue.clear"))
+                                    .on_click(
+                                        cx.listener(|this, _, _, cx| this.clear_finished(cx)),
+                                    ),
                             )
                             .child(
                                 widgets::icon_btn("queue-close", IconKey::Close, 26., p.muted)
@@ -976,7 +1044,7 @@ impl AppView {
                             div()
                                 .text_size(px(12.5))
                                 .text_color(p.muted)
-                                .child("队列为空"),
+                                .child(tr!("queue.empty")),
                         )
                     })
                     .children(self.state.queue.iter().map(|item| {
@@ -998,7 +1066,7 @@ impl AppView {
                     .border_t_1()
                     .border_color(p.line)
                     .child(icon(IconKey::Info, px(12.), p.muted))
-                    .child("安装任务串行执行，避免 winget 锁冲突"),
+                    .child(tr!("queue.serial_hint")),
             )
     }
 }
@@ -1049,10 +1117,10 @@ fn queue_row(
 ) -> AnyElement {
     let uid = item.uid;
     let (color, label) = match item.state {
-        QueueState::Pending => (p.muted, "等待中"),
-        QueueState::Running => (p.accent, "进行中"),
-        QueueState::Done => (p.ok, "已完成"),
-        QueueState::Error => (p.danger, "失败"),
+        QueueState::Pending => (p.muted, tr!("queue.row.pending")),
+        QueueState::Running => (p.accent, tr!("queue.row.running")),
+        QueueState::Done => (p.ok, tr!("queue.row.done")),
+        QueueState::Error => (p.danger, tr!("queue.row.error")),
     };
     let glyph = pkg.map_or(IconKey::Package, |p| p.category.icon());
     let hex = pkg.map_or("#4f8cff", |p| p.category.color());
@@ -1121,7 +1189,11 @@ fn brand_row(p: &Palette) -> impl IntoElement {
         .flex_none()
         .child(brand_mark(p))
         .child(div().text_size(px(13.)).font_semibold().child("WingetGUI"))
-        .child(widgets::pill(p, widgets::PillKind::Line, "原型 v0.1"))
+        .child(widgets::pill(
+            p,
+            widgets::PillKind::Line,
+            tr!("app.prototype_pill"),
+        ))
 }
 
 /// The pill showing (and cycling) the active search source.

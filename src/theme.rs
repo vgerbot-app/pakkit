@@ -10,6 +10,7 @@ use std::{rc::Rc, sync::LazyLock};
 
 use gpui_kit::component::{Theme, ThemeConfig, ThemeMode, ThemeSet};
 use gpui_kit::{App, Global, Hsla, px};
+use serde::{Deserialize, Serialize};
 
 /// `#rrggbb` → `Hsla`, the way gpui's `rgba` accepts `0xRRGGBBAA`.
 const fn h(hex: u32) -> Hsla {
@@ -284,7 +285,7 @@ pub fn set_accent(cx: &mut App, hex: &str) {
 }
 
 /// The three-way theme selector from the prototype.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Default, Serialize, Deserialize)]
 pub enum ModeChoice {
     #[default]
     Dark,
@@ -295,11 +296,11 @@ pub enum ModeChoice {
 impl ModeChoice {
     pub const ALL: [ModeChoice; 3] = [ModeChoice::Dark, ModeChoice::Light, ModeChoice::System];
 
-    pub const fn label(self) -> &'static str {
+    pub fn label(self) -> String {
         match self {
-            ModeChoice::Dark => "深色",
-            ModeChoice::Light => "浅色",
-            ModeChoice::System => "跟随系统",
+            ModeChoice::Dark => tr!("theme.dark"),
+            ModeChoice::Light => tr!("theme.light"),
+            ModeChoice::System => tr!("theme.system"),
         }
     }
 

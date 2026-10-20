@@ -8,6 +8,7 @@
 
 use std::time::Instant;
 
+
 use crate::model::Package;
 use crate::state::{AppState, Settings};
 use crate::winget::{self, Output, WingetError};
@@ -23,12 +24,12 @@ pub enum QueueState {
 
 impl QueueState {
     /// The pill text the drawer shows.
-    pub const fn label(self) -> &'static str {
+    pub fn label(self) -> String {
         match self {
-            QueueState::Pending => "待安装",
-            QueueState::Running => "安装中",
-            QueueState::Done => "已完成",
-            QueueState::Error => "失败",
+            QueueState::Pending => tr!("queue.state.pending"),
+            QueueState::Running => tr!("queue.state.running"),
+            QueueState::Done => tr!("queue.state.done"),
+            QueueState::Error => tr!("queue.state.error"),
         }
     }
 
@@ -58,10 +59,10 @@ pub enum QueueAction {
 
 impl QueueAction {
     /// The verb shown in the drawer's command line.
-    pub const fn label(self) -> &'static str {
+    pub fn label(self) -> String {
         match self {
-            QueueAction::Install => "安装",
-            QueueAction::Upgrade => "更新",
+            QueueAction::Install => tr!("queue.action.install"),
+            QueueAction::Upgrade => tr!("queue.action.upgrade"),
         }
     }
 }
@@ -97,7 +98,7 @@ impl QueueItem {
             action,
             state: QueueState::Pending,
             progress: 0.0,
-            log: "等待中…".to_owned(),
+            log: tr!("queue.waiting"),
             exit: None,
             started: None,
         }
@@ -237,35 +238,44 @@ pub fn complete(state: &mut AppState, uid: u64, result: Result<Output, WingetErr
             item.progress = 100.0;
             item.exit = Some(output.status);
             item.log = if output.status == 0 {
-                format!("{}成功 · 用时 {elapsed:.1}s", action.label())
+                tr!(
+                    "queue.success_elapsed",
+                    action = action.label(),
+                    elapsed = format!("{elapsed:.1}")
+                )
             } else {
                 // A benign code: the desired end state already held.
-                format!("{}成功（已存在同版本）", action.label())
+                tr!("queue.success_exists", action = action.label())
             };
         }
         Ok(output) => {
             let description = winget::exit::describe(output.status);
             let note = if winget::exit::needs_elevation(output.status) {
-                "（需要管理员权限）"
+                tr!("queue.elevation_note")
             } else {
-                ""
+                String::new()
             };
             let item = &mut state.queue[ix];
             item.state = QueueState::Error;
             item.progress = 100.0;
             item.exit = Some(output.status);
-            item.log = format!(
-                "{}失败：{} {}{note}",
-                action.label(),
-                winget::exit::format_code(output.status),
-                description
+            item.log = tr!(
+                "queue.failed_code",
+                action = action.label(),
+                code = winget::exit::format_code(output.status),
+                desc = description,
+                note = note
             );
         }
         Err(error) => {
             let item = &mut state.queue[ix];
             item.state = QueueState::Error;
             item.progress = 100.0;
-            item.log = format!("{}失败：{error}", action.label());
+            item.log = tr!(
+                "queue.failed",
+                action = action.label(),
+                error = error.localized()
+            );
         }
     }
 
@@ -339,6 +349,7 @@ mod tests {
 
     #[test]
     fn enqueue_adds_a_pending_entry_and_reports_its_handle() {
+        crate::ensure_zh_locale();
         let mut state = state_with(&["A"]);
         let Enqueued::Added(uid) = enqueue(&mut state, "A", QueueAction::Install) else {
             panic!("expected the package to be queued");
@@ -462,6 +473,7 @@ mod tests {
 
     #[test]
     fn a_successful_install_marks_the_package_installed() {
+        crate::ensure_zh_locale();
         let mut state = state_with(&["A"]);
         let Enqueued::Added(uid) = enqueue(&mut state, "A", QueueAction::Install) else {
             panic!("enqueue");
@@ -478,6 +490,7 @@ mod tests {
 
     #[test]
     fn a_benign_exit_code_reads_as_already_satisfied() {
+        crate::ensure_zh_locale();
         let mut state = state_with(&["A"]);
         let Enqueued::Added(uid) = enqueue(&mut state, "A", QueueAction::Install) else {
             panic!("enqueue");
@@ -493,6 +506,7 @@ mod tests {
 
     #[test]
     fn a_failure_keeps_the_code_and_its_description() {
+        crate::ensure_zh_locale();
         let mut state = state_with(&["A"]);
         let Enqueued::Added(uid) = enqueue(&mut state, "A", QueueAction::Install) else {
             panic!("enqueue");
@@ -509,6 +523,7 @@ mod tests {
 
     #[test]
     fn a_spawn_failure_is_a_queue_error_not_a_panic() {
+        crate::ensure_zh_locale();
         let mut state = state_with(&["A"]);
         let Enqueued::Added(uid) = enqueue(&mut state, "A", QueueAction::Install) else {
             panic!("enqueue");

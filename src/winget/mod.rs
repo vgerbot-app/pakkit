@@ -5,6 +5,8 @@
 //! exclusivity rules (e.g. `--purge` XOR `--preserve`) are enforced here rather
 //! than trusted to callers.
 
+use serde::{Deserialize, Serialize};
+
 pub mod exec;
 pub mod exit;
 pub mod parse;
@@ -17,7 +19,7 @@ pub use parse::{
 };
 
 /// Target CPU architecture for `--architecture`.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Default, Serialize, Deserialize)]
 pub enum Arch {
     #[default]
     X64,
@@ -38,7 +40,7 @@ impl Arch {
 }
 
 /// Install scope for `--scope`.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Default, Serialize, Deserialize)]
 pub enum Scope {
     #[default]
     User,
@@ -73,7 +75,7 @@ pub struct InstallOptions {
 }
 
 /// Filters for `winget search`, mirroring the advanced-search dialog.
-#[derive(Debug, Clone, Copy, Default, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Serialize, Deserialize)]
 pub struct SearchFilters {
     pub exact: bool,
     pub moniker: bool,

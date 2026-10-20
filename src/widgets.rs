@@ -22,7 +22,7 @@ use gpui_kit::{
 use crate::icons::{IconKey, icon};
 use crate::model::{Package, Source};
 use crate::queue::QueueAction;
-use crate::state::{CategorySort, SearchSource, SortMode, StatusFilter};
+use crate::state::{CategorySort, Language, SearchSource, SortMode, StatusFilter};
 use crate::theme::{ModeChoice, Palette};
 use crate::winget::{Arch, Scope};
 
@@ -281,7 +281,7 @@ pub fn pill(p: &Palette, kind: PillKind, text: impl Into<SharedString>) -> Div {
 pub fn seg_control<T: Copy + PartialEq + 'static>(
     p: &Palette,
     id: &'static str,
-    items: &[(T, &'static str)],
+    items: &[(T, String)],
     selected: T,
     on_select: impl Fn(T, &mut Window, &mut App) + 'static,
 ) -> Div {
@@ -328,7 +328,7 @@ pub fn seg_control<T: Copy + PartialEq + 'static>(
                         .hover(move |this| this.text_color(hot))
                 })
                 .on_click(move |_, window, cx| handler(value, window, cx))
-                .child(*label)
+                .child(label.clone())
         }))
 }
 
@@ -628,14 +628,14 @@ pub fn category_chip(p: &Palette, category: crate::model::CategoryId) -> Div {
 ///
 /// Mirrors `pkgRow`'s three-way choice — queued, re-install, install — which
 /// the updates view overrides with 更新.
-pub fn install_label(pkg: &Package, queued: bool, action: QueueAction) -> (&'static str, IconKey) {
+pub fn install_label(pkg: &Package, queued: bool, action: QueueAction) -> (String, IconKey) {
     if queued {
-        return ("队列中", IconKey::Clock);
+        return (tr!("queue.queued"), IconKey::Clock);
     }
     match action {
-        QueueAction::Upgrade => ("更新", IconKey::Download),
-        QueueAction::Install if pkg.installed => ("重新安装", IconKey::Refresh),
-        QueueAction::Install => ("安装", IconKey::Download),
+        QueueAction::Upgrade => (tr!("queue.action.upgrade"), IconKey::Download),
+        QueueAction::Install if pkg.installed => (tr!("queue.reinstall"), IconKey::Refresh),
+        QueueAction::Install => (tr!("queue.action.install"), IconKey::Download),
     }
 }
 
@@ -650,30 +650,30 @@ pub fn package_action(pkg: &Package) -> QueueAction {
 }
 
 /// The category-detail sort segments.
-pub fn category_sort_items() -> Vec<(CategorySort, &'static str)> {
+pub fn category_sort_items() -> Vec<(CategorySort, String)> {
     CategorySort::ALL.iter().map(|s| (*s, s.label())).collect()
 }
 
 /// The search sort segments.
-pub fn sort_items() -> Vec<(SortMode, &'static str)> {
+pub fn sort_items() -> Vec<(SortMode, String)> {
     SortMode::ALL.iter().map(|s| (*s, s.label())).collect()
 }
 
 /// The status filter segments.
-pub fn status_items() -> Vec<(StatusFilter, &'static str)> {
+pub fn status_items() -> Vec<(StatusFilter, String)> {
     StatusFilter::ALL.iter().map(|s| (*s, s.label())).collect()
 }
 
-/// The search-source segments: the live sources, then 全部源.
+/// The search-source segments: the live sources, then "all sources".
 ///
 /// The prototype renders one button per configured source; an unrecognised
 /// source name still gets a segment so the list never silently loses one.
-pub fn source_items(sources: &[Source]) -> Vec<(SearchSource, &'static str)> {
-    let mut items: Vec<(SearchSource, &'static str)> = Vec::new();
+pub fn source_items(sources: &[Source]) -> Vec<(SearchSource, String)> {
+    let mut items: Vec<(SearchSource, String)> = Vec::new();
     for source in sources {
         let entry = match source.name.as_str() {
-            "winget" => (SearchSource::Winget, "winget"),
-            "msstore" => (SearchSource::MsStore, "msstore"),
+            "winget" => (SearchSource::Winget, "winget".to_owned()),
+            "msstore" => (SearchSource::MsStore, "msstore".to_owned()),
             _ => continue,
         };
         if !items.iter().any(|(s, _)| *s == entry.0) {
@@ -681,30 +681,49 @@ pub fn source_items(sources: &[Source]) -> Vec<(SearchSource, &'static str)> {
         }
     }
     if items.is_empty() {
-        items.push((SearchSource::Winget, "winget"));
+        items.push((SearchSource::Winget, "winget".to_owned()));
     }
-    items.push((SearchSource::All, "全部源"));
+    items.push((SearchSource::All, tr!("source.all")));
     items
 }
 
 /// The `--architecture` segments.
-pub fn arch_items() -> Vec<(Arch, &'static str)> {
-    Arch::ALL.iter().map(|a| (*a, a.as_str())).collect()
+pub fn arch_items() -> Vec<(Arch, String)> {
+    Arch::ALL
+        .iter()
+        .map(|a| (*a, a.as_str().to_owned()))
+        .collect()
 }
 
 /// The `--scope` segments.
-pub fn scope_items() -> Vec<(Scope, &'static str)> {
-    vec![(Scope::User, "当前用户"), (Scope::Machine, "全局(需提权)")]
+pub fn scope_items() -> Vec<(Scope, String)> {
+    vec![
+        (Scope::User, tr!("scope.user")),
+        (Scope::Machine, tr!("scope.machine")),
+    ]
 }
 
-/// The 并发任务数 segments.
-pub fn concurrency_items() -> Vec<(u8, &'static str)> {
-    vec![(1, "1"), (2, "2"), (3, "3")]
+/// The concurrency segments.
+pub fn concurrency_items() -> Vec<(u8, String)> {
+    vec![
+        (1, "1".to_owned()),
+        (2, "2".to_owned()),
+        (3, "3".to_owned()),
+    ]
 }
 
 /// The theme segments.
-pub fn theme_items() -> Vec<(ModeChoice, &'static str)> {
+pub fn theme_items() -> Vec<(ModeChoice, String)> {
     ModeChoice::ALL.iter().map(|m| (*m, m.label())).collect()
+}
+
+/// The language segments. Language names stay in their own script — a user
+/// hunting for their language must find it without reading another one.
+pub fn language_items() -> Vec<(Language, String)> {
+    Language::ALL
+        .iter()
+        .map(|l| (*l, l.native_name().to_owned()))
+        .collect()
 }
 
 /// A horizontally scrolling page body: 24 px sides, 32 px bottom.
