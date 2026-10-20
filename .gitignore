@@ -1,2 +1,4 @@
 target/
 .ref/
+.scratch/
+.smoke*.png
