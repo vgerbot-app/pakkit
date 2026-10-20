@@ -70,6 +70,9 @@ impl SourceExport {
 }
 
 /// The fields of `winget show` this UI renders.
+///
+/// `description` and `release_notes` keep their original line breaks: winget
+/// prints both as a header line followed by indented prose lines.
 #[derive(Debug, Clone, Default, PartialEq, Eq, Serialize, Deserialize)]
 pub struct PackageDetail {
     pub name: String,
@@ -77,15 +80,21 @@ pub struct PackageDetail {
     pub version: String,
     pub publisher: String,
     pub publisher_url: String,
+    pub publisher_support_url: String,
     pub moniker: String,
     pub description: String,
     pub homepage: String,
     pub license: String,
     pub license_url: String,
+    pub copyright: String,
+    pub release_notes: String,
+    pub release_notes_url: String,
     pub tags: Vec<String>,
     pub installer_type: String,
     pub installer_url: String,
+    pub installer_sha256: String,
     pub release_date: String,
+    pub offline_distribution: String,
 }
 
 /// Display width of a character, mirroring how the Windows console pads
@@ -378,11 +387,13 @@ pub fn parse_source_list(text: &str) -> Vec<SourceRow> {
 
 /// `winget show --id <id> --exact`.
 ///
-/// Two shapes appear in one document: flat `Key: value` lines, and section
-/// headers such as `Tags:` whose values are the indented lines that follow.
+/// Three shapes appear in one document: flat `Key: value` lines, section
+/// headers such as `Tags:` whose values are the indented lines that follow,
+/// and text sections (`Description:`, `Release Notes:`) whose indented lines
+/// are prose kept with their line breaks.
 pub fn parse_show(text: &str) -> PackageDetail {
     let mut detail = PackageDetail::default();
-    let mut list_key: Option<String> = None;
+    let mut section: Option<String> = None;
 
     for raw in text.lines() {
         let line = raw.trim_end_matches('\r');
@@ -393,33 +404,115 @@ pub fn parse_show(text: &str) -> PackageDetail {
 
         // `Found Visual Studio Code [Microsoft.VisualStudioCode]`
         if let Some(rest) = trimmed.strip_prefix("Found ")
-            && let Some((_, id)) = rest.rsplit_once(" [")
+            && let Some((name, id)) = rest.rsplit_once(" [")
             && let Some(id) = id.strip_suffix(']')
         {
+            if detail.name.is_empty() {
+                detail.name = name.to_owned();
+            }
             detail.id = id.to_owned();
             continue;
         }
 
+        let indented = line.starts_with(char::is_whitespace);
+
         if let Some((key, value)) = trimmed.split_once(':') {
             let key = key.trim();
             let value = value.trim();
-            if value.is_empty() {
-                // A section header; its values are the indented lines below.
-                list_key = Some(key.to_owned());
+            // Inside a text section an indented `X: y` line is prose (a URL,
+            // a sentence with a colon) unless X is a label winget prints.
+            if indented
+                && section.as_deref().is_some_and(is_text_section)
+                && !is_show_label(key)
+            {
+                push_text_line(&mut detail, section.as_deref().unwrap_or_default(), trimmed);
                 continue;
             }
-            list_key = None;
+            if value.is_empty() {
+                // A section header; its values are the indented lines below.
+                section = Some(key.to_owned());
+                continue;
+            }
+            section = None;
             assign(&mut detail, key, value);
-        } else if line.starts_with(char::is_whitespace)
-            && let Some(key) = list_key.as_deref()
-            && key.eq_ignore_ascii_case("Tags")
-        {
-            detail.tags.push(trimmed.to_owned());
+        } else if indented {
+            match section.as_deref() {
+                Some(key) if key.eq_ignore_ascii_case("Tags") => {
+                    detail.tags.push(trimmed.to_owned());
+                }
+                Some(key) if is_text_section(key) => {
+                    push_text_line(&mut detail, key, trimmed);
+                }
+                _ => {}
+            }
         }
     }
 
     detail.tags.retain(|t| !t.is_empty());
     detail
+}
+
+/// A section whose indented lines are prose, not fields.
+fn is_text_section(key: &str) -> bool {
+    key.eq_ignore_ascii_case("Description") || key.eq_ignore_ascii_case("Release Notes")
+}
+
+/// Append one prose line to a text section, keeping line breaks.
+fn push_text_line(detail: &mut PackageDetail, section: &str, line: &str) {
+    let slot = if section.eq_ignore_ascii_case("Description") {
+        &mut detail.description
+    } else if section.eq_ignore_ascii_case("Release Notes") {
+        &mut detail.release_notes
+    } else {
+        return;
+    };
+    if !slot.is_empty() {
+        slot.push('\n');
+    }
+    slot.push_str(line);
+}
+
+/// The labels winget prints in `show` output. Used to tell an indented
+/// `Key: value` field apart from a prose line containing a colon.
+fn is_show_label(key: &str) -> bool {
+    matches!(
+        key.to_ascii_lowercase().as_str(),
+        "name"
+            | "id"
+            | "version"
+            | "channel"
+            | "publisher"
+            | "publisher url"
+            | "publisher support url"
+            | "author"
+            | "moniker"
+            | "description"
+            | "homepage"
+            | "license"
+            | "license url"
+            | "privacy url"
+            | "copyright"
+            | "copyright url"
+            | "release notes"
+            | "release notes url"
+            | "package url"
+            | "purchase url"
+            | "installation notes"
+            | "documentation"
+            | "wiki"
+            | "tags"
+            | "agreements"
+            | "installer"
+            | "installer type"
+            | "installer locale"
+            | "installer url"
+            | "installer sha256"
+            | "release date"
+            | "offline distribution supported"
+            | "scope"
+            | "elevation behavior"
+            | "install location required"
+    )
 }
 
 fn assign(detail: &mut PackageDetail, key: &str, value: &str) {
@@ -429,14 +522,19 @@ fn assign(detail: &mut PackageDetail, key: &str, value: &str) {
         "version" => &mut detail.version,
         "publisher" => &mut detail.publisher,
         "publisher url" => &mut detail.publisher_url,
+        "publisher support url" => &mut detail.publisher_support_url,
         "moniker" => &mut detail.moniker,
         "description" => &mut detail.description,
         "homepage" => &mut detail.homepage,
         "license" => &mut detail.license,
         "license url" => &mut detail.license_url,
+        "copyright" => &mut detail.copyright,
+        "release notes url" => &mut detail.release_notes_url,
         "installer type" => &mut detail.installer_type,
         "installer url" => &mut detail.installer_url,
+        "installer sha256" => &mut detail.installer_sha256,
         "release date" => &mut detail.release_date,
+        "offline distribution supported" => &mut detail.offline_distribution,
         _ => return,
     };
     if slot.is_empty() {
@@ -490,6 +588,7 @@ mod tests {
     const UPGRADE: &str = include_str!("../../tests/fixtures/upgrade.txt");
     const SOURCES: &str = include_str!("../../tests/fixtures/sources.txt");
     const SHOW: &str = include_str!("../../tests/fixtures/show.txt");
+    const SHOW_GIT: &str = include_str!("../../tests/fixtures/show_git.txt");
     const SOURCE_EXPORT: &str = include_str!("../../tests/fixtures/source_export.json");
     const EXPORT: &str = include_str!("../../tests/fixtures/export.json");
 
@@ -584,6 +683,7 @@ mod tests {
     #[test]
     fn show_extracts_the_rendered_fields() {
         let detail = parse_show(SHOW);
+        assert_eq!(detail.name, "Microsoft Visual Studio Code");
         assert_eq!(detail.id, "Microsoft.VisualStudioCode");
         assert_eq!(detail.version, "1.142.0");
         assert_eq!(detail.publisher, "Microsoft Corporation");
@@ -594,6 +694,62 @@ mod tests {
         assert!(detail.homepage.starts_with("https://"));
         assert!(!detail.license.is_empty());
         assert_eq!(detail.tags, vec!["developer-tools", "editor"]);
+    }
+
+    #[test]
+    fn show_keeps_multiline_sections_and_the_installer_block() {
+        // Captured from `winget show Git.Git`: the description and the release
+        // notes span several indented lines, and the installer block carries
+        // indented fields of its own.
+        let detail = parse_show(SHOW_GIT);
+        assert_eq!(detail.version, "2.55.0.5");
+        assert_eq!(detail.publisher, "The Git Development Community");
+        assert_eq!(detail.publisher_url, "https://gitforwindows.org/");
+        assert_eq!(
+            detail.publisher_support_url,
+            "https://github.com/git-for-windows/git/issues"
+        );
+        assert_eq!(detail.moniker, "git");
+        assert!(
+            detail.description.contains("distributed version control system")
+                && detail.description.contains("Git for Windows focuses"),
+            "both description paragraphs are kept, got {:?}",
+            detail.description
+        );
+        assert_eq!(detail.license, "GPL-2.0");
+        assert_eq!(
+            detail.copyright,
+            "Copyright (C) 1989, 1991 Free Software Foundation, Inc."
+        );
+        assert!(detail.release_notes.contains("New Features"));
+        assert!(detail.release_notes.contains("Bug Fixes"));
+        assert!(
+            detail.release_notes.contains('\n'),
+            "release notes keep their line breaks"
+        );
+        assert_eq!(
+            detail.release_notes_url,
+            "https://github.com/git-for-windows/git/releases/tag/v2.55.0.windows.5"
+        );
+        assert_eq!(detail.tags, vec!["git", "vcs"]);
+        assert_eq!(detail.installer_type, "inno");
+        assert_eq!(
+            detail.installer_sha256,
+            "d065a4e23c3d9a6b5073d609b5be0830227ec3ca053c083ba385061ddfaf94c6"
+        );
+        assert_eq!(detail.release_date, "2026-08-20");
+        assert_eq!(detail.offline_distribution, "true");
+    }
+
+    #[test]
+    fn show_treats_colons_inside_text_sections_as_prose() {
+        let text = "Description:\n  See https://example.com/docs for usage: it matters.\nHomepage: https://example.com\n";
+        let detail = parse_show(text);
+        assert_eq!(
+            detail.description,
+            "See https://example.com/docs for usage: it matters."
+        );
+        assert_eq!(detail.homepage, "https://example.com");
     }
 
     #[test]

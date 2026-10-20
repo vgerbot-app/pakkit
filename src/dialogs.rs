@@ -22,37 +22,32 @@ use std::rc::Rc;
 
 
 use crate::icons::{IconKey, icon};
+use crate::model::Package;
 use crate::shell::AppView;
 use crate::theme::Palette;
 use crate::widgets::{self, BtnKind, BtnSize, PillKind};
-use crate::winget;
+use crate::winget::{self, PackageDetail};
 
 /// 软件包详情 — the large modal a card's 查看详情 opens.
+///
+/// The body is sourced from `winget show`: opening the dialog kicks off a
+/// background fetch ([`AppView::fetch_detail`]), and the builder re-reads the
+/// view's state on every rebuild, so the parsed detail appears as soon as the
+/// fetch lands and every later open renders from the cache.
 pub fn pkg_detail(view: &mut AppView, id: &str, window: &mut Window, cx: &mut Context<AppView>) {
-    let Some(pkg) = view
+    if !view
         .state
         .packages
         .iter()
-        .find(|p| p.id.eq_ignore_ascii_case(id))
-        .cloned()
-    else {
+        .any(|p| p.id.eq_ignore_ascii_case(id))
+    {
         return;
-    };
+    }
+    view.fetch_detail(id, cx);
 
-    let command = view.state.install_command(&pkg.id);
-    let uninstall_id = pkg.id.clone();
-    let install_id = pkg.id.clone();
-    let busy = crate::queue::is_busy(&view.state, &pkg.id);
-    let action = widgets::package_action(&pkg);
-    let (label, _) = widgets::install_label(&pkg, busy, action);
-    let related: Vec<_> = view
-        .state
-        .packages
-        .iter()
-        .filter(|p| p.category == pkg.category && p.key() != pkg.key())
-        .take(3)
-        .cloned()
-        .collect();
+    let lookup_id = id.to_owned();
+    let uninstall_id = id.to_owned();
+    let install_id = id.to_owned();
     let this = cx.weak_entity();
 
     window.open_dialog(cx, move |dialog, _, cx| {
@@ -60,7 +55,56 @@ pub fn pkg_detail(view: &mut AppView, id: &str, window: &mut Window, cx: &mut Co
         let copy_view = this.clone();
         let uninstall_view = this.clone();
         let install_view = this.clone();
-        let command = command.clone();
+
+        // Re-read on every rebuild: the show fetch lands after the dialog
+        // opens, and its notify re-runs this closure.
+        let snapshot = this.read_with(cx, |view, _| {
+            let pkg = view
+                .state
+                .packages
+                .iter()
+                .find(|p| p.id.eq_ignore_ascii_case(&lookup_id))
+                .cloned()?;
+            let detail = view.state.details.get(&pkg.key()).cloned();
+            let command = view.state.install_command(&pkg.id);
+            let busy = crate::queue::is_busy(&view.state, &pkg.id);
+            let action = widgets::package_action(&pkg);
+            let (label, _) = widgets::install_label(&pkg, busy, action);
+            let related: Vec<Package> = view
+                .state
+                .packages
+                .iter()
+                .filter(|rel| rel.category == pkg.category && rel.key() != pkg.key())
+                .take(3)
+                .cloned()
+                .collect();
+            let loading = detail.is_none() && view.winget.is_some();
+            Some((pkg, detail, command, busy, action, label, related, loading))
+        });
+        let Ok(Some((pkg, detail, command, busy, action, label, related, loading))) = snapshot
+        else {
+            return dialog;
+        };
+
+        let description = detail
+            .as_ref()
+            .map(|d| d.description.clone())
+            .filter(|d| !d.trim().is_empty())
+            .or_else(|| pkg.description.clone())
+            .unwrap_or_else(|| tr!("dialog.no_description"));
+        let moniker = detail
+            .as_ref()
+            .map(|d| d.moniker.clone())
+            .filter(|m| !m.is_empty());
+        let tags = detail
+            .as_ref()
+            .map(|d| d.tags.clone())
+            .filter(|tags| !tags.is_empty());
+        let release_notes = detail
+            .as_ref()
+            .map(|d| d.release_notes.clone())
+            .filter(|notes| !notes.trim().is_empty());
+
         dialog
             .w(px(920.))
             .title(
@@ -106,26 +150,56 @@ pub fn pkg_detail(view: &mut AppView, id: &str, window: &mut Window, cx: &mut Co
                                         ))
                                     })
                                     .child(widgets::pill(&p, PillKind::Line, pkg.source_label()))
-                                    .when_some(pkg.tags.first().cloned(), |this, tag| {
-                                        this.child(widgets::pill(&p, PillKind::Line, tag))
+                                    .when_some(moniker, |this, moniker| {
+                                        this.child(widgets::pill(&p, PillKind::Line, moniker))
                                     }),
                             ),
                     )
-                    .child(
-                        div()
-                            .text_size(px(12.5))
-                            .line_height(relative(1.6))
-                            .text_color(p.ink2)
-                            .child(
-                                pkg.description
-                                    .clone()
-                                    .unwrap_or_else(|| tr!("dialog.no_description")),
-                            ),
-                    )
+                    .child(prose_lines(&p, &description))
+                    .when(loading, |this| {
+                        this.child(
+                            div()
+                                .text_size(px(11.5))
+                                .text_color(p.muted)
+                                .child(tr!("dialog.loading")),
+                        )
+                    })
                     .when_some(pkg.rating, |this, rating| {
                         this.child(widgets::stars(&p, rating))
                     })
-                    .child(stat_grid(&p, &pkg))
+                    .child(stat_grid(&p, &pkg, detail.as_ref()))
+                    .when_some(release_notes, |this, notes| {
+                        this.child(
+                            div()
+                                .flex()
+                                .flex_col()
+                                .gap(px(6.))
+                                .child(widgets::section_label(&p, tr!("dialog.release_notes")))
+                                .child(
+                                    div()
+                                        .id("release-notes")
+                                        .max_h(px(160.))
+                                        .overflow_y_scroll()
+                                        .p(px(10.))
+                                        .rounded(px(10.))
+                                        .bg(p.surface2)
+                                        .border_1()
+                                        .border_color(p.line)
+                                        .child(prose_lines(&p, &notes)),
+                                ),
+                        )
+                    })
+                    .when_some(tags, |this, tags| {
+                        this.child(
+                            div()
+                                .flex()
+                                .flex_wrap()
+                                .gap(px(6.))
+                                .children(tags.iter().map(|tag| {
+                                    widgets::pill(&p, PillKind::Line, tag.clone())
+                                })),
+                        )
+                    })
                     .child(command_block(&p, &command, copy_view.clone()))
                     .when(!related.is_empty(), |this| {
                         this.child(
@@ -227,27 +301,46 @@ pub fn pkg_detail(view: &mut AppView, id: &str, window: &mut Window, cx: &mut Co
     });
 }
 
-/// The 8-field stat grid the detail dialog shows.
-fn stat_grid(p: &Palette, pkg: &crate::model::Package) -> impl IntoElement {
+/// The 8-field stat grid the detail dialog shows. Values come from the
+/// `winget show` fetch when it has landed, falling back to the package row.
+fn stat_grid(p: &Palette, pkg: &Package, detail: Option<&PackageDetail>) -> impl IntoElement {
+    // The show value when present, else the row value, else `—`.
+    let pick = |shown: &str, fallback: Option<&str>| -> String {
+        if !shown.trim().is_empty() {
+            shown.to_owned()
+        } else {
+            fallback
+                .filter(|value| !value.trim().is_empty())
+                .unwrap_or("—")
+                .to_owned()
+        }
+    };
+    let empty = PackageDetail::default();
+    let detail = detail.unwrap_or(&empty);
     let fields: [(String, String); 8] = [
-        (tr!("dialog.version"), pkg.version.clone()),
-        (tr!("dialog.publisher"), non_empty(&pkg.publisher)),
         (
-            tr!("dialog.size"),
-            pkg.size.clone().unwrap_or_else(|| "—".to_owned()),
+            tr!("dialog.version"),
+            pick(&detail.version, Some(&pkg.version)),
+        ),
+        (
+            tr!("dialog.publisher"),
+            pick(&detail.publisher, Some(&pkg.publisher)),
         ),
         (
             tr!("dialog.license"),
-            pkg.license.clone().unwrap_or_else(|| "—".to_owned()),
+            pick(&detail.license, pkg.license.as_deref()),
         ),
         (
-            tr!("dialog.updated"),
-            pkg.updated.clone().unwrap_or_else(|| "—".to_owned()),
+            tr!("dialog.homepage"),
+            pick(&detail.homepage, pkg.homepage.as_deref()),
         ),
         (
-            tr!("dialog.installs"),
-            pkg.installs
-                .map_or_else(|| "—".to_owned(), |n| n.to_string()),
+            tr!("dialog.installer_type"),
+            pick(&detail.installer_type, None),
+        ),
+        (
+            tr!("dialog.release_date"),
+            pick(&detail.release_date, pkg.updated.as_deref()),
         ),
         (tr!("dialog.source"), pkg.source_label().to_owned()),
         (tr!("dialog.category"), pkg.category.label()),
@@ -268,6 +361,19 @@ fn stat_grid(p: &Palette, pkg: &crate::model::Package) -> impl IntoElement {
                 .child(div().text_size(px(10.5)).text_color(p.muted).child(label))
                 .child(div().text_size(px(12.5)).truncate().child(value))
         }))
+}
+
+/// Multi-line prose: one div per line so the line breaks `winget show` prints
+/// in its Description and Release Notes sections survive the render.
+fn prose_lines(p: &Palette, text: &str) -> impl IntoElement {
+    div()
+        .flex()
+        .flex_col()
+        .gap(px(2.))
+        .text_size(px(12.5))
+        .line_height(relative(1.6))
+        .text_color(p.ink2)
+        .children(text.lines().map(|line| div().child(line.to_owned())))
 }
 
 /// The 等价命令 block: a `$` prompt, the mono command, and a copy button.
@@ -799,12 +905,4 @@ fn readonly_field(p: &Palette, label: &str, value: &str) -> impl IntoElement {
                 .text_color(p.ink2)
                 .child(value.to_owned()),
         )
-}
-
-fn non_empty(value: &str) -> String {
-    if value.trim().is_empty() {
-        "—".to_owned()
-    } else {
-        value.to_owned()
-    }
 }

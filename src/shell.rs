@@ -69,6 +69,9 @@ pub struct AppView {
     /// and `export` on every pause.
     list_rows: Vec<winget::ListRow>,
     installed_ids: Vec<String>,
+    /// Package ids (lowercased) with a `winget show` fetch in flight, so a
+    /// reopened detail dialog never spawns a duplicate.
+    detail_inflight: std::collections::HashSet<String>,
     _subscriptions: Vec<Subscription>,
 }
 
@@ -116,6 +119,7 @@ impl AppView {
             search_epoch: 0,
             list_rows: Vec::new(),
             installed_ids: Vec::new(),
+            detail_inflight: std::collections::HashSet::new(),
             _subscriptions: Vec::new(),
         };
 
@@ -494,6 +498,62 @@ impl AppView {
 
             let _ = this.update(cx, |this, cx| {
                 this.state.sources = sources;
+                cx.notify();
+            });
+        }));
+    }
+
+    /// `winget show --id <id> --exact` — the detail dialog's data.
+    ///
+    /// The parsed detail is cached in [`AppState::details`] and merged into
+    /// the package row, so a reopened dialog renders instantly. No-op when
+    /// winget is missing, the detail is already cached, or a fetch for this
+    /// package is in flight.
+    pub fn fetch_detail(&mut self, id: &str, cx: &mut Context<Self>) {
+        let Some(winget) = self.winget.clone() else {
+            return;
+        };
+        let key = id.to_lowercase();
+        if self.state.details.contains_key(&key) || !self.detail_inflight.insert(key.clone()) {
+            return;
+        }
+        let source = self
+            .state
+            .packages
+            .iter()
+            .find(|p| p.key() == key)
+            .map(|p| p.source.clone());
+        let id = id.to_owned();
+
+        self.spawn_refresh(cx.spawn(async move |this, cx| {
+            let detail = cx
+                .background_spawn(async move {
+                    let args = winget::show(&id, source.as_deref());
+                    let refs: Vec<&str> = args.iter().map(String::as_str).collect();
+                    winget
+                        .run(&refs)
+                        .ok()
+                        .filter(|out| out.success())
+                        .map(|out| winget::parse_show(&out.stdout))
+                        // A failed match (e.g. an msstore id winget cannot
+                        // resolve) parses to an empty detail; do not cache it,
+                        // or the dialog would settle on blanks.
+                        .filter(|detail| {
+                            !detail.version.is_empty()
+                                || !detail.publisher.is_empty()
+                                || !detail.description.is_empty()
+                        })
+                })
+                .await;
+
+            let _ = this.update(cx, |this, cx| {
+                this.detail_inflight.remove(&key);
+                if let Some(detail) = detail {
+                    if let Some(pkg) = this.state.packages.iter_mut().find(|p| p.key() == key) {
+                        pkg.apply_detail(&detail);
+                    }
+                    this.state.details.insert(key, detail);
+                }
                 cx.notify();
             });
         }));

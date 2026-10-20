@@ -329,6 +329,10 @@ pub struct AppState {
     pub sort: SortMode,
     pub category_sort: CategorySort,
     pub packages: Vec<Package>,
+    /// Cached `winget show` output per package id (lowercased), filled when a
+    /// detail dialog opens. The search/list rows carry no description, license
+    /// or installer metadata — only `show` provides them.
+    pub details: std::collections::HashMap<String, crate::winget::PackageDetail>,
     pub sources: Vec<Source>,
     pub default_source: String,
     pub settings: Settings,
@@ -352,6 +356,7 @@ impl Default for AppState {
             search_source: SearchSource::Winget,
             search_filter: StatusFilter::All,
             packages: Vec::new(),
+            details: std::collections::HashMap::new(),
             sources: Vec::new(),
             sort: SortMode::Relevance,
             category_sort: CategorySort::Popular,
