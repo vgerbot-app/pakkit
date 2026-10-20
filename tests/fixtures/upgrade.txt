@@ -1,0 +1,16 @@
+Name                                    Id                                  Version           Available        Source
+---------------------------------------------------------------------------------------------------------------------
+7-Zip 26.03 (x64 edition)               7zip.7zip                           26.03.00.0        26.04            winget
+Docker CLI                              Docker.DockerCLI                    29.2.1            29.9.1           winget
+FFmpeg                                  Gyan.FFmpeg                         9.0.1             9.0.2            winget
+FlClash 版本 0.8.91+2025122201          chen08209.FlClash                   0.8.91+2025122201 0.9.1+2026101702 winget
+Git                                     Git.Git                             2.53.0            2.55.0.5         winget
+Google Chrome                           Google.Chrome.EXE                   145.0.7632.160    155.0.8059.85    winget
+nginx                                   nginxinc.nginx                      1.29.5            1.31.7           winget
+Python 3.14.3 (64-bit)                  Python.Python.3.14                  3.14.3            3.14.7           winget
+Python Launcher                         Python.Launcher                     < 3.14.7          3.14.7           winget
+RealVNC Server 7.17.0                   RealVNC.VNCServer                   7.17.0.5          7.18.0.14        winget
+Visual Studio Professional 2026         Microsoft.VisualStudio.Professional 18.10.3           18.11.0          winget
+Windows Terminal                        Microsoft.WindowsTerminal           1.24.11911.0      1.25.2733.0      winget
+WinLibs (POSIX threads, MSVCRT runtime) BrechtSanders.WinLibs.POSIX.MSVCRT  16.1.0-14.0.0-r4  16.2.0-14.0.0-r2 winget
+13 upgrades available.
