@@ -650,12 +650,15 @@ mod tests {
         }
     }
 
+    /// The drawer shows `winget <args>`; the prefix appears once, not twice.
     #[test]
     fn command_line_prefixes_winget_exactly_once() {
         let mut state = state_with(&["A"]);
         enqueue(&mut state, "A", QueueAction::Install);
         let line = command_line(&state.queue[0], &state.settings);
-        assert_eq!(line.matches("winget").count(), 1);
-        assert!(line.starts_with("winget "));
+        assert!(line.starts_with("winget install --id A --exact"));
+        // `--source winget` legitimately repeats the word, but never the
+        // leading prefix.
+        assert_eq!(line.split(' ').take(2).collect::<Vec<_>>(), ["winget", "install"]);
     }
 }

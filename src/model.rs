@@ -8,11 +8,12 @@ use crate::icons::IconKey;
 use crate::winget::{ListRow, PackageDetail, SearchRow, SourceExport};
 
 /// A built-in category. The set is fixed and client-side.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, PartialOrd, Ord)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, PartialOrd, Ord, Default)]
 pub enum CategoryId {
     Dev,
     Office,
     Media,
+    #[default]
     Tools,
     Science,
     Game,
@@ -266,12 +267,6 @@ pub struct Package {
     pub installed: bool,
     pub rating: Option<f32>,
     pub installs: Option<u64>,
-}
-
-impl Default for CategoryId {
-    fn default() -> Self {
-        CategoryId::Tools
-    }
 }
 
 impl Package {

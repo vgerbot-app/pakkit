@@ -7,7 +7,7 @@
 
 use crate::model::{CategoryId, Package, Source};
 use crate::theme::ModeChoice;
-use crate::winget::{Arch, InstallOptions, Scope, SearchFilters, Winget};
+use crate::winget::{Arch, InstallOptions, Scope, SearchFilters};
 
 /// The route table, mirroring the prototype's router. `Categories` carries the
 /// selected category, exactly as its `category` route does.
@@ -283,11 +283,12 @@ impl Default for AppState {
             query: String::new(),
             search_source: SearchSource::Winget,
             search_filter: StatusFilter::All,
+            packages: Vec::new(),
+            sources: Vec::new(),
             sort: SortMode::Relevance,
             category_sort: CategorySort::Popular,
             queue: Vec::new(),
             queue_uid: 0,
-            sources: Vec::new(),
             default_source: "winget".to_owned(),
             settings: Settings::default(),
             queue_open: false,
@@ -564,6 +565,8 @@ mod tests {
         assert_eq!(state.filtered().len(), 2);
     }
 
+    /// One query per field, since `matches` is a case-insensitive substring
+    /// test over name, id, publisher, description and tags.
     #[test]
     fn query_matches_name_id_publisher_description_and_tags() {
         let mut state = AppState::default();
@@ -573,7 +576,13 @@ mod tests {
         vscode.tags = vec!["editor".into()];
         state.packages = vec![vscode, pkg("Mozilla.Firefox", "Firefox", CategoryId::Net)];
 
-        for query in ["vscode", "visual studio", "corporation", "editor", "microsoft."] {
+        for query in [
+            "visualstudiocode", // id
+            "visual studio",    // name
+            "corporation",      // publisher
+            "code editor",      // description
+            "editor",           // tags
+        ] {
             state.query = query.to_owned();
             let hits = state.filtered();
             assert_eq!(hits.len(), 1, "{query} must match exactly one package");

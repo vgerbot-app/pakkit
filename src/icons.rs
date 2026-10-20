@@ -7,7 +7,7 @@
 //! element's `text_color` drives the glyph colour.
 
 use gpui_kit::component::{Icon, Sizable as _, Size};
-use gpui_kit::{Hsla, IntoElement};
+use gpui_kit::{Hsla, Styled as _};
 
 /// One prototype glyph.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]

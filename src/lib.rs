@@ -6,3 +6,4 @@ pub mod queue;
 pub mod state;
 pub mod theme;
 pub mod winget;
+pub mod widgets;

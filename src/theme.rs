@@ -6,7 +6,7 @@
 //! and then projected onto `ThemeColor` so built-in components inherit the
 //! right colours.
 
-use gpui_kit::component::{ActiveTheme as _, Theme, ThemeMode};
+use gpui_kit::component::{Theme, ThemeMode};
 use gpui_kit::{App, Global, Hsla, px};
 
 /// `#rrggbb` → `Hsla`, the way gpui's `rgba` accepts `0xRRGGBBAA`.
@@ -30,17 +30,24 @@ const fn h(hex: u32) -> Hsla {
         d / (max + min)
     };
 
-    let hhh = if d == 0. {
+    let raw = if d == 0. {
         0.
     } else if max == r {
-        ((g - b) / d).rem_euclid(6.) / 6.
+        (g - b) / d
     } else if max == g {
-        ((b - r) / d + 2.) / 6.
+        (b - r) / d + 2.
     } else {
-        ((r - g) / d + 4.) / 6.
+        (r - g) / d + 4.
     };
+    // Wrap into `0..6` without `rem_euclid`, which is not a `const fn`.
+    let wrapped = if raw < 0. { raw + 6. } else { raw };
 
-    Hsla { h: hhh, s, l, a: 1. }
+    Hsla {
+        h: wrapped / 6.,
+        s,
+        l,
+        a: 1.,
+    }
 }
 
 /// The prototype's design tokens for one mode.
