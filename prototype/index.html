@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="dark">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>WingetGUI — 原型 (Prototype)</title>
+<script src="vendor/tailwind.js"></script>
+<link rel="stylesheet" href="assets/css/app.css" />
+<script>
+  tailwind.config = {
+    darkMode: 'class',
+    theme: {
+      extend: {
+        colors: {
+          bg:       'var(--bg)',
+          surface:  'var(--surface)',
+          surface2: 'var(--surface-2)',
+          surface3: 'var(--surface-3)',
+          line:     'var(--line)',
+          line2:    'var(--line-strong)',
+          ink:      'var(--ink)',
+          ink2:     'var(--ink-2)',
+          muted:    'var(--muted)',
+          accent:   'var(--accent)',
+          accent2:  'var(--accent-2)',
+          onaccent: 'var(--on-accent)',
+          ok:       'var(--ok)',
+          warn:     'var(--warn)',
+          danger:   'var(--danger)',
+        },
+        fontFamily: {
+          sans: ['"Segoe UI Variable Text"', '"Segoe UI"', 'system-ui', '"Microsoft YaHei UI"', 'sans-serif'],
+          mono: ['"Cascadia Code"', 'Consolas', '"JetBrains Mono"', 'monospace'],
+        },
+        borderRadius: { xl2: '14px', xl3: '18px' },
+        boxShadow: {
+          win:  '0 10px 30px -12px rgba(0,0,0,.45)',
+          card: '0 1px 2px rgba(0,0,0,.06), 0 8px 24px -16px rgba(0,0,0,.35)',
+          pop:  '0 24px 60px -20px rgba(0,0,0,.55)',
+        },
+        keyframes: {
+          fadeUp:  { '0%': { opacity: 0, transform: 'translateY(6px)' }, '100%': { opacity: 1, transform: 'none' } },
+          slideIn: { '0%': { opacity: 0, transform: 'translateX(24px)' }, '100%': { opacity: 1, transform: 'none' } },
+          shimmer: { '0%': { backgroundPosition: '-200% 0' }, '100%': { backgroundPosition: '200% 0' } },
+        },
+        animation: {
+          fadeUp: 'fadeUp .28s cubic-bezier(.22,1,.36,1) both',
+          slideIn: 'slideIn .3s cubic-bezier(.22,1,.36,1) both',
+          shimmer: 'shimmer 1.6s linear infinite',
+        },
+      },
+    },
+  };
+</script>
+</head>
+<body class="bg-bg text-ink font-sans antialiased overflow-hidden select-none">
+
+<!-- ══ 应用框架（无边框窗口模拟） ══ -->
+<div class="h-screen w-screen flex flex-col">
+
+  <!-- ── 标题栏 / Titlebar ── -->
+  <header class="h-13 shrink-0 flex items-center gap-3 pl-3 pr-0 drag bg-surface/80 backdrop-blur-xl border-b border-line z-40">
+    <div class="flex items-center gap-2.5 no-drag">
+      <div class="w-7 h-7 rounded-lg bg-gradient-to-br from-accent to-accent2 grid place-items-center shadow-md">
+        <svg viewBox="0 0 24 24" class="w-4 h-4 text-onaccent" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 20h14"/>
+        </svg>
+      </div>
+      <span class="text-[13px] font-semibold tracking-tight">WingetGUI</span>
+      <span class="text-[10px] px-1.5 py-0.5 rounded-md bg-surface3 text-muted border border-line">原型 v0.1</span>
+    </div>
+
+    <!-- 全局搜索 -->
+    <div class="flex-1 flex justify-center no-drag">
+      <div class="w-full max-w-[560px] flex items-center gap-2 h-8.5 px-3 rounded-lg bg-surface2 border border-line focus-within:border-accent/70 focus-within:ring-2 focus-within:ring-accent/15 transition">
+        <svg viewBox="0 0 24 24" class="w-4 h-4 text-muted shrink-0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg>
+        <input id="globalSearch" type="text" placeholder="搜索软件包…   (Ctrl+K)" autocomplete="off"
+          class="flex-1 bg-transparent outline-none text-[13px] placeholder:text-muted/80" />
+        <button data-src-cycle class="shrink-0 text-[11px] px-2 h-5.5 rounded-md bg-surface3 border border-line text-ink2 hover:border-line2 transition" title="切换搜索源">
+          <span id="globalSourceLabel">winget</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- 窗口控制 -->
+    <div class="flex items-center no-drag">
+      <button class="winc w-11 h-13 grid place-items-center hover:bg-surface3 transition" title="最小化">
+        <svg viewBox="0 0 24 24" class="w-3.5 h-3.5" stroke="currentColor" stroke-width="1.6"><path d="M5 12h14"/></svg>
+      </button>
+      <button class="winc w-11 h-13 grid place-items-center hover:bg-surface3 transition" title="最大化">
+        <svg viewBox="0 0 24 24" class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="5.5" y="5.5" width="13" height="13" rx="1.5"/></svg>
+      </button>
+      <button class="winc w-11 h-13 grid place-items-center hover:bg-danger hover:text-white transition" title="关闭">
+        <svg viewBox="0 0 24 24" class="w-3.5 h-3.5" stroke="currentColor" stroke-width="1.6"><path d="M6 6l12 12M18 6 6 18"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <div class="flex-1 flex min-h-0">
+
+    <!-- ── 侧边栏 / Sidebar ── -->
+    <nav class="w-16 xl:w-56 shrink-0 flex flex-col border-r border-line bg-surface/60 backdrop-blur-xl transition-[width] duration-200">
+      <div class="flex-1 overflow-y-auto py-3 px-2 space-y-0.5" id="sidebarNav"><!-- injected --></div>
+
+      <div class="p-2 border-t border-line space-y-0.5">
+        <button data-action="toggle-theme" class="nav-item">
+          <span class="ico" data-icon="theme"></span><span class="lbl">跟随系统</span>
+        </button>
+        <button data-route="queue" class="nav-item">
+          <span class="ico" data-icon="queue"></span><span class="lbl">安装队列</span>
+          <span id="queueBadge" class="ml-auto hidden text-[10px] min-w-5 h-5 px-1.5 grid place-items-center rounded-full bg-accent text-onaccent font-semibold">0</span>
+        </button>
+      </div>
+    </nav>
+
+    <!-- ── 主区域 ── -->
+    <main class="flex-1 min-w-0 flex flex-col">
+      <div id="view" class="flex-1 overflow-y-auto scroll-smooth"></div>
+
+      <!-- 状态栏 -->
+      <footer class="h-7 shrink-0 flex items-center gap-4 px-3 text-[11px] text-muted border-t border-line bg-surface/70 backdrop-blur">
+        <span class="flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-ok"></span><span id="statusText">就绪</span></span>
+        <span class="opacity-40">|</span>
+        <span>源 <b class="text-ink2" id="statusSources">0</b></span>
+        <span>队列 <b class="text-ink2" id="statusQueue">0</b></span>
+        <span class="ml-auto flex items-center gap-1.5" title="winget 版本">
+          <span data-icon="terminal" class="w-3 h-3"></span> winget v1.8.1911
+        </span>
+        <span class="px-1.5 py-0.5 rounded bg-surface3 border border-line">x64</span>
+      </footer>
+    </main>
+
+    <!-- ── 安装队列抽屉 ── -->
+    <aside id="queuePanel" class="w-[360px] shrink-0 border-l border-line bg-surface/85 backdrop-blur-xl flex flex-col hidden">
+      <div class="h-12 shrink-0 flex items-center gap-2 px-3 border-b border-line">
+        <span data-icon="queue" class="w-4 h-4 text-accent"></span>
+        <span class="text-[13px] font-semibold">安装队列</span>
+        <span id="queueCount" class="text-[11px] px-1.5 py-0.5 rounded-md bg-surface3 border border-line text-muted">0</span>
+        <div class="ml-auto flex items-center gap-1">
+          <button data-action="queue-clear-done" class="btn-ghost" title="清除已完成">清除</button>
+          <button data-action="close-queue" class="icon-btn" title="关闭">
+            <svg viewBox="0 0 24 24" class="w-4 h-4" stroke="currentColor" stroke-width="1.8" fill="none"><path d="M6 6l12 12M18 6 6 18"/></svg>
+          </button>
+        </div>
+      </div>
+      <div id="queueList" class="flex-1 overflow-y-auto p-3 space-y-2"></div>
+      <div class="p-3 border-t border-line text-[11px] text-muted flex items-center gap-2">
+        <span data-icon="info" class="w-3.5 h-3.5"></span>
+        安装任务串行执行，避免 winget 锁冲突
+      </div>
+    </aside>
+  </div>
+</div>
+
+<!-- 容器：模态框 / 提示 -->
+<div id="modalRoot"></div>
+<div id="toastRoot" class="fixed bottom-10 right-4 z-[90] flex flex-col gap-2 items-end pointer-events-none"></div>
+
+<script src="assets/js/data.js"></script>
+<script src="assets/js/ui.js"></script>
+<script src="assets/js/views.js"></script>
+<script src="assets/js/app.js"></script>
+</body>
+</html>

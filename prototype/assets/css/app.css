@@ -1,0 +1,224 @@
+/* ══════════════════════════════════════════════════════════════
+   WingetGUI 原型 — 设计系统 / Design tokens
+   ══════════════════════════════════════════════════════════════ */
+
+:root {
+  --bg:        #f4f5f7;
+  --surface:   #ffffff;
+  --surface-2: #f7f8fa;
+  --surface-3: #eceef2;
+  --line:      #e3e6eb;
+  --line-strong:#cfd4dc;
+  --ink:       #14171c;
+  --ink-2:     #40474f;
+  --muted:     #8b939d;
+  --accent:    #2563eb;
+  --accent-2:  #7c3aed;
+  --on-accent: #ffffff;
+  --ok:        #16a34a;
+  --warn:      #d97706;
+  --danger:    #dc2626;
+  --scrollbar: #c8ccd3;
+}
+
+.dark {
+  --bg:        #0e1014;
+  --surface:   #16191f;
+  --surface-2: #1c2028;
+  --surface-3: #252a34;
+  --line:      #272c36;
+  --line-strong:#3a4150;
+  --ink:       #eef1f6;
+  --ink-2:     #b7bec9;
+  --muted:     #767e8c;
+  --accent:    #4f8cff;
+  --accent-2:  #a06bff;
+  --on-accent: #08111f;
+  --ok:        #34d399;
+  --warn:      #fbbf24;
+  --danger:    #f87171;
+  --scrollbar: #333a46;
+}
+
+/* 布局辅助（Tailwind 任意值 jit 之外的少量补充） */
+.h-13      { height: 3.25rem; }
+.h-8\.5    { height: 2.125rem; }
+.h-5\.5    { height: 1.375rem; }
+.drag      { -webkit-app-region: drag; }
+.no-drag   { -webkit-app-region: no-drag; }
+
+html, body { height: 100%; }
+
+/* 滚动条 */
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+  background: var(--scrollbar);
+  border: 3px solid transparent;
+  background-clip: content-box;
+  border-radius: 99px;
+}
+::-webkit-scrollbar-thumb:hover { background: var(--line-strong); background-clip: content-box; }
+
+/* ── 侧边栏项 ── */
+.nav-item {
+  width: 100%;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 0 10px;
+  border-radius: 9px;
+  font-size: 13px;
+  color: var(--ink-2);
+  transition: background .15s, color .15s;
+  position: relative;
+  white-space: nowrap;
+}
+.nav-item:hover { background: var(--surface-3); color: var(--ink); }
+.nav-item.active { background: color-mix(in srgb, var(--accent) 14%, transparent); color: var(--accent); font-weight: 600; }
+.nav-item.active::before {
+  content: ''; position: absolute; left: -8px; top: 9px; bottom: 9px;
+  width: 3px; border-radius: 0 3px 3px 0; background: var(--accent);
+}
+.nav-item .ico { width: 18px; height: 18px; display: grid; place-items: center; flex-shrink: 0; }
+.nav-item .ico svg { width: 17px; height: 17px; }
+
+/* 折叠态（窄屏）：仅图标 */
+@media (max-width: 1279px) {
+  .nav-item { justify-content: center; padding: 0; }
+  .nav-item .lbl { display: none; }
+  .nav-item.active::before { display: none; }
+  .nav-item.active { background: color-mix(in srgb, var(--accent) 18%, transparent); }
+}
+
+/* ── 按钮 ── */
+.btn {
+  height: 34px; padding: 0 14px; border-radius: 9px;
+  font-size: 13px; font-weight: 500;
+  display: inline-flex; align-items: center; justify-content: center; gap: 7px;
+  transition: background .15s, border-color .15s, opacity .15s, transform .08s;
+  white-space: nowrap;
+}
+.btn:active { transform: scale(.975); }
+.btn svg { width: 15px; height: 15px; }
+.btn-primary { background: var(--accent); color: var(--on-accent); }
+.btn-primary:hover { filter: brightness(1.08); }
+.btn-soft { background: var(--surface-3); color: var(--ink); border: 1px solid var(--line); }
+.btn-soft:hover { border-color: var(--line-strong); }
+.btn-outline { border: 1px solid var(--line-strong); color: var(--ink-2); }
+.btn-outline:hover { background: var(--surface-3); color: var(--ink); }
+.btn-danger { background: color-mix(in srgb, var(--danger) 14%, transparent); color: var(--danger); border: 1px solid color-mix(in srgb, var(--danger) 30%, transparent); }
+.btn-danger:hover { background: color-mix(in srgb, var(--danger) 22%, transparent); }
+.btn[disabled] { opacity: .45; pointer-events: none; }
+.btn-sm { height: 29px; padding: 0 11px; font-size: 12px; border-radius: 8px; }
+.btn-sm svg { width: 13px; height: 13px; }
+
+.btn-ghost { font-size: 12px; padding: 4px 9px; border-radius: 7px; color: var(--muted); transition: .15s; }
+.btn-ghost:hover { background: var(--surface-3); color: var(--ink); }
+
+.icon-btn {
+  width: 28px; height: 28px; border-radius: 8px; display: grid; place-items: center;
+  color: var(--muted); transition: .15s;
+}
+.icon-btn:hover { background: var(--surface-3); color: var(--ink); }
+
+/* ── 卡片 ── */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  transition: border-color .18s, transform .18s, box-shadow .18s;
+}
+.card-hover:hover {
+  border-color: color-mix(in srgb, var(--accent) 45%, var(--line));
+  box-shadow: 0 12px 28px -18px color-mix(in srgb, var(--accent) 60%, transparent);
+  transform: translateY(-1px);
+}
+
+/* ── 分类磁贴 ── */
+.cat-tile { position: relative; overflow: hidden; }
+.cat-tile::after {
+  content: ''; position: absolute; inset: 0;
+  background: radial-gradient(120% 90% at 100% 0%, color-mix(in srgb, var(--tile) 22%, transparent), transparent 62%);
+  opacity: .9; pointer-events: none;
+}
+.cat-tile:hover::after { opacity: 1; }
+.cat-ico {
+  width: 40px; height: 40px; border-radius: 11px; display: grid; place-items: center;
+  background: color-mix(in srgb, var(--tile) 16%, transparent);
+  color: var(--tile);
+  border: 1px solid color-mix(in srgb, var(--tile) 26%, transparent);
+}
+.cat-ico svg { width: 21px; height: 21px; }
+
+/* ── 徽章 ── */
+.badge { font-size: 10.5px; line-height: 1; padding: 4px 7px; border-radius: 6px; border: 1px solid transparent; font-weight: 500; white-space: nowrap; }
+.badge-line   { background: var(--surface-3); color: var(--ink-2); border-color: var(--line); }
+.badge-accent { background: color-mix(in srgb, var(--accent) 15%, transparent); color: var(--accent); }
+.badge-ok     { background: color-mix(in srgb, var(--ok) 15%, transparent); color: var(--ok); }
+.badge-warn   { background: color-mix(in srgb, var(--warn) 16%, transparent); color: var(--warn); }
+.badge-danger { background: color-mix(in srgb, var(--danger) 15%, transparent); color: var(--danger); }
+
+/* ── 进度条 ── */
+.bar { height: 6px; border-radius: 99px; background: var(--surface-3); overflow: hidden; }
+.bar > i { display: block; height: 100%; border-radius: 99px; transition: width .35s ease; }
+.bar-indeterminate > i {
+  width: 40% !important;
+  background-image: linear-gradient(90deg, transparent, var(--accent), transparent);
+  animation: shimmer 1.3s linear infinite;
+}
+
+/* ── 表格/列表行 ── */
+.row-hover:hover { background: var(--surface-2); }
+
+/* ── 输入控件 ── */
+.field {
+  height: 38px; width: 100%; padding: 0 12px; border-radius: 9px;
+  background: var(--surface-2); border: 1px solid var(--line);
+  font-size: 13px; color: var(--ink); outline: none; transition: .15s;
+}
+.field:focus { border-color: color-mix(in srgb, var(--accent) 70%, transparent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 14%, transparent); }
+.field::placeholder { color: var(--muted); }
+textarea.field { height: auto; padding: 10px 12px; resize: vertical; }
+
+/* 开关 */
+.switch { width: 40px; height: 22px; border-radius: 99px; background: var(--surface-3); border: 1px solid var(--line-strong); position: relative; transition: .2s; flex-shrink: 0; }
+.switch::after { content: ''; position: absolute; top: 2px; left: 2px; width: 16px; height: 16px; border-radius: 99px; background: var(--muted); transition: .2s; }
+.switch.on { background: color-mix(in srgb, var(--accent) 85%, transparent); border-color: transparent; }
+.switch.on::after { left: 20px; background: #fff; }
+
+/* 单选/分段控件 */
+.seg { display: inline-flex; padding: 3px; gap: 2px; border-radius: 10px; background: var(--surface-3); border: 1px solid var(--line); }
+.seg > button { height: 27px; padding: 0 12px; border-radius: 7px; font-size: 12.5px; color: var(--muted); transition: .15s; white-space: nowrap; }
+.seg > button:hover { color: var(--ink); }
+.seg > button.on { background: var(--surface); color: var(--ink); font-weight: 600; box-shadow: 0 1px 3px rgba(0,0,0,.12); }
+
+/* ── 抽屉/模态 ── */
+.backdrop { position: fixed; inset: 0; background: rgba(4,6,10,.5); backdrop-filter: blur(3px); z-index: 60; }
+.modal-layer {
+  position: fixed; inset: 0; z-index: 70;
+  display: flex; align-items: center; justify-content: center;
+  padding: 24px; pointer-events: none;
+}
+.modal {
+  width: min(680px, 100%); max-height: 100%;
+  background: var(--surface); border: 1px solid var(--line);
+  border-radius: 16px; box-shadow: 0 24px 60px -20px rgba(0,0,0,.6);
+  display: flex; flex-direction: column; overflow: hidden;
+  pointer-events: auto;
+}
+.modal-lg { width: min(920px, 100%); }
+
+/* 骨架屏 */
+.skel { background: linear-gradient(90deg, var(--surface-2) 25%, var(--surface-3) 37%, var(--surface-2) 63%); background-size: 200% 100%; animation: shimmer 1.6s linear infinite; border-radius: 8px; }
+
+/* 章节标题 */
+.sec-title { font-size: 12px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+
+/* tooltip */
+[data-tip] { position: relative; }
+[data-tip]:hover::after {
+  content: attr(data-tip); position: absolute; z-index: 80; left: 50%; bottom: calc(100% + 8px); transform: translateX(-50%);
+  background: var(--ink); color: var(--bg); font-size: 11px; padding: 5px 8px; border-radius: 6px; white-space: nowrap; pointer-events: none;
+}
