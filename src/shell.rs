@@ -1112,6 +1112,9 @@ fn now_stamp() -> String {
     )
 }
 
+/// SharedString is used by the view signatures; keep the import honest.
+const _: Option<SharedString> = None;
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -1176,6 +1179,3 @@ mod tests {
         assert!(packages[0].installed);
     }
 }
-
-/// SharedString is used by the view signatures; keep the import honest.
-const _: Option<SharedString> = None;
