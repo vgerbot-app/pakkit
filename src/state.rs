@@ -319,6 +319,15 @@ impl Settings {
     }
 }
 
+/// A host's favicon, as known to the UI.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum IconState {
+    /// Fetched favicon bytes on disk; gpui renders this path directly.
+    Ready(std::path::PathBuf),
+    /// The fetch failed (negative cache); keep showing the category chip.
+    Missing,
+}
+
 /// Everything the views read.
 #[derive(Debug, Clone, PartialEq)]
 pub struct AppState {
@@ -333,6 +342,9 @@ pub struct AppState {
     /// detail dialog opens. The search/list rows carry no description, license
     /// or installer metadata — only `show` provides them.
     pub details: std::collections::HashMap<String, crate::winget::PackageDetail>,
+    /// Favicon state per host, filled from the disk cache at startup and as
+    /// fetches land. See [`crate::cache`].
+    pub icons: std::collections::HashMap<String, IconState>,
     pub sources: Vec<Source>,
     pub default_source: String,
     pub settings: Settings,
@@ -357,6 +369,7 @@ impl Default for AppState {
             search_filter: StatusFilter::All,
             packages: Vec::new(),
             details: std::collections::HashMap::new(),
+            icons: std::collections::HashMap::new(),
             sources: Vec::new(),
             sort: SortMode::Relevance,
             category_sort: CategorySort::Popular,
@@ -373,6 +386,18 @@ impl Default for AppState {
 }
 
 impl AppState {
+    /// The cached favicon path for a package, when its detail is cached, the
+    /// detail names a host, and that host's icon has been fetched. `None`
+    /// keeps the category chip.
+    pub fn icon_path_for(&self, pkg_id: &str) -> Option<std::path::PathBuf> {
+        let detail = self.details.get(&pkg_id.to_lowercase())?;
+        let host = crate::cache::host_of(detail)?;
+        match self.icons.get(&host) {
+            Some(IconState::Ready(path)) => Some(path.clone()),
+            _ => None,
+        }
+    }
+
     /// All packages assigned to `category`.
     pub fn category_packages(&self, category: CategoryId) -> Vec<&Package> {
         let mut list: Vec<&Package> = self

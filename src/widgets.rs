@@ -619,6 +619,31 @@ pub fn pkg_chip(p: &Palette, pkg: &Package, side: f32, glyph: f32) -> Div {
     tinted_chip(p, pkg.category.icon(), pkg.category.color(), side, glyph)
 }
 
+/// The package's favicon when the cache has one ([`AppState::icon_path_for`]),
+/// else the category chip. gpui decodes and GPU-caches the image; the rounded
+/// frame matches `pkg_chip`'s.
+///
+/// [`AppState::icon_path_for`]: crate::state::AppState::icon_path_for
+pub fn pkg_icon(
+    p: &Palette,
+    pkg: &Package,
+    icon: Option<std::path::PathBuf>,
+    side: f32,
+    glyph: f32,
+) -> Div {
+    match icon {
+        Some(path) => div()
+            .size(px(side))
+            .flex_none()
+            .rounded(px(12.))
+            .overflow_hidden()
+            .border_1()
+            .border_color(p.line)
+            .child(gpui_kit::img(path).size(px(side))),
+        None => pkg_chip(p, pkg, side, glyph),
+    }
+}
+
 /// `.cat-tile`'s icon chip: 40 px, tile-tinted, 12 px radius.
 pub fn category_chip(p: &Palette, category: crate::model::CategoryId) -> Div {
     tinted_chip(p, category.icon(), category.color(), 40., 20.)

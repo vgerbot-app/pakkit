@@ -15,6 +15,7 @@ macro_rules! tr {
     };
 }
 
+pub mod cache;
 pub mod config;
 pub mod dialogs;
 pub mod icons;

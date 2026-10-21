@@ -78,10 +78,16 @@ pub fn pkg_detail(view: &mut AppView, id: &str, window: &mut Window, cx: &mut Co
                 .take(3)
                 .cloned()
                 .collect();
+            let icon = view.state.icon_path_for(&pkg.id);
+            let related_icons: Vec<_> = related
+                .iter()
+                .map(|rel| view.state.icon_path_for(&rel.id))
+                .collect();
             let loading = detail.is_none() && view.winget.is_some();
-            Some((pkg, detail, command, busy, action, label, related, loading))
+            Some((pkg, detail, command, busy, action, label, related, related_icons, icon, loading))
         });
-        let Ok(Some((pkg, detail, command, busy, action, label, related, loading))) = snapshot
+        let Ok(Some((pkg, detail, command, busy, action, label, related, related_icons, icon, loading))) =
+            snapshot
         else {
             return dialog;
         };
@@ -133,7 +139,7 @@ pub fn pkg_detail(view: &mut AppView, id: &str, window: &mut Window, cx: &mut Co
                             .flex()
                             .items_center()
                             .gap(px(14.))
-                            .child(widgets::pkg_chip(&p, &pkg, 64., 32.))
+                            .child(widgets::pkg_icon(&p, &pkg, icon.clone(), 64., 32.))
                             .child(
                                 div()
                                     .flex()
@@ -208,12 +214,12 @@ pub fn pkg_detail(view: &mut AppView, id: &str, window: &mut Window, cx: &mut Co
                                 .flex_col()
                                 .gap(px(8.))
                                 .child(widgets::section_label(&p, tr!("dialog.related")))
-                                .children(related.iter().map(|rel| {
+                                .children(related.iter().zip(related_icons.iter()).map(|(rel, rel_icon)| {
                                     div()
                                         .flex()
                                         .items_center()
                                         .gap(px(10.))
-                                        .child(widgets::pkg_chip(&p, rel, 32., 16.))
+                                        .child(widgets::pkg_icon(&p, rel, rel_icon.clone(), 32., 16.))
                                         .child(
                                             div()
                                                 .flex_1()

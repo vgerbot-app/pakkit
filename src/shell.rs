@@ -72,6 +72,8 @@ pub struct AppView {
     /// Package ids (lowercased) with a `winget show` fetch in flight, so a
     /// reopened detail dialog never spawns a duplicate.
     detail_inflight: std::collections::HashSet<String>,
+    /// Hosts with a favicon fetch in flight.
+    icon_inflight: std::collections::HashSet<String>,
     _subscriptions: Vec<Subscription>,
 }
 
@@ -120,6 +122,7 @@ impl AppView {
             list_rows: Vec::new(),
             installed_ids: Vec::new(),
             detail_inflight: std::collections::HashSet::new(),
+            icon_inflight: std::collections::HashSet::new(),
             _subscriptions: Vec::new(),
         };
 
@@ -172,6 +175,9 @@ impl AppView {
 
     /// Resolve winget, read its version, then load the first pages of data.
     fn start(&mut self, cx: &mut Context<Self>) {
+        // The disk caches warm the detail/icon maps even when winget is
+        // missing, so this runs before the resolve below can early-return.
+        self.load_cache(cx);
         let Ok(winget) = Winget::resolve(&self.state.settings.winget_path) else {
             let message = Winget::resolve(&self.state.settings.winget_path)
                 .err()
@@ -524,6 +530,7 @@ impl AppView {
             .find(|p| p.key() == key)
             .map(|p| p.source.clone());
         let id = id.to_owned();
+        let cache_key = key.clone();
 
         self.spawn_refresh(cx.spawn(async move |this, cx| {
             let detail = cx
@@ -543,6 +550,16 @@ impl AppView {
                                 || !detail.publisher.is_empty()
                                 || !detail.description.is_empty()
                         })
+                        // Persist next to the in-memory cache so the next run
+                        // renders details without re-running winget.
+                        .inspect(|detail| {
+                            if let (Some(path), Ok(json)) = (
+                                crate::cache::detail_path(&cache_key),
+                                serde_json::to_string(detail),
+                            ) {
+                                let _ = crate::cache::atomic_write(&path, json.as_bytes());
+                            }
+                        })
                 })
                 .await;
 
@@ -552,7 +569,82 @@ impl AppView {
                     if let Some(pkg) = this.state.packages.iter_mut().find(|p| p.key() == key) {
                         pkg.apply_detail(&detail);
                     }
+                    // The detail names the favicon's host; start its fetch so
+                    // the icon can appear while the dialog is still open.
+                    if let Some(host) = crate::cache::host_of(&detail) {
+                        this.fetch_icon(&host, cx);
+                    }
                     this.state.details.insert(key, detail);
+                }
+                cx.notify();
+            });
+        }));
+    }
+
+    /// Warm the detail/icon maps from the on-disk caches, then fetch favicons
+    /// for hosts the cached details point at but no icon is cached for yet.
+    fn load_cache(&mut self, cx: &mut Context<Self>) {
+        self.spawn_refresh(cx.spawn(async move |this, cx| {
+            let (details, icons) = cx
+                .background_spawn(async move {
+                    (crate::cache::load_details(), crate::cache::load_icons())
+                })
+                .await;
+            let _ = this.update(cx, |this, cx| {
+                for detail in details {
+                    this.state.details.insert(detail.id.to_lowercase(), detail);
+                }
+                for (host, state) in icons {
+                    let state = match state {
+                        Ok(path) => crate::state::IconState::Ready(path),
+                        Err(()) => crate::state::IconState::Missing,
+                    };
+                    this.state.icons.insert(host, state);
+                }
+                let hosts: Vec<String> = this
+                    .state
+                    .details
+                    .values()
+                    .filter_map(crate::cache::host_of)
+                    .filter(|host| !this.state.icons.contains_key(host))
+                    .collect();
+                for host in hosts {
+                    this.fetch_icon(&host, cx);
+                }
+                cx.notify();
+            });
+        }));
+    }
+
+    /// Fetch the favicon for `host` into the disk cache. No-op when the state
+    /// is already known (fetched or negative-cached) or a fetch is in flight.
+    pub fn fetch_icon(&mut self, host: &str, cx: &mut Context<Self>) {
+        if self.state.icons.contains_key(host) || !self.icon_inflight.insert(host.to_owned()) {
+            return;
+        }
+        let host = host.to_owned();
+        self.spawn_refresh(cx.spawn(async move |this, cx| {
+            let bytes = {
+                let host = host.clone();
+                cx.background_spawn(async move { crate::cache::fetch_favicon(&host) })
+                    .await
+            };
+            let _ = this.update(cx, |this, cx| {
+                this.icon_inflight.remove(&host);
+                let state = match bytes {
+                    Some(bytes) => crate::cache::icon_path(&host).and_then(|path| {
+                        crate::cache::atomic_write(&path, &bytes).ok()?;
+                        Some(crate::state::IconState::Ready(path))
+                    }),
+                    None => {
+                        if let Some(marker) = crate::cache::none_marker_path(&host) {
+                            let _ = crate::cache::atomic_write(&marker, &[]);
+                        }
+                        Some(crate::state::IconState::Missing)
+                    }
+                };
+                if let Some(state) = state {
+                    this.state.icons.insert(host, state);
                 }
                 cx.notify();
             });

@@ -134,7 +134,7 @@ fn home(state: &AppState, p: &Palette, cx: &mut Context<AppView>) -> AnyElement 
                         recent
                             .iter()
                             .enumerate()
-                            .map(|(ix, pkg)| recent_row(p, pkg, ix > 0, cx)),
+                            .map(|(ix, pkg)| recent_row(state, p, pkg, ix > 0, cx)),
                     ),
                 )
                 .into_any_element(),
@@ -332,7 +332,7 @@ fn package_card(
                     .flex()
                     .items_start()
                     .gap(px(10.))
-                    .child(widgets::pkg_chip(p, pkg, 44., 22.))
+                    .child(widgets::pkg_icon(p, pkg, state.icon_path_for(&pkg.id), 44., 22.))
                     .child(
                         div()
                             .flex_1()
@@ -428,7 +428,13 @@ fn package_card(
 }
 
 /// One row of the 最近更新 card, divided by a hairline.
-fn recent_row(p: &Palette, pkg: &Package, divided: bool, cx: &mut Context<AppView>) -> AnyElement {
+fn recent_row(
+    state: &AppState,
+    p: &Palette,
+    pkg: &Package,
+    divided: bool,
+    cx: &mut Context<AppView>,
+) -> AnyElement {
     let id = pkg.id.clone();
     let installed = pkg.installed;
     div()
@@ -440,7 +446,7 @@ fn recent_row(p: &Palette, pkg: &Package, divided: bool, cx: &mut Context<AppVie
         .py(px(10.))
         .when(divided, |this| this.border_t_1().border_color(p.line))
         .cursor_pointer()
-        .child(widgets::pkg_chip(p, pkg, 32., 16.))
+        .child(widgets::pkg_icon(p, pkg, state.icon_path_for(&pkg.id), 32., 16.))
         .child(
             div()
                 .flex_1()
@@ -955,7 +961,7 @@ fn installed_row(
         .px(px(14.))
         .py(px(10.))
         .when(divided, |this| this.border_t_1().border_color(p.line))
-        .child(widgets::pkg_chip(p, pkg, 36., 18.))
+        .child(widgets::pkg_icon(p, pkg, state.icon_path_for(&pkg.id), 36., 18.))
         .child(
             div()
                 .flex_1()
@@ -1101,7 +1107,7 @@ fn update_card(
             .flex()
             .items_center()
             .gap(px(14.))
-            .child(widgets::pkg_chip(p, pkg, 44., 22.))
+            .child(widgets::pkg_icon(p, pkg, state.icon_path_for(&pkg.id), 44., 22.))
             .child(
                 div()
                     .flex_1()
