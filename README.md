@@ -1,19 +1,108 @@
 # WingetGUI
 
-Windows 上的 winget 图形客户端。Rust + [gpui-kit](https://crates.io/crates/gpui-kit) 0.8，原生窗口，无 Electron/WebView。
+<div align="center"><img alt="CI" src="https://github.com/vgerbot-app/winget-gui/actions/workflows/ci.yml/badge.svg"> <img alt="License" src="https://img.shields.io/badge/license-MIT-blue.svg"> <img alt="Version" src="https://img.shields.io/badge/version-0.1.0-green.svg"> <img alt="Rust" src="https://img.shields.io/badge/rust-1.92%2B-orange.svg"> <img alt="Platform" src="https://img.shields.io/badge/platform-Windows-0078D6.svg"></div>
 
-所有操作都是对 `winget.exe` 的一层封装：界面显示的命令行就是实际执行的命令行，不隐藏、不改写。
+<p align="center">
+🇺🇸 <a href="./README.md">English</a> | 🇨🇳 <a href="./README.zh.md">简体中文</a>
+</p>
 
-界面支持简体中文、繁体中文、English、日本語、한국어，在「设置 → 外观 → 语言」中切换，立即生效并持久化；首次启动按操作系统语言自动选择。
+A graphical winget client for Windows, built with Rust + [gpui-kit](https://crates.io/crates/gpui-kit) 0.8 — a native window, no Electron / WebView.
 
-![预览](./assets/preview.png)
+Every operation is a transparent wrapper around `winget.exe`: the command line shown in the UI is exactly the command line that gets executed — nothing hidden, nothing rewritten.
 
-## 下载
+![Preview](./assets/preview.png)
 
-从 [Releases](../../releases) 页面下载对应版本的压缩包（`wingetgui-*-windows-x86_64.zip`，ARM 设备选 `arm64`），解压后运行 `wingetgui.exe` 即可，无需安装。每个 zip 附带 `.sha256` 校验文件。
+## Table of Contents
 
-## 发布流程（维护者）
+- [Features](#features)
+- [Installation](#installation)
+- [Usage](#usage)
+- [Localization](#localization)
+- [Project Structure](#project-structure)
+- [Contributing](#contributing)
+- [License](#license)
 
-1. 更新 `Cargo.toml` 的 `version`，并在 `CHANGELOG.md` 增加对应的 `## [x.y.z]` 小节；
-2. 提交后打标签并推送：`git tag vx.y.z && git push origin vx.y.z`；
-3. GitHub Actions 自动构建 x86_64 与 ARM64 两个架构，校验 tag 与 `Cargo.toml` 版本一致后创建 Release，发布说明取自 CHANGELOG 对应小节。
+## Features
+
+- **Seven views**: Discover, Categories, All Packages, Installed, Updates, Sources, Settings
+- **Queue drawer**: installs / upgrades run serially with configurable concurrency (1–3), showing the command line and progress for each item
+- **Package details**: sourced from `winget show --id --exact`, fetched in the background and cached — multi-line description, release notes, tags, publisher, license, homepage, installer type, release date, and more
+- **Package icons**: favicons fetched automatically and cached to disk
+- **Source management**: add / edit / remove / reset / update sources, with source export
+- **Manifest import & export**: built on `winget export` / `winget import`
+- **Themes**: dark / light / follow-system, with 5 accent colors
+- **Multilingual UI**: five languages with instant switching and persistence; follows the OS language on first launch
+- **Friendly error messages**: winget exit codes mapped to readable descriptions; benign codes treated as success
+
+## Installation
+
+### Download a prebuilt release
+
+Grab the latest Windows build from [GitHub Releases](https://github.com/vgerbot-app/winget-gui/releases).
+
+### Build from source
+
+Requirements: Rust 1.92+ (see `rust-toolchain.toml`), Windows.
+
+```bash
+git clone https://github.com/vgerbot-app/winget-gui.git
+cd winget-gui
+cargo build --release
+```
+
+> [!NOTE]
+> Running the app requires [winget](https://learn.microsoft.com/windows/package-manager/winget/) to be installed (usually built into Windows 10 1809+ / Windows 11).
+
+## Usage
+
+```bash
+cargo run --release
+```
+
+Or run `target/release/wingetgui.exe` directly.
+
+- Search packages in "Discover" / "All Packages"; clicking install enqueues the task into the queue drawer, which executes serially
+- Upgrade individual or all packages in the "Updates" view
+- Add private sources in "Sources" (requires administrator privileges)
+- Switch theme, accent color, and language in "Settings → Appearance"; settings persist to `settings.json`
+
+## Localization
+
+| Language | Code | Status |
+| --- | --- | --- |
+| 简体中文 (Simplified Chinese) | `zh-CN` | ✅ Base locale |
+| 繁體中文 (Traditional Chinese) | `zh-TW` | ✅ |
+| English | `en` | ✅ Fallback locale |
+| 日本語 (Japanese) | `ja` | ✅ |
+| 한국어 (Korean) | `ko` | ✅ |
+
+Strings are embedded at compile time (rust-i18n) and maintained in `locales/*.yml`.
+
+## Project Structure
+
+| Module | Responsibility |
+| --- | --- |
+| `src/winget/` | Pure-function winget command builders, output parsers, exit-code mapping (no UI dependencies, independently testable) |
+| `src/model.rs` / `src/state.rs` | Data model and application state |
+| `src/queue.rs` | Install / upgrade task queue |
+| `src/shell.rs` | Main window view `AppView`, the single entry point for state mutation |
+| `src/views.rs` / `src/widgets.rs` / `src/dialogs.rs` | Views, widgets, and dialogs (read-only state rendering) |
+| `src/icons.rs` / `src/cache.rs` | Favicon fetching and disk caching |
+| `src/theme.rs` / `themes/` | Themes and accent colors |
+| `locales/` | Strings for the five languages |
+
+See [docs/architecture.md](./docs/architecture.md) for more detail.
+
+## Contributing
+
+Issues and pull requests are welcome. Before submitting, please run:
+
+```bash
+cargo fmt
+cargo clippy
+cargo test
+```
+
+## License
+
+[MIT](./LICENSE) © 2026 y1j2x34
