@@ -6,7 +6,6 @@
 
 use std::time::Duration;
 
-
 use crate::config;
 use crate::icons::{IconKey, icon};
 use crate::model::Package;
@@ -372,12 +371,8 @@ impl AppView {
                     let search = if query.trim().is_empty() {
                         Vec::new()
                     } else {
-                        let args = winget::search(
-                            &query,
-                            Some(&source),
-                            settings.search_filters(),
-                            None,
-                        );
+                        let args =
+                            winget::search(&query, Some(&source), settings.search_filters(), None);
                         let refs: Vec<&str> = args.iter().map(String::as_str).collect();
                         winget
                             .run(&refs)
@@ -719,10 +714,9 @@ impl AppView {
                 Notification::warning(tr!("notification.duplicate", name = name)),
                 cx,
             ),
-            Enqueued::Unknown => window.push_notification(
-                Notification::error(tr!("notification.pkg_not_found")),
-                cx,
-            ),
+            Enqueued::Unknown => {
+                window.push_notification(Notification::error(tr!("notification.pkg_not_found")), cx)
+            }
         }
         cx.notify();
     }
@@ -752,14 +746,15 @@ impl AppView {
                     queue::complete(&mut this.state, uid, result);
                     // Keep the keystroke-search cache in step with the queue:
                     // a successful install joins the installed set.
-                    if let Some(item) = this
-                        .state
-                        .queue
-                        .iter()
-                        .find(|item| item.uid == uid)
-                        .filter(|item| {
-                            item.state == QueueState::Done && item.action == QueueAction::Install
-                        })
+                    if let Some(item) =
+                        this.state
+                            .queue
+                            .iter()
+                            .find(|item| item.uid == uid)
+                            .filter(|item| {
+                                item.state == QueueState::Done
+                                    && item.action == QueueAction::Install
+                            })
                     {
                         let key = item.id.to_lowercase();
                         if !this.installed_ids.contains(&key) {
@@ -1010,8 +1005,18 @@ impl AppView {
                 IconKey::Check,
                 Route::Installed,
             ),
-            ("updates", tr!("nav.updates"), IconKey::Refresh, Route::Updates),
-            ("sources", tr!("nav.sources"), IconKey::Source, Route::Sources),
+            (
+                "updates",
+                tr!("nav.updates"),
+                IconKey::Refresh,
+                Route::Updates,
+            ),
+            (
+                "sources",
+                tr!("nav.sources"),
+                IconKey::Source,
+                Route::Sources,
+            ),
             (
                 "settings",
                 tr!("nav.settings"),
@@ -1116,7 +1121,10 @@ impl AppView {
             .child(div().size(px(7.)).rounded(px(99.)).bg(dot))
             .child(self.state.status.clone())
             .child(div().text_color(p.line_strong).child("|"))
-            .child(tr!("status.sources_count", count = self.state.sources.len()))
+            .child(tr!(
+                "status.sources_count",
+                count = self.state.sources.len()
+            ))
             .child(tr!("status.queue_count", count = queue_len))
             .child(
                 h_flex()

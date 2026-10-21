@@ -4,7 +4,6 @@
 //! rating, an install count and an "updated" date, which no winget source
 //! provides. Those stay `Option` and render as `—` when absent.
 
-
 use crate::icons::IconKey;
 use crate::winget::{ListRow, PackageDetail, SearchRow, SourceExport};
 

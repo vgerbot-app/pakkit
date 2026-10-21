@@ -20,7 +20,6 @@ use gpui_kit::{
 use std::cell::Cell;
 use std::rc::Rc;
 
-
 use crate::icons::{IconKey, icon};
 use crate::model::Package;
 use crate::shell::AppView;
@@ -84,10 +83,31 @@ pub fn pkg_detail(view: &mut AppView, id: &str, window: &mut Window, cx: &mut Co
                 .map(|rel| view.state.icon_path_for(&rel.id))
                 .collect();
             let loading = detail.is_none() && view.winget.is_some();
-            Some((pkg, detail, command, busy, action, label, related, related_icons, icon, loading))
+            Some((
+                pkg,
+                detail,
+                command,
+                busy,
+                action,
+                label,
+                related,
+                related_icons,
+                icon,
+                loading,
+            ))
         });
-        let Ok(Some((pkg, detail, command, busy, action, label, related, related_icons, icon, loading))) =
-            snapshot
+        let Ok(Some((
+            pkg,
+            detail,
+            command,
+            busy,
+            action,
+            label,
+            related,
+            related_icons,
+            icon,
+            loading,
+        ))) = snapshot
         else {
             return dialog;
         };
@@ -146,7 +166,11 @@ pub fn pkg_detail(view: &mut AppView, id: &str, window: &mut Window, cx: &mut Co
                                     .flex_wrap()
                                     .gap(px(6.))
                                     .when(pkg.installed, |this| {
-                                        this.child(widgets::pill(&p, PillKind::Ok, tr!("pkg.installed")))
+                                        this.child(widgets::pill(
+                                            &p,
+                                            PillKind::Ok,
+                                            tr!("pkg.installed"),
+                                        ))
                                     })
                                     .when(pkg.available.is_some(), |this| {
                                         this.child(widgets::pill(
@@ -197,13 +221,10 @@ pub fn pkg_detail(view: &mut AppView, id: &str, window: &mut Window, cx: &mut Co
                     })
                     .when_some(tags, |this, tags| {
                         this.child(
-                            div()
-                                .flex()
-                                .flex_wrap()
-                                .gap(px(6.))
-                                .children(tags.iter().map(|tag| {
-                                    widgets::pill(&p, PillKind::Line, tag.clone())
-                                })),
+                            div().flex().flex_wrap().gap(px(6.)).children(
+                                tags.iter()
+                                    .map(|tag| widgets::pill(&p, PillKind::Line, tag.clone())),
+                            ),
                         )
                     })
                     .child(command_block(&p, &command, copy_view.clone()))
@@ -214,31 +235,39 @@ pub fn pkg_detail(view: &mut AppView, id: &str, window: &mut Window, cx: &mut Co
                                 .flex_col()
                                 .gap(px(8.))
                                 .child(widgets::section_label(&p, tr!("dialog.related")))
-                                .children(related.iter().zip(related_icons.iter()).map(|(rel, rel_icon)| {
-                                    div()
-                                        .flex()
-                                        .items_center()
-                                        .gap(px(10.))
-                                        .child(widgets::pkg_icon(&p, rel, rel_icon.clone(), 32., 16.))
-                                        .child(
-                                            div()
-                                                .flex_1()
-                                                .min_w_0()
-                                                .child(
-                                                    div()
-                                                        .text_size(px(12.5))
-                                                        .truncate()
-                                                        .child(rel.name.clone()),
-                                                )
-                                                .child(
-                                                    div()
-                                                        .text_size(px(11.5))
-                                                        .text_color(p.muted)
-                                                        .truncate()
-                                                        .child(rel.publisher.clone()),
-                                                ),
-                                        )
-                                })),
+                                .children(related.iter().zip(related_icons.iter()).map(
+                                    |(rel, rel_icon)| {
+                                        div()
+                                            .flex()
+                                            .items_center()
+                                            .gap(px(10.))
+                                            .child(widgets::pkg_icon(
+                                                &p,
+                                                rel,
+                                                rel_icon.clone(),
+                                                32.,
+                                                16.,
+                                            ))
+                                            .child(
+                                                div()
+                                                    .flex_1()
+                                                    .min_w_0()
+                                                    .child(
+                                                        div()
+                                                            .text_size(px(12.5))
+                                                            .truncate()
+                                                            .child(rel.name.clone()),
+                                                    )
+                                                    .child(
+                                                        div()
+                                                            .text_size(px(11.5))
+                                                            .text_color(p.muted)
+                                                            .truncate()
+                                                            .child(rel.publisher.clone()),
+                                                    ),
+                                            )
+                                    },
+                                )),
                         )
                     }),
             )
@@ -709,7 +738,12 @@ pub fn edit_source(view: &mut AppView, name: &str, window: &mut Window, cx: &mut
                         let name = source_name.clone();
                         let _ = save_view.update_in(cx, |this, window, cx| {
                             let args = winget::source_edit(&name, Some(flag));
-                            this.run_source_op(args, &tr!("notification.source_updated"), window, cx);
+                            this.run_source_op(
+                                args,
+                                &tr!("notification.source_updated"),
+                                window,
+                                cx,
+                            );
                             window.close_dialog(cx);
                         });
                     }),

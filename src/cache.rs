@@ -33,7 +33,11 @@ pub fn root() -> Option<PathBuf> {
 
 /// `details/<id-lowercase>.json` for one package.
 pub fn detail_path(id: &str) -> Option<PathBuf> {
-    Some(root()?.join("details").join(format!("{}.json", id.to_lowercase())))
+    Some(
+        root()?
+            .join("details")
+            .join(format!("{}.json", id.to_lowercase())),
+    )
 }
 
 /// `icons/<host>.img` — the favicon bytes gpui renders directly.
@@ -162,7 +166,9 @@ pub fn load_icons() -> Vec<(String, Result<PathBuf, ()>)> {
 pub fn fetch_favicon(host: &str) -> Option<Vec<u8>> {
     let own = format!("https://{host}/favicon.ico");
     let fallback = format!("https://www.google.com/s2/favicons?domain={host}&sz=64");
-    [own, fallback].into_iter().find_map(|url| fetch_image(&url))
+    [own, fallback]
+        .into_iter()
+        .find_map(|url| fetch_image(&url))
 }
 
 /// GET `url` with a short timeout and a size cap; return the body when the
@@ -208,7 +214,10 @@ mod tests {
 
     #[test]
     fn host_prefers_homepage() {
-        let d = detail("https://code.visualstudio.com/docs", "https://microsoft.com");
+        let d = detail(
+            "https://code.visualstudio.com/docs",
+            "https://microsoft.com",
+        );
         assert_eq!(host_of(&d).as_deref(), Some("code.visualstudio.com"));
     }
 

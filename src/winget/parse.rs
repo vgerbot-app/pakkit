@@ -421,10 +421,7 @@ pub fn parse_show(text: &str) -> PackageDetail {
             let value = value.trim();
             // Inside a text section an indented `X: y` line is prose (a URL,
             // a sentence with a colon) unless X is a label winget prints.
-            if indented
-                && section.as_deref().is_some_and(is_text_section)
-                && !is_show_label(key)
-            {
+            if indented && section.as_deref().is_some_and(is_text_section) && !is_show_label(key) {
                 push_text_line(&mut detail, section.as_deref().unwrap_or_default(), trimmed);
                 continue;
             }
@@ -711,7 +708,9 @@ mod tests {
         );
         assert_eq!(detail.moniker, "git");
         assert!(
-            detail.description.contains("distributed version control system")
+            detail
+                .description
+                .contains("distributed version control system")
                 && detail.description.contains("Git for Windows focuses"),
             "both description paragraphs are kept, got {:?}",
             detail.description

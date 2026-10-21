@@ -2,7 +2,6 @@
 //! routes every action back through [`AppView`]'s listeners, so the views stay
 //! free of task bookkeeping.
 
-
 use crate::dialogs;
 use crate::icons::{IconKey, icon};
 use crate::model::{CategoryId, Package};
@@ -166,7 +165,10 @@ fn hero(state: &AppState, p: &Palette, cx: &mut Context<AppView>) -> AnyElement 
                 .left(px(-40.))
                 .size(px(260.))
                 .rounded(px(9999.))
-                .bg(Hsla { a: 0.16, ..p.accent }),
+                .bg(Hsla {
+                    a: 0.16,
+                    ..p.accent
+                }),
         )
         .child(
             div()
@@ -175,7 +177,10 @@ fn hero(state: &AppState, p: &Palette, cx: &mut Context<AppView>) -> AnyElement 
                 .right(px(-40.))
                 .size(px(240.))
                 .rounded(px(9999.))
-                .bg(Hsla { a: 0.16, ..p.accent2 }),
+                .bg(Hsla {
+                    a: 0.16,
+                    ..p.accent2
+                }),
         )
         .child(
             div()
@@ -188,9 +193,7 @@ fn hero(state: &AppState, p: &Palette, cx: &mut Context<AppView>) -> AnyElement 
                     div()
                         .flex_1()
                         .min_w(px(320.))
-                        .child(
-                            widgets::pill(p, PillKind::Accent, tr!("home.hero_pill")),
-                        )
+                        .child(widgets::pill(p, PillKind::Accent, tr!("home.hero_pill")))
                         .child(
                             div()
                                 .text_size(px(24.))
@@ -212,16 +215,34 @@ fn hero(state: &AppState, p: &Palette, cx: &mut Context<AppView>) -> AnyElement 
                                 .gap(px(8.))
                                 .mt(px(16.))
                                 .child(
-                                    widgets::btn(cx, p, "hero-installed", BtnKind::Primary, BtnSize::Regular, tr!("home.manage_installed"))
-                                        .on_click(cx.listener(|this, _, window, cx| {
+                                    widgets::btn(
+                                        cx,
+                                        p,
+                                        "hero-installed",
+                                        BtnKind::Primary,
+                                        BtnSize::Regular,
+                                        tr!("home.manage_installed"),
+                                    )
+                                    .on_click(cx.listener(
+                                        |this, _, window, cx| {
                                             this.navigate(Route::Installed, window, cx);
-                                        })),
+                                        },
+                                    )),
                                 )
                                 .child(
-                                    widgets::btn(cx, p, "hero-sources", BtnKind::Outline, BtnSize::Regular, tr!("home.manage_sources"))
-                                        .on_click(cx.listener(|this, _, window, cx| {
+                                    widgets::btn(
+                                        cx,
+                                        p,
+                                        "hero-sources",
+                                        BtnKind::Outline,
+                                        BtnSize::Regular,
+                                        tr!("home.manage_sources"),
+                                    )
+                                    .on_click(cx.listener(
+                                        |this, _, window, cx| {
                                             this.navigate(Route::Sources, window, cx);
-                                        })),
+                                        },
+                                    )),
                                 ),
                         ),
                 )
@@ -229,9 +250,24 @@ fn hero(state: &AppState, p: &Palette, cx: &mut Context<AppView>) -> AnyElement 
                     div()
                         .flex()
                         .gap(px(10.))
-                        .child(widgets::stat_tile(p, IconKey::Source, state.sources.len().to_string(), tr!("home.stat_sources")))
-                        .child(widgets::stat_tile(p, IconKey::Package, state.catalog_label(), tr!("home.stat_packages")))
-                        .child(widgets::stat_tile(p, IconKey::Check, state.installed_count().to_string(), tr!("home.stat_installed"))),
+                        .child(widgets::stat_tile(
+                            p,
+                            IconKey::Source,
+                            state.sources.len().to_string(),
+                            tr!("home.stat_sources"),
+                        ))
+                        .child(widgets::stat_tile(
+                            p,
+                            IconKey::Package,
+                            state.catalog_label(),
+                            tr!("home.stat_packages"),
+                        ))
+                        .child(widgets::stat_tile(
+                            p,
+                            IconKey::Check,
+                            state.installed_count().to_string(),
+                            tr!("home.stat_installed"),
+                        )),
                 ),
         )
         .into_any_element()
@@ -332,7 +368,13 @@ fn package_card(
                     .flex()
                     .items_start()
                     .gap(px(10.))
-                    .child(widgets::pkg_icon(p, pkg, state.icon_path_for(&pkg.id), 44., 22.))
+                    .child(widgets::pkg_icon(
+                        p,
+                        pkg,
+                        state.icon_path_for(&pkg.id),
+                        44.,
+                        22.,
+                    ))
                     .child(
                         div()
                             .flex_1()
@@ -446,7 +488,13 @@ fn recent_row(
         .py(px(10.))
         .when(divided, |this| this.border_t_1().border_color(p.line))
         .cursor_pointer()
-        .child(widgets::pkg_icon(p, pkg, state.icon_path_for(&pkg.id), 32., 16.))
+        .child(widgets::pkg_icon(
+            p,
+            pkg,
+            state.icon_path_for(&pkg.id),
+            32.,
+            16.,
+        ))
         .child(
             div()
                 .flex_1()
@@ -961,7 +1009,13 @@ fn installed_row(
         .px(px(14.))
         .py(px(10.))
         .when(divided, |this| this.border_t_1().border_color(p.line))
-        .child(widgets::pkg_icon(p, pkg, state.icon_path_for(&pkg.id), 36., 18.))
+        .child(widgets::pkg_icon(
+            p,
+            pkg,
+            state.icon_path_for(&pkg.id),
+            36.,
+            18.,
+        ))
         .child(
             div()
                 .flex_1()
@@ -1107,7 +1161,13 @@ fn update_card(
             .flex()
             .items_center()
             .gap(px(14.))
-            .child(widgets::pkg_icon(p, pkg, state.icon_path_for(&pkg.id), 44., 22.))
+            .child(widgets::pkg_icon(
+                p,
+                pkg,
+                state.icon_path_for(&pkg.id),
+                44.,
+                22.,
+            ))
             .child(
                 div()
                     .flex_1()

@@ -45,7 +45,11 @@ impl WingetError {
             WingetError::Spawn(error) => tr!("error.spawn", error = error.to_string()),
             WingetError::Parse(message) => tr!("error.parse", error = message.clone()),
             WingetError::Exit { code, message } => {
-                tr!("error.exit", code = format_code(*code), message = message.clone())
+                tr!(
+                    "error.exit",
+                    code = format_code(*code),
+                    message = message.clone()
+                )
             }
             WingetError::Json(error) => tr!("error.json", error = error.to_string()),
             WingetError::Io(error) => tr!("error.io", error = error.to_string()),

@@ -8,7 +8,6 @@
 
 use std::time::Instant;
 
-
 use crate::model::Package;
 use crate::state::{AppState, Settings};
 use crate::winget::{self, Output, WingetError};

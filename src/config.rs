@@ -15,7 +15,9 @@ fn path() -> Option<PathBuf> {
 
 /// Read the persisted settings, or detect a sensible default on first run.
 pub fn load() -> Settings {
-    let Some(path) = path() else { return first_run() };
+    let Some(path) = path() else {
+        return first_run();
+    };
     let Ok(text) = std::fs::read_to_string(&path) else {
         return first_run();
     };
