@@ -2,6 +2,7 @@
 //! routes every action back through [`AppView`]'s listeners, so the views stay
 //! free of task bookkeeping.
 
+use crate::backends::BackendKind;
 use crate::dialogs;
 use crate::icons::{IconKey, icon};
 use crate::model::{CategoryId, Package};
@@ -776,10 +777,7 @@ fn search(
         source = state.search_source.label()
     );
 
-    let head = widgets::page_head(
-        p,
-        title,
-        Some(subtitle.into()),
+    let head_actions = if state.capabilities.search_filters {
         vec![
             widgets::btn(
                 cx,
@@ -793,8 +791,11 @@ fn search(
                 dialogs::advanced_search(this, window, cx);
             }))
             .into_any_element(),
-        ],
-    );
+        ]
+    } else {
+        Vec::new()
+    };
+    let head = widgets::page_head(p, title, Some(subtitle.into()), head_actions);
 
     let sources = widgets::source_items(&state.sources);
     let statuses = widgets::status_items();
@@ -922,11 +923,9 @@ fn installed(state: &AppState, p: &Palette, cx: &mut Context<AppView>) -> AnyEle
     let rows = state.installed();
     let all_ids: Vec<String> = rows.iter().map(|pkg| pkg.id.clone()).collect();
 
-    let head = widgets::page_head(
-        p,
-        tr!("nav.installed"),
-        Some(tr!("installed.subtitle", count = rows.len()).into()),
-        vec![
+    let mut head_actions = Vec::new();
+    if state.capabilities.export {
+        head_actions.push(
             widgets::btn(
                 cx,
                 p,
@@ -939,22 +938,30 @@ fn installed(state: &AppState, p: &Palette, cx: &mut Context<AppView>) -> AnyEle
                 dialogs::export_manifest(this, window, cx);
             }))
             .into_any_element(),
-            widgets::btn(
-                cx,
-                p,
-                "upgrade-all",
-                BtnKind::Primary,
-                BtnSize::Regular,
-                tr!("installed.upgrade_all"),
-            )
-            .disabled(all_ids.is_empty())
-            .on_click(cx.listener(move |this, _, window, cx| {
-                for id in &all_ids {
-                    this.enqueue(id, QueueAction::Upgrade, window, cx);
-                }
-            }))
-            .into_any_element(),
-        ],
+        );
+    }
+    head_actions.push(
+        widgets::btn(
+            cx,
+            p,
+            "upgrade-all",
+            BtnKind::Primary,
+            BtnSize::Regular,
+            tr!("installed.upgrade_all"),
+        )
+        .disabled(all_ids.is_empty())
+        .on_click(cx.listener(move |this, _, window, cx| {
+            for id in &all_ids {
+                this.enqueue(id, QueueAction::Upgrade, window, cx);
+            }
+        }))
+        .into_any_element(),
+    );
+    let head = widgets::page_head(
+        p,
+        tr!("nav.installed"),
+        Some(tr!("installed.subtitle", count = rows.len()).into()),
+        head_actions,
     );
 
     let header = div()
@@ -1259,21 +1266,20 @@ fn strike(text: &str) -> String {
 // ------------------------------------------------------------------- 源管理
 
 fn sources(state: &AppState, p: &Palette, cx: &mut Context<AppView>) -> AnyElement {
-    let head = widgets::page_head(
-        p,
-        tr!("nav.sources"),
-        Some(tr!("sources.subtitle").into()),
-        vec![
-            widgets::btn(
-                cx,
-                p,
-                "sync-all-src",
-                BtnKind::Soft,
-                BtnSize::Regular,
-                tr!("updates.update_all"),
-            )
-            .on_click(cx.listener(|this, _, window, cx| this.sync_sources(None, window, cx)))
-            .into_any_element(),
+    let mut head_actions = vec![
+        widgets::btn(
+            cx,
+            p,
+            "sync-all-src",
+            BtnKind::Soft,
+            BtnSize::Regular,
+            tr!("updates.update_all"),
+        )
+        .on_click(cx.listener(|this, _, window, cx| this.sync_sources(None, window, cx)))
+        .into_any_element(),
+    ];
+    if state.capabilities.source_add {
+        head_actions.push(
             widgets::btn(
                 cx,
                 p,
@@ -1286,7 +1292,13 @@ fn sources(state: &AppState, p: &Palette, cx: &mut Context<AppView>) -> AnyEleme
                 dialogs::add_source(this, window, cx);
             }))
             .into_any_element(),
-        ],
+        );
+    }
+    let head = widgets::page_head(
+        p,
+        tr!("nav.sources"),
+        Some(tr!("sources.subtitle").into()),
+        head_actions,
     );
 
     let body = if state.sources.is_empty() {
@@ -1308,32 +1320,42 @@ fn sources(state: &AppState, p: &Palette, cx: &mut Context<AppView>) -> AnyEleme
         )
     };
 
+    // The equivalent command differs per backend: winget adds a source,
+    // flatpak adds a remote. Shown only when the backend can add one at all.
+    let add_hint = match state.backend_kind {
+        BackendKind::Winget => {
+            format!("{} source add --name <name> --arg <url>", state.backend_name)
+        }
+        BackendKind::Flatpak => {
+            format!("{} remote-add --if-not-exists <name> <url>", state.backend_name)
+        }
+    };
+
     div()
         .flex()
         .flex_col()
         .child(head)
         .child(body)
-        .child(
-            div().px(px(24.)).pb(px(32.)).child(
-                div()
-                    .border_1()
-                    .border_dashed()
-                    .border_color(p.line_strong)
-                    .rounded(px(12.))
-                    .p(px(14.))
-                    .flex()
-                    .items_center()
-                    .gap(px(8.))
-                    .text_size(px(11.5))
-                    .text_color(p.muted)
-                    .child(icon(IconKey::Terminal, px(13.), p.muted))
-                    .child(tr!("sources.equivalent_command"))
-                    .child(widgets::code_chip(
-                        p,
-                        format!("{} source add --name <name> --arg <url>", state.backend_name),
-                    )),
-            ),
-        )
+        .when(state.capabilities.source_add, |this| {
+            this.child(
+                div().px(px(24.)).pb(px(32.)).child(
+                    div()
+                        .border_1()
+                        .border_dashed()
+                        .border_color(p.line_strong)
+                        .rounded(px(12.))
+                        .p(px(14.))
+                        .flex()
+                        .items_center()
+                        .gap(px(8.))
+                        .text_size(px(11.5))
+                        .text_color(p.muted)
+                        .child(icon(IconKey::Terminal, px(13.), p.muted))
+                        .child(tr!("sources.equivalent_command"))
+                        .child(widgets::code_chip(p, add_hint)),
+                ),
+            )
+        })
         .into_any_element()
 }
 
@@ -1458,17 +1480,19 @@ fn source_card(
                         })),
                     )
                 })
-                .child(
-                    widgets::icon_btn(
-                        SharedString::from(format!("edit-{edit_name}")),
-                        IconKey::Edit,
-                        28.,
-                        p.muted,
+                .when(state.capabilities.source_edit, |this| {
+                    this.child(
+                        widgets::icon_btn(
+                            SharedString::from(format!("edit-{edit_name}")),
+                            IconKey::Edit,
+                            28.,
+                            p.muted,
+                        )
+                        .on_click(cx.listener(move |this, _, window, cx| {
+                            dialogs::edit_source(this, &edit_name, window, cx);
+                        })),
                     )
-                    .on_click(cx.listener(move |this, _, window, cx| {
-                        dialogs::edit_source(this, &edit_name, window, cx);
-                    })),
-                )
+                })
                 .child(
                     widgets::icon_btn(
                         SharedString::from(format!("del-{remove_name}")),
@@ -1499,63 +1523,78 @@ fn settings(
         Vec::new(),
     );
 
+    // The default-source row's hint differs per backend; every other row is
+    // a winget-only install flag, gated on the matching capability.
+    let source_hint = match state.backend_kind {
+        BackendKind::Winget => format!("{} install --source <name>", state.backend_name),
+        BackendKind::Flatpak => format!("{} install <remote> <id>", state.backend_name),
+    };
+    let mut install_rows = vec![row_shell_plain(
+        p,
+        &tr!("settings.default_source"),
+        &source_hint,
+        default_source_control(state, p, cx),
+    )];
+    if state.capabilities.install_arch {
+        install_rows.push(seg_row(
+            p,
+            &tr!("settings.arch"),
+            &format!("{} install --architecture <arch>", state.backend_name),
+            arch_segments(state, p, cx),
+        ));
+    }
+    if state.capabilities.install_scope {
+        install_rows.push(seg_row(
+            p,
+            &tr!("settings.scope"),
+            &format!("{} install --scope <scope>", state.backend_name),
+            scope_segments(state, p, cx),
+        ));
+    }
+    if state.capabilities.install_location {
+        install_rows.push(field_row(
+            p,
+            &tr!("settings.location"),
+            &format!("{} install --location <path>", state.backend_name),
+            input_field(p, &inputs.install_location),
+        ));
+    }
+    if state.capabilities.agreements {
+        install_rows.push(switch_field_row(
+            cx,
+            p,
+            &tr!("settings.accept_agreements"),
+            &format!(
+                "{} install --accept-package-agreements",
+                state.backend_name
+            ),
+            state.settings.accept_agreements,
+            |this, value, cx| {
+                this.state.settings.accept_agreements = value;
+                this.persist_settings();
+                cx.notify();
+            },
+        ));
+    }
+    if state.capabilities.silent {
+        install_rows.push(switch_field_row(
+            cx,
+            p,
+            &tr!("settings.silent"),
+            &format!("{} install --silent", state.backend_name),
+            state.settings.silent,
+            |this, value, cx| {
+                this.state.settings.silent = value;
+                this.persist_settings();
+                cx.notify();
+            },
+        ));
+    }
     let install_card = settings_card(
         p,
         &tr!("settings.install_defaults"),
         &tr!("settings.install_defaults_hint"),
-        vec![
-            row_shell_plain(
-                p,
-                &tr!("settings.default_source"),
-                &format!("{} install --source <name>", state.backend_name),
-                default_source_control(state, p, cx),
-            ),
-            seg_row(
-                p,
-                &tr!("settings.arch"),
-                &format!("{} install --architecture <arch>", state.backend_name),
-                arch_segments(state, p, cx),
-            ),
-            seg_row(
-                p,
-                &tr!("settings.scope"),
-                &format!("{} install --scope <scope>", state.backend_name),
-                scope_segments(state, p, cx),
-            ),
-            field_row(
-                p,
-                &tr!("settings.location"),
-                &format!("{} install --location <path>", state.backend_name),
-                input_field(p, &inputs.install_location),
-            ),
-            switch_field_row(
-                cx,
-                p,
-                &tr!("settings.accept_agreements"),
-                &format!(
-                    "{} install --accept-package-agreements",
-                    state.backend_name
-                ),
-                state.settings.accept_agreements,
-                |this, value, cx| {
-                    this.state.settings.accept_agreements = value;
-                    this.persist_settings();
-                    cx.notify();
-                },
-            ),
-            switch_field_row(
-                cx,
-                p,
-                &tr!("settings.silent"),
-                &format!("{} install --silent", state.backend_name),
-                state.settings.silent,
-                |this, value, cx| {
-                    this.state.settings.silent = value;
-                    this.persist_settings();
-                    cx.notify();
-                },
-            ),
-        ],
+        install_rows,
     );
 
     let queue_card = settings_card(

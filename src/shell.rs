@@ -188,6 +188,7 @@ impl AppView {
             }
         };
         self.state.backend_name = backend.cli_name().to_owned();
+        self.state.backend_kind = backend.kind();
         self.state.capabilities = backend.capabilities();
         self.state.backend_error = None;
         self.backend = Some(backend.clone());
@@ -210,6 +211,7 @@ impl AppView {
         match backends::detect(&self.state.settings.backend_path) {
             Ok(backend) => {
                 self.state.backend_name = backend.cli_name().to_owned();
+                self.state.backend_kind = backend.kind();
                 self.state.capabilities = backend.capabilities();
                 self.state.backend_error = None;
                 self.state.status = tr!("status.winget_detected");
@@ -1045,16 +1047,23 @@ impl AppView {
                         }),
                     )),
             )
-            .children(routes.into_iter().map(|(key, label, glyph, route)| {
-                SidebarMenuItem::new(label)
-                    .min_h(px(38.))
-                    .icon(icon(glyph, px(16.), p.muted))
-                    .active(active == key)
-                    .collapsed(collapsed)
-                    .on_click(cx.listener(move |this, _, window, cx| {
-                        this.navigate(route, window, cx);
-                    }))
-            }))
+            .children(
+                routes
+                    .into_iter()
+                    .filter(|(key, ..)| {
+                        *key != "sources" || self.state.capabilities.sources_view
+                    })
+                    .map(|(key, label, glyph, route)| {
+                        SidebarMenuItem::new(label)
+                            .min_h(px(38.))
+                            .icon(icon(glyph, px(16.), p.muted))
+                            .active(active == key)
+                            .collapsed(collapsed)
+                            .on_click(cx.listener(move |this, _, window, cx| {
+                                this.navigate(route, window, cx);
+                            }))
+                    }),
+            )
             .border_r_1()
             .h_full()
     }

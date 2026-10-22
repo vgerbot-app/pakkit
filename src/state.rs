@@ -7,7 +7,7 @@
 
 use serde::{Deserialize, Serialize};
 
-use crate::backends::Capabilities;
+use crate::backends::{BackendKind, Capabilities};
 use crate::backends::types::{Arch, InstallOptions, Scope, SearchFilters};
 use crate::model::{CategoryId, Package, Source};
 use crate::theme::ModeChoice;
@@ -342,6 +342,9 @@ pub struct AppState {
     pub backend_version: String,
     /// The backend CLI's name, prefixing the status-bar version.
     pub backend_name: String,
+    /// Which backend family is active; views use it for backend-specific
+    /// hint strings that `capabilities` alone cannot express.
+    pub backend_kind: BackendKind,
     /// What the detected backend can do; drives UI feature gating.
     pub capabilities: Capabilities,
     /// Why the backend is unavailable, when it is. The app still runs and
@@ -370,6 +373,7 @@ impl Default for AppState {
             status: tr!("status.ready"),
             backend_version: String::new(),
             backend_name: crate::backends::platform_kind().cli_name().to_owned(),
+            backend_kind: crate::backends::platform_kind(),
             capabilities: Capabilities::default(),
             backend_error: None,
         }
