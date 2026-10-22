@@ -296,13 +296,13 @@ placeholder:
   source_name: "e.g. contoso"
 
 error:
-  not_found: "winget.exe not found (make sure App Installer is installed)"
+  not_found: "%{backend} not found (make sure the package manager is installed)"
   spawn: "Failed to launch winget: %{error}"
   parse: "Failed to parse winget output: %{error}"
   exit: "winget exit code %{code}: %{message}"
   json: "Invalid winget JSON output: %{error}"
   io: "File operation failed: %{error}"
-  invalid_path: "Configured winget path does not exist: %{path}"
+  invalid_path: "Configured %{backend} path does not exist: %{path}"
 
 exitcode:
   internal: "Internal error"

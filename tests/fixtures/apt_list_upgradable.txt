@@ -1,0 +1,8 @@
+Listing...
+chatgpt/stable 26.1016.61520 amd64 [upgradable from: 26.1013.40934]
+cursor/unknown 3.26.16-1792577839 amd64 [upgradable from: 3.25.6-1792019953]
+distro-info-data/resolute-updates,resolute-updates,resolute-security,resolute-security 2026.10.12-0ubuntu0.26.04.1 all [upgradable from: 0.72-0ubuntu0.26.04.1]
+drkonqi/resolute-updates 6.6.6-0ubuntu0.1 amd64 [upgradable from: 6.6.4-0ubuntu1]
+ghostscript/resolute-updates,resolute-security 10.06.0~dfsg-3ubuntu1.2 amd64 [upgradable from: 10.06.0~dfsg-3ubuntu1.1]
+gir1.2-adw-1/resolute-updates 1.9.1-0ubuntu0.2 amd64 [upgradable from: 1.9.1-0ubuntu0.1]
+libadwaita-1-0/resolute-updates 1.9.1-0ubuntu0.2 amd64 [upgradable from: 1.9.1-0ubuntu0.1]

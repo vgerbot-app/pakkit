@@ -549,7 +549,12 @@ mod tests {
             panic!("enqueue");
         };
         begin(&mut state, 0, &backend());
-        complete(&mut state, uid, Err(BackendError::NotFound), &backend());
+        complete(
+            &mut state,
+            uid,
+            Err(BackendError::NotFound("winget")),
+            &backend(),
+        );
         assert_eq!(state.queue[0].state, QueueState::Error);
         assert!(state.queue[0].log.contains("未找到 winget"));
     }

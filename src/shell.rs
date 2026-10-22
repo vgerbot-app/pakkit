@@ -178,7 +178,10 @@ impl AppView {
         // The disk caches warm the detail/icon maps even when the backend is
         // missing, so this runs before the resolve below can early-return.
         self.load_cache(cx);
-        let backend = match backends::detect(&self.state.settings.backend_path) {
+        let backend = match backends::detect(
+            backends::platform_kind(),
+            &self.state.settings.backend_path,
+        ) {
             Ok(backend) => backend,
             Err(error) => {
                 let message = error.localized();
@@ -208,7 +211,10 @@ impl AppView {
 
     /// Re-resolve the backend from the configured path, as 检测 does.
     pub fn redetect_backend(&mut self, cx: &mut Context<Self>) {
-        match backends::detect(&self.state.settings.backend_path) {
+        match backends::detect(
+            backends::platform_kind(),
+            &self.state.settings.backend_path,
+        ) {
             Ok(backend) => {
                 self.state.backend_name = backend.cli_name().to_owned();
                 self.state.backend_kind = backend.kind();

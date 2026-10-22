@@ -37,12 +37,12 @@ impl Flatpak {
 
     /// Locate `flatpak` on `PATH`.
     pub fn discover() -> Result<Self, BackendError> {
-        let path = std::env::var_os("PATH").ok_or(BackendError::NotFound)?;
+        let path = std::env::var_os("PATH").ok_or(BackendError::NotFound("flatpak"))?;
         std::env::split_paths(&path)
             .map(|dir| dir.join("flatpak"))
             .find(|candidate| candidate.is_file())
             .map(Self::new)
-            .ok_or(BackendError::NotFound)
+            .ok_or(BackendError::NotFound("flatpak"))
     }
 
     /// Honor an operator-supplied path, falling back to discovery.
@@ -57,7 +57,7 @@ impl Flatpak {
         if path.is_file() {
             Ok(Self::new(path))
         } else {
-            Err(BackendError::InvalidPath(path))
+            Err(BackendError::InvalidPath("flatpak", path))
         }
     }
 }
@@ -400,6 +400,9 @@ mod tests {
     #[test]
     fn an_invalid_configured_path_is_rejected() {
         let result = Flatpak::resolve("/definitely/not/a/flatpak");
-        assert!(matches!(result, Err(BackendError::InvalidPath(_))));
+        assert!(matches!(
+            result,
+            Err(BackendError::InvalidPath("flatpak", _))
+        ));
     }
 }

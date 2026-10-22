@@ -296,13 +296,13 @@ placeholder:
   source_name: "例：contoso"
 
 error:
-  not_found: "winget.exe が見つかりません（「アプリ インストーラー」がインストールされていることを確認してください）"
+  not_found: "%{backend} が見つかりません（パッケージマネージャーがインストールされていることを確認してください）"
   spawn: "winget を起動できません：%{error}"
   parse: "winget の出力を解析できません：%{error}"
   exit: "winget 終了コード %{code}：%{message}"
   json: "winget の JSON 出力が無効です：%{error}"
   io: "ファイル操作に失敗しました：%{error}"
-  invalid_path: "設定された winget のパスが存在しません：%{path}"
+  invalid_path: "設定された %{backend} のパスが存在しません：%{path}"
 
 exitcode:
   internal: "内部エラー"

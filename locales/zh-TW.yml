@@ -296,13 +296,13 @@ placeholder:
   source_name: "例如 contoso"
 
 error:
-  not_found: "找不到 winget.exe（請確認已安裝「應用程式安裝程式」）"
+  not_found: "找不到 %{backend}（請確認已安裝對應的套件管理器）"
   spawn: "無法啟動 winget：%{error}"
   parse: "無法剖析 winget 輸出：%{error}"
   exit: "winget 結束代碼 %{code}：%{message}"
   json: "winget JSON 輸出無效：%{error}"
   io: "檔案操作失敗：%{error}"
-  invalid_path: "設定的 winget 路徑不存在：%{path}"
+  invalid_path: "設定的 %{backend} 路徑不存在：%{path}"
 
 exitcode:
   internal: "內部錯誤"

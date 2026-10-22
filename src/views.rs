@@ -1329,6 +1329,7 @@ fn sources(state: &AppState, p: &Palette, cx: &mut Context<AppView>) -> AnyEleme
         BackendKind::Flatpak => {
             format!("{} remote-add --if-not-exists <name> <url>", state.backend_name)
         }
+        BackendKind::Apt => format!("{} edit-sources", state.backend_name),
     };
 
     div()
@@ -1528,6 +1529,7 @@ fn settings(
     let source_hint = match state.backend_kind {
         BackendKind::Winget => format!("{} install --source <name>", state.backend_name),
         BackendKind::Flatpak => format!("{} install <remote> <id>", state.backend_name),
+        BackendKind::Apt => format!("{} install <pkg>", state.backend_name),
     };
     let mut install_rows = vec![row_shell_plain(
         p,

@@ -296,13 +296,13 @@ placeholder:
   source_name: "예: contoso"
 
 error:
-  not_found: "winget.exe를 찾을 수 없습니다(앱 설치 관리자가 설치되어 있는지 확인하세요)"
+  not_found: "%{backend}를 찾을 수 없습니다(패키지 관리자가 설치되어 있는지 확인하세요)"
   spawn: "winget을 시작할 수 없습니다: %{error}"
   parse: "winget 출력을 구문 분석할 수 없습니다: %{error}"
   exit: "winget 종료 코드 %{code}: %{message}"
   json: "winget JSON 출력이 잘못되었습니다: %{error}"
   io: "파일 작업 실패: %{error}"
-  invalid_path: "구성된 winget 경로가 없습니다: %{path}"
+  invalid_path: "구성된 %{backend} 경로가 없습니다: %{path}"
 
 exitcode:
   internal: "내부 오류"

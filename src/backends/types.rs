@@ -146,8 +146,8 @@ pub const SOURCE_ALL: &str = "all";
 #[derive(Debug, thiserror::Error)]
 pub enum BackendError {
     /// The backend's CLI could not be located on this machine.
-    #[error("未找到 winget.exe（请确认已安装“应用安装程序”）")]
-    NotFound,
+    #[error("未找到 {0}（请确认已安装对应的软件包管理器）")]
+    NotFound(&'static str),
 
     /// The process could not be started at all.
     #[error("无法启动 winget：{0}")]
@@ -170,8 +170,8 @@ pub enum BackendError {
     Io(#[from] std::io::Error),
 
     /// An explicit CLI path was configured but does not exist.
-    #[error("配置的 winget 路径不存在：{}", .0.display())]
-    InvalidPath(PathBuf),
+    #[error("配置的 {} 路径不存在：{}", .0, .1.display())]
+    InvalidPath(&'static str, PathBuf),
 }
 
 impl BackendError {
@@ -179,7 +179,7 @@ impl BackendError {
     /// text so logs stay greppable regardless of the interface language.
     pub fn localized(&self) -> String {
         match self {
-            BackendError::NotFound => tr!("error.not_found"),
+            BackendError::NotFound(backend) => tr!("error.not_found", backend = backend),
             BackendError::Spawn(error) => tr!("error.spawn", error = error.to_string()),
             BackendError::Parse(message) => tr!("error.parse", error = message.clone()),
             BackendError::Exit { code, message } => {
@@ -191,8 +191,12 @@ impl BackendError {
             }
             BackendError::Json(error) => tr!("error.json", error = error.to_string()),
             BackendError::Io(error) => tr!("error.io", error = error.to_string()),
-            BackendError::InvalidPath(path) => {
-                tr!("error.invalid_path", path = path.display().to_string())
+            BackendError::InvalidPath(backend, path) => {
+                tr!(
+                    "error.invalid_path",
+                    backend = backend,
+                    path = path.display().to_string()
+                )
             }
         }
     }

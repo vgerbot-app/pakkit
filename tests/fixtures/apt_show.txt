@@ -1,0 +1,31 @@
+Package: curl
+Version: 8.18.0-1ubuntu2.8
+Priority: optional
+Section: web
+Origin: Ubuntu
+Maintainer: Ubuntu Developers <ubuntu-devel-discuss@lists.ubuntu.com>
+Original-Maintainer: Debian Curl Maintainers <team+curl@tracker.debian.org>
+Bugs: https://bugs.launchpad.net/ubuntu/+filebug
+Installed-Size: 524 kB
+Depends: libcurl4t64 (= 8.18.0-1ubuntu2.8), libc6 (>= 2.34), zlib1g (>= 1:1.1.4)
+Recommends: bash-completion
+Homepage: https://curl.se/
+Task: cloud-minimal, cloud-image, cloud-image, server-minimal, ubuntu-wsl, server, ubuntu-server-raspi, kubuntu-desktop, kubuntu-full, lubuntu-desktop-minimal, lubuntu-desktop, ubuntustudio-desktop, ubuntu-budgie-desktop-minimal, ubuntu-budgie-desktop, ubuntu-budgie-desktop-raspi, edubuntu-desktop-gnome, edubuntu-desktop-gnome-raspi
+Download-Size: 273 kB
+APT-Manual-Installed: yes
+APT-Sources: http://mirrors.aliyun.com/ubuntu resolute-updates/main amd64 Packages
+Description: command line tool for transferring data with URL syntax
+ curl is a command line tool for transferring data with URL syntax, supporting
+ DICT, FILE, FTP, FTPS, GOPHER, HTTP, HTTPS, IMAP, IMAPS, LDAP, LDAPS, POP3,
+ POP3S, RTMP, RTSP, SCP, SFTP, SMTP, SMTPS, TELNET and TFTP.
+ .
+ curl supports SSL certificates, HTTP POST, HTTP PUT, FTP uploading, HTTP form
+ based upload, proxies, cookies, user+password authentication (Basic, Digest,
+ NTLM, Negotiate, kerberos...), file transfer resume, proxy tunneling and a
+ busload of other useful tricks.
+
+
+Package: curl
+Version: 8.16.0-1
+Description: older stanza that must not leak into the parsed detail
+ continuation text

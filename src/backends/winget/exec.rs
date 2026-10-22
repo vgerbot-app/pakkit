@@ -59,7 +59,7 @@ impl Winget {
         {
             return Ok(Self::new(path));
         }
-        Err(BackendError::NotFound)
+        Err(BackendError::NotFound("winget"))
     }
 
     /// Honor an operator-supplied path, falling back to discovery.
@@ -74,7 +74,7 @@ impl Winget {
         if path.is_file() {
             Ok(Self::new(path))
         } else {
-            Err(BackendError::InvalidPath(path))
+            Err(BackendError::InvalidPath("winget", path))
         }
     }
 

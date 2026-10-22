@@ -1,0 +1,10 @@
+Listing...
+3cpio/resolute,now 0.14.0-1ubuntu1 amd64 [installed,automatic]
+7zip/resolute,now 26.00+dfsg-1 amd64 [installed,automatic]
+accountsservice/resolute-updates,resolute-security,now 23.13.9-8ubuntu5.2 amd64 [installed,automatic]
+acl/resolute,now 2.3.2-2 amd64 [installed,automatic]
+acpica-tools/resolute,now 20251212-1 amd64 [installed]
+adduser/resolute,resolute,now 3.153ubuntu1 all [installed,automatic]
+adwaita-icon-theme/resolute,resolute,now 50.0-1 all [installed,automatic]
+aionui/now 1.9.0 amd64 [installed,local]
+chatgpt/now 26.1013.40934 amd64 [installed,upgradable to: 26.1016.61520]

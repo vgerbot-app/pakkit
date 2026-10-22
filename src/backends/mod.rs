@@ -5,6 +5,7 @@
 //! parsers; [`types`] holds the data shapes they all produce and [`exec`]
 //! the shared process plumbing.
 
+pub mod apt;
 pub mod exec;
 pub mod flatpak;
 pub mod types;
@@ -24,6 +25,7 @@ use crate::model::Source;
 pub enum BackendKind {
     Winget,
     Flatpak,
+    Apt,
 }
 
 impl BackendKind {
@@ -33,6 +35,7 @@ impl BackendKind {
         match self {
             BackendKind::Winget => "winget",
             BackendKind::Flatpak => "flatpak",
+            BackendKind::Apt => "apt",
         }
     }
 
@@ -41,6 +44,27 @@ impl BackendKind {
         match self {
             BackendKind::Winget => "winget",
             BackendKind::Flatpak => "Flatpak",
+            BackendKind::Apt => "APT",
+        }
+    }
+
+    /// Parse a persisted [`cli_name`](Self::cli_name) back into a kind.
+    pub fn from_name(name: &str) -> Option<Self> {
+        match name.trim() {
+            "winget" => Some(BackendKind::Winget),
+            "flatpak" => Some(BackendKind::Flatpak),
+            "apt" => Some(BackendKind::Apt),
+            _ => None,
+        }
+    }
+
+    /// The backends this build lets the user pick between, platform default
+    /// first. A single-entry list means no choice (and no settings row).
+    pub fn available() -> &'static [BackendKind] {
+        if cfg!(target_os = "linux") {
+            &[BackendKind::Flatpak, BackendKind::Apt]
+        } else {
+            &[BackendKind::Winget]
         }
     }
 }
@@ -260,15 +284,19 @@ pub const fn platform_kind() -> BackendKind {
     }
 }
 
-/// Resolve the platform's backend, honoring an operator-supplied CLI path.
-pub fn detect(configured_path: &str) -> Result<Arc<dyn PackageBackend>, BackendError> {
-    #[cfg(target_os = "linux")]
-    {
-        flatpak::Flatpak::resolve(configured_path)
-            .map(|f| Arc::new(f) as Arc<dyn PackageBackend>)
-    }
-    #[cfg(not(target_os = "linux"))]
-    {
-        winget::Winget::resolve(configured_path).map(|w| Arc::new(w) as Arc<dyn PackageBackend>)
+/// Resolve `kind`'s backend, honoring an operator-supplied CLI path.
+pub fn detect(
+    kind: BackendKind,
+    configured_path: &str,
+) -> Result<Arc<dyn PackageBackend>, BackendError> {
+    match kind {
+        BackendKind::Winget => {
+            winget::Winget::resolve(configured_path).map(|w| Arc::new(w) as Arc<dyn PackageBackend>)
+        }
+        BackendKind::Flatpak => flatpak::Flatpak::resolve(configured_path)
+            .map(|f| Arc::new(f) as Arc<dyn PackageBackend>),
+        BackendKind::Apt => {
+            apt::Apt::resolve(configured_path).map(|a| Arc::new(a) as Arc<dyn PackageBackend>)
+        }
     }
 }

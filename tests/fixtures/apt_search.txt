@@ -1,0 +1,35 @@
+Sorting...
+Full Text Search...
+activity-aware-firefox/resolute,resolute 0.4.2+git20250816.c6082f37-1 all
+  wrapper to make Firefox aware of Plasma Desktop activities
+
+amule-gnome-support/resolute,resolute 1:2.3.3-3.2 all
+  ed2k links handling support for GNOME web browsers
+
+bleachbit/resolute,resolute 5.0.2-1 all
+  delete unnecessary files from the system
+
+buku/resolute,resolute 5.0+ds-1 all
+  Powerful command-line bookmark manager
+
+cbindgen/resolute 0.29.2-3 amd64
+  Generates C bindings from Rust code
+
+dh-cargo/resolute,resolute 33ubuntu3 all
+  debhelper buildsystem for Rust crates using Cargo
+
+dh-cargo-tools/resolute,resolute 33ubuntu3 all
+  debhelper buildsystem for Rust crates using Cargo - tools
+
+edubuntu-artwork/resolute-updates,resolute-updates 26.04.11 all
+  edubuntu themes and artwork
+
+elpa-atomic-chrome/resolute,resolute 2.0.0-6build1 all
+  edit a web-browser text entry area with Emacs
+
+firefox/resolute-updates,now 1:1snap1-0ubuntu9.1 amd64 [installed,automatic]
+nodescpkg/resolute 1.0-1 amd64
+
+cjk-editor/resolute 0.1.0-1 amd64
+  简单的文本编辑器
+
