@@ -5,10 +5,7 @@
 //! provides. Those stay `Option` and render as `—` when absent.
 
 use crate::icons::IconKey;
-use crate::backends::{
-    types::{ListRow, PackageDetail, SearchRow, SourceRow},
-    winget::SourceExport,
-};
+use crate::backends::types::{ListRow, PackageDetail, SearchRow};
 
 /// A built-in category. The set is fixed and client-side.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, PartialOrd, Ord, Default)]
@@ -403,7 +400,10 @@ fn non_empty(value: &str) -> Option<String> {
     }
 }
 
-/// A winget source.
+/// A package source: a winget source, a flatpak remote, and so on.
+///
+/// Fields a backend cannot supply stay empty/`false`; the source card renders
+/// them as `—`.
 #[derive(Debug, Clone, PartialEq, Eq, Default)]
 pub struct Source {
     pub name: String,
@@ -413,26 +413,6 @@ pub struct Source {
     pub explicit: bool,
     pub packages: Option<u64>,
     pub updated: Option<String>,
-}
-
-impl Source {
-    /// Merge the `source list` table row with its `source export` record.
-    pub fn from_rows(row: &SourceRow, export: Option<&SourceExport>) -> Self {
-        let mut source = Self {
-            name: row.name.clone(),
-            url: row.argument.clone(),
-            explicit: row.explicit,
-            ..Self::default()
-        };
-        if let Some(export) = export {
-            source.trusted = export.trusted();
-            source.ty = export.ty.clone();
-            if source.url.is_empty() {
-                source.url = export.argument.clone();
-            }
-        }
-        source
-    }
 }
 
 #[cfg(test)]

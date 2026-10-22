@@ -7,9 +7,10 @@
 
 use serde::{Deserialize, Serialize};
 
+use crate::backends::Capabilities;
+use crate::backends::types::{Arch, InstallOptions, Scope, SearchFilters};
 use crate::model::{CategoryId, Package, Source};
 use crate::theme::ModeChoice;
-use crate::backends::types::{Arch, InstallOptions, Scope, SearchFilters};
 
 /// The route table, mirroring the prototype's router. `Categories` carries the
 /// selected category, exactly as its `category` route does.
@@ -40,51 +41,31 @@ impl Route {
     }
 }
 
-/// The source a search targets. `All` drops the `--source` flag (see
-/// [`crate::backends::winget::search`], which treats `all` as "every source").
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
+/// The source a search targets: one of the backend's live sources, or every
+/// source at once. `All` maps to "no `--source` flag" (each backend's search
+/// builder treats `all` as "every source").
+#[derive(Debug, Clone, PartialEq, Eq, Default)]
 pub enum SearchSource {
+    Named(String),
     #[default]
-    Winget,
-    MsStore,
     All,
 }
 
 impl SearchSource {
     /// The value passed to `--source`.
-    pub const fn arg(self) -> &'static str {
+    pub fn arg(&self) -> &str {
         match self {
-            SearchSource::Winget => "winget",
-            SearchSource::MsStore => "msstore",
+            SearchSource::Named(name) => name,
             SearchSource::All => crate::backends::types::SOURCE_ALL,
         }
     }
 
     /// The label the titlebar pill and the search segments show.
-    pub fn label(self) -> String {
+    pub fn label(&self) -> String {
         match self {
-            SearchSource::Winget => "winget".to_owned(),
-            SearchSource::MsStore => "msstore".to_owned(),
+            SearchSource::Named(name) => name.clone(),
             SearchSource::All => tr!("source.all"),
         }
-    }
-
-    /// `winget` → `msstore` → `all`, the titlebar pill's cycle.
-    pub const fn next(self) -> Self {
-        match self {
-            SearchSource::Winget => SearchSource::MsStore,
-            SearchSource::MsStore => SearchSource::All,
-            SearchSource::All => SearchSource::Winget,
-        }
-    }
-
-    /// The source options the search filter card offers, live sources first.
-    pub fn all() -> [SearchSource; 3] {
-        [
-            SearchSource::Winget,
-            SearchSource::MsStore,
-            SearchSource::All,
-        ]
     }
 }
 
@@ -257,7 +238,10 @@ pub struct Settings {
     pub theme: ModeChoice,
     pub accent: String,
     pub reduce_motion: bool,
-    pub winget_path: String,
+    /// The backend CLI's path; empty means auto-detect. Settings files from
+    /// before the backend abstraction call this `winget_path`.
+    #[serde(alias = "winget_path")]
+    pub backend_path: String,
     pub proxy: String,
     pub language: String,
     pub telemetry: bool,
@@ -266,9 +250,8 @@ pub struct Settings {
 }
 
 impl Default for Settings {
-    /// The prototype's `S.settings`, with `winget_path` left empty so
-    /// [`crate::backends::winget::Winget::resolve`] auto-detects until the app
-    /// fills it in.
+    /// The prototype's `S.settings`, with `backend_path` left empty so
+    /// [`crate::backends::detect`] auto-detects until the app fills it in.
     fn default() -> Self {
         Self {
             default_source: "winget".to_owned(),
@@ -282,7 +265,7 @@ impl Default for Settings {
             theme: ModeChoice::Dark,
             accent: crate::theme::ACCENT_SWATCHES[0].to_owned(),
             reduce_motion: false,
-            winget_path: String::new(),
+            backend_path: String::new(),
             proxy: String::new(),
             language: "zh-CN".to_owned(),
             telemetry: false,
@@ -355,10 +338,15 @@ pub struct AppState {
     pub queue_uid: u64,
     pub queue_open: bool,
     pub status: String,
-    pub winget_version: String,
-    /// Why winget is unavailable, when it is. The app still runs and every
-    /// data view shows an empty state.
-    pub winget_error: Option<String>,
+    /// The detected backend's version string, e.g. `v1.29.380`.
+    pub backend_version: String,
+    /// The backend CLI's name, prefixing the status-bar version.
+    pub backend_name: String,
+    /// What the detected backend can do; drives UI feature gating.
+    pub capabilities: Capabilities,
+    /// Why the backend is unavailable, when it is. The app still runs and
+    /// every data view shows an empty state.
+    pub backend_error: Option<String>,
 }
 
 impl Default for AppState {
@@ -366,7 +354,7 @@ impl Default for AppState {
         Self {
             route: Route::Home,
             query: String::new(),
-            search_source: SearchSource::Winget,
+            search_source: SearchSource::All,
             search_filter: StatusFilter::All,
             packages: Vec::new(),
             details: std::collections::HashMap::new(),
@@ -380,8 +368,10 @@ impl Default for AppState {
             settings: Settings::default(),
             queue_open: false,
             status: tr!("status.ready"),
-            winget_version: String::new(),
-            winget_error: None,
+            backend_version: String::new(),
+            backend_name: crate::backends::platform_kind().cli_name().to_owned(),
+            capabilities: Capabilities::default(),
+            backend_error: None,
         }
     }
 }
@@ -486,21 +476,27 @@ impl AppState {
         self.packages.iter().filter(|p| p.installed).count()
     }
 
-    /// The equivalent `winget search` line the search view shows.
-    pub fn search_command(&self) -> String {
-        let args = crate::backends::winget::search(
-            self.query.trim(),
-            Some(self.search_source.arg()),
-            self.settings.search_filters(),
-            None,
-        );
-        format!("winget {}", args.join(" "))
+    /// The source options the search filter card offers, live sources first.
+    pub fn search_sources(&self) -> Vec<SearchSource> {
+        let mut sources: Vec<SearchSource> = self
+            .sources
+            .iter()
+            .map(|source| SearchSource::Named(source.name.clone()))
+            .collect();
+        sources.push(SearchSource::All);
+        sources
     }
 
-    /// The equivalent `winget install` line a package detail shows.
-    pub fn install_command(&self, id: &str) -> String {
-        let args = crate::backends::winget::install(id, &self.settings.install_options());
-        format!("winget {}", args.join(" "))
+    /// The titlebar pill's cycle: every live source, then 全部源, then back to
+    /// the first. A stale selection (a source that disappeared) restarts the
+    /// cycle.
+    pub fn next_search_source(&self) -> SearchSource {
+        let options = self.search_sources();
+        let next = options
+            .iter()
+            .position(|source| *source == self.search_source)
+            .map_or(0, |ix| (ix + 1) % options.len());
+        options[next].clone()
     }
 
     /// The `winget export` document for the installed packages, pretty-printed
@@ -530,7 +526,7 @@ impl AppState {
                     }
                 }
             ],
-            "WinGetVersion": self.winget_version,
+            "WinGetVersion": self.backend_version,
         });
         serde_json::to_string_pretty(&document).unwrap_or_default()
     }
@@ -649,11 +645,48 @@ mod tests {
     }
 
     #[test]
-    fn search_source_cycles_winget_msstore_all() {
-        assert_eq!(SearchSource::Winget.next(), SearchSource::MsStore);
-        assert_eq!(SearchSource::MsStore.next(), SearchSource::All);
-        assert_eq!(SearchSource::All.next(), SearchSource::Winget);
+    fn search_source_cycles_through_the_live_sources_then_all() {
+        let mut state = AppState::default();
+        // No sources yet: the cycle is 全部源 alone.
+        assert_eq!(state.search_sources(), vec![SearchSource::All]);
+        assert_eq!(state.next_search_source(), SearchSource::All);
+
+        state.sources = vec![
+            Source {
+                name: "winget".into(),
+                ..Source::default()
+            },
+            Source {
+                name: "msstore".into(),
+                ..Source::default()
+            },
+        ];
+        assert_eq!(
+            state.next_search_source(),
+            SearchSource::Named("winget".into())
+        );
+        state.search_source = SearchSource::Named("winget".into());
+        assert_eq!(
+            state.next_search_source(),
+            SearchSource::Named("msstore".into())
+        );
+        state.search_source = SearchSource::Named("msstore".into());
+        assert_eq!(state.next_search_source(), SearchSource::All);
+        state.search_source = SearchSource::All;
+        assert_eq!(
+            state.next_search_source(),
+            SearchSource::Named("winget".into())
+        );
         assert_eq!(SearchSource::All.arg(), SOURCE_ALL);
+    }
+
+    #[test]
+    fn a_stale_search_source_restarts_the_cycle() {
+        let state = AppState {
+            search_source: SearchSource::Named("gone".into()),
+            ..AppState::default()
+        };
+        assert_eq!(state.next_search_source(), SearchSource::All);
     }
 
     #[test]
@@ -911,41 +944,12 @@ mod tests {
     }
 
     #[test]
-    fn install_command_line_reflects_the_settings() {
-        let state = AppState {
-            settings: Settings {
-                default_source: "winget".into(),
-                arch: Arch::X86,
-                scope: Scope::User,
-                ..Settings::default()
-            },
-            ..AppState::default()
-        };
-
-        let command = state.install_command("Microsoft.PowerToys");
-        assert!(command.starts_with("winget install --id Microsoft.PowerToys"));
-        assert!(command.contains("--source winget"));
-        assert!(command.contains("--architecture x86"));
-        assert!(command.contains("--scope user"));
-        assert!(command.contains("--silent"));
-    }
-
-    #[test]
-    fn search_command_line_names_the_selected_source() {
-        let mut state = AppState {
-            query: "vscode".into(),
-            search_source: SearchSource::All,
-            ..AppState::default()
-        };
-        let command = state.search_command();
-        assert!(command.starts_with("winget search -q vscode"));
-        assert!(
-            !command.contains("--source"),
-            "全部源 must not pass a --source flag"
-        );
-
-        state.search_source = SearchSource::MsStore;
-        assert!(state.search_command().contains("--source msstore"));
+    fn settings_loads_a_legacy_winget_path_field() {
+        // Settings files from before the backend abstraction call the CLI
+        // path `winget_path`; the alias keeps them loadable.
+        let settings: Settings = serde_json::from_str(r#"{"winget_path": "C:\\winget.exe"}"#)
+            .expect("the legacy key loads");
+        assert_eq!(settings.backend_path, "C:\\winget.exe");
     }
 
     #[test]

@@ -8,9 +8,9 @@
 
 use std::time::Instant;
 
+use crate::backends::{PackageBackend, exec::Output, types::BackendError};
 use crate::model::Package;
 use crate::state::{AppState, Settings};
-use crate::backends::{exec::Output, types::BackendError, winget};
 
 /// Where a queue entry is in its life cycle.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -123,18 +123,26 @@ pub enum Enqueued {
 /// The arguments a queue entry runs, derived from the current settings.
 ///
 /// This is the mapping the prototype's `buildArgs` performs; every setting on
-/// the settings screen feeds it.
-pub fn args_for(item: &QueueItem, settings: &Settings) -> Vec<String> {
+/// the settings screen feeds it, and the backend maps them onto its own flags.
+pub fn args_for(
+    item: &QueueItem,
+    settings: &Settings,
+    backend: &dyn PackageBackend,
+) -> Vec<String> {
     match item.action {
-        QueueAction::Install => winget::install(&item.id, &settings.install_options()),
-        QueueAction::Upgrade => winget::upgrade_one(&item.id),
+        QueueAction::Install => backend.install_args(&item.id, &settings.install_options()),
+        QueueAction::Upgrade => backend.upgrade_args(&item.id),
     }
 }
 
-/// The full command line a queue entry shows, prefixed with `winget`.
-pub fn command_line(item: &QueueItem, settings: &Settings) -> String {
-    let args = args_for(item, settings);
-    format!("winget {}", args.join(" "))
+/// The full command line a queue entry shows, prefixed with the CLI's name.
+pub fn command_line(
+    item: &QueueItem,
+    settings: &Settings,
+    backend: &dyn PackageBackend,
+) -> String {
+    let args = args_for(item, settings, backend);
+    format!("{} {}", backend.cli_name(), args.join(" "))
 }
 
 /// Add a package to the queue.
@@ -186,7 +194,7 @@ pub fn startable(state: &AppState) -> Vec<usize> {
 }
 
 /// Move entry `ix` into the running state and return the command line it shows.
-pub fn begin(state: &mut AppState, ix: usize) -> Option<String> {
+pub fn begin(state: &mut AppState, ix: usize, backend: &dyn PackageBackend) -> Option<String> {
     let settings = state.settings.clone();
     let item = state.queue.get_mut(ix)?;
     if item.state != QueueState::Pending {
@@ -195,7 +203,7 @@ pub fn begin(state: &mut AppState, ix: usize) -> Option<String> {
     item.state = QueueState::Running;
     item.progress = 0.0;
     item.started = Some(Instant::now());
-    item.log = command_line(item, &settings);
+    item.log = command_line(item, &settings, backend);
     Some(item.log.clone())
 }
 
@@ -220,9 +228,14 @@ pub fn advance_progress(item: &mut QueueItem) {
 /// Record a finished run.
 ///
 /// `Err` is a spawn failure; a non-zero exit code arrives as `Ok` with the
-/// code in [`Output::status`], matching how [`crate::backends::winget::Winget::run`]
-/// reports it.
-pub fn complete(state: &mut AppState, uid: u64, result: Result<Output, BackendError>) {
+/// code in [`Output::status`], matching how [`PackageBackend::run`] reports it.
+/// The backend interprets its own exit codes (benign, needs elevation).
+pub fn complete(
+    state: &mut AppState,
+    uid: u64,
+    result: Result<Output, BackendError>,
+    backend: &dyn PackageBackend,
+) {
     let Some(ix) = state.queue.iter().position(|item| item.uid == uid) else {
         return;
     };
@@ -231,7 +244,7 @@ pub fn complete(state: &mut AppState, uid: u64, result: Result<Output, BackendEr
     let elapsed = state.queue[ix].elapsed_secs();
 
     match result {
-        Ok(output) if output.status == 0 || winget::is_benign(output.status) => {
+        Ok(output) if output.status == 0 || backend.exit_is_benign(output.status) => {
             let item = &mut state.queue[ix];
             item.state = QueueState::Done;
             item.progress = 100.0;
@@ -248,8 +261,8 @@ pub fn complete(state: &mut AppState, uid: u64, result: Result<Output, BackendEr
             };
         }
         Ok(output) => {
-            let description = winget::exit::describe(output.status);
-            let note = if winget::exit::needs_elevation(output.status) {
+            let description = backend.describe_exit(output.status);
+            let note = if backend.exit_needs_elevation(output.status) {
                 tr!("queue.elevation_note")
             } else {
                 String::new()
@@ -261,7 +274,7 @@ pub fn complete(state: &mut AppState, uid: u64, result: Result<Output, BackendEr
             item.log = tr!(
                 "queue.failed_code",
                 action = action.label(),
-                code = winget::exit::format_code(output.status),
+                code = backend.format_exit_code(output.status),
                 desc = description,
                 note = note
             );
@@ -331,6 +344,11 @@ mod tests {
         }
     }
 
+    /// A winget handle for building command lines; nothing is ever spawned.
+    fn backend() -> crate::backends::winget::Winget {
+        crate::backends::winget::Winget::new("winget.exe")
+    }
+
     fn state_with(ids: &[&str]) -> AppState {
         AppState {
             packages: ids
@@ -383,8 +401,8 @@ mod tests {
         let Enqueued::Added(uid) = enqueue(&mut state, "A", QueueAction::Install) else {
             panic!("first enqueue");
         };
-        begin(&mut state, 0);
-        complete(&mut state, uid, Ok(output(0)));
+        begin(&mut state, 0, &backend());
+        complete(&mut state, uid, Ok(output(0)), &backend());
         assert_eq!(state.queue[0].state, QueueState::Done);
 
         assert!(matches!(
@@ -418,8 +436,8 @@ mod tests {
         assert_eq!(startable(&state).len(), 2);
 
         // Two running leaves no slot for a third at concurrency 2.
-        begin(&mut state, 0);
-        begin(&mut state, 1);
+        begin(&mut state, 0, &backend());
+        begin(&mut state, 1, &backend());
         assert!(startable(&state).is_empty());
     }
 
@@ -431,7 +449,7 @@ mod tests {
         state.settings.scope = crate::backends::types::Scope::Machine;
         enqueue(&mut state, "A", QueueAction::Install);
 
-        let command = begin(&mut state, 0).expect("the entry starts");
+        let command = begin(&mut state, 0, &backend()).expect("the entry starts");
         assert!(command.starts_with("winget install --id A"));
         assert!(command.contains("--architecture x86"));
         assert!(command.contains("--scope machine"));
@@ -443,19 +461,22 @@ mod tests {
     fn begin_ignores_an_entry_that_is_not_pending() {
         let mut state = state_with(&["A"]);
         enqueue(&mut state, "A", QueueAction::Install);
-        assert!(begin(&mut state, 0).is_some());
-        assert!(begin(&mut state, 0).is_none(), "already running");
+        assert!(begin(&mut state, 0, &backend()).is_some());
+        assert!(
+            begin(&mut state, 0, &backend()).is_none(),
+            "already running"
+        );
     }
 
     #[test]
     fn the_settings_change_the_command_the_queue_runs() {
         let mut state = state_with(&["A"]);
         enqueue(&mut state, "A", QueueAction::Install);
-        let silent = command_line(&state.queue[0], &state.settings);
+        let silent = command_line(&state.queue[0], &state.settings, &backend());
 
         state.settings.silent = false;
         state.settings.accept_agreements = false;
-        let verbose = command_line(&state.queue[0], &state.settings);
+        let verbose = command_line(&state.queue[0], &state.settings, &backend());
 
         assert!(silent.contains("--silent"));
         assert!(!verbose.contains("--silent"));
@@ -466,7 +487,7 @@ mod tests {
     fn an_upgrade_entry_runs_upgrade_not_install() {
         let mut state = state_with(&["A"]);
         enqueue(&mut state, "A", QueueAction::Upgrade);
-        let command = command_line(&state.queue[0], &state.settings);
+        let command = command_line(&state.queue[0], &state.settings, &backend());
         assert!(command.starts_with("winget upgrade --id A"));
     }
 
@@ -477,8 +498,8 @@ mod tests {
         let Enqueued::Added(uid) = enqueue(&mut state, "A", QueueAction::Install) else {
             panic!("enqueue");
         };
-        begin(&mut state, 0);
-        complete(&mut state, uid, Ok(output(0)));
+        begin(&mut state, 0, &backend());
+        complete(&mut state, uid, Ok(output(0)), &backend());
 
         assert_eq!(state.queue[0].state, QueueState::Done);
         assert_eq!(state.queue[0].progress, 100.0);
@@ -494,9 +515,9 @@ mod tests {
         let Enqueued::Added(uid) = enqueue(&mut state, "A", QueueAction::Install) else {
             panic!("enqueue");
         };
-        begin(&mut state, 0);
+        begin(&mut state, 0, &backend());
         // 0x8A150061 — the package is already installed.
-        complete(&mut state, uid, Ok(output(0x8A15_0061)));
+        complete(&mut state, uid, Ok(output(0x8A15_0061)), &backend());
 
         assert_eq!(state.queue[0].state, QueueState::Done);
         assert!(state.queue[0].log.contains("已存在同版本"));
@@ -510,8 +531,8 @@ mod tests {
         let Enqueued::Added(uid) = enqueue(&mut state, "A", QueueAction::Install) else {
             panic!("enqueue");
         };
-        begin(&mut state, 0);
-        complete(&mut state, uid, Ok(output(0x8A15_0019)));
+        begin(&mut state, 0, &backend());
+        complete(&mut state, uid, Ok(output(0x8A15_0019)), &backend());
 
         assert_eq!(state.queue[0].state, QueueState::Error);
         assert_eq!(state.queue[0].exit, Some(0x8A15_0019));
@@ -527,8 +548,8 @@ mod tests {
         let Enqueued::Added(uid) = enqueue(&mut state, "A", QueueAction::Install) else {
             panic!("enqueue");
         };
-        begin(&mut state, 0);
-        complete(&mut state, uid, Err(BackendError::NotFound));
+        begin(&mut state, 0, &backend());
+        complete(&mut state, uid, Err(BackendError::NotFound), &backend());
         assert_eq!(state.queue[0].state, QueueState::Error);
         assert!(state.queue[0].log.contains("未找到 winget"));
     }
@@ -550,8 +571,8 @@ mod tests {
         let Enqueued::Added(uid) = enqueue(&mut state, "A", QueueAction::Upgrade) else {
             panic!("enqueue");
         };
-        begin(&mut state, 0);
-        complete(&mut state, uid, Ok(output(0)));
+        begin(&mut state, 0, &backend());
+        complete(&mut state, uid, Ok(output(0)), &backend());
 
         assert_eq!(state.packages[0].version, "2.0");
         assert!(state.updates().is_empty());
@@ -561,7 +582,7 @@ mod tests {
     fn completing_an_unknown_handle_changes_nothing() {
         let mut state = state_with(&["A"]);
         enqueue(&mut state, "A", QueueAction::Install);
-        complete(&mut state, 999, Ok(output(0)));
+        complete(&mut state, 999, Ok(output(0)), &backend());
         assert_eq!(state.queue[0].state, QueueState::Pending);
     }
 
@@ -569,7 +590,7 @@ mod tests {
     fn progress_eases_toward_the_ceiling_without_passing_it() {
         let mut state = state_with(&["A"]);
         enqueue(&mut state, "A", QueueAction::Install);
-        begin(&mut state, 0);
+        begin(&mut state, 0, &backend());
 
         let mut previous = state.queue[0].progress;
         for _ in 0..200 {
@@ -605,9 +626,9 @@ mod tests {
                 .expect("queued")
         };
         let (a, b, c) = (uid(&state, "A"), uid(&state, "B"), uid(&state, "C"));
-        complete(&mut state, a, Ok(output(0)));
-        complete(&mut state, b, Ok(output(0x8A15_0019)));
-        complete(&mut state, c, Ok(output(0)));
+        complete(&mut state, a, Ok(output(0)), &backend());
+        complete(&mut state, b, Ok(output(0x8A15_0019)), &backend());
+        complete(&mut state, c, Ok(output(0)), &backend());
 
         clear_finished(&mut state);
         assert_eq!(state.queue.len(), 1);
@@ -645,10 +666,10 @@ mod tests {
         };
         assert!(is_busy(&state, "a"), "case-insensitive");
 
-        begin(&mut state, 0);
+        begin(&mut state, 0, &backend());
         assert!(is_busy(&state, "A"), "running counts as busy");
 
-        complete(&mut state, uid, Ok(output(0)));
+        complete(&mut state, uid, Ok(output(0)), &backend());
         assert!(!is_busy(&state, "A"), "a finished entry frees the button");
     }
 
@@ -675,7 +696,7 @@ mod tests {
     fn command_line_prefixes_winget_exactly_once() {
         let mut state = state_with(&["A"]);
         enqueue(&mut state, "A", QueueAction::Install);
-        let line = command_line(&state.queue[0], &state.settings);
+        let line = command_line(&state.queue[0], &state.settings, &backend());
         assert!(line.starts_with("winget install --id A --exact"));
         // `--source winget` legitimately repeats the word, but never the
         // leading prefix.

@@ -284,7 +284,7 @@ pub fn pill(p: &Palette, kind: PillKind, text: impl Into<SharedString>) -> Div {
 ///
 /// Built from plain `div`s rather than `ToggleGroup::segmented()` because the
 /// 3 px track padding and 10 px radius are not expressible on the component.
-pub fn seg_control<T: Copy + PartialEq + 'static>(
+pub fn seg_control<T: Clone + PartialEq + 'static>(
     p: &Palette,
     id: &'static str,
     items: &[(T, String)],
@@ -302,7 +302,7 @@ pub fn seg_control<T: Copy + PartialEq + 'static>(
         .border_1()
         .border_color(p.line)
         .children(items.iter().enumerate().map(|(ix, (value, label))| {
-            let value = *value;
+            let value = value.clone();
             let is_on = value == selected;
             let handler = on_select.clone();
             let idle = p.muted;
@@ -333,7 +333,7 @@ pub fn seg_control<T: Copy + PartialEq + 'static>(
                     this.text_color(idle)
                         .hover(move |this| this.text_color(hot))
                 })
-                .on_click(move |_, window, cx| handler(value, window, cx))
+                .on_click(move |_, window, cx| handler(value.clone(), window, cx))
                 .child(label.clone())
         }))
 }
@@ -697,23 +697,18 @@ pub fn status_items() -> Vec<(StatusFilter, String)> {
 
 /// The search-source segments: the live sources, then "all sources".
 ///
-/// The prototype renders one button per configured source; an unrecognised
-/// source name still gets a segment so the list never silently loses one.
+/// The prototype renders one button per configured source; an empty list
+/// leaves only 全部源.
 pub fn source_items(sources: &[Source]) -> Vec<(SearchSource, String)> {
-    let mut items: Vec<(SearchSource, String)> = Vec::new();
-    for source in sources {
-        let entry = match source.name.as_str() {
-            "winget" => (SearchSource::Winget, "winget".to_owned()),
-            "msstore" => (SearchSource::MsStore, "msstore".to_owned()),
-            _ => continue,
-        };
-        if !items.iter().any(|(s, _)| *s == entry.0) {
-            items.push(entry);
-        }
-    }
-    if items.is_empty() {
-        items.push((SearchSource::Winget, "winget".to_owned()));
-    }
+    let mut items: Vec<(SearchSource, String)> = sources
+        .iter()
+        .map(|source| {
+            (
+                SearchSource::Named(source.name.clone()),
+                source.name.clone(),
+            )
+        })
+        .collect();
     items.push((SearchSource::All, tr!("source.all")));
     items
 }

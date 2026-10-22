@@ -25,7 +25,7 @@ use crate::model::Package;
 use crate::shell::AppView;
 use crate::theme::Palette;
 use crate::widgets::{self, BtnKind, BtnSize, PillKind};
-use crate::backends::{types::PackageDetail, winget};
+use crate::backends::types::PackageDetail;
 
 /// 软件包详情 — the large modal a card's 查看详情 opens.
 ///
@@ -65,7 +65,7 @@ pub fn pkg_detail(view: &mut AppView, id: &str, window: &mut Window, cx: &mut Co
                 .find(|p| p.id.eq_ignore_ascii_case(&lookup_id))
                 .cloned()?;
             let detail = view.state.details.get(&pkg.key()).cloned();
-            let command = view.state.install_command(&pkg.id);
+            let command = view.install_command(&pkg.id);
             let busy = crate::queue::is_busy(&view.state, &pkg.id);
             let action = widgets::package_action(&pkg);
             let (label, _) = widgets::install_label(&pkg, busy, action);
@@ -82,7 +82,7 @@ pub fn pkg_detail(view: &mut AppView, id: &str, window: &mut Window, cx: &mut Co
                 .iter()
                 .map(|rel| view.state.icon_path_for(&rel.id))
                 .collect();
-            let loading = detail.is_none() && view.winget.is_some();
+            let loading = detail.is_none() && view.backend.is_some();
             Some((
                 pkg,
                 detail,
@@ -641,12 +641,10 @@ pub fn add_source(view: &mut AppView, window: &mut Window, cx: &mut Context<AppV
                                 );
                                 return;
                             }
-                            let args = winget::source_add(
-                                &trimmed,
-                                url.trim(),
-                                "Microsoft.PreIndexed.Package",
-                                true,
-                            );
+                            let Some(backend) = this.backend.clone() else {
+                                return;
+                            };
+                            let args = backend.source_add_args(&trimmed, url.trim());
                             this.run_source_op(args, &tr!("notification.source_added"), window, cx);
                             window.close_dialog(cx);
                         });
@@ -737,7 +735,15 @@ pub fn edit_source(view: &mut AppView, name: &str, window: &mut Window, cx: &mut
                         let flag = explicit.get();
                         let name = source_name.clone();
                         let _ = save_view.update_in(cx, |this, window, cx| {
-                            let args = winget::source_edit(&name, Some(flag));
+                            let Some(backend) = this.backend.clone() else {
+                                return;
+                            };
+                            // A backend without an in-place source edit
+                            // (flatpak remotes) has nothing to run.
+                            let Some(args) = backend.source_edit_args(&name, Some(flag)) else {
+                                window.close_dialog(cx);
+                                return;
+                            };
                             this.run_source_op(
                                 args,
                                 &tr!("notification.source_updated"),
@@ -769,7 +775,17 @@ pub fn confirm_uninstall(
         return;
     };
     let pkg_id = pkg.id.clone();
-    let command = format!("winget uninstall --id {} --exact --source winget", pkg.id);
+    let command = view
+        .backend
+        .as_ref()
+        .map(|backend| {
+            format!(
+                "{} {}",
+                backend.cli_name(),
+                backend.uninstall_args(&pkg.id).join(" ")
+            )
+        })
+        .unwrap_or_default();
     let this = cx.weak_entity();
 
     window.open_alert_dialog(cx, move |alert, _, cx| {
@@ -798,7 +814,10 @@ pub fn confirm_uninstall(
             .on_ok(move |_: &ClickEvent, _window, cx| {
                 let id = pkg_id.clone();
                 let _ = run_view.update_in(cx, |this, window, cx| {
-                    let args = winget::uninstall(&id);
+                    let Some(backend) = this.backend.clone() else {
+                        return;
+                    };
+                    let args = backend.uninstall_args(&id);
                     this.run_uninstall(args, &id, window, cx);
                 });
                 true
@@ -836,11 +855,21 @@ pub fn confirm_remove_source(
                 let name = source_name.clone();
                 let _ = run_view.update_in(cx, |this, window, cx| {
                     if this.state.default_source == name {
-                        this.state.default_source = "winget".to_owned();
-                        this.state.settings.default_source = "winget".to_owned();
+                        let fallback = this
+                            .state
+                            .sources
+                            .iter()
+                            .find(|source| source.name != name)
+                            .map(|source| source.name.clone())
+                            .unwrap_or_default();
+                        this.state.default_source = fallback.clone();
+                        this.state.settings.default_source = fallback;
                         this.persist_settings();
                     }
-                    let args = winget::source_remove(&name);
+                    let Some(backend) = this.backend.clone() else {
+                        return;
+                    };
+                    let args = backend.source_remove_args(&name);
                     this.run_source_op(args, &tr!("notification.source_removed"), window, cx);
                 });
                 true

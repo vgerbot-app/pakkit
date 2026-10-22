@@ -27,17 +27,25 @@ use gpui_kit::{
 pub struct ShellInputs {
     pub install_location: Entity<InputState>,
     pub proxy: Entity<InputState>,
-    pub winget_path: Entity<InputState>,
+    pub backend_path: Entity<InputState>,
 }
 
 /// Dispatch to the active route's renderer.
-pub fn render(state: &AppState, inputs: &ShellInputs, cx: &mut Context<AppView>) -> AnyElement {
+///
+/// `search_command` is the shell-computed equivalent command line; it cannot
+/// be derived from `state` alone because it needs the backend's arg builders.
+pub fn render(
+    state: &AppState,
+    inputs: &ShellInputs,
+    search_command: &str,
+    cx: &mut Context<AppView>,
+) -> AnyElement {
     let p = crate::theme::palette(cx);
     match state.route {
         Route::Home => home(state, &p, cx),
         Route::Categories => categories(state, &p, cx),
         Route::Category(id) => category_detail(state, &p, id, cx),
-        Route::Search => search(state, &p, cx),
+        Route::Search => search(state, search_command, &p, cx),
         Route::Installed => installed(state, &p, cx),
         Route::Updates => updates(state, &p, cx),
         Route::Sources => sources(state, &p, cx),
@@ -145,8 +153,8 @@ fn home(state: &AppState, p: &Palette, cx: &mut Context<AppView>) -> AnyElement 
         );
     }
 
-    if state.winget_error.is_some() {
-        children.insert(1, winget_missing(p, cx));
+    if state.backend_error.is_some() {
+        children.insert(1, backend_missing(p, cx));
     }
 
     div()
@@ -750,7 +758,12 @@ fn category_detail(
 
 // ------------------------------------------------------------------- 搜索
 
-fn search(state: &AppState, p: &Palette, cx: &mut Context<AppView>) -> AnyElement {
+fn search(
+    state: &AppState,
+    command: &str,
+    p: &Palette,
+    cx: &mut Context<AppView>,
+) -> AnyElement {
     let results = state.filtered();
     let title = if state.query.trim().is_empty() {
         tr!("status.all_packages")
@@ -786,8 +799,7 @@ fn search(state: &AppState, p: &Palette, cx: &mut Context<AppView>) -> AnyElemen
     let sources = widgets::source_items(&state.sources);
     let statuses = widgets::status_items();
     let sorts = widgets::sort_items();
-    let command = state.search_command();
-    let command_for_copy = command.clone();
+    let command_for_copy = command.to_owned();
 
     let filter_card = widgets::card(p)
         .mx(px(24.))
@@ -800,7 +812,7 @@ fn search(state: &AppState, p: &Palette, cx: &mut Context<AppView>) -> AnyElemen
             p,
             "src-seg",
             &sources,
-            state.search_source,
+            state.search_source.clone(),
             seg_handler(cx, |this, value, window, cx| {
                 this.set_search_source(value, window, cx);
             }),
@@ -834,7 +846,11 @@ fn search(state: &AppState, p: &Palette, cx: &mut Context<AppView>) -> AnyElemen
         .items_center()
         .gap(px(6.))
         .child(icon(IconKey::Terminal, px(12.), p.muted))
-        .child(widgets::mono(p).child(command).into_any_element())
+        .child(
+            widgets::mono(p)
+                .child(command.to_owned())
+                .into_any_element(),
+        )
         .child(
             widgets::icon_btn("copy-command", IconKey::Copy, 24., p.muted).on_click(cx.listener(
                 move |this, _, window, cx| {
@@ -1314,7 +1330,7 @@ fn sources(state: &AppState, p: &Palette, cx: &mut Context<AppView>) -> AnyEleme
                     .child(tr!("sources.equivalent_command"))
                     .child(widgets::code_chip(
                         p,
-                        "winget source add --name <name> --arg <url>",
+                        format!("{} source add --name <name> --arg <url>", state.backend_name),
                     )),
             ),
         )
@@ -1491,32 +1507,35 @@ fn settings(
             row_shell_plain(
                 p,
                 &tr!("settings.default_source"),
-                "winget install --source <name>",
+                &format!("{} install --source <name>", state.backend_name),
                 default_source_control(state, p, cx),
             ),
             seg_row(
                 p,
                 &tr!("settings.arch"),
-                "winget install --architecture <arch>",
+                &format!("{} install --architecture <arch>", state.backend_name),
                 arch_segments(state, p, cx),
             ),
             seg_row(
                 p,
                 &tr!("settings.scope"),
-                "winget install --scope <scope>",
+                &format!("{} install --scope <scope>", state.backend_name),
                 scope_segments(state, p, cx),
             ),
             field_row(
                 p,
                 &tr!("settings.location"),
-                "winget install --location <path>",
+                &format!("{} install --location <path>", state.backend_name),
                 input_field(p, &inputs.install_location),
             ),
             switch_field_row(
                 cx,
                 p,
                 &tr!("settings.accept_agreements"),
-                "winget install --accept-package-agreements",
+                &format!(
+                    "{} install --accept-package-agreements",
+                    state.backend_name
+                ),
                 state.settings.accept_agreements,
                 |this, value, cx| {
                     this.state.settings.accept_agreements = value;
@@ -1528,7 +1547,7 @@ fn settings(
                 cx,
                 p,
                 &tr!("settings.silent"),
-                "winget install --silent",
+                &format!("{} install --silent", state.backend_name),
                 state.settings.silent,
                 |this, value, cx| {
                     this.state.settings.silent = value;
@@ -1607,7 +1626,7 @@ fn settings(
                 p,
                 &tr!("settings.winget_path"),
                 &tr!("settings.winget_path_hint"),
-                input_field(p, &inputs.winget_path),
+                input_field(p, &inputs.backend_path),
             ),
             field_row(
                 p,
@@ -1763,11 +1782,9 @@ fn switch_field_row(
 }
 
 fn default_source_control(state: &AppState, p: &Palette, cx: &mut Context<AppView>) -> AnyElement {
-    let names: Vec<String> = if state.sources.is_empty() {
-        vec!["winget".to_owned(), "msstore".to_owned()]
-    } else {
-        state.sources.iter().map(|s| s.name.clone()).collect()
-    };
+    // One choice per live source; nothing is invented for a backend whose
+    // sources have not loaded yet.
+    let names: Vec<String> = state.sources.iter().map(|s| s.name.clone()).collect();
     div()
         .flex()
         .gap(px(6.))
@@ -1924,7 +1941,7 @@ fn accent_row(p: &Palette, state: &AppState, cx: &mut Context<AppView>) -> AnyEl
 
 /// `seg_control` reports the picked value by value, while `cx.listener`
 /// produces a reference-taking closure. This adapts one to the other.
-fn seg_handler<T: Copy + 'static>(
+fn seg_handler<T: Clone + 'static>(
     cx: &Context<AppView>,
     on_select: impl Fn(&mut AppView, T, &mut Window, &mut Context<AppView>) + 'static,
 ) -> impl Fn(T, &mut Window, &mut App) + 'static {
@@ -1941,10 +1958,10 @@ fn input_field(p: &Palette, input: &Entity<InputState>) -> AnyElement {
 }
 
 fn about(p: &Palette, state: &AppState, cx: &mut Context<AppView>) -> AnyElement {
-    let version = if state.winget_version.is_empty() {
+    let version = if state.backend_version.is_empty() {
         tr!("settings.not_detected")
     } else {
-        state.winget_version.clone()
+        state.backend_version.clone()
     };
     settings_card(
         p,
@@ -1991,7 +2008,7 @@ fn about(p: &Palette, state: &AppState, cx: &mut Context<AppView>) -> AnyElement
                             BtnSize::Small,
                             tr!("settings.detect"),
                         )
-                        .on_click(cx.listener(|this, _, _, cx| this.redetect_winget(cx))),
+                        .on_click(cx.listener(|this, _, _, cx| this.redetect_backend(cx))),
                     ),
                 )
                 .into_any_element(),
@@ -2042,7 +2059,7 @@ fn section_head(
     head.into_any_element()
 }
 
-fn winget_missing(p: &Palette, cx: &mut Context<AppView>) -> AnyElement {
+fn backend_missing(p: &Palette, cx: &mut Context<AppView>) -> AnyElement {
     div()
         .px(px(24.))
         .pb(px(16.))

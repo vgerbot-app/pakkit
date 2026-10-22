@@ -9,7 +9,13 @@ pub mod exec;
 pub mod exit;
 pub mod parse;
 
-use super::types::{InstallOptions, SOURCE_ALL, SearchFilters};
+use super::exec::Output;
+use super::types::{
+    BackendError, InstallOptions, ListRow, PackageDetail, SOURCE_ALL, SearchFilters, SearchRow,
+    SourceRow,
+};
+use super::{BackendKind, PackageBackend};
+use crate::model::Source;
 
 pub use exec::Winget;
 pub use exit::{describe, format_code, is_benign, needs_elevation};
@@ -253,6 +259,173 @@ pub fn source_update(name: Option<&str>) -> Vec<String> {
 /// Map the UI's "all sources" sentinel to "no `--source` flag".
 fn normalize_source(source: Option<&str>) -> Option<&str> {
     source.filter(|s| !s.is_empty() && *s != SOURCE_ALL)
+}
+
+/// Merge the `source list` table row with its `source export` record.
+fn merge_source(row: &SourceRow, export: Option<&SourceExport>) -> Source {
+    let mut source = Source {
+        name: row.name.clone(),
+        url: row.argument.clone(),
+        explicit: row.explicit,
+        ..Source::default()
+    };
+    if let Some(export) = export {
+        source.trusted = export.trusted();
+        source.ty = export.ty.clone();
+        if source.url.is_empty() {
+            source.url = export.argument.clone();
+        }
+    }
+    source
+}
+
+impl PackageBackend for Winget {
+    fn kind(&self) -> BackendKind {
+        BackendKind::Winget
+    }
+
+    fn run(&self, args: &[&str]) -> Result<Output, BackendError> {
+        Winget::run(self, args)
+    }
+
+    fn run_checked(&self, args: &[&str]) -> Result<Output, BackendError> {
+        Winget::run_checked(self, args)
+    }
+
+    fn version(&self) -> Result<String, BackendError> {
+        Winget::version(self)
+    }
+
+    fn describe_exit(&self, code: u32) -> String {
+        describe(code)
+    }
+
+    fn exit_needs_elevation(&self, code: u32) -> bool {
+        needs_elevation(code)
+    }
+
+    fn exit_is_benign(&self, code: u32) -> bool {
+        is_benign(code)
+    }
+
+    fn format_exit_code(&self, code: u32) -> String {
+        format_code(code)
+    }
+
+    fn search_args(
+        &self,
+        query: &str,
+        source: Option<&str>,
+        filters: SearchFilters,
+        count: Option<u32>,
+    ) -> Vec<String> {
+        search(query, source, filters, count)
+    }
+
+    fn list_args(&self, source: Option<&str>) -> Vec<String> {
+        list(source)
+    }
+
+    fn upgrades_args(&self) -> Vec<String> {
+        list_upgrade_available(false, false)
+    }
+
+    fn show_args(&self, id: &str, source: Option<&str>) -> Vec<String> {
+        show(id, source)
+    }
+
+    fn install_args(&self, id: &str, options: &InstallOptions) -> Vec<String> {
+        install(id, options)
+    }
+
+    fn uninstall_args(&self, id: &str) -> Vec<String> {
+        uninstall(id)
+    }
+
+    fn upgrade_args(&self, id: &str) -> Vec<String> {
+        upgrade_one(id)
+    }
+
+    fn upgrade_all_args(&self) -> Vec<String> {
+        upgrade_all()
+    }
+
+    fn source_add_args(&self, name: &str, url: &str) -> Vec<String> {
+        source_add(name, url, "Microsoft.PreIndexed.Package", true)
+    }
+
+    fn source_edit_args(&self, name: &str, explicit: Option<bool>) -> Option<Vec<String>> {
+        Some(source_edit(name, explicit))
+    }
+
+    fn source_remove_args(&self, name: &str) -> Vec<String> {
+        source_remove(name)
+    }
+
+    fn source_update_args(&self, name: Option<&str>) -> Vec<String> {
+        source_update(name)
+    }
+
+    fn parse_search(&self, stdout: &str) -> Vec<SearchRow> {
+        parse_search(stdout)
+    }
+
+    fn parse_list(&self, stdout: &str) -> Vec<ListRow> {
+        parse_list(stdout)
+    }
+
+    fn parse_upgrades(&self, stdout: &str) -> Vec<ListRow> {
+        parse_list(stdout)
+    }
+
+    fn parse_show(&self, stdout: &str) -> PackageDetail {
+        parse_show(stdout)
+    }
+
+    /// `source list` merged with the per-source `source export` records.
+    ///
+    /// The export read is best-effort: it needs no elevation, but an older
+    /// winget may lack it, and the list rows alone are still worth showing.
+    fn list_sources(&self) -> Result<Vec<Source>, BackendError> {
+        let args = source_list();
+        let refs: Vec<&str> = args.iter().map(String::as_str).collect();
+        let rows = self
+            .run(&refs)
+            .map(|out| parse_source_list(&out.stdout))
+            .unwrap_or_default();
+
+        let args = source_export(None);
+        let refs: Vec<&str> = args.iter().map(String::as_str).collect();
+        let exports = self
+            .run(&refs)
+            .ok()
+            .and_then(|out| parse_source_export(&out.stdout).ok())
+            .unwrap_or_default();
+
+        Ok(rows
+            .iter()
+            .map(|row| merge_source(row, exports.iter().find(|e| e.name == row.name)))
+            .collect())
+    }
+
+    /// Ids from `winget export` — the packages winget can actually manage.
+    ///
+    /// `winget list` also surfaces ARP/MSIX entries with no source and no
+    /// upgrade path; the export document excludes them, so it — not the list
+    /// output — decides membership of the managed set.
+    fn managed_ids(&self, _rows: &[ListRow]) -> Vec<String> {
+        let path = std::env::temp_dir().join("wingetgui-export.json");
+        let args = export_json(&path, None);
+        let refs: Vec<&str> = args.iter().map(String::as_str).collect();
+        let ids = self
+            .run(&refs)
+            .ok()
+            .and_then(|_| std::fs::read_to_string(&path).ok())
+            .and_then(|text| parse_export_json(&text).ok())
+            .unwrap_or_default();
+        let _ = std::fs::remove_file(&path);
+        ids.into_iter().map(|id| id.to_lowercase()).collect()
+    }
 }
 
 #[cfg(test)]

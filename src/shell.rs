@@ -1,11 +1,13 @@
 //! The window shell: titlebar, sidebar, main pane, status bar, queue drawer.
 //!
-//! [`AppView`] owns the [`AppState`], the resolved [`Winget`] handle and every
+//! [`AppView`] owns the [`AppState`], the detected [`PackageBackend`] and every
 //! in-flight task. Views render from a state snapshot and send changes back
-//! through listeners, so no view talks to winget directly.
+//! through listeners, so no view talks to a package manager directly.
 
+use std::sync::Arc;
 use std::time::Duration;
 
+use crate::backends::{self, PackageBackend, types};
 use crate::config;
 use crate::icons::{IconKey, icon};
 use crate::model::Package;
@@ -14,10 +16,6 @@ use crate::state::{AppState, Route, SearchSource};
 use crate::theme::{self, Palette};
 use crate::views;
 use crate::widgets;
-use crate::backends::{
-    types,
-    winget::{self, Winget},
-};
 use gpui_kit::component::input::{Input, InputEvent, InputState};
 use gpui_kit::component::notification::Notification;
 use gpui_kit::component::sidebar::{
@@ -40,14 +38,14 @@ actions!(wingetgui, [FocusSearch]);
 /// The application view. One per window.
 pub struct AppView {
     pub state: AppState,
-    /// The resolved winget executable; `None` when it could not be found.
-    pub winget: Option<Winget>,
+    /// The detected package backend; `None` when its CLI could not be found.
+    pub backend: Option<Arc<dyn PackageBackend>>,
     /// The settings tab's text fields. Created once, at construction, so the
     /// settings renderer only ever borrows them.
     pub search_input: Entity<InputState>,
     pub install_location_input: Entity<InputState>,
     pub proxy_input: Entity<InputState>,
-    pub winget_path_input: Entity<InputState>,
+    pub backend_path_input: Entity<InputState>,
     /// In-flight refreshes. Dropping a [`Task`] cancels it, so they are held
     /// here; finished ones are pruned when the next refresh starts. A single
     /// slot cannot be used — the startup source load would cancel the package
@@ -100,9 +98,9 @@ impl AppView {
             input.set_value(settings.proxy.clone(), window, cx);
             input
         });
-        let winget_path_input = cx.new(|cx| {
+        let backend_path_input = cx.new(|cx| {
             let mut input = InputState::new(window, cx).placeholder(tr!("placeholder.winget_path"));
-            input.set_value(settings.winget_path.clone(), window, cx);
+            input.set_value(settings.backend_path.clone(), window, cx);
             input
         });
         let state = AppState {
@@ -111,11 +109,11 @@ impl AppView {
         };
         let mut view = Self {
             state,
-            winget: None,
+            backend: None,
             search_input: search_input.clone(),
             install_location_input: install_location_input.clone(),
             proxy_input: proxy_input.clone(),
-            winget_path_input: winget_path_input.clone(),
+            backend_path_input: backend_path_input.clone(),
             refresh_tasks: Vec::new(),
             ticker: None,
             debounce: None,
@@ -152,7 +150,7 @@ impl AppView {
             },
         ));
 
-        for entity in [&install_location_input, &proxy_input, &winget_path_input] {
+        for entity in [&install_location_input, &proxy_input, &backend_path_input] {
             view._subscriptions.push(cx.subscribe_in(
                 entity,
                 window,
@@ -162,7 +160,7 @@ impl AppView {
                         state.install_location =
                             this.install_location_input.read(cx).value().to_string();
                         state.proxy = this.proxy_input.read(cx).value().to_string();
-                        state.winget_path = this.winget_path_input.read(cx).value().to_string();
+                        state.backend_path = this.backend_path_input.read(cx).value().to_string();
                         this.persist_settings();
                         cx.notify();
                     }
@@ -175,30 +173,31 @@ impl AppView {
         view
     }
 
-    /// Resolve winget, read its version, then load the first pages of data.
+    /// Resolve the backend, read its version, then load the first pages of data.
     fn start(&mut self, cx: &mut Context<Self>) {
-        // The disk caches warm the detail/icon maps even when winget is
+        // The disk caches warm the detail/icon maps even when the backend is
         // missing, so this runs before the resolve below can early-return.
         self.load_cache(cx);
-        let Ok(winget) = Winget::resolve(&self.state.settings.winget_path) else {
-            let message = Winget::resolve(&self.state.settings.winget_path)
-                .err()
-                .map(|error| error.localized())
-                .unwrap_or_default();
-            self.state.winget_error = Some(message.clone());
-            self.state.status = message;
-            return;
+        let backend = match backends::detect(&self.state.settings.backend_path) {
+            Ok(backend) => backend,
+            Err(error) => {
+                let message = error.localized();
+                self.state.backend_error = Some(message.clone());
+                self.state.status = message;
+                return;
+            }
         };
-        self.winget = Some(winget.clone());
-        self.state.winget_error = None;
+        self.state.backend_name = backend.cli_name().to_owned();
+        self.state.capabilities = backend.capabilities();
+        self.state.backend_error = None;
+        self.backend = Some(backend.clone());
 
         self.spawn_refresh(cx.spawn(async move |this, cx| {
-            let probe = winget.clone();
             let version = cx
-                .background_spawn(async move { probe.version().unwrap_or_default() })
+                .background_spawn(async move { backend.version().unwrap_or_default() })
                 .await;
             let _ = this.update(cx, |this, cx| {
-                this.state.winget_version = version;
+                this.state.backend_version = version;
                 this.refresh_packages(cx);
                 this.refresh_sources(cx);
                 cx.notify();
@@ -206,20 +205,21 @@ impl AppView {
         }));
     }
 
-    /// Re-resolve winget from the configured path, as 检测 does.
-    pub fn redetect_winget(&mut self, cx: &mut Context<Self>) {
-        match Winget::resolve(&self.state.settings.winget_path) {
-            Ok(winget) => {
-                self.winget = Some(winget.clone());
-                self.state.winget_error = None;
+    /// Re-resolve the backend from the configured path, as 检测 does.
+    pub fn redetect_backend(&mut self, cx: &mut Context<Self>) {
+        match backends::detect(&self.state.settings.backend_path) {
+            Ok(backend) => {
+                self.state.backend_name = backend.cli_name().to_owned();
+                self.state.capabilities = backend.capabilities();
+                self.state.backend_error = None;
                 self.state.status = tr!("status.winget_detected");
+                self.backend = Some(backend.clone());
                 self.spawn_refresh(cx.spawn(async move |this, cx| {
-                    let probe = winget.clone();
                     let version = cx
-                        .background_spawn(async move { probe.version().unwrap_or_default() })
+                        .background_spawn(async move { backend.version().unwrap_or_default() })
                         .await;
                     let _ = this.update(cx, |this, cx| {
-                        this.state.winget_version = version;
+                        this.state.backend_version = version;
                         this.refresh_packages(cx);
                         cx.notify();
                     });
@@ -227,11 +227,27 @@ impl AppView {
             }
             Err(error) => {
                 let message = error.localized();
-                self.state.winget_error = Some(message.clone());
+                self.state.backend_error = Some(message.clone());
                 self.state.status = message;
             }
         }
         cx.notify();
+    }
+
+    /// The equivalent `<cli> search` line the search view shows.
+    pub fn search_command(&self) -> String {
+        let Some(backend) = &self.backend else {
+            return String::new();
+        };
+        search_command(&self.state, &**backend)
+    }
+
+    /// The equivalent `<cli> install` line a package detail shows.
+    pub fn install_command(&self, id: &str) -> String {
+        let Some(backend) = &self.backend else {
+            return String::new();
+        };
+        install_command(&self.state, id, &**backend)
     }
 
     // --------------------------------------------------------------- routing
@@ -261,30 +277,31 @@ impl AppView {
         }));
     }
 
-    /// Run only `winget search`, merging against the cached installed data.
+    /// Run only the backend's search, merging against the cached installed data.
     ///
     /// Keystrokes, Enter, the source pill and the advanced filters land here;
-    /// the expensive `list`/`export` sweep stays with [`Self::refresh_packages`]
+    /// the expensive installed-set sweep stays with [`Self::refresh_packages`]
     /// (startup, redetect), while install/uninstall mutations keep the caches
     /// in sync directly.
     pub fn refresh_search(&mut self, cx: &mut Context<Self>) {
-        let Some(winget) = self.winget.clone() else {
+        let Some(backend) = self.backend.clone() else {
             cx.notify();
             return;
         };
         let query = self.state.query.clone();
         let source = self.state.search_source.arg().to_owned();
-        let settings = self.state.settings.clone();
+        let filters = self.state.settings.search_filters();
+        let cli_name = backend.cli_name();
 
         // Cancel the previous keystroke search and invalidate its result.
         self.search_task = None;
         self.search_epoch += 1;
         let epoch = self.search_epoch;
 
-        // `winget search` with an empty query matches nothing — skip the
-        // process entirely and show just the cached installed packages.
+        // A search with an empty query matches nothing — skip the process
+        // entirely and show just the cached installed packages.
         if query.trim().is_empty() {
-            self.state.packages = merge_catalog(&[], &self.list_rows, &self.installed_ids);
+            self.state.packages = merge_catalog(&[], &self.list_rows, &self.installed_ids, cli_name);
             self.state.status = self.state.status_for(self.state.route);
             cx.notify();
             return;
@@ -296,13 +313,7 @@ impl AppView {
         self.search_task = Some(cx.spawn(async move |this, cx| {
             let search = cx
                 .background_spawn(async move {
-                    let args =
-                        winget::search(&query, Some(&source), settings.search_filters(), None);
-                    let refs: Vec<&str> = args.iter().map(String::as_str).collect();
-                    winget
-                        .run(&refs)
-                        .map(|out| winget::parse_search(&out.stdout))
-                        .unwrap_or_default()
+                    backend.search_packages(&query, Some(&source), filters, None)
                 })
                 .await;
 
@@ -311,7 +322,8 @@ impl AppView {
                     // A newer query (or a full refresh) superseded this one.
                     return;
                 }
-                this.state.packages = merge_catalog(&search, &this.list_rows, &this.installed_ids);
+                this.state.packages =
+                    merge_catalog(&search, &this.list_rows, &this.installed_ids, cli_name);
                 this.state.status = this.state.status_for(this.state.route);
                 cx.notify();
             });
@@ -323,7 +335,7 @@ impl AppView {
         handle.focus(window, cx);
     }
 
-    /// `winget → msstore → 全部源`, as the titlebar pill and the segments do.
+    /// Switch the search source, as the titlebar pill and the segments do.
     pub fn set_search_source(
         &mut self,
         source: SearchSource,
@@ -333,7 +345,7 @@ impl AppView {
         if self.state.search_source == source {
             return;
         }
-        self.state.search_source = source;
+        self.state.search_source = source.clone();
         window.push_notification(
             Notification::info(tr!("notification.source_switched", source = source.label())),
             cx,
@@ -350,13 +362,14 @@ impl AppView {
     // ------------------------------------------------------------------ data
 
     pub fn refresh_packages(&mut self, cx: &mut Context<Self>) {
-        let Some(winget) = self.winget.clone() else {
+        let Some(backend) = self.backend.clone() else {
             cx.notify();
             return;
         };
         let query = self.state.query.clone();
         let source = self.state.search_source.arg().to_owned();
-        let settings = self.state.settings.clone();
+        let filters = self.state.settings.search_filters();
+        let cli_name = backend.cli_name();
 
         // Supersede any in-flight keystroke search — its result would be
         // stale once this full sweep lands.
@@ -374,23 +387,13 @@ impl AppView {
                     let search = if query.trim().is_empty() {
                         Vec::new()
                     } else {
-                        let args =
-                            winget::search(&query, Some(&source), settings.search_filters(), None);
-                        let refs: Vec<&str> = args.iter().map(String::as_str).collect();
-                        winget
-                            .run(&refs)
-                            .map(|out| winget::parse_search(&out.stdout))
-                            .unwrap_or_default()
+                        backend.search_packages(&query, Some(&source), filters, None)
                     };
 
-                    let args = winget::list(None);
-                    let refs: Vec<&str> = args.iter().map(String::as_str).collect();
-                    let list = winget
-                        .run(&refs)
-                        .map(|out| winget::parse_list(&out.stdout))
-                        .unwrap_or_default();
+                    let list = backend.list_installed();
+                    let installed = backend.managed_ids(&list);
 
-                    (search, list, export_installed(&winget))
+                    (search, list, installed)
                 })
                 .await;
 
@@ -401,7 +404,7 @@ impl AppView {
                 this.installed_ids = installed;
                 if epoch == this.search_epoch {
                     this.state.packages =
-                        merge_catalog(&search, &this.list_rows, &this.installed_ids);
+                        merge_catalog(&search, &this.list_rows, &this.installed_ids, cli_name);
                     this.state.status = this.state.status_for(this.state.route);
                 }
                 cx.notify();
@@ -409,11 +412,12 @@ impl AppView {
         }));
     }
 
-    /// `winget list --upgrade-available` — the 更新 view's data.
+    /// The backend's upgrades listing — the 更新 view's data.
     pub fn refresh_updates(&mut self, cx: &mut Context<Self>) {
-        let Some(winget) = self.winget.clone() else {
+        let Some(backend) = self.backend.clone() else {
             return;
         };
+        let cli_name = backend.cli_name();
         let installed: Vec<String> = self
             .state
             .packages
@@ -424,14 +428,7 @@ impl AppView {
 
         self.spawn_refresh(cx.spawn(async move |this, cx| {
             let rows = cx
-                .background_spawn(async move {
-                    let args = winget::list_upgrade_available(false, false);
-                    let refs: Vec<&str> = args.iter().map(String::as_str).collect();
-                    winget
-                        .run(&refs)
-                        .map(|out| winget::parse_list(&out.stdout))
-                        .unwrap_or_default()
-                })
+                .background_spawn(async move { backend.list_upgrades() })
                 .await;
 
             let _ = this.update(cx, |this, cx| {
@@ -455,7 +452,7 @@ impl AppView {
                                 source: row.source.clone(),
                                 description: None,
                             },
-                            "winget",
+                            cli_name,
                         );
                         pkg.installed = true;
                         pkg.available = row.available.clone();
@@ -469,53 +466,46 @@ impl AppView {
     }
 
     pub fn refresh_sources(&mut self, cx: &mut Context<Self>) {
-        let Some(winget) = self.winget.clone() else {
+        let Some(backend) = self.backend.clone() else {
             return;
         };
         self.spawn_refresh(cx.spawn(async move |this, cx| {
             let sources = cx
-                .background_spawn(async move {
-                    let args = winget::source_list();
-                    let refs: Vec<&str> = args.iter().map(String::as_str).collect();
-                    let rows = winget
-                        .run(&refs)
-                        .map(|out| winget::parse_source_list(&out.stdout))
-                        .unwrap_or_default();
-
-                    let args = winget::source_export(None);
-                    let refs: Vec<&str> = args.iter().map(String::as_str).collect();
-                    let exports = winget
-                        .run(&refs)
-                        .ok()
-                        .and_then(|out| winget::parse_source_export(&out.stdout).ok())
-                        .unwrap_or_default();
-
-                    rows.iter()
-                        .map(|row| {
-                            let export = exports.iter().find(|e| e.name == row.name);
-                            let mut source = crate::model::Source::from_rows(row, export);
-                            source.updated = Some(now_stamp());
-                            source
-                        })
-                        .collect::<Vec<_>>()
-                })
+                .background_spawn(async move { backend.list_sources().unwrap_or_default() })
                 .await;
 
             let _ = this.update(cx, |this, cx| {
                 this.state.sources = sources;
+                for source in &mut this.state.sources {
+                    source.updated = Some(now_stamp());
+                }
+                // A default source the backend no longer offers (e.g. a
+                // settings file carried across platforms) snaps to the first.
+                if !this.state.sources.is_empty()
+                    && !this
+                        .state
+                        .sources
+                        .iter()
+                        .any(|source| source.name == this.state.default_source)
+                {
+                    let first = this.state.sources[0].name.clone();
+                    this.state.default_source = first.clone();
+                    this.state.settings.default_source = first;
+                    this.persist_settings();
+                }
                 cx.notify();
             });
         }));
     }
 
-    /// `winget show --id <id> --exact` — the detail dialog's data.
+    /// The backend's `show` metadata for one package — the detail dialog's data.
     ///
     /// The parsed detail is cached in [`AppState::details`] and merged into
     /// the package row, so a reopened dialog renders instantly. No-op when
-    /// winget is missing, the detail is already cached, or a fetch for this
-    /// package is in flight.
+    /// the backend is missing, the detail is already cached, or a fetch for
+    /// this package is in flight.
     pub fn fetch_detail(&mut self, id: &str, cx: &mut Context<Self>) {
-        let Some(winget) = self.winget.clone() else {
+        let Some(backend) = self.backend.clone() else {
             return;
         };
         let key = id.to_lowercase();
@@ -534,23 +524,10 @@ impl AppView {
         self.spawn_refresh(cx.spawn(async move |this, cx| {
             let detail = cx
                 .background_spawn(async move {
-                    let args = winget::show(&id, source.as_deref());
-                    let refs: Vec<&str> = args.iter().map(String::as_str).collect();
-                    winget
-                        .run(&refs)
-                        .ok()
-                        .filter(|out| out.status == 0 || winget::is_benign(out.status))
-                        .map(|out| winget::parse_show(&out.stdout))
-                        // A failed match (e.g. an msstore id winget cannot
-                        // resolve) parses to an empty detail; do not cache it,
-                        // or the dialog would settle on blanks.
-                        .filter(|detail| {
-                            !detail.version.is_empty()
-                                || !detail.publisher.is_empty()
-                                || !detail.description.is_empty()
-                        })
+                    backend
+                        .show_package(&id, source.as_deref())
                         // Persist next to the in-memory cache so the next run
-                        // renders details without re-running winget.
+                        // renders details without re-running the backend.
                         .inspect(|detail| {
                             if let (Some(path), Ok(json)) = (
                                 crate::cache::detail_path(&cache_key),
@@ -650,14 +627,14 @@ impl AppView {
         }));
     }
 
-    /// `winget source update` for one source (`None` = all).
+    /// The backend's source refresh for one source (`None` = all).
     pub fn sync_sources(
         &mut self,
         name: Option<String>,
         window: &mut Window,
         cx: &mut Context<Self>,
     ) {
-        let Some(winget) = self.winget.clone() else {
+        let Some(backend) = self.backend.clone() else {
             return;
         };
         self.state.status = tr!("status.sources_syncing");
@@ -665,9 +642,9 @@ impl AppView {
         self.spawn_refresh(cx.spawn_in(window, async move |this, cx| {
             let result = cx
                 .background_spawn(async move {
-                    let args = winget::source_update(name.as_deref());
+                    let args = backend.source_update_args(name.as_deref());
                     let refs: Vec<&str> = args.iter().map(String::as_str).collect();
-                    winget.run_checked(&refs)
+                    backend.run_checked(&refs)
                 })
                 .await;
 
@@ -727,27 +704,30 @@ impl AppView {
 
     /// Start every entry the concurrency limit allows.
     pub fn pump(&mut self, cx: &mut Context<Self>) {
-        let Some(winget) = self.winget.clone() else {
+        let Some(backend) = self.backend.clone() else {
             return;
         };
         for ix in queue::startable(&self.state) {
-            if queue::begin(&mut self.state, ix).is_none() {
+            if queue::begin(&mut self.state, ix, &*backend).is_none() {
                 continue;
             }
             let uid = self.state.queue[ix].uid;
             let item = self.state.queue[ix].clone();
-            let args = queue::args_for(&item, &self.state.settings);
+            let args = queue::args_for(&item, &self.state.settings, &*backend);
 
-            let runner = winget.clone();
+            let runner = backend.clone();
             cx.spawn(async move |this, cx| {
                 let result = cx
-                    .background_spawn(async move {
-                        let refs: Vec<&str> = args.iter().map(String::as_str).collect();
-                        runner.run(&refs)
+                    .background_spawn({
+                        let runner = runner.clone();
+                        async move {
+                            let refs: Vec<&str> = args.iter().map(String::as_str).collect();
+                            runner.run(&refs)
+                        }
                     })
                     .await;
                 let _ = this.update(cx, |this, cx| {
-                    queue::complete(&mut this.state, uid, result);
+                    queue::complete(&mut this.state, uid, result, &*runner);
                     // Keep the keystroke-search cache in step with the queue:
                     // a successful install joins the installed set.
                     if let Some(item) =
@@ -846,7 +826,7 @@ impl AppView {
         config::save(&self.state.settings);
     }
 
-    /// Run a `source …` mutation, then refresh the list.
+    /// Run a source mutation, then refresh the list.
     pub fn run_source_op(
         &mut self,
         args: Vec<String>,
@@ -854,7 +834,7 @@ impl AppView {
         window: &mut Window,
         cx: &mut Context<Self>,
     ) {
-        let Some(winget) = self.winget.clone() else {
+        let Some(backend) = self.backend.clone() else {
             return;
         };
         let success = success.to_owned();
@@ -862,7 +842,7 @@ impl AppView {
             let result = cx
                 .background_spawn(async move {
                     let refs: Vec<&str> = args.iter().map(String::as_str).collect();
-                    winget.run_checked(&refs)
+                    backend.run_checked(&refs)
                 })
                 .await;
             let _ = this.update_in(cx, |this, window, cx| {
@@ -885,21 +865,24 @@ impl AppView {
         window: &mut Window,
         cx: &mut Context<Self>,
     ) {
-        let Some(winget) = self.winget.clone() else {
+        let Some(backend) = self.backend.clone() else {
             return;
         };
         let id = id.to_owned();
         self.spawn_refresh(cx.spawn_in(window, async move |this, cx| {
             let result = cx
-                .background_spawn(async move {
-                    let refs: Vec<&str> = args.iter().map(String::as_str).collect();
-                    winget.run(&refs)
+                .background_spawn({
+                    let backend = backend.clone();
+                    async move {
+                        let refs: Vec<&str> = args.iter().map(String::as_str).collect();
+                        backend.run(&refs)
+                    }
                 })
                 .await;
             let _ = this.update_in(cx, |this, window, cx| {
                 let ok = result
                     .as_ref()
-                    .map(|out| out.status == 0 || winget::is_benign(out.status))
+                    .map(|out| out.status == 0 || backend.exit_is_benign(out.status))
                     .unwrap_or(false);
                 if ok {
                     this.state.mark_uninstalled(&id);
@@ -911,15 +894,15 @@ impl AppView {
                 } else {
                     let message = result
                         .map(|out| {
-                            let note = if winget::exit::needs_elevation(out.status) {
+                            let note = if backend.exit_needs_elevation(out.status) {
                                 tr!("queue.elevation_note")
                             } else {
                                 String::new()
                             };
                             tr!(
                                 "notification.uninstall_failed_code",
-                                code = winget::exit::format_code(out.status),
-                                desc = winget::exit::describe(out.status),
+                                code = backend.format_exit_code(out.status),
+                                desc = backend.describe_exit(out.status),
                                 note = note
                             )
                         })
@@ -969,7 +952,7 @@ impl AppView {
     /// `TitleBar` supplies the drag area and the OS window-control hitboxes;
     /// it is re-declared 52 px tall to match `index.html`.
     fn titlebar(&self, p: &Palette, cx: &mut Context<Self>) -> impl IntoElement {
-        let source = self.state.search_source;
+        let source = self.state.search_source.clone();
         TitleBar::new()
             .h(px(52.))
             .px(px(10.))
@@ -1082,7 +1065,7 @@ impl AppView {
         views::ShellInputs {
             install_location: self.install_location_input.clone(),
             proxy: self.proxy_input.clone(),
-            winget_path: self.winget_path_input.clone(),
+            backend_path: self.backend_path_input.clone(),
         }
     }
 
@@ -1097,19 +1080,24 @@ impl AppView {
                     .flex_1()
                     .min_h_0()
                     .overflow_y_scroll()
-                    .child(views::render(&self.state, &self.shell_inputs(), cx)),
+                    .child(views::render(
+                        &self.state,
+                        &self.shell_inputs(),
+                        &self.search_command(),
+                        cx,
+                    )),
             )
             .child(self.status_bar(p))
     }
 
     fn status_bar(&self, p: &Palette) -> impl IntoElement {
         let queue_len = queue::active_count(&self.state);
-        let version = if self.state.winget_version.is_empty() {
-            "winget".to_owned()
+        let version = if self.state.backend_version.is_empty() {
+            self.state.backend_name.clone()
         } else {
-            format!("winget {}", self.state.winget_version)
+            format!("{} {}", self.state.backend_name, self.state.backend_version)
         };
-        let dot = if self.state.winget_error.is_some() {
+        let dot = if self.state.backend_error.is_some() {
             p.danger
         } else {
             p.ok
@@ -1382,36 +1370,40 @@ fn source_pill(p: &Palette, source: SearchSource, cx: &mut Context<AppView>) -> 
         .whitespace_nowrap()
         .cursor_pointer()
         .on_click(cx.listener(|this, _, window, cx| {
-            let next = this.state.search_source.next();
+            let next = this.state.next_search_source();
             this.set_search_source(next, window, cx);
         }))
         .child(source.label())
 }
 
-/// Installed package ids from `winget export`, lowercased.
-fn export_installed(winget: &Winget) -> Vec<String> {
-    let path = std::env::temp_dir().join("wingetgui-export.json");
-    let args = winget::export_json(&path, None);
-    let refs: Vec<&str> = args.iter().map(String::as_str).collect();
-    let ids = winget
-        .run(&refs)
-        .ok()
-        .and_then(|_| std::fs::read_to_string(&path).ok())
-        .and_then(|text| winget::parse_export_json(&text).ok())
-        .unwrap_or_default();
-    let _ = std::fs::remove_file(&path);
-    ids.into_iter().map(|id| id.to_lowercase()).collect()
+/// The equivalent `<cli> search` line for the current query and filters.
+fn search_command(state: &AppState, backend: &dyn PackageBackend) -> String {
+    let args = backend.search_args(
+        state.query.trim(),
+        Some(state.search_source.arg()),
+        state.settings.search_filters(),
+        None,
+    );
+    format!("{} {}", backend.cli_name(), args.join(" "))
+}
+
+/// The equivalent `<cli> install` line for the current install settings.
+fn install_command(state: &AppState, id: &str, backend: &dyn PackageBackend) -> String {
+    let args = backend.install_args(id, &state.settings.install_options());
+    format!("{} {}", backend.cli_name(), args.join(" "))
 }
 
 /// Merge the catalogue search rows with the installed set and upgrade list.
 ///
-/// `winget search` with an empty query matches nothing, so the installed
-/// packages `winget list` reports must be merged in on their own — otherwise
-/// 已安装 and 更新 are empty on a cold start.
+/// A search with an empty query matches nothing, so the installed packages
+/// the backend's listing reports must be merged in on their own — otherwise
+/// 已安装 and 更新 are empty on a cold start. `fallback_source` (the CLI's
+/// name) labels rows whose own source column is empty.
 fn merge_catalog(
     search: &[types::SearchRow],
     list: &[types::ListRow],
     installed: &[String],
+    fallback_source: &str,
 ) -> Vec<Package> {
     let mut packages: Vec<Package> = Vec::new();
     for row in search {
@@ -1419,7 +1411,7 @@ fn merge_catalog(
         if packages.iter().any(|p| p.key() == key) {
             continue;
         }
-        let mut pkg = Package::from_search(row, "winget");
+        let mut pkg = Package::from_search(row, fallback_source);
         pkg.installed = installed.contains(&key);
         if let Some(found) = list.iter().find(|l| l.id.to_lowercase() == key) {
             pkg.available = found.available.clone();
@@ -1430,8 +1422,9 @@ fn merge_catalog(
         packages.push(pkg);
     }
 
-    // Only winget-managed rows: the export set excludes ARP/MSIX-only entries,
-    // which have no source and no version to offer an upgrade against.
+    // Only backend-managed rows: for winget the export set excludes
+    // ARP/MSIX-only entries, which have no source and no version to offer an
+    // upgrade against.
     for row in list {
         let key = row.id.to_lowercase();
         if !installed.contains(&key) || packages.iter().any(|p| p.key() == key) {
@@ -1446,7 +1439,7 @@ fn merge_catalog(
                 source: row.source.clone(),
                 description: None,
             },
-            "winget",
+            fallback_source,
         );
         pkg.installed = true;
         pkg.available = row.available.clone();
@@ -1508,7 +1501,7 @@ mod tests {
         let installed = vec!["git.git".to_owned()];
         let list = vec![list_row("Git.Git", "Git", Some("2.0"))];
 
-        let packages = merge_catalog(&[], &list, &installed);
+        let packages = merge_catalog(&[], &list, &installed, "winget");
 
         assert_eq!(packages.len(), 1);
         assert_eq!(packages[0].id, "Git.Git");
@@ -1522,7 +1515,7 @@ mod tests {
         // they are absent from the export set and must not appear.
         let list = vec![list_row("ARP\\Machine\\X64\\{GUID}", "Adobe Acrobat", None)];
 
-        let packages = merge_catalog(&[], &list, &[]);
+        let packages = merge_catalog(&[], &list, &[], "winget");
 
         assert!(packages.is_empty(), "got {packages:?}");
     }
@@ -1533,9 +1526,51 @@ mod tests {
         let search = vec![search_row("Git.Git", "Git")];
         let list = vec![list_row("Git.Git", "Git", None)];
 
-        let packages = merge_catalog(&search, &list, &installed);
+        let packages = merge_catalog(&search, &list, &installed, "winget");
 
         assert_eq!(packages.len(), 1);
         assert!(packages[0].installed);
+    }
+
+    /// A winget handle for building command lines; nothing is ever spawned.
+    fn backend() -> crate::backends::winget::Winget {
+        crate::backends::winget::Winget::new("winget.exe")
+    }
+
+    #[test]
+    fn install_command_line_reflects_the_settings() {
+        let state = AppState {
+            settings: crate::state::Settings {
+                default_source: "winget".into(),
+                arch: crate::backends::types::Arch::X86,
+                scope: crate::backends::types::Scope::User,
+                ..crate::state::Settings::default()
+            },
+            ..AppState::default()
+        };
+
+        let command = install_command(&state, "Microsoft.PowerToys", &backend());
+        assert!(command.starts_with("winget install --id Microsoft.PowerToys"));
+        assert!(command.contains("--source winget"));
+        assert!(command.contains("--architecture x86"));
+        assert!(command.contains("--scope user"));
+        assert!(command.contains("--silent"));
+    }
+
+    #[test]
+    fn search_command_line_names_the_selected_source() {
+        let mut state = AppState {
+            query: "vscode".into(),
+            ..AppState::default()
+        };
+        let command = search_command(&state, &backend());
+        assert!(command.starts_with("winget search -q vscode"));
+        assert!(
+            !command.contains("--source"),
+            "全部源 must not pass a --source flag"
+        );
+
+        state.search_source = SearchSource::Named("msstore".into());
+        assert!(search_command(&state, &backend()).contains("--source msstore"));
     }
 }
