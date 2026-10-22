@@ -70,9 +70,9 @@ Or run `target/release/wingetgui.exe` directly.
 
 | Language | Code | Status |
 | --- | --- | --- |
-| 简体中文 (Simplified Chinese) | `zh-CN` | ✅ Base locale |
+| 简体中文 (Simplified Chinese) | `zh-CN` | ✅ |
 | 繁體中文 (Traditional Chinese) | `zh-TW` | ✅ |
-| English | `en` | ✅ Fallback locale |
+| English | `en` | ✅ |
 | 日本語 (Japanese) | `ja` | ✅ |
 | 한국어 (Korean) | `ko` | ✅ |
 
