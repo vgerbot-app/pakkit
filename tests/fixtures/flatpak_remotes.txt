@@ -1,0 +1,3 @@
+flathub	https://dl.flathub.org/repo/
+flatpark	https://dl.flatpark.org/
+gnome-nightly	https://nightly.gnome.org/repo/

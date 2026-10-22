@@ -1,0 +1,5 @@
+com.dbxio.dbx	DBX	0.6.51	flatpark
+com.freerdp.FreeRDP	FreeRDP Client	3.32.2	flathub
+org.gnome.Epiphany.Devel	Web	51.1	gnome-nightly
+org.example.mystery	Mystery App		flathub
+org.example.noremote	No Remote	1.4

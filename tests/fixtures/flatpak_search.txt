@@ -1,0 +1,10 @@
+org.mozilla.firefox	Firefox	158.0.1	flathub	Fast, Private & Safe Web Browser
+dev.qwery.AddWater	Add Water	1.3	flathub	Keep Firefox in fashion
+one.ablaze.floorp	Floorp	12.20.2	flathub	Customizable Firefox-based browser from Japan
+io.github.gamingdoom.Datcord	Datcord	0.6.2	flathub	An open-source Discord client that uses Firefox
+org.freedesktop.Platform.VAAPI.nvidia	Nvidia VAAPI driver		flathub,gnome-nightly	VA-API implementation that uses NVDEC as a backend
+org.gnome.Platform	GNOME Application Platform version 49		flathub	Shared libraries needed by GNOME applications
+org.kde.Sdk	KDE Software Development Kit		flathub	Tools and headers for developing KDE applications
+com.example.bianjiqi	编辑器	1.0	flathub	一个简单的文本编辑器
+one.ablaze.floorp	Floorp	12.20.2	flathub	Customizable Firefox-based browser from Japan
+org.garudalinux.firedragon	FireDragon	v13.9.0	flathub,gnome-nightly	FireDragon is a cross-platform, feature-rich and privacy-focused web browser

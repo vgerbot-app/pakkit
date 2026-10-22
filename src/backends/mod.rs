@@ -6,6 +6,7 @@
 //! the shared process plumbing.
 
 pub mod exec;
+pub mod flatpak;
 pub mod types;
 pub mod winget;
 
@@ -249,17 +250,25 @@ pub trait PackageBackend: Send + Sync {
     }
 }
 
-/// The backend kind [`detect`] tries on this platform.
-///
-/// winget-only for the moment; the flatpak backend lands with its own arm.
+/// The backend kind [`detect`] tries on this platform: winget on Windows,
+/// flatpak on Linux (and winget elsewhere until another backend lands).
 pub const fn platform_kind() -> BackendKind {
-    BackendKind::Winget
+    if cfg!(target_os = "linux") {
+        BackendKind::Flatpak
+    } else {
+        BackendKind::Winget
+    }
 }
 
 /// Resolve the platform's backend, honoring an operator-supplied CLI path.
-///
-/// Detection is winget-only for the moment; the flatpak arm of this probe
-/// lands together with the flatpak backend.
 pub fn detect(configured_path: &str) -> Result<Arc<dyn PackageBackend>, BackendError> {
-    winget::Winget::resolve(configured_path).map(|w| Arc::new(w) as Arc<dyn PackageBackend>)
+    #[cfg(target_os = "linux")]
+    {
+        flatpak::Flatpak::resolve(configured_path)
+            .map(|f| Arc::new(f) as Arc<dyn PackageBackend>)
+    }
+    #[cfg(not(target_os = "linux"))]
+    {
+        winget::Winget::resolve(configured_path).map(|w| Arc::new(w) as Arc<dyn PackageBackend>)
+    }
 }

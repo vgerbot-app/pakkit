@@ -1,0 +1,18 @@
+Firefox - Fast, Private & Safe Web Browser
+
+        ID: org.mozilla.firefox
+       Ref: app/org.mozilla.firefox/x86_64/stable
+      Arch: x86_64
+    Branch: stable
+   Version: 158.0.1
+   License: MPL-2.0
+Collection: org.flathub.Stable
+  Download: 129.7 MB
+ Installed: 345.0 MB
+   Runtime: org.freedesktop.Platform/x86_64/25.08
+       Sdk: org.freedesktop.Sdk/x86_64/25.08
+
+    Commit: 7985364b35b83cfe5aa17a00932df1c2d1dae69e5c592aa637a53ff1d53fdabc
+    Parent: 9c1e95bd09dbd35ed7e9e861258c7376594bb3318b9d1fa85902ccf68d0b6ff1
+   Subject: Export org.mozilla.firefox
+      Date: 2026-10-20 13:06:50 +0000

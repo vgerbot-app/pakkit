@@ -1,0 +1,19 @@
+Web - Browse the web
+
+          ID: org.gnome.Epiphany.Devel
+         Ref: app/org.gnome.Epiphany.Devel/x86_64/master
+        Arch: x86_64
+      Branch: master
+     Version: 51.1
+     License: GPL-3.0+
+      Origin: gnome-nightly
+  Collection: org.gnome.Nightly
+Installation: system
+   Installed: 20.1 MB
+     Runtime: org.gnome.Platform/x86_64/master
+         Sdk: org.gnome.Sdk/x86_64/master
+
+      Commit: 6cc62a12d2dfc24eeb4db77993ac4c0808603ee63f75c847489fdfd2378e5adf
+      Parent: f206c6c7280e26874fd44d1d64eb4001916d50b71db73702958d1a10445ef48b
+     Subject: site-menu-button: Use constant for animation delay (0f631d407ead)
+        Date: 2026-10-02 14:49:38 +0000
