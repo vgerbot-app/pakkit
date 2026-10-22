@@ -58,6 +58,7 @@ category:
   packages_count: "패키지 %{count}개"
   back: "카테고리로 돌아가기"
   install_all: "모두 설치"
+  all_installed: "이 카테고리는 모두 설치되었습니다"
   sort_label: "정렬"
   dev:
     label: "개발"

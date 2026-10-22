@@ -58,6 +58,7 @@ category:
   packages_count: "%{count} packages"
   back: "Back to categories"
   install_all: "Install all"
+  all_installed: "This category is fully installed"
   sort_label: "Sort"
   dev:
     label: "Development"

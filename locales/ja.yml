@@ -58,6 +58,7 @@ category:
   packages_count: "%{count} 件のパッケージ"
   back: "カテゴリに戻る"
   install_all: "すべてインストール"
+  all_installed: "このカテゴリはすべてインストール済みです"
   sort_label: "並び替え"
   dev:
     label: "開発"

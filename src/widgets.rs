@@ -153,7 +153,13 @@ pub fn btn(
     };
     let button = match kind {
         BtnKind::Primary => {
-            Button::new(id).custom(custom(p.accent, p.on_accent, brighten(p.accent, 1.08)))
+            let hover = brighten(p.accent, 1.08);
+            Button::new(id)
+                .custom(custom(p.accent, p.on_accent, hover))
+                // The custom variant folds `color` into the surface at 20%,
+                // which reads as a disabled fill; the fill is set outright instead.
+                // The hover/active rules are appended after this and layer over it.
+                .bg(p.accent)
         }
         BtnKind::Soft => Button::new(id).custom(custom(p.surface3, p.ink, p.surface3)),
         BtnKind::Outline => Button::new(id).custom(custom(p.surface, p.ink2, p.surface3)),

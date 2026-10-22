@@ -58,6 +58,7 @@ category:
   packages_count: "%{count} 个软件包"
   back: "返回分类"
   install_all: "安装全部"
+  all_installed: "该分类已全部安装"
   sort_label: "排序"
   dev:
     label: "编程开发"

@@ -58,6 +58,7 @@ category:
   packages_count: "%{count} 個套件"
   back: "返回分類"
   install_all: "全部安裝"
+  all_installed: "此分類已全部安裝"
   sort_label: "排序"
   dev:
     label: "程式開發"

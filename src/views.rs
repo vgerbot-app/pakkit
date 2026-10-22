@@ -657,7 +657,17 @@ fn category_detail(
                                     BtnSize::Regular,
                                     tr!("category.install_all"),
                                 )
-                                .disabled(install_all.is_empty())
+                                // The disabled style fades the label to 50% of
+                                // the muted colour, so it is swapped for a
+                                // readable one plus a tooltip that says why.
+                                .when(install_all.is_empty(), |button| {
+                                    button
+                                        .disabled(true)
+                                        .text_color(p.muted)
+                                        .bg(p.tint(p.accent, 0.15))
+                                        .border_color(p.tint(p.accent, 0.25))
+                                        .tooltip(tr!("category.all_installed"))
+                                })
                                 .on_click(cx.listener(
                                     move |this, _, window, cx| {
                                         for id in &install_all {
