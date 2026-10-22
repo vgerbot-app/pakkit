@@ -1031,7 +1031,10 @@ impl AppView {
             .collapsible(SidebarCollapsible::Icon)
             .header(SidebarHeader::new().child(brand_row(p)))
             .footer(
+                // `SidebarFooter` lays children out in an `h_flex`; stack the
+                // theme and queue rows vertically instead.
                 SidebarFooter::new()
+                    .flex_col()
                     .child(nav_row(
                         p,
                         collapsed,
