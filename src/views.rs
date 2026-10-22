@@ -85,6 +85,11 @@ fn home(state: &AppState, p: &Palette, cx: &mut Context<AppView>) -> AnyElement 
             .child(hero(state, p, cx))
             .into_any_element(),
     );
+    children.push(
+        div()
+        .h(px(10.))
+        .into_any_element(),
+    );
 
     // 常用分类
     children.push(
@@ -679,6 +684,11 @@ fn category_detail(
                     ),
             )
             .into_any_element(),
+    );
+    children.push(
+        div()
+        .h(px(10.))
+        .into_any_element(),
     );
 
     children.push(
