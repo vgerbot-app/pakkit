@@ -221,6 +221,8 @@ settings:
   language_hint: "表示言語。切り替えはすぐに反映されます"
   advanced: "システムと詳細"
   advanced_hint: "winget のパス、プロキシ、統計。"
+  backend: "パッケージマネージャー"
+  backend_hint: "このマシンで使うパッケージマネージャーを選択します。切り替えはすぐに反映されます"
   backend_path: "%{backend} のパス"
   backend_path_hint: "空の場合は自動検出"
   proxy: "プロキシ"

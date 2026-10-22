@@ -1644,12 +1644,15 @@ fn settings(
         BackendKind::Flatpak => format!("{} install <remote> <id>", state.backend_name),
         BackendKind::Apt => format!("{} install <pkg>", state.backend_name),
     };
-    let mut install_rows = vec![row_shell_plain(
-        p,
-        &tr!("settings.default_source"),
-        &source_hint,
-        default_source_control(state, p, cx),
-    )];
+    let mut install_rows: Vec<AnyElement> = Vec::new();
+    if state.capabilities.sources_view {
+        install_rows.push(row_shell_plain(
+            p,
+            &tr!("settings.default_source"),
+            &source_hint,
+            default_source_control(state, p, cx),
+        ));
+    }
     if state.capabilities.install_arch {
         install_rows.push(seg_row(
             p,
@@ -1705,12 +1708,16 @@ fn settings(
             },
         ));
     }
-    let install_card = settings_card(
-        p,
-        &tr!("settings.install_defaults"),
-        &tr!("settings.install_defaults_hint"),
-        install_rows,
-    );
+    // A backend with no install flags at all (apt) gets no card rather than
+    // a title over an empty body.
+    let install_card = (!install_rows.is_empty()).then(|| {
+        settings_card(
+            p,
+            &tr!("settings.install_defaults"),
+            &tr!("settings.install_defaults_hint"),
+            install_rows,
+        )
+    });
 
     let queue_card = settings_card(
         p,
@@ -1771,36 +1778,46 @@ fn settings(
         ],
     );
 
+    // The backend switcher only exists where the platform offers a choice;
+    // Windows builds ship winget alone and skip the row.
+    let mut advanced_rows: Vec<AnyElement> = Vec::new();
+    if BackendKind::available().len() > 1 {
+        advanced_rows.push(seg_row(
+            p,
+            &tr!("settings.backend"),
+            &tr!("settings.backend_hint"),
+            backend_segments(state, p, cx),
+        ));
+    }
+    advanced_rows.push(field_row(
+        p,
+        &tr!("settings.backend_path", backend = state.backend_name),
+        &tr!("settings.backend_path_hint"),
+        input_field(p, &inputs.backend_path),
+    ));
+    advanced_rows.push(field_row(
+        p,
+        &tr!("settings.proxy"),
+        &tr!("settings.proxy_hint"),
+        input_field(p, &inputs.proxy),
+    ));
+    advanced_rows.push(switch_field_row(
+        cx,
+        p,
+        &tr!("settings.telemetry"),
+        &tr!("settings.telemetry_hint"),
+        state.settings.telemetry,
+        |this, value, cx| {
+            this.state.settings.telemetry = value;
+            this.persist_settings();
+            cx.notify();
+        },
+    ));
     let advanced_card = settings_card(
         p,
         &tr!("settings.advanced"),
         &tr!("settings.advanced_hint"),
-        vec![
-            field_row(
-                p,
-                &tr!("settings.backend_path", backend = state.backend_name),
-                &tr!("settings.backend_path_hint"),
-                input_field(p, &inputs.backend_path),
-            ),
-            field_row(
-                p,
-                &tr!("settings.proxy"),
-                &tr!("settings.proxy_hint"),
-                input_field(p, &inputs.proxy),
-            ),
-            switch_field_row(
-                cx,
-                p,
-                &tr!("settings.telemetry"),
-                &tr!("settings.telemetry_hint"),
-                state.settings.telemetry,
-                |this, value, cx| {
-                    this.state.settings.telemetry = value;
-                    this.persist_settings();
-                    cx.notify();
-                },
-            ),
-        ],
+        advanced_rows,
     );
 
     let about_card = about(p, state, cx);
@@ -1822,7 +1839,7 @@ fn settings(
                             .flex()
                             .flex_col()
                             .gap(px(14.))
-                            .child(install_card)
+                            .when_some(install_card, |this, card| this.child(card))
                             .child(queue_card),
                     )
                     .child(
@@ -1970,6 +1987,25 @@ fn default_source_control(state: &AppState, p: &Palette, cx: &mut Context<AppVie
                 .child(label)
         }))
         .into_any_element()
+}
+
+/// The 包管理器 switcher: one segment per backend the platform offers,
+/// switching through [`AppView::switch_backend`].
+fn backend_segments(state: &AppState, p: &Palette, cx: &mut Context<AppView>) -> AnyElement {
+    let items: Vec<(BackendKind, String)> = BackendKind::available()
+        .iter()
+        .map(|kind| (*kind, kind.display_name().to_owned()))
+        .collect();
+    widgets::seg_control(
+        p,
+        "backend-seg",
+        &items,
+        state.backend_kind,
+        seg_handler(cx, |this, kind, window, cx| {
+            this.switch_backend(kind, window, cx);
+        }),
+    )
+    .into_any_element()
 }
 
 fn arch_segments(state: &AppState, p: &Palette, cx: &mut Context<AppView>) -> AnyElement {

@@ -238,6 +238,9 @@ pub struct Settings {
     pub theme: ModeChoice,
     pub accent: String,
     pub reduce_motion: bool,
+    /// The active backend's `cli_name`; empty means the platform default.
+    /// Unknown values fall back to the platform default on load.
+    pub backend: String,
     /// The backend CLI's path; empty means auto-detect. Settings files from
     /// before the backend abstraction call this `winget_path`.
     #[serde(alias = "winget_path")]
@@ -265,6 +268,7 @@ impl Default for Settings {
             theme: ModeChoice::Dark,
             accent: crate::theme::ACCENT_SWATCHES[0].to_owned(),
             reduce_motion: false,
+            backend: String::new(),
             backend_path: String::new(),
             proxy: String::new(),
             language: "zh-CN".to_owned(),
@@ -290,6 +294,12 @@ impl Settings {
     /// The search filters the advanced-search dialog writes.
     pub fn search_filters(&self) -> SearchFilters {
         self.filters
+    }
+
+    /// The backend to launch: the configured one when it names a known CLI,
+    /// otherwise the platform default.
+    pub fn backend_kind(&self) -> BackendKind {
+        BackendKind::from_name(&self.backend).unwrap_or_else(crate::backends::platform_kind)
     }
 
     /// Concurrency clamped to the segment control's range.
@@ -977,6 +987,31 @@ mod tests {
         let settings: Settings = serde_json::from_str(r#"{"winget_path": "C:\\winget.exe"}"#)
             .expect("the legacy key loads");
         assert_eq!(settings.backend_path, "C:\\winget.exe");
+    }
+
+    #[test]
+    fn backend_kind_falls_back_to_the_platform_default() {
+        assert_eq!(
+            Settings::default().backend_kind(),
+            crate::backends::platform_kind(),
+            "an empty setting selects the platform default"
+        );
+        let garbage = Settings {
+            backend: "not-a-backend".to_owned(),
+            ..Settings::default()
+        };
+        assert_eq!(garbage.backend_kind(), crate::backends::platform_kind());
+    }
+
+    #[test]
+    fn backend_kind_reads_a_configured_cli_name() {
+        for kind in BackendKind::available() {
+            let settings = Settings {
+                backend: kind.cli_name().to_owned(),
+                ..Settings::default()
+            };
+            assert_eq!(settings.backend_kind(), *kind);
+        }
     }
 
     #[test]

@@ -221,6 +221,8 @@ settings:
   language_hint: "介面顯示語言，切換後立即生效"
   advanced: "系統與進階"
   advanced_hint: "winget 路徑、代理與統計。"
+  backend: "套件管理器"
+  backend_hint: "選擇本機使用的套件管理器，切換後立即生效"
   backend_path: "%{backend} 路徑"
   backend_path_hint: "留空則自動偵測"
   proxy: "代理伺服器"

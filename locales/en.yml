@@ -221,6 +221,8 @@ settings:
   language_hint: "Display language, takes effect immediately"
   advanced: "System & advanced"
   advanced_hint: "winget path, proxy and telemetry."
+  backend: "Package manager"
+  backend_hint: "Choose the package manager this machine uses; switching takes effect immediately"
   backend_path: "%{backend} path"
   backend_path_hint: "Leave empty to auto-detect"
   proxy: "Proxy"

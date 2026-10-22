@@ -180,7 +180,7 @@ impl AppView {
         // missing, so this runs before the resolve below can early-return.
         self.load_cache(cx);
         let backend = match backends::detect(
-            backends::platform_kind(),
+            self.state.settings.backend_kind(),
             &self.state.settings.backend_path,
         ) {
             Ok(backend) => backend,
@@ -213,7 +213,7 @@ impl AppView {
     /// Re-resolve the backend from the configured path, as 检测 does.
     pub fn redetect_backend(&mut self, cx: &mut Context<Self>) {
         match backends::detect(
-            backends::platform_kind(),
+            self.state.settings.backend_kind(),
             &self.state.settings.backend_path,
         ) {
             Ok(backend) => {
@@ -230,6 +230,7 @@ impl AppView {
                     let _ = this.update(cx, |this, cx| {
                         this.state.backend_version = version;
                         this.refresh_packages(cx);
+                        this.refresh_sources(cx);
                         cx.notify();
                     });
                 }));
@@ -240,6 +241,81 @@ impl AppView {
                 self.state.status = message;
             }
         }
+        cx.notify();
+    }
+
+    /// Switch the active backend, as the settings 包管理器 segment does. The
+    /// change is persisted before detection runs, so a failed switch rolls the
+    /// setting back and keeps the old backend serving.
+    pub fn switch_backend(
+        &mut self,
+        kind: backends::BackendKind,
+        window: &mut Window,
+        cx: &mut Context<Self>,
+    ) {
+        if kind == self.state.backend_kind {
+            return;
+        }
+        let previous = self.state.settings.backend.clone();
+        self.state.settings.backend = kind.cli_name().to_owned();
+        self.persist_settings();
+
+        let backend = match backends::detect(kind, &self.state.settings.backend_path) {
+            Ok(backend) => backend,
+            Err(error) => {
+                let message = error.localized();
+                self.state.backend_error = Some(message.clone());
+                self.state.status = message;
+                self.state.settings.backend = previous;
+                self.persist_settings();
+                cx.notify();
+                return;
+            }
+        };
+
+        // Drop everything the old backend produced: cached rows, in-flight
+        // lookups, and queued-but-not-started jobs. Running queue items hold
+        // their own backend Arc (see pump) and finish on the old CLI.
+        self.state.packages.clear();
+        self.state.details.clear();
+        self.state.sources.clear();
+        self.list_rows.clear();
+        self.installed_ids.clear();
+        self.detail_inflight.clear();
+        self.icon_inflight.clear();
+        self.state.search_source = SearchSource::All;
+        self.state.search_page = 0;
+        self.state.installed_page = 0;
+        self.state.category_page = 0;
+        self.state
+            .queue
+            .retain(|item| item.state != QueueState::Pending);
+        self.search_task = None;
+        self.search_epoch += 1;
+        self.state.backend_version.clear();
+
+        self.state.backend_name = backend.cli_name().to_owned();
+        self.state.backend_kind = backend.kind();
+        self.state.capabilities = backend.capabilities();
+        self.state.backend_error = None;
+        self.state.status = tr!("status.backend_detected", backend = backend.cli_name());
+        self.backend = Some(backend.clone());
+
+        if self.state.route == Route::Sources && !self.state.capabilities.sources_view {
+            self.navigate(Route::Home, window, cx);
+        }
+
+        self.spawn_refresh(cx.spawn(async move |this, cx| {
+            let version = cx
+                .background_spawn(async move { backend.version().unwrap_or_default() })
+                .await;
+            let _ = this.update(cx, |this, cx| {
+                this.state.backend_version = version;
+                this.refresh_packages(cx);
+                this.refresh_sources(cx);
+                cx.notify();
+            });
+        }));
         cx.notify();
     }
 

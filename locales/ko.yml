@@ -221,6 +221,8 @@ settings:
   language_hint: "표시 언어, 전환 시 즉시 적용됩니다"
   advanced: "시스템 및 고급"
   advanced_hint: "winget 경로, 프록시 및 통계입니다."
+  backend: "패키지 관리자"
+  backend_hint: "이 머신에서 사용할 패키지 관리자를 선택합니다. 전환은 즉시 적용됩니다"
   backend_path: "%{backend} 경로"
   backend_path_hint: "비어 있으면 자동 감지"
   proxy: "프록시"
