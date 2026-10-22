@@ -1,14 +1,15 @@
 //! Process execution for the winget CLI.
 //!
-//! winget is a console-subsystem binary, so every spawn must suppress its
-//! console window (`CREATE_NO_WINDOW`) or a black window flashes on screen.
+//! winget validates options per command and rejects the whole invocation with
+//! "Argument name was not recognized" when handed one it does not know, so the
+//! base flags are interleaved by subcommand here. The actual spawn is shared
+//! with every backend in [`crate::backends::exec`].
 
-use std::{
-    path::{Path, PathBuf},
-    process::{Command, Output as ProcOutput, Stdio},
-};
+use std::path::{Path, PathBuf};
 
-use super::exit::{WingetError, is_benign};
+use super::exit::is_benign;
+use crate::backends::exec::{self, Output};
+use crate::backends::types::BackendError;
 
 /// Flags every command accepts except `source`, which takes no agreement
 /// flags at all.
@@ -23,10 +24,6 @@ const SOURCE_FLAGS: &[&str] = &["--disable-interactivity", "--nowarn"];
 
 /// The flags `command` accepts.
 ///
-/// winget validates options per command and rejects the whole invocation with
-/// "Argument name was not recognized" when handed one it does not know, so
-/// this is derived from the subcommand rather than applied blindly.
-///
 /// `--accept-package-agreements` is deliberately absent: only the install
 /// family accepts it, and it must stay tied to the user's consent toggle, so
 /// [`super::install`] emits it. Notably absent on purpose: `--output-locale`,
@@ -37,37 +34,6 @@ fn base_flags_for(command: &str) -> &'static [&'static str] {
     match command {
         "source" => SOURCE_FLAGS,
         _ => COMMON_FLAGS,
-    }
-}
-
-/// `CREATE_NO_WINDOW` — run the child without allocating a console.
-#[cfg(windows)]
-const CREATE_NO_WINDOW: u32 = 0x0800_0000;
-
-/// Captured result of one winget invocation.
-#[derive(Debug, Clone)]
-pub struct Output {
-    /// Raw process exit code, widened from the i32 `ExitStatus::code`.
-    pub status: u32,
-    pub stdout: String,
-    pub stderr: String,
-}
-
-impl Output {
-    /// Combined output, stdout first — winget splits notices across both.
-    pub fn combined(&self) -> String {
-        let mut s = self.stdout.clone();
-        if !self.stderr.is_empty() {
-            if !s.is_empty() && !s.ends_with('\n') {
-                s.push('\n');
-            }
-            s.push_str(&self.stderr);
-        }
-        s
-    }
-
-    pub fn success(&self) -> bool {
-        self.status == 0 || is_benign(self.status)
     }
 }
 
@@ -84,7 +50,7 @@ impl Winget {
     }
 
     /// Locate `winget.exe`: `PATH` first, then the per-user WindowsApps alias.
-    pub fn discover() -> Result<Self, WingetError> {
+    pub fn discover() -> Result<Self, BackendError> {
         if let Some(path) = Self::on_path() {
             return Ok(Self::new(path));
         }
@@ -93,13 +59,13 @@ impl Winget {
         {
             return Ok(Self::new(path));
         }
-        Err(WingetError::NotFound)
+        Err(BackendError::NotFound)
     }
 
     /// Honor an operator-supplied path, falling back to discovery.
     ///
     /// An empty configured path means "auto-detect".
-    pub fn resolve(configured: &str) -> Result<Self, WingetError> {
+    pub fn resolve(configured: &str) -> Result<Self, BackendError> {
         let trimmed = configured.trim();
         if trimmed.is_empty() {
             return Self::discover();
@@ -108,7 +74,7 @@ impl Winget {
         if path.is_file() {
             Ok(Self::new(path))
         } else {
-            Err(WingetError::InvalidPath(path))
+            Err(BackendError::InvalidPath(path))
         }
     }
 
@@ -134,83 +100,60 @@ impl Winget {
     }
 
     /// Spawn winget with the command's agreement flags plus `args`.
-    pub fn run(&self, args: &[&str]) -> Result<Output, WingetError> {
+    pub fn run(&self, args: &[&str]) -> Result<Output, BackendError> {
         self.run_with(args, true)
     }
 
     /// Spawn winget with exactly `args`, no base flags.
     ///
     /// Used by `--version`, which rejects the interleaved base flags.
-    pub fn run_bare(&self, args: &[&str]) -> Result<Output, WingetError> {
+    pub fn run_bare(&self, args: &[&str]) -> Result<Output, BackendError> {
         self.run_with(args, false)
     }
 
-    fn run_with(&self, args: &[&str], base_flags: bool) -> Result<Output, WingetError> {
-        let mut command = Command::new(&self.exe);
+    fn run_with(&self, args: &[&str], base_flags: bool) -> Result<Output, BackendError> {
+        let mut full: Vec<&str> = Vec::with_capacity(args.len() + 4);
         if base_flags && let Some((verb_or_command, rest)) = args.split_first() {
-            command.arg(*verb_or_command);
+            full.push(*verb_or_command);
             // `source` carries a sub-verb; its flags follow the sub-verb.
             let (command_name, rest) = match (*verb_or_command, rest.split_first()) {
                 ("source", Some((verb, rest))) => {
-                    command.arg(*verb);
+                    full.push(*verb);
                     ("source", rest)
                 }
                 _ => (*verb_or_command, rest),
             };
-            command.args(base_flags_for(command_name));
-            command.args(rest);
+            full.extend_from_slice(base_flags_for(command_name));
+            full.extend_from_slice(rest);
         } else {
-            command.args(args);
+            full.extend_from_slice(args);
         }
-        command
-            .stdin(Stdio::null())
-            .stdout(Stdio::piped())
-            .stderr(Stdio::piped());
-
-        // `creation_flags` is a safe API on the Windows `CommandExt` trait, so
-        // this needs no `unsafe` block (the crate denies `unsafe_code`).
-        #[cfg(windows)]
-        {
-            use std::os::windows::process::CommandExt as _;
-            command.creation_flags(CREATE_NO_WINDOW);
-        }
-
-        let ProcOutput {
-            status,
-            stdout,
-            stderr,
-        } = command.output().map_err(WingetError::Spawn)?;
-
-        Ok(Output {
-            status: status.code().unwrap_or(0) as u32,
-            stdout: String::from_utf8_lossy(&stdout).into_owned(),
-            stderr: String::from_utf8_lossy(&stderr).into_owned(),
-        })
+        exec::run_process(&self.exe, &[], &full)
     }
 
     /// Run and fail on a non-benign non-zero exit code.
     ///
     /// Benign codes (`0x8A150061`, `0x8A15010D`, `0x8A15002B`, `0x8A150109`)
     /// describe an already-satisfied end state and are returned as success.
-    pub fn run_checked(&self, args: &[&str]) -> Result<Output, WingetError> {
+    pub fn run_checked(&self, args: &[&str]) -> Result<Output, BackendError> {
         let output = self.run(args)?;
-        if output.success() {
+        if output.status == 0 || is_benign(output.status) {
             Ok(output)
         } else {
-            Err(WingetError::Exit {
+            Err(BackendError::Exit {
                 code: output.status,
-                message: first_message(&output),
+                message: exec::first_message(&output),
             })
         }
     }
 
     /// `winget --version`, e.g. `v1.29.380`.
-    pub fn version(&self) -> Result<String, WingetError> {
+    pub fn version(&self) -> Result<String, BackendError> {
         let output = self.run_bare(&["--version"])?;
-        if !output.success() {
-            return Err(WingetError::Exit {
+        if output.status != 0 && !is_benign(output.status) {
+            return Err(BackendError::Exit {
                 code: output.status,
-                message: first_message(&output),
+                message: exec::first_message(&output),
             });
         }
         Ok(output
@@ -223,25 +166,10 @@ impl Winget {
     }
 }
 
-/// First non-empty, non-banner line of a failed winget run.
-fn first_message(output: &Output) -> String {
-    output
-        .combined()
-        .lines()
-        .map(str::trim)
-        .find(|line| {
-            !line.is_empty()
-                && !line.starts_with("Windows Package Manager v")
-                && !line.starts_with('©')
-        })
-        .unwrap_or_default()
-        .to_owned()
-}
-
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::winget::exit::format_code;
+    use crate::backends::exec::first_message;
 
     #[test]
     fn flags_never_contain_options_winget_rejects() {
@@ -285,6 +213,6 @@ mod tests {
 
     #[test]
     fn format_code_round_trips_a_real_error() {
-        assert_eq!(format_code(0x8A15_0011), "0x8A150011");
+        assert_eq!(super::super::exit::format_code(0x8A15_0011), "0x8A150011");
     }
 }

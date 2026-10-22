@@ -5,7 +5,10 @@
 //! provides. Those stay `Option` and render as `—` when absent.
 
 use crate::icons::IconKey;
-use crate::winget::{ListRow, PackageDetail, SearchRow, SourceExport};
+use crate::backends::{
+    types::{ListRow, PackageDetail, SearchRow, SourceRow},
+    winget::SourceExport,
+};
 
 /// A built-in category. The set is fixed and client-side.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, PartialOrd, Ord, Default)]
@@ -291,6 +294,7 @@ impl Package {
             source,
             category,
             match_kind: row.match_kind.clone(),
+            description: row.description.clone(),
             ..Self::default()
         }
     }
@@ -413,7 +417,7 @@ pub struct Source {
 
 impl Source {
     /// Merge the `source list` table row with its `source export` record.
-    pub fn from_rows(row: &crate::winget::SourceRow, export: Option<&SourceExport>) -> Self {
+    pub fn from_rows(row: &SourceRow, export: Option<&SourceExport>) -> Self {
         let mut source = Self {
             name: row.name.clone(),
             url: row.argument.clone(),
@@ -496,12 +500,13 @@ mod tests {
 
     #[test]
     fn search_row_becomes_a_package_with_its_source() {
-        let row = crate::winget::SearchRow {
+        let row = crate::backends::types::SearchRow {
             name: "Visual Studio Code".into(),
             id: "Microsoft.VisualStudioCode".into(),
             version: "1.142.0".into(),
             match_kind: Some("Moniker: vscode".into()),
             source: "winget".into(),
+            description: None,
         };
         let package = Package::from_search(&row, "winget");
         assert_eq!(package.id, "Microsoft.VisualStudioCode");
@@ -511,24 +516,26 @@ mod tests {
 
     #[test]
     fn missing_source_falls_back_to_the_query_source() {
-        let row = crate::winget::SearchRow {
+        let row = crate::backends::types::SearchRow {
             name: "VSCodium".into(),
             id: "VSCodium.VSCodium".into(),
             version: "1.0".into(),
             match_kind: None,
             source: String::new(),
+            description: None,
         };
         assert_eq!(Package::from_search(&row, "msstore").source, "msstore");
     }
 
     #[test]
     fn detail_metadata_is_merged_without_clobbering_identity() {
-        let row = crate::winget::SearchRow {
+        let row = crate::backends::types::SearchRow {
             name: "Visual Studio Code".into(),
             id: "Microsoft.VisualStudioCode".into(),
             version: String::new(),
             match_kind: None,
             source: "winget".into(),
+            description: None,
         };
         let mut package = Package::from_search(&row, "winget");
         package.apply_detail(&PackageDetail {

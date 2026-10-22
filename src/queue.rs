@@ -10,7 +10,7 @@ use std::time::Instant;
 
 use crate::model::Package;
 use crate::state::{AppState, Settings};
-use crate::winget::{self, Output, WingetError};
+use crate::backends::{exec::Output, types::BackendError, winget};
 
 /// Where a queue entry is in its life cycle.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -220,9 +220,9 @@ pub fn advance_progress(item: &mut QueueItem) {
 /// Record a finished run.
 ///
 /// `Err` is a spawn failure; a non-zero exit code arrives as `Ok` with the
-/// code in [`Output::status`], matching how [`crate::winget::Winget::run`]
+/// code in [`Output::status`], matching how [`crate::backends::winget::Winget::run`]
 /// reports it.
-pub fn complete(state: &mut AppState, uid: u64, result: Result<Output, WingetError>) {
+pub fn complete(state: &mut AppState, uid: u64, result: Result<Output, BackendError>) {
     let Some(ix) = state.queue.iter().position(|item| item.uid == uid) else {
         return;
     };
@@ -231,7 +231,7 @@ pub fn complete(state: &mut AppState, uid: u64, result: Result<Output, WingetErr
     let elapsed = state.queue[ix].elapsed_secs();
 
     match result {
-        Ok(output) if output.success() => {
+        Ok(output) if output.status == 0 || winget::is_benign(output.status) => {
             let item = &mut state.queue[ix];
             item.state = QueueState::Done;
             item.progress = 100.0;
@@ -321,7 +321,7 @@ pub fn is_busy(state: &AppState, id: &str) -> bool {
 mod tests {
     use super::*;
     use crate::model::CategoryId;
-    use crate::winget::Arch;
+    use crate::backends::types::Arch;
 
     fn output(status: u32) -> Output {
         Output {
@@ -428,7 +428,7 @@ mod tests {
         let mut state = state_with(&["A"]);
         state.settings.default_source = "winget".into();
         state.settings.arch = Arch::X86;
-        state.settings.scope = crate::winget::Scope::Machine;
+        state.settings.scope = crate::backends::types::Scope::Machine;
         enqueue(&mut state, "A", QueueAction::Install);
 
         let command = begin(&mut state, 0).expect("the entry starts");
@@ -528,7 +528,7 @@ mod tests {
             panic!("enqueue");
         };
         begin(&mut state, 0);
-        complete(&mut state, uid, Err(WingetError::NotFound));
+        complete(&mut state, uid, Err(BackendError::NotFound));
         assert_eq!(state.queue[0].state, QueueState::Error);
         assert!(state.queue[0].log.contains("未找到 winget"));
     }

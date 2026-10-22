@@ -25,7 +25,7 @@ use crate::model::Package;
 use crate::shell::AppView;
 use crate::theme::Palette;
 use crate::widgets::{self, BtnKind, BtnSize, PillKind};
-use crate::winget::{self, PackageDetail};
+use crate::backends::{types::PackageDetail, winget};
 
 /// 软件包详情 — the large modal a card's 查看详情 opens.
 ///

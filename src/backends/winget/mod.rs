@@ -5,56 +5,18 @@
 //! exclusivity rules (e.g. `--purge` XOR `--preserve`) are enforced here rather
 //! than trusted to callers.
 
-use serde::{Deserialize, Serialize};
-
 pub mod exec;
 pub mod exit;
 pub mod parse;
 
-pub use exec::{Output, Winget};
-pub use exit::{WingetError, describe, format_code, is_benign, needs_elevation};
+use super::types::{InstallOptions, SOURCE_ALL, SearchFilters};
+
+pub use exec::Winget;
+pub use exit::{describe, format_code, is_benign, needs_elevation};
 pub use parse::{
-    ListRow, PackageDetail, SearchRow, SourceExport, SourceRow, parse_export_json, parse_list,
-    parse_search, parse_show, parse_source_export, parse_source_list,
+    SourceExport, parse_export_json, parse_list, parse_search, parse_show, parse_source_export,
+    parse_source_list,
 };
-
-/// Target CPU architecture for `--architecture`.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Default, Serialize, Deserialize)]
-pub enum Arch {
-    #[default]
-    X64,
-    X86,
-    Arm64,
-}
-
-impl Arch {
-    pub const ALL: [Arch; 3] = [Arch::X64, Arch::X86, Arch::Arm64];
-
-    pub const fn as_str(self) -> &'static str {
-        match self {
-            Arch::X64 => "x64",
-            Arch::X86 => "x86",
-            Arch::Arm64 => "arm64",
-        }
-    }
-}
-
-/// Install scope for `--scope`.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Default, Serialize, Deserialize)]
-pub enum Scope {
-    #[default]
-    User,
-    Machine,
-}
-
-impl Scope {
-    pub const fn as_str(self) -> &'static str {
-        match self {
-            Scope::User => "user",
-            Scope::Machine => "machine",
-        }
-    }
-}
 
 /// `--count` accepts 1..=1000; anything else is a hard winget error.
 pub const COUNT_MAX: u32 = 1000;
@@ -62,29 +24,6 @@ pub const COUNT_MAX: u32 = 1000;
 fn clamp_count(count: u32) -> u32 {
     count.clamp(1, COUNT_MAX)
 }
-
-/// Options shared by install and upgrade.
-#[derive(Debug, Clone, PartialEq, Eq, Default)]
-pub struct InstallOptions {
-    pub source: Option<String>,
-    pub arch: Arch,
-    pub scope: Scope,
-    pub location: Option<String>,
-    pub silent: bool,
-    pub accept: bool,
-}
-
-/// Filters for `winget search`, mirroring the advanced-search dialog.
-#[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Serialize, Deserialize)]
-pub struct SearchFilters {
-    pub exact: bool,
-    pub moniker: bool,
-    pub tag: bool,
-    pub command: bool,
-}
-
-/// A source name that means "search every configured source".
-pub const SOURCE_ALL: &str = "all";
 
 /// `winget search`
 pub fn search(
@@ -231,11 +170,6 @@ pub fn export_json(path: &std::path::Path, source: Option<&str>) -> Vec<String> 
     args
 }
 
-/// `winget import -i <path>`
-pub fn import_json(path: &std::path::Path) -> Vec<String> {
-    vec!["import".to_owned(), "-i".into(), path.display().to_string()]
-}
-
 /// `winget source list`
 pub fn source_list() -> Vec<String> {
     vec!["source".to_owned(), "list".into()]
@@ -308,7 +242,7 @@ pub fn source_reset(force: bool) -> Vec<String> {
 
 /// `winget source update [--name <n>]`
 pub fn source_update(name: Option<&str>) -> Vec<String> {
-    let mut args = vec!["source".to_owned(), "update".into()];
+    let mut args = vec!["source".to_owned(), "update".to_owned()];
     if let Some(name) = name.filter(|n| !n.is_empty()) {
         args.push("--name".into());
         args.push(name.to_owned());
@@ -324,6 +258,7 @@ fn normalize_source(source: Option<&str>) -> Option<&str> {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::backends::types::{Arch, Scope};
 
     #[test]
     fn count_is_clamped_to_the_documented_range() {

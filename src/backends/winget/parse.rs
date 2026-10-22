@@ -12,36 +12,7 @@
 
 use serde::{Deserialize, Serialize};
 
-use super::exit::WingetError;
-
-/// One row of `winget search`.
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
-pub struct SearchRow {
-    pub name: String,
-    pub id: String,
-    pub version: String,
-    pub match_kind: Option<String>,
-    pub source: String,
-}
-
-/// One row of `winget list` / `winget list --upgrade-available`.
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
-pub struct ListRow {
-    pub name: String,
-    pub id: String,
-    pub version: String,
-    /// The newer version winget can move to; `None` when nothing is available.
-    pub available: Option<String>,
-    pub source: String,
-}
-
-/// One row of `winget source list`.
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
-pub struct SourceRow {
-    pub name: String,
-    pub argument: String,
-    pub explicit: bool,
-}
+use crate::backends::types::{BackendError, ListRow, PackageDetail, SearchRow, SourceRow};
 
 /// One line of `winget source export`.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
@@ -67,34 +38,6 @@ impl SourceExport {
     pub fn trusted(&self) -> bool {
         self.trust_level.iter().any(|t| t == "Trusted")
     }
-}
-
-/// The fields of `winget show` this UI renders.
-///
-/// `description` and `release_notes` keep their original line breaks: winget
-/// prints both as a header line followed by indented prose lines.
-#[derive(Debug, Clone, Default, PartialEq, Eq, Serialize, Deserialize)]
-pub struct PackageDetail {
-    pub name: String,
-    pub id: String,
-    pub version: String,
-    pub publisher: String,
-    pub publisher_url: String,
-    pub publisher_support_url: String,
-    pub moniker: String,
-    pub description: String,
-    pub homepage: String,
-    pub license: String,
-    pub license_url: String,
-    pub copyright: String,
-    pub release_notes: String,
-    pub release_notes_url: String,
-    pub tags: Vec<String>,
-    pub installer_type: String,
-    pub installer_url: String,
-    pub installer_sha256: String,
-    pub release_date: String,
-    pub offline_distribution: String,
 }
 
 /// Display width of a character, mirroring how the Windows console pads
@@ -313,6 +256,7 @@ pub fn parse_search(text: &str) -> Vec<SearchRow> {
                 version: get(row, version),
                 match_kind,
                 source: get(row, source),
+                description: None,
             })
         })
         .collect()
@@ -540,16 +484,16 @@ fn assign(detail: &mut PackageDetail, key: &str, value: &str) {
 }
 
 /// `winget source export` — JSON Lines, one source object per non-empty line.
-pub fn parse_source_export(text: &str) -> Result<Vec<SourceExport>, WingetError> {
+pub fn parse_source_export(text: &str) -> Result<Vec<SourceExport>, BackendError> {
     text.lines()
         .map(str::trim)
         .filter(|line| !line.is_empty())
-        .map(|line| serde_json::from_str::<SourceExport>(line).map_err(WingetError::from))
+        .map(|line| serde_json::from_str::<SourceExport>(line).map_err(BackendError::from))
         .collect()
 }
 
 /// Package identifiers from a `winget export` document.
-pub fn parse_export_json(text: &str) -> Result<Vec<String>, WingetError> {
+pub fn parse_export_json(text: &str) -> Result<Vec<String>, BackendError> {
     #[derive(Deserialize)]
     struct Document {
         #[serde(rename = "Sources", default)]
@@ -580,14 +524,14 @@ pub fn parse_export_json(text: &str) -> Result<Vec<String>, WingetError> {
 mod tests {
     use super::*;
 
-    const SEARCH: &str = include_str!("../../tests/fixtures/search.txt");
-    const LIST: &str = include_str!("../../tests/fixtures/list.txt");
-    const UPGRADE: &str = include_str!("../../tests/fixtures/upgrade.txt");
-    const SOURCES: &str = include_str!("../../tests/fixtures/sources.txt");
-    const SHOW: &str = include_str!("../../tests/fixtures/show.txt");
-    const SHOW_GIT: &str = include_str!("../../tests/fixtures/show_git.txt");
-    const SOURCE_EXPORT: &str = include_str!("../../tests/fixtures/source_export.json");
-    const EXPORT: &str = include_str!("../../tests/fixtures/export.json");
+    const SEARCH: &str = include_str!("../../../tests/fixtures/search.txt");
+    const LIST: &str = include_str!("../../../tests/fixtures/list.txt");
+    const UPGRADE: &str = include_str!("../../../tests/fixtures/upgrade.txt");
+    const SOURCES: &str = include_str!("../../../tests/fixtures/sources.txt");
+    const SHOW: &str = include_str!("../../../tests/fixtures/show.txt");
+    const SHOW_GIT: &str = include_str!("../../../tests/fixtures/show_git.txt");
+    const SOURCE_EXPORT: &str = include_str!("../../../tests/fixtures/source_export.json");
+    const EXPORT: &str = include_str!("../../../tests/fixtures/export.json");
 
     #[test]
     fn search_finds_the_queried_package() {

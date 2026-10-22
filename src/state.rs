@@ -9,7 +9,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::model::{CategoryId, Package, Source};
 use crate::theme::ModeChoice;
-use crate::winget::{Arch, InstallOptions, Scope, SearchFilters};
+use crate::backends::types::{Arch, InstallOptions, Scope, SearchFilters};
 
 /// The route table, mirroring the prototype's router. `Categories` carries the
 /// selected category, exactly as its `category` route does.
@@ -41,7 +41,7 @@ impl Route {
 }
 
 /// The source a search targets. `All` drops the `--source` flag (see
-/// [`crate::winget::search`], which treats `all` as "every source").
+/// [`crate::backends::winget::search`], which treats `all` as "every source").
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
 pub enum SearchSource {
     #[default]
@@ -56,7 +56,7 @@ impl SearchSource {
         match self {
             SearchSource::Winget => "winget",
             SearchSource::MsStore => "msstore",
-            SearchSource::All => crate::winget::SOURCE_ALL,
+            SearchSource::All => crate::backends::types::SOURCE_ALL,
         }
     }
 
@@ -267,7 +267,8 @@ pub struct Settings {
 
 impl Default for Settings {
     /// The prototype's `S.settings`, with `winget_path` left empty so
-    /// [`Winget::resolve`] auto-detects until the app fills it in.
+    /// [`crate::backends::winget::Winget::resolve`] auto-detects until the app
+    /// fills it in.
     fn default() -> Self {
         Self {
             default_source: "winget".to_owned(),
@@ -341,7 +342,7 @@ pub struct AppState {
     /// Cached `winget show` output per package id (lowercased), filled when a
     /// detail dialog opens. The search/list rows carry no description, license
     /// or installer metadata — only `show` provides them.
-    pub details: std::collections::HashMap<String, crate::winget::PackageDetail>,
+    pub details: std::collections::HashMap<String, crate::backends::types::PackageDetail>,
     /// Favicon state per host, filled from the disk cache at startup and as
     /// fetches land. See [`crate::cache`].
     pub icons: std::collections::HashMap<String, IconState>,
@@ -487,7 +488,7 @@ impl AppState {
 
     /// The equivalent `winget search` line the search view shows.
     pub fn search_command(&self) -> String {
-        let args = crate::winget::search(
+        let args = crate::backends::winget::search(
             self.query.trim(),
             Some(self.search_source.arg()),
             self.settings.search_filters(),
@@ -498,7 +499,7 @@ impl AppState {
 
     /// The equivalent `winget install` line a package detail shows.
     pub fn install_command(&self, id: &str) -> String {
-        let args = crate::winget::install(id, &self.settings.install_options());
+        let args = crate::backends::winget::install(id, &self.settings.install_options());
         format!("winget {}", args.join(" "))
     }
 
@@ -636,7 +637,7 @@ fn rating(pkg: &Package) -> f32 {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::winget::SOURCE_ALL;
+    use crate::backends::types::SOURCE_ALL;
 
     fn pkg(id: &str, name: &str, category: CategoryId) -> Package {
         Package {

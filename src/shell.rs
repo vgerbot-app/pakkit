@@ -14,7 +14,10 @@ use crate::state::{AppState, Route, SearchSource};
 use crate::theme::{self, Palette};
 use crate::views;
 use crate::widgets;
-use crate::winget::{self, Winget};
+use crate::backends::{
+    types,
+    winget::{self, Winget},
+};
 use gpui_kit::component::input::{Input, InputEvent, InputState};
 use gpui_kit::component::notification::Notification;
 use gpui_kit::component::sidebar::{
@@ -66,7 +69,7 @@ pub struct AppView {
     /// Cached `winget list` rows and installed ids from the last full refresh.
     /// Keystroke searches merge against these instead of re-running `list`
     /// and `export` on every pause.
-    list_rows: Vec<winget::ListRow>,
+    list_rows: Vec<types::ListRow>,
     installed_ids: Vec<String>,
     /// Package ids (lowercased) with a `winget show` fetch in flight, so a
     /// reopened detail dialog never spawns a duplicate.
@@ -444,12 +447,13 @@ impl AppView {
                         pkg.available = row.available.clone();
                     } else if !installed.contains(&key) {
                         let mut pkg = Package::from_search(
-                            &winget::SearchRow {
+                            &types::SearchRow {
                                 name: row.name.clone(),
                                 id: row.id.clone(),
                                 version: row.version.clone(),
                                 match_kind: None,
                                 source: row.source.clone(),
+                                description: None,
                             },
                             "winget",
                         );
@@ -535,7 +539,7 @@ impl AppView {
                     winget
                         .run(&refs)
                         .ok()
-                        .filter(|out| out.success())
+                        .filter(|out| out.status == 0 || winget::is_benign(out.status))
                         .map(|out| winget::parse_show(&out.stdout))
                         // A failed match (e.g. an msstore id winget cannot
                         // resolve) parses to an empty detail; do not cache it,
@@ -893,7 +897,10 @@ impl AppView {
                 })
                 .await;
             let _ = this.update_in(cx, |this, window, cx| {
-                let ok = result.as_ref().map(|out| out.success()).unwrap_or(false);
+                let ok = result
+                    .as_ref()
+                    .map(|out| out.status == 0 || winget::is_benign(out.status))
+                    .unwrap_or(false);
                 if ok {
                     this.state.mark_uninstalled(&id);
                     this.installed_ids.retain(|key| key != &id.to_lowercase());
@@ -1402,8 +1409,8 @@ fn export_installed(winget: &Winget) -> Vec<String> {
 /// packages `winget list` reports must be merged in on their own — otherwise
 /// 已安装 and 更新 are empty on a cold start.
 fn merge_catalog(
-    search: &[winget::SearchRow],
-    list: &[winget::ListRow],
+    search: &[types::SearchRow],
+    list: &[types::ListRow],
     installed: &[String],
 ) -> Vec<Package> {
     let mut packages: Vec<Package> = Vec::new();
@@ -1431,12 +1438,13 @@ fn merge_catalog(
             continue;
         }
         let mut pkg = Package::from_search(
-            &winget::SearchRow {
+            &types::SearchRow {
                 name: row.name.clone(),
                 id: row.id.clone(),
                 version: row.version.clone(),
                 match_kind: None,
                 source: row.source.clone(),
+                description: None,
             },
             "winget",
         );
@@ -1469,7 +1477,7 @@ const _: Option<SharedString> = None;
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::winget::{ListRow, SearchRow};
+    use crate::backends::types::{ListRow, SearchRow};
 
     fn search_row(id: &str, name: &str) -> SearchRow {
         SearchRow {
@@ -1478,6 +1486,7 @@ mod tests {
             version: "1.0".into(),
             match_kind: None,
             source: "winget".into(),
+            description: None,
         }
     }
 

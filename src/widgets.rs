@@ -24,7 +24,7 @@ use crate::model::{Package, Source};
 use crate::queue::QueueAction;
 use crate::state::{CategorySort, Language, SearchSource, SortMode, StatusFilter};
 use crate::theme::{ModeChoice, Palette};
-use crate::winget::{Arch, Scope};
+use crate::backends::types::{Arch, Scope};
 
 /// `.card` — surface panel with a hairline border and the 14 px radius.
 pub fn card(p: &Palette) -> Div {

@@ -14,7 +14,7 @@
 use std::path::{Path, PathBuf};
 use std::time::Duration;
 
-use crate::winget::PackageDetail;
+use crate::backends::types::PackageDetail;
 
 /// How long a cached `winget show` result is trusted.
 pub const DETAIL_TTL: Duration = Duration::from_secs(7 * 24 * 3600);

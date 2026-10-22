@@ -15,6 +15,7 @@ macro_rules! tr {
     };
 }
 
+pub mod backends;
 pub mod cache;
 pub mod config;
 pub mod dialogs;
@@ -26,7 +27,6 @@ pub mod state;
 pub mod theme;
 pub mod views;
 pub mod widgets;
-pub mod winget;
 
 /// Pin the process-wide locale to the base language for tests that assert
 /// translated text. `rust-i18n` defaults to `"en"` when `set_locale` was
