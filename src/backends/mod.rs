@@ -140,6 +140,14 @@ pub trait PackageBackend: Send + Sync {
         Capabilities::default()
     }
 
+    /// Whether an empty search query should actually run against the
+    /// backend, returning the full catalog into the paged search view
+    /// (flatpak, apt). The default keeps winget's behavior: an empty query
+    /// stays client-side and shows just the installed set.
+    fn empty_query_searches_catalog(&self) -> bool {
+        false
+    }
+
     // ---- process plumbing ----
     /// Spawn the CLI with `args`, capturing output.
     fn run(&self, args: &[&str]) -> Result<Output, BackendError>;

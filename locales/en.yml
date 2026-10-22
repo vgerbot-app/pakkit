@@ -147,6 +147,11 @@ home:
 categories:
   subtitle: "%{count} built-in categories, mapped from winget source tags"
 
+pager:
+  prev: "Prev"
+  next: "Next"
+  status: "Page %{page} of %{pages} · %{count} items"
+
 search:
   placeholder: "Search packages…   (Ctrl+K)"
   title_query: "Search “%{query}”"

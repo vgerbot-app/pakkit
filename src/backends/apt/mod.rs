@@ -117,6 +117,12 @@ impl PackageBackend for Apt {
         code.to_string()
     }
 
+    /// `apt search ""` lists the whole catalog, which the paged search view
+    /// is built to carry.
+    fn empty_query_searches_catalog(&self) -> bool {
+        true
+    }
+
     /// `search <query>`
     ///
     /// The query is pushed even when empty: `apt search ""` matches the
@@ -243,6 +249,7 @@ mod tests {
     #[test]
     fn query_args_and_the_empty_query_catalog() {
         let b = apt();
+        assert!(b.empty_query_searches_catalog());
         // An empty query is pushed verbatim: `apt search ""` lists the
         // whole catalog for the paged search view.
         assert_eq!(

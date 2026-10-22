@@ -100,10 +100,18 @@ impl PackageBackend for Flatpak {
         code.to_string()
     }
 
-    /// `search --columns=application,name,version,remotes,description`
+    /// An empty query runs `search ""`, which lists the whole catalog into
+    /// the paged search view.
+    fn empty_query_searches_catalog(&self) -> bool {
+        true
+    }
+
+    /// `search --columns=application,name,version,remotes,description <query>`
     ///
-    /// There are no per-remote, filter or count flags; the source is applied
-    /// client-side in [`Flatpak::search_packages`] and the rest is ignored.
+    /// The query is pushed even when empty (`search ""` lists the whole
+    /// catalog; a missing TEXT argument exits 1 instead). There are no
+    /// per-remote, filter or count flags; the source is applied client-side
+    /// in [`Flatpak::search_packages`] and the rest is ignored.
     fn search_args(
         &self,
         query: &str,
@@ -111,14 +119,11 @@ impl PackageBackend for Flatpak {
         _filters: SearchFilters,
         _count: Option<u32>,
     ) -> Vec<String> {
-        let mut args = vec![
+        vec![
             "search".to_owned(),
             "--columns=application,name,version,remotes,description".to_owned(),
-        ];
-        if !query.is_empty() {
-            args.push(query.to_owned());
-        }
-        args
+            query.to_owned(),
+        ]
     }
 
     /// `list --app --columns=application,name,version,origin`
@@ -356,6 +361,21 @@ mod tests {
             vec!["update", "--appstream", "flathub"]
         );
         assert_eq!(b.source_update_args(None), vec!["update", "--appstream"]);
+    }
+
+    #[test]
+    fn an_empty_query_searches_the_whole_catalog() {
+        let b = flatpak();
+        assert!(b.empty_query_searches_catalog());
+        let args = b.search_args("", None, SearchFilters::default(), None);
+        assert_eq!(
+            args,
+            vec![
+                "search",
+                "--columns=application,name,version,remotes,description",
+                ""
+            ]
+        );
     }
 
     #[test]

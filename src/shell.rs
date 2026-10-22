@@ -133,6 +133,7 @@ impl AppView {
                 InputEvent::Change => {
                     let text = this.search_input.read(cx).value().to_string();
                     this.state.query = text;
+                    this.state.search_page = 0;
                     // Typing from another route navigates here first; the query
                     // still has to be run, or the view filters a stale catalogue.
                     if this.state.route != Route::Search {
@@ -265,6 +266,8 @@ impl AppView {
             return;
         }
         self.state.set_route(route);
+        // A different category (or any route change) restarts paging.
+        self.state.category_page = 0;
         match route {
             Route::Updates => self.refresh_updates(cx),
             Route::Sources if self.state.sources.is_empty() => self.refresh_sources(cx),
@@ -306,9 +309,10 @@ impl AppView {
         self.search_epoch += 1;
         let epoch = self.search_epoch;
 
-        // A search with an empty query matches nothing — skip the process
-        // entirely and show just the cached installed packages.
-        if query.trim().is_empty() {
+        // A search with an empty query matches nothing on winget — skip the
+        // process entirely and show just the cached installed packages.
+        // Backends with a full-catalog empty search (flatpak, apt) run it.
+        if query.trim().is_empty() && !backend.empty_query_searches_catalog() {
             self.state.packages = merge_catalog(&[], &self.list_rows, &self.installed_ids, cli_name);
             self.state.status = self.state.status_for(self.state.route);
             cx.notify();
@@ -354,6 +358,7 @@ impl AppView {
             return;
         }
         self.state.search_source = source.clone();
+        self.state.search_page = 0;
         window.push_notification(
             Notification::info(tr!("notification.source_switched", source = source.label())),
             cx,
@@ -374,6 +379,10 @@ impl AppView {
             cx.notify();
             return;
         };
+        // The data every paged view renders is about to be replaced.
+        self.state.search_page = 0;
+        self.state.installed_page = 0;
+        self.state.category_page = 0;
         let query = self.state.query.clone();
         let source = self.state.search_source.arg().to_owned();
         let filters = self.state.settings.search_filters();
@@ -391,8 +400,11 @@ impl AppView {
         self.spawn_refresh(cx.spawn(async move |this, cx| {
             let (search, list, installed) = cx
                 .background_spawn(async move {
-                    // An empty query matches nothing; skip the process.
-                    let search = if query.trim().is_empty() {
+                    // An empty query matches nothing on winget; backends with
+                    // a full-catalog empty search (flatpak, apt) run it.
+                    let search = if query.trim().is_empty()
+                        && !backend.empty_query_searches_catalog()
+                    {
                         Vec::new()
                     } else {
                         backend.search_packages(&query, Some(&source), filters, None)

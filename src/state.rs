@@ -312,6 +312,20 @@ pub enum IconState {
     Missing,
 }
 
+/// Rows per page in the paged list views (搜索 / 已安装 / 分类详情).
+pub const PAGE_SIZE: usize = 100;
+
+/// Slice `items` down to one page, clamping an out-of-range `page` to the
+/// last one. Returns the slice, the effective page and the page count
+/// (always ≥ 1, so an empty list reports a single empty page).
+pub fn page_slice<T>(items: &[T], page: usize) -> (&[T], usize, usize) {
+    let pages = items.len().div_ceil(PAGE_SIZE).max(1);
+    let page = page.min(pages - 1);
+    let start = page * PAGE_SIZE;
+    let end = (start + PAGE_SIZE).min(items.len());
+    (&items[start..end], page, pages)
+}
+
 /// Everything the views read.
 #[derive(Debug, Clone, PartialEq)]
 pub struct AppState {
@@ -321,6 +335,12 @@ pub struct AppState {
     pub search_filter: StatusFilter,
     pub sort: SortMode,
     pub category_sort: CategorySort,
+    /// Current page of the paged 搜索 view (see [`page_slice`]).
+    pub search_page: usize,
+    /// Current page of the paged 已安装 view.
+    pub installed_page: usize,
+    /// Current page of the paged category-detail view.
+    pub category_page: usize,
     pub packages: Vec<Package>,
     /// Cached `winget show` output per package id (lowercased), filled when a
     /// detail dialog opens. The search/list rows carry no description, license
@@ -365,6 +385,9 @@ impl Default for AppState {
             sources: Vec::new(),
             sort: SortMode::Relevance,
             category_sort: CategorySort::Popular,
+            search_page: 0,
+            installed_page: 0,
+            category_page: 0,
             queue: Vec::new(),
             queue_uid: 0,
             default_source: "winget".to_owned(),
@@ -1005,5 +1028,41 @@ mod tests {
             .map(|i| pkg(&format!("P{i}"), "p", CategoryId::Dev))
             .collect();
         assert_eq!(state.catalog_label(), "11.8k");
+    }
+
+    #[test]
+    fn page_slice_covers_the_whole_list() {
+        let items: Vec<usize> = (0..250).collect();
+
+        let (slice, page, pages) = page_slice(&items, 0);
+        assert_eq!((slice.len(), page, pages), (100, 0, 3));
+        assert_eq!(slice[0], 0);
+
+        let (slice, page, pages) = page_slice(&items, 2);
+        assert_eq!((slice.len(), page, pages), (50, 2, 3));
+        assert_eq!(slice[0], 200);
+
+        let (slice, page, pages) = page_slice(&items, 1);
+        assert_eq!((slice.len(), page, pages), (100, 1, 3));
+        assert_eq!(slice[0], 100);
+    }
+
+    #[test]
+    fn page_slice_clamps_an_out_of_range_page() {
+        let items: Vec<usize> = (0..120).collect();
+        let (slice, page, pages) = page_slice(&items, 9);
+        assert_eq!((slice.len(), page, pages), (20, 1, 2));
+        assert_eq!(slice[0], 100);
+    }
+
+    #[test]
+    fn page_slice_handles_empty_and_single_page_lists() {
+        let empty: Vec<usize> = Vec::new();
+        let (slice, page, pages) = page_slice(&empty, 3);
+        assert_eq!((slice.len(), page, pages), (0, 0, 1));
+
+        let items: Vec<usize> = (0..100).collect();
+        let (slice, page, pages) = page_slice(&items, 1);
+        assert_eq!((slice.len(), page, pages), (100, 0, 1));
     }
 }

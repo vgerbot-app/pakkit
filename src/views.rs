@@ -8,7 +8,7 @@ use crate::icons::{IconKey, icon};
 use crate::model::{CategoryId, Package};
 use crate::queue::QueueAction;
 use crate::shell::AppView;
-use crate::state::{AppState, Language, Route, SearchSource};
+use crate::state::{AppState, Language, Route, SearchSource, page_slice};
 use crate::theme::Palette;
 use crate::widgets::{self, BtnKind, BtnSize, PillKind};
 use gpui_kit::component::input::InputState;
@@ -580,6 +580,8 @@ fn category_detail(
 ) -> AnyElement {
     let color = Palette::from_hex(id.color());
     let packages = state.category_packages(id);
+    // `install_all` below keeps the full list; only the grid is paged.
+    let (page_rows, page, pages) = page_slice(&packages, state.category_page);
     let items = widgets::category_sort_items();
     let others: Vec<CategoryId> = CategoryId::ALL
         .iter()
@@ -721,6 +723,7 @@ fn category_detail(
                                 state.category_sort,
                                 seg_handler(cx, |this, value, _, cx| {
                                     this.state.category_sort = value;
+                                    this.state.category_page = 0;
                                     cx.notify();
                                 }),
                             )),
@@ -745,8 +748,19 @@ fn category_detail(
                     .flex()
                     .flex_wrap()
                     .gap(px(12.))
-                    .children(packages.iter().map(|pkg| package_card(state, p, pkg, cx))),
+                    .children(page_rows.iter().map(|pkg| package_card(state, p, pkg, cx))),
             )
+            .when(pages > 1, |this| {
+                this.child(pager(
+                    p,
+                    "category-pager",
+                    page,
+                    pages,
+                    packages.len(),
+                    cx,
+                    |state, next| state.category_page = next,
+                ))
+            })
             .into_any_element(),
     );
 
@@ -754,6 +768,74 @@ fn category_detail(
         .flex()
         .flex_col()
         .children(children)
+        .into_any_element()
+}
+
+// ------------------------------------------------------------------- 分页
+
+/// The prev/next strip below a paged list. `set_page` writes the target
+/// page into the view's own page field; the buttons disable at the bounds
+/// and the strip only renders when the caller sees more than one page.
+fn pager(
+    p: &Palette,
+    id_prefix: &str,
+    page: usize,
+    pages: usize,
+    count: usize,
+    cx: &mut Context<AppView>,
+    set_page: impl Fn(&mut AppState, usize) + Copy + 'static,
+) -> AnyElement {
+    div()
+        .flex()
+        .items_center()
+        .justify_center()
+        .gap(px(10.))
+        .py(px(10.))
+        .child(
+            widgets::btn(
+                cx,
+                p,
+                SharedString::from(format!("{id_prefix}-prev")),
+                BtnKind::Soft,
+                BtnSize::Small,
+                tr!("pager.prev"),
+            )
+            .disabled(page == 0)
+            .on_click(cx.listener(move |this, _, _, cx| {
+                if page > 0 {
+                    set_page(&mut this.state, page - 1);
+                }
+                cx.notify();
+            })),
+        )
+        .child(
+            div()
+                .text_size(px(11.))
+                .text_color(p.muted)
+                .child(tr!(
+                    "pager.status",
+                    page = page + 1,
+                    pages = pages,
+                    count = count
+                )),
+        )
+        .child(
+            widgets::btn(
+                cx,
+                p,
+                SharedString::from(format!("{id_prefix}-next")),
+                BtnKind::Soft,
+                BtnSize::Small,
+                tr!("pager.next"),
+            )
+            .disabled(page + 1 >= pages)
+            .on_click(cx.listener(move |this, _, _, cx| {
+                if page + 1 < pages {
+                    set_page(&mut this.state, page + 1);
+                }
+                cx.notify();
+            })),
+        )
         .into_any_element()
 }
 
@@ -766,6 +848,8 @@ fn search(
     cx: &mut Context<AppView>,
 ) -> AnyElement {
     let results = state.filtered();
+    // The subtitle keeps the full count; only the grid is paged.
+    let (page_rows, page, pages) = page_slice(&results, state.search_page);
     let title = if state.query.trim().is_empty() {
         tr!("status.all_packages")
     } else {
@@ -826,6 +910,7 @@ fn search(
             state.search_filter,
             seg_handler(cx, |this, value, _, cx| {
                 this.state.search_filter = value;
+                this.state.search_page = 0;
                 cx.notify();
             }),
         ))
@@ -836,6 +921,7 @@ fn search(
             state.sort,
             seg_handler(cx, |this, value, _, cx| {
                 this.state.sort = value;
+                this.state.search_page = 0;
                 cx.notify();
             }),
         )));
@@ -898,13 +984,25 @@ fn search(
             ],
         ))
     } else {
-        widgets::page_body().child(
-            div()
-                .flex()
-                .flex_wrap()
-                .gap(px(12.))
-                .children(results.iter().map(|pkg| package_card(state, p, pkg, cx))),
-        )
+        widgets::page_body()
+            .child(
+                div()
+                    .flex()
+                    .flex_wrap()
+                    .gap(px(12.))
+                    .children(page_rows.iter().map(|pkg| package_card(state, p, pkg, cx))),
+            )
+            .when(pages > 1, |this| {
+                this.child(pager(
+                    p,
+                    "search-pager",
+                    page,
+                    pages,
+                    results.len(),
+                    cx,
+                    |state, next| state.search_page = next,
+                ))
+            })
     };
 
     div()
@@ -922,6 +1020,9 @@ fn search(
 fn installed(state: &AppState, p: &Palette, cx: &mut Context<AppView>) -> AnyElement {
     let rows = state.installed();
     let all_ids: Vec<String> = rows.iter().map(|pkg| pkg.id.clone()).collect();
+    // `rows`/`all_ids` stay full so 升级全部 enqueues everything; only the
+    // table is paged.
+    let (page_rows, page, pages) = page_slice(&rows, state.installed_page);
 
     let mut head_actions = Vec::new();
     if state.capabilities.export {
@@ -1006,10 +1107,22 @@ fn installed(state: &AppState, p: &Palette, cx: &mut Context<AppView>) -> AnyEle
             widgets::card(p)
                 .child(header)
                 .children(
-                    rows.iter()
+                    page_rows
+                        .iter()
                         .enumerate()
                         .map(|(ix, pkg)| installed_row(state, p, pkg, ix > 0, cx)),
                 )
+                .when(pages > 1, |this| {
+                    this.child(pager(
+                        p,
+                        "installed-pager",
+                        page,
+                        pages,
+                        rows.len(),
+                        cx,
+                        |state, next| state.installed_page = next,
+                    ))
+                })
                 .child(
                     div()
                         .flex()

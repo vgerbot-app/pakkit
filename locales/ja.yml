@@ -147,6 +147,11 @@ home:
 categories:
   subtitle: "%{count} 件の組み込みカテゴリ。winget ソースのタグからマッピング"
 
+pager:
+  prev: "前へ"
+  next: "次へ"
+  status: "%{page} / %{pages} ページ · 全 %{count} 件"
+
 search:
   placeholder: "パッケージを検索…   (Ctrl+K)"
   title_query: "「%{query}」の検索"

@@ -147,6 +147,11 @@ home:
 categories:
   subtitle: "共 %{count} 個內建分類，資料來自 winget 來源標籤對應"
 
+pager:
+  prev: "上一頁"
+  next: "下一頁"
+  status: "第 %{page} / %{pages} 頁 · 共 %{count} 項"
+
 search:
   placeholder: "搜尋套件…   (Ctrl+K)"
   title_query: "搜尋「%{query}」"

@@ -147,6 +147,11 @@ home:
 categories:
   subtitle: "winget 소스 태그에서 매핑된 기본 제공 카테고리 %{count}개"
 
+pager:
+  prev: "이전"
+  next: "다음"
+  status: "%{page} / %{pages} 페이지 · 총 %{count}개"
+
 search:
   placeholder: "패키지 검색…   (Ctrl+K)"
   title_query: "「%{query}」 검색"
