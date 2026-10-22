@@ -155,7 +155,7 @@ fn home(state: &AppState, p: &Palette, cx: &mut Context<AppView>) -> AnyElement 
     }
 
     if state.backend_error.is_some() {
-        children.insert(1, backend_missing(p, cx));
+        children.insert(1, backend_missing(state, p, cx));
     }
 
     div()
@@ -1663,8 +1663,8 @@ fn settings(
         vec![
             field_row(
                 p,
-                &tr!("settings.winget_path"),
-                &tr!("settings.winget_path_hint"),
+                &tr!("settings.backend_path", backend = state.backend_name),
+                &tr!("settings.backend_path_hint"),
                 input_field(p, &inputs.backend_path),
             ),
             field_row(
@@ -2061,7 +2061,7 @@ fn about(p: &Palette, state: &AppState, cx: &mut Context<AppView>) -> AnyElement
                 .border_color(p.line)
                 .text_size(px(12.))
                 .text_color(p.muted)
-                .child(tr!("settings.winget_version"))
+                .child(tr!("settings.backend_version", backend = state.backend_name))
                 .child(widgets::code_chip(p, version))
                 .into_any_element(),
         ],
@@ -2098,7 +2098,7 @@ fn section_head(
     head.into_any_element()
 }
 
-fn backend_missing(p: &Palette, cx: &mut Context<AppView>) -> AnyElement {
+fn backend_missing(state: &AppState, p: &Palette, cx: &mut Context<AppView>) -> AnyElement {
     div()
         .px(px(24.))
         .pb(px(16.))
@@ -2115,7 +2115,7 @@ fn backend_missing(p: &Palette, cx: &mut Context<AppView>) -> AnyElement {
                         .flex_1()
                         .text_size(px(12.5))
                         .text_color(p.ink2)
-                        .child(tr!("home.winget_missing")),
+                        .child(tr!("home.backend_missing", backend = state.backend_name)),
                 )
                 .child(
                     widgets::btn(

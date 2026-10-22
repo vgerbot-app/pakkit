@@ -18,7 +18,7 @@ status:
   ready: "Ready"
   searching_catalog: "Searching…"
   sources_syncing: "Syncing sources…"
-  winget_detected: "winget detected"
+  backend_detected: "%{backend} detected"
   all_packages: "All packages"
   searching: "Search: %{query}"
   categories_count: "Categories %{count}"
@@ -141,7 +141,7 @@ home:
   stat_sources: "Sources"
   stat_packages: "Packages"
   stat_installed: "Installed"
-  winget_missing: "winget was not detected. Set its path under Settings → System & Advanced, then click Detect."
+  backend_missing: "%{backend} was not detected. Set its path under Settings → System & Advanced, then click Detect."
   go_settings: "Open settings"
 
 categories:
@@ -216,15 +216,15 @@ settings:
   language_hint: "Display language, takes effect immediately"
   advanced: "System & advanced"
   advanced_hint: "winget path, proxy and telemetry."
-  winget_path: "winget path"
-  winget_path_hint: "Leave empty to auto-detect"
+  backend_path: "%{backend} path"
+  backend_path_hint: "Leave empty to auto-detect"
   proxy: "Proxy"
   proxy_hint: "HTTP proxy address"
   telemetry: "Telemetry"
   telemetry_hint: "Allow anonymous usage data"
   about: "About"
   detect: "Detect"
-  winget_version: "Current winget version"
+  backend_version: "Current %{backend} version"
   not_detected: "Not detected"
 
 dialog:
@@ -292,7 +292,7 @@ notification:
   source_removed: "Source removed"
 
 placeholder:
-  winget_path: "Leave empty to auto-detect"
+  backend_path: "Leave empty to auto-detect"
   source_name: "e.g. contoso"
 
 error:

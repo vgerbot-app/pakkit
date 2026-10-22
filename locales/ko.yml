@@ -18,7 +18,7 @@ status:
   ready: "준비 완료"
   searching_catalog: "검색 중…"
   sources_syncing: "소스 동기화 중…"
-  winget_detected: "winget이 감지됨"
+  backend_detected: "%{backend}이 감지됨"
   all_packages: "모든 패키지"
   searching: "검색: %{query}"
   categories_count: "카테고리 %{count}"
@@ -141,7 +141,7 @@ home:
   stat_sources: "소스 수"
   stat_packages: "사용 가능한 패키지"
   stat_installed: "설치됨"
-  winget_missing: "winget이 감지되지 않았습니다. 「설정 → 시스템 및 고급」에서 경로를 지정한 후 감지를 클릭하세요."
+  backend_missing: "%{backend}이 감지되지 않았습니다. 「설정 → 시스템 및 고급」에서 경로를 지정한 후 감지를 클릭하세요."
   go_settings: "설정으로 이동"
 
 categories:
@@ -216,15 +216,15 @@ settings:
   language_hint: "표시 언어, 전환 시 즉시 적용됩니다"
   advanced: "시스템 및 고급"
   advanced_hint: "winget 경로, 프록시 및 통계입니다."
-  winget_path: "winget 경로"
-  winget_path_hint: "비어 있으면 자동 감지"
+  backend_path: "%{backend} 경로"
+  backend_path_hint: "비어 있으면 자동 감지"
   proxy: "프록시"
   proxy_hint: "HTTP 프록시 주소"
   telemetry: "사용 통계"
   telemetry_hint: "익명 사용 데이터 허용"
   about: "정보"
   detect: "감지"
-  winget_version: "현재 winget 버전"
+  backend_version: "현재 %{backend} 버전"
   not_detected: "감지되지 않음"
 
 dialog:
@@ -292,7 +292,7 @@ notification:
   source_removed: "소스가 삭제되었습니다"
 
 placeholder:
-  winget_path: "비어 있으면 자동 감지"
+  backend_path: "비어 있으면 자동 감지"
   source_name: "예: contoso"
 
 error:

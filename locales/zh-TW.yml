@@ -18,7 +18,7 @@ status:
   ready: "就緒"
   searching_catalog: "正在檢索…"
   sources_syncing: "正在同步來源…"
-  winget_detected: "已偵測到 winget"
+  backend_detected: "已偵測到 %{backend}"
   all_packages: "全部套件"
   searching: "搜尋：%{query}"
   categories_count: "分類 %{count}"
@@ -141,7 +141,7 @@ home:
   stat_sources: "來源數量"
   stat_packages: "可用套件"
   stat_installed: "已安裝"
-  winget_missing: "未偵測到 winget，請在「設定 → 系統與進階」中指定路徑後點擊偵測。"
+  backend_missing: "未偵測到 %{backend}，請在「設定 → 系統與進階」中指定路徑後點擊偵測。"
   go_settings: "前往設定"
 
 categories:
@@ -216,15 +216,15 @@ settings:
   language_hint: "介面顯示語言，切換後立即生效"
   advanced: "系統與進階"
   advanced_hint: "winget 路徑、代理與統計。"
-  winget_path: "winget 路徑"
-  winget_path_hint: "留空則自動偵測"
+  backend_path: "%{backend} 路徑"
+  backend_path_hint: "留空則自動偵測"
   proxy: "代理伺服器"
   proxy_hint: "HTTP 代理位址"
   telemetry: "使用統計"
   telemetry_hint: "允許匿名使用資料"
   about: "關於"
   detect: "偵測"
-  winget_version: "目前 winget 版本"
+  backend_version: "目前 %{backend} 版本"
   not_detected: "未偵測"
 
 dialog:
@@ -292,7 +292,7 @@ notification:
   source_removed: "來源已刪除"
 
 placeholder:
-  winget_path: "留空則自動偵測"
+  backend_path: "留空則自動偵測"
   source_name: "例如 contoso"
 
 error:

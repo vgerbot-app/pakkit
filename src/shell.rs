@@ -99,7 +99,7 @@ impl AppView {
             input
         });
         let backend_path_input = cx.new(|cx| {
-            let mut input = InputState::new(window, cx).placeholder(tr!("placeholder.winget_path"));
+            let mut input = InputState::new(window, cx).placeholder(tr!("placeholder.backend_path"));
             input.set_value(settings.backend_path.clone(), window, cx);
             input
         });
@@ -214,7 +214,7 @@ impl AppView {
                 self.state.backend_kind = backend.kind();
                 self.state.capabilities = backend.capabilities();
                 self.state.backend_error = None;
-                self.state.status = tr!("status.winget_detected");
+                self.state.status = tr!("status.backend_detected", backend = backend.cli_name());
                 self.backend = Some(backend.clone());
                 self.spawn_refresh(cx.spawn(async move |this, cx| {
                     let version = cx

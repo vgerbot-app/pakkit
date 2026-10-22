@@ -18,7 +18,7 @@ status:
   ready: "準備完了"
   searching_catalog: "検索中…"
   sources_syncing: "ソースを同期中…"
-  winget_detected: "winget を検出しました"
+  backend_detected: "%{backend} を検出しました"
   all_packages: "すべてのパッケージ"
   searching: "検索：%{query}"
   categories_count: "カテゴリ %{count}"
@@ -141,7 +141,7 @@ home:
   stat_sources: "ソース数"
   stat_packages: "利用可能なパッケージ"
   stat_installed: "インストール済み"
-  winget_missing: "winget が検出されませんでした。「設定 → システムと詳細」でパスを指定し、検出をクリックしてください。"
+  backend_missing: "%{backend} が検出されませんでした。「設定 → システムと詳細」でパスを指定し、検出をクリックしてください。"
   go_settings: "設定を開く"
 
 categories:
@@ -216,15 +216,15 @@ settings:
   language_hint: "表示言語。切り替えはすぐに反映されます"
   advanced: "システムと詳細"
   advanced_hint: "winget のパス、プロキシ、統計。"
-  winget_path: "winget のパス"
-  winget_path_hint: "空の場合は自動検出"
+  backend_path: "%{backend} のパス"
+  backend_path_hint: "空の場合は自動検出"
   proxy: "プロキシ"
   proxy_hint: "HTTP プロキシ アドレス"
   telemetry: "使用状況データ"
   telemetry_hint: "匿名の使用状況データを許可"
   about: "バージョン情報"
   detect: "検出"
-  winget_version: "現在の winget バージョン"
+  backend_version: "現在の %{backend} バージョン"
   not_detected: "未検出"
 
 dialog:
@@ -292,7 +292,7 @@ notification:
   source_removed: "ソースを削除しました"
 
 placeholder:
-  winget_path: "空の場合は自動検出"
+  backend_path: "空の場合は自動検出"
   source_name: "例：contoso"
 
 error:

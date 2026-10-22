@@ -18,7 +18,7 @@ status:
   ready: "就绪"
   searching_catalog: "正在检索…"
   sources_syncing: "正在同步源…"
-  winget_detected: "已检测到 winget"
+  backend_detected: "已检测到 %{backend}"
   all_packages: "全部软件包"
   searching: "搜索：%{query}"
   categories_count: "分类 %{count}"
@@ -141,7 +141,7 @@ home:
   stat_sources: "源数量"
   stat_packages: "可用包"
   stat_installed: "已安装"
-  winget_missing: "未检测到 winget，请在“设置 → 系统与高级”中指定路径后点击检测。"
+  backend_missing: "未检测到 %{backend}，请在“设置 → 系统与高级”中指定路径后点击检测。"
   go_settings: "前往设置"
 
 categories:
@@ -216,15 +216,15 @@ settings:
   language_hint: "界面显示语言，切换后立即生效"
   advanced: "系统与高级"
   advanced_hint: "winget 路径、代理与统计。"
-  winget_path: "winget 路径"
-  winget_path_hint: "留空则自动检测"
+  backend_path: "%{backend} 路径"
+  backend_path_hint: "留空则自动检测"
   proxy: "代理服务器"
   proxy_hint: "HTTP 代理地址"
   telemetry: "使用统计"
   telemetry_hint: "允许匿名使用数据"
   about: "关于"
   detect: "检测"
-  winget_version: "当前 winget 版本"
+  backend_version: "当前 %{backend} 版本"
   not_detected: "未检测"
 
 dialog:
@@ -292,7 +292,7 @@ notification:
   source_removed: "源已删除"
 
 placeholder:
-  winget_path: "留空则自动检测"
+  backend_path: "留空则自动检测"
   source_name: "例如 contoso"
 
 error:
