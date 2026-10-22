@@ -19,7 +19,11 @@ jobs:
       - uses: Swatinem/rust-cache@v2
 
       - name: Install system dependencies
-        run: sudo apt-get update && sudo apt-get install -y libfontconfig-dev pkg-config
+        run: >
+          sudo apt-get update && sudo apt-get install -y
+          pkg-config libfontconfig-dev
+          libxcb1-dev libxkbcommon-dev libxkbcommon-x11-dev
+          libwayland-dev
 
       - name: rustfmt
         run: cargo fmt --all -- --check
