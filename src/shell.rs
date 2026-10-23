@@ -1508,15 +1508,25 @@ fn merge_catalog(
     installed: &[String],
     fallback_source: &str,
 ) -> Vec<Package> {
-    let mut packages: Vec<Package> = Vec::new();
+    // Hash indexes keep this linear: a full-catalog backend (apt's empty
+    // search) returns ~80k rows, and a quadratic scan over them blocks the
+    // UI thread for minutes.
+    let installed: std::collections::HashSet<&str> =
+        installed.iter().map(String::as_str).collect();
+    let by_id: std::collections::HashMap<String, &types::ListRow> =
+        list.iter().map(|row| (row.id.to_lowercase(), row)).collect();
+
+    let mut packages: Vec<Package> = Vec::with_capacity(search.len());
+    let mut seen: std::collections::HashSet<String> =
+        std::collections::HashSet::with_capacity(search.len());
     for row in search {
         let key = row.id.to_lowercase();
-        if packages.iter().any(|p| p.key() == key) {
+        if !seen.insert(key.clone()) {
             continue;
         }
         let mut pkg = Package::from_search(row, fallback_source);
-        pkg.installed = installed.contains(&key);
-        if let Some(found) = list.iter().find(|l| l.id.to_lowercase() == key) {
+        pkg.installed = installed.contains(key.as_str());
+        if let Some(found) = by_id.get(&key) {
             pkg.available = found.available.clone();
             if !found.version.is_empty() {
                 pkg.version = found.version.clone();
@@ -1530,7 +1540,7 @@ fn merge_catalog(
     // upgrade against.
     for row in list {
         let key = row.id.to_lowercase();
-        if !installed.contains(&key) || packages.iter().any(|p| p.key() == key) {
+        if !installed.contains(key.as_str()) || !seen.insert(key) {
             continue;
         }
         let mut pkg = Package::from_search(
@@ -1633,6 +1643,32 @@ mod tests {
 
         assert_eq!(packages.len(), 1);
         assert!(packages[0].installed);
+    }
+
+    #[test]
+    fn a_full_catalog_merge_stays_linear() {
+        // apt's empty-query search returns the whole repository (~80k rows);
+        // a quadratic merge blocked the UI thread for minutes. This scale
+        // completes in milliseconds with hash indexes.
+        let search: Vec<_> = (0..80_000)
+            .map(|ix| search_row(&format!("pkg{ix}"), &format!("Package {ix}")))
+            .collect();
+        let installed: Vec<String> = (0..3_000).map(|ix| format!("pkg{ix}")).collect();
+        let list: Vec<_> = (0..3_000)
+            .map(|ix| list_row(&format!("pkg{ix}"), &format!("Package {ix}"), None))
+            .collect();
+
+        let start = std::time::Instant::now();
+        let packages = merge_catalog(&search, &list, &installed, "apt");
+        assert!(
+            start.elapsed() < std::time::Duration::from_secs(5),
+            "the merge took {:?}",
+            start.elapsed()
+        );
+
+        assert_eq!(packages.len(), 80_000);
+        assert!(packages[0].installed);
+        assert!(!packages[80_000 - 1].installed);
     }
 
     /// A winget handle for building command lines; nothing is ever spawned.
