@@ -1,4 +1,4 @@
-# WingetGUI
+# Pakkit
 
 <div align="center"><img alt="CI" src="https://github.com/vgerbot-app/winget-gui/actions/workflows/ci.yml/badge.svg"> <img alt="License" src="https://img.shields.io/badge/license-MIT-blue.svg"> <img alt="Version" src="https://img.shields.io/badge/version-0.1.0-green.svg"> <img alt="Rust" src="https://img.shields.io/badge/rust-1.92%2B-orange.svg"> <img alt="Platform" src="https://img.shields.io/badge/platform-Windows-0078D6.svg"></div>
 
@@ -6,9 +6,11 @@
 🇺🇸 <a href="./README.md">English</a> | 🇨🇳 <a href="./README.zh.md">简体中文</a>
 </p>
 
-A graphical winget client for Windows, built with Rust + [gpui-kit](https://crates.io/crates/gpui-kit) 0.8 — a native window, no Electron / WebView.
+**Click to install, commands in the open.**
 
-Every operation is a transparent wrapper around `winget.exe`: the command line shown in the UI is exactly the command line that gets executed — nothing hidden, nothing rewritten.
+A native graphical client for your package managers — winget, apt and flatpak — built with Rust + [gpui-kit](https://crates.io/crates/gpui-kit) 0.8. A real native window, no Electron / WebView.
+
+Every operation is a transparent wrapper around the backend CLI: the command line shown in the UI is exactly the command line that gets executed — nothing hidden, nothing rewritten.
 
 ![Preview](./assets/preview.png)
 
@@ -59,7 +61,7 @@ cargo build --release
 cargo run --release
 ```
 
-Or run `target/release/wingetgui.exe` directly.
+Or run `target/release/pakkit.exe` directly.
 
 - Search packages in "Discover" / "All Packages"; clicking install enqueues the task into the queue drawer, which executes serially
 - Upgrade individual or all packages in the "Updates" view

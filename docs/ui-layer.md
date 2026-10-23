@@ -129,7 +129,7 @@ window.push_notification(Notification::info("已加入队列：…"), cx);
 视图层没有自动化测试。改动 UI 后：
 
 ```bash
-cargo build && ./target/debug/wingetgui.exe
+cargo build && ./target/debug/pakkit.exe
 ```
 
 然后在真实窗口里点一遍受影响的路径。历史上有多次「编译通过、运行即崩」的

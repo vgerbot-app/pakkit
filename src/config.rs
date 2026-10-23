@@ -1,7 +1,7 @@
 //! Settings persistence.
 //!
 //! The whole [`Settings`] struct is written as JSON to
-//! `dirs::config_dir()/wingetgui/settings.json` (`%APPDATA%\wingetgui` on
+//! `dirs::config_dir()/pakkit/settings.json` (`%APPDATA%\pakkit` on
 //! Windows). Every operation is best-effort: a read-only profile or an exotic
 //! config dir must never crash the app, so failures fall back to defaults.
 
@@ -10,7 +10,7 @@ use std::path::PathBuf;
 use crate::state::{Language, Settings};
 
 fn path() -> Option<PathBuf> {
-    Some(dirs::config_dir()?.join("wingetgui").join("settings.json"))
+    Some(dirs::config_dir()?.join("pakkit").join("settings.json"))
 }
 
 /// Read the persisted settings, or detect a sensible default on first run.

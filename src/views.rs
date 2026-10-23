@@ -2237,7 +2237,7 @@ fn about(p: &Palette, state: &AppState, cx: &mut Context<AppView>) -> AnyElement
     settings_card(
         p,
         &tr!("settings.about"),
-        "WingetGUI v0.1.0-prototype · Rust + GPUI · MIT License",
+        "Pakkit v0.1.0-prototype · Rust + GPUI · MIT License",
         vec![
             div()
                 .flex()
@@ -2261,7 +2261,7 @@ fn about(p: &Palette, state: &AppState, cx: &mut Context<AppView>) -> AnyElement
                     div()
                         .flex_1()
                         .min_w_0()
-                        .child(div().text_size(px(13.5)).font_semibold().child("WingetGUI"))
+                        .child(div().text_size(px(13.5)).font_semibold().child("Pakkit"))
                         .child(
                             div()
                                 .text_size(px(11.5))

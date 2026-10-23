@@ -51,10 +51,10 @@ jobs:
         run: |
           $ver = "${{ steps.version.outputs.version }}"
           $arch = "${{ matrix.arch }}"
-          $zip = "wingetgui-$ver-windows-$arch.zip"
+          $zip = "pakkit-$ver-windows-$arch.zip"
           $stage = "dist\stage"
           New-Item -ItemType Directory -Force -Path $stage | Out-Null
-          Copy-Item "target\${{ matrix.target }}\release\wingetgui.exe" $stage
+          Copy-Item "target\${{ matrix.target }}\release\pakkit.exe" $stage
           Copy-Item LICENSE, README.md $stage
           Compress-Archive -Path "$stage\*" -DestinationPath "dist\$zip"
           Remove-Item -Recurse -Force $stage

@@ -1,4 +1,4 @@
-# WingetGUI
+# Pakkit
 
 <div align="center"><img alt="CI" src="https://github.com/vgerbot-app/winget-gui/actions/workflows/ci.yml/badge.svg"> <img alt="License" src="https://img.shields.io/badge/license-MIT-blue.svg"> <img alt="Version" src="https://img.shields.io/badge/version-0.1.0-green.svg"> <img alt="Rust" src="https://img.shields.io/badge/rust-1.92%2B-orange.svg"> <img alt="Platform" src="https://img.shields.io/badge/platform-Windows-0078D6.svg"></div>
 
@@ -6,9 +6,11 @@
 🇺🇸 <a href="./README.md">English</a> | 🇨🇳 <a href="./README.zh.md">简体中文</a>
 </p>
 
-Windows 上的 winget 图形客户端，使用 Rust + [gpui-kit](https://crates.io/crates/gpui-kit) 0.8 构建 —— 原生窗口，无 Electron / WebView。
+**点一下就装好，命令看得见。**
 
-所有操作都是对 `winget.exe` 的一层透明封装：界面上显示的命令行就是实际执行的命令行，不隐藏、不改写。
+winget / apt / flatpak 的统一图形客户端，使用 Rust + [gpui-kit](https://crates.io/crates/gpui-kit) 0.8 构建 —— 原生窗口，无 Electron / WebView。
+
+所有操作都是对后端命令行的一层透明封装：界面上显示的命令行就是实际执行的命令行，不隐藏、不改写。
 
 ![预览](./assets/preview.png)
 
@@ -59,7 +61,7 @@ cargo build --release
 cargo run --release
 ```
 
-或直接运行 `target/release/wingetgui.exe`。
+或直接运行 `target/release/pakkit.exe`。
 
 - 在「发现」/「全部包」中搜索软件包，点击安装后任务进入队列抽屉串行执行
 - 在「更新」视图中升级单个或全部软件包

@@ -1,4 +1,4 @@
-//! WingetGUI — a winget client for Windows built on gpui-kit.
+//! Pakkit — a winget client for Windows built on gpui-kit.
 
 // The app's translations, embedded from `locales/` at compile time. `zh-CN` is
 // the base locale (the UI was written in it); `en` is the second net. Every

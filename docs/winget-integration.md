@@ -182,7 +182,7 @@ winget 没有机器可读的表格模式，只能解析人类可读输出。
 
 1. `winget search`（按当前查询词）
 2. `winget list`
-3. `winget export -o %TEMP%\wingetgui-export.json`
+3. `winget export -o %TEMP%\pakkit-export.json`
 
 原因是 `merge_catalog` 的合并规则：
 

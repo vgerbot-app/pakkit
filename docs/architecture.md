@@ -70,7 +70,7 @@ InputEvent::Change                       (shell.rs, subscribe_in)
           → cx.background_spawn {        // 后台线程，绝不阻塞 UI
                 winget search --source …
                 winget list
-                winget export -o %TEMP%\wingetgui-export.json
+                winget export -o %TEMP%\pakkit-export.json
             }
           → merge_catalog(search, list, installed)
           → state.packages = …
@@ -121,7 +121,7 @@ Pending ──begin()──> Running ──complete(Ok)──> Done
 
 1. `Palette`（`theme.rs`）——原型 `app.css` 的 `:root` / `.dark` 两列色值，`const fn` 转换。
    组件绝大多数直接用 `Palette` 字段。
-2. `themes/wingetgui.json`——gpui-kit 内置组件（滚动条、下拉、tooltip 等）用的语义 token。
+2. `themes/pakkit.json`——gpui-kit 内置组件（滚动条、下拉、tooltip 等）用的语义 token。
    `include_str!` 编译进二进制，经 `Theme::apply_config` 装载后再由 `Palette` 覆盖
    `apply()` 显式命名的那些 token。
 

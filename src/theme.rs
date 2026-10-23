@@ -165,7 +165,7 @@ pub fn palette(cx: &App) -> Palette {
 
 /// Install the global and switch gpui-kit to the prototype's default (dark).
 ///
-/// The bundled `themes/wingetgui.json` is applied first so that the tokens
+/// The bundled `themes/pakkit.json` is applied first so that the tokens
 /// [`apply`] does not name (the built-in components' own colours) still follow
 /// the prototype instead of gpui-kit's default dark theme.
 pub fn init(cx: &mut App) {
@@ -176,11 +176,11 @@ pub fn init(cx: &mut App) {
     apply(cx);
 }
 
-/// The parsed `themes/wingetgui.json`, baked in so the app themes itself
+/// The parsed `themes/pakkit.json`, baked in so the app themes itself
 /// regardless of the working directory it was launched from.
 fn bundled_theme() -> Option<&'static ThemeConfig> {
     static CONFIG: LazyLock<Option<ThemeConfig>> = LazyLock::new(|| {
-        let set: ThemeSet = serde_json::from_str(include_str!("../themes/wingetgui.json")).ok()?;
+        let set: ThemeSet = serde_json::from_str(include_str!("../themes/pakkit.json")).ok()?;
         set.themes.into_iter().find(|theme| theme.mode.is_dark())
     });
     CONFIG.as_ref()
@@ -414,7 +414,7 @@ mod tests {
     fn the_bundled_theme_tracks_the_palette() {
         // The file is embedded, so a typo or a drift from `Palette` would
         // silently leave the built-in components on gpui-kit's defaults.
-        let theme = bundled_theme().expect("themes/wingetgui.json parses");
+        let theme = bundled_theme().expect("themes/pakkit.json parses");
         assert_eq!(theme.colors.background.as_deref(), Some("#0e1014"));
         assert_eq!(theme.colors.accent.as_deref(), Some("#4f8cff"));
         assert_eq!(theme.radius, Some(9));

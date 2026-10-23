@@ -1,10 +1,10 @@
 [package]
-name = "wingetgui"
+name = "pakkit"
 version = "0.1.0"
 edition = "2024"
 rust-version = "1.92"
 license = "MIT"
-description = "A winget GUI client for Windows built with gpui-kit."
+description = "A native multi-backend package manager GUI (winget / apt / flatpak) built with gpui-kit. Click to install, commands in the open."
 
 [dependencies]
 dirs = "6"

@@ -414,7 +414,7 @@ impl PackageBackend for Winget {
     /// upgrade path; the export document excludes them, so it — not the list
     /// output — decides membership of the managed set.
     fn managed_ids(&self, _rows: &[ListRow]) -> Vec<String> {
-        let path = std::env::temp_dir().join("wingetgui-export.json");
+        let path = std::env::temp_dir().join("pakkit-export.json");
         let args = export_json(&path, None);
         let refs: Vec<&str> = args.iter().map(String::as_str).collect();
         let ids = self

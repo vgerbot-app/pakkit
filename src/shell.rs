@@ -33,7 +33,7 @@ use gpui_kit::{
     actions, div, px,
 };
 
-actions!(wingetgui, [FocusSearch]);
+actions!(pakkit, [FocusSearch]);
 
 /// The application view. One per window.
 pub struct AppView {
@@ -1465,7 +1465,7 @@ fn brand_row(p: &Palette) -> impl IntoElement {
         .gap(px(8.))
         .flex_none()
         .child(brand_mark(p))
-        .child(div().text_size(px(13.)).font_semibold().child("WingetGUI"))
+        .child(div().text_size(px(13.)).font_semibold().child("Pakkit"))
         .child(widgets::pill(
             p,
             widgets::PillKind::Line,

@@ -1,4 +1,4 @@
-//! On-disk caches under `dirs::cache_dir()/wingetgui/`.
+//! On-disk caches under `dirs::cache_dir()/pakkit/`.
 //!
 //! Two kinds of data live here:
 //!
@@ -25,7 +25,7 @@ pub const NONE_TTL: Duration = Duration::from_secs(7 * 24 * 3600);
 
 /// The cache root, creating the directory tree on first use.
 pub fn root() -> Option<PathBuf> {
-    let root = dirs::cache_dir()?.join("wingetgui");
+    let root = dirs::cache_dir()?.join("pakkit");
     std::fs::create_dir_all(root.join("details")).ok()?;
     std::fs::create_dir_all(root.join("icons")).ok()?;
     Some(root)
@@ -253,7 +253,7 @@ mod tests {
 
     #[test]
     fn atomic_write_leaves_target() {
-        let dir = std::env::temp_dir().join(format!("wingetgui-test-{}", std::process::id()));
+        let dir = std::env::temp_dir().join(format!("pakkit-test-{}", std::process::id()));
         std::fs::create_dir_all(&dir).expect("temp dir");
         let path = dir.join("entry.bin");
         atomic_write(&path, b"abc").expect("write succeeds");

@@ -1,10 +1,10 @@
 {
-  "name": "WingetGUI",
-  "author": "WingetGUI",
+  "name": "Pakkit",
+  "author": "Pakkit",
   "themes": [
     {
       "is_default": false,
-      "name": "WingetGUI",
+      "name": "Pakkit",
       "mode": "dark",
       "font.family": "Segoe UI Variable Text",
       "font.size": 13,

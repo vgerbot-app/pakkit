@@ -1,4 +1,4 @@
-//! WingetGUI — a winget front-end built on gpui-kit.
+//! Pakkit — a winget front-end built on gpui-kit.
 
 // `serde`/`serde_json`/`thiserror` are used by the library half of this crate;
 // the binary target links them but never names them, which the dependency lint
@@ -9,8 +9,8 @@
 use gpui_kit::component::TitleBar;
 use gpui_kit::{App, AppContext as _, Bounds, Point, WindowBounds, WindowOptions, px, size};
 
-use wingetgui::shell::AppView;
-use wingetgui::theme;
+use pakkit::shell::AppView;
+use pakkit::theme;
 
 fn main() {
     gpui_kit::application()
