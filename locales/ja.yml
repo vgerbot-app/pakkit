@@ -148,8 +148,10 @@ categories:
   subtitle: "%{count} 件の組み込みカテゴリ。winget ソースのタグからマッピング"
 
 pager:
+  first: "最初へ"
   prev: "前へ"
   next: "次へ"
+  last: "最後へ"
   status: "%{page} / %{pages} ページ · 全 %{count} 件"
 
 search:

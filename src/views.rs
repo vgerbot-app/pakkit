@@ -792,9 +792,9 @@ fn category_detail(
 
 // ------------------------------------------------------------------- 分页
 
-/// The prev/next strip below a paged list. `set_page` writes the target
-/// page into the view's own page field; the buttons disable at the bounds
-/// and the strip only renders when the caller sees more than one page.
+/// The first/prev/next/last strip below a paged list. `set_page` writes the
+/// target page into the view's own page field; the buttons disable at the
+/// bounds and the strip only renders when the caller sees more than one page.
 fn pager(
     p: &Palette,
     id_prefix: &str,
@@ -810,6 +810,23 @@ fn pager(
         .justify_center()
         .gap(px(10.))
         .py(px(10.))
+        .child(
+            widgets::btn(
+                cx,
+                p,
+                SharedString::from(format!("{id_prefix}-first")),
+                BtnKind::Soft,
+                BtnSize::Small,
+                tr!("pager.first"),
+            )
+            .disabled(page == 0)
+            .on_click(cx.listener(move |this, _, _, cx| {
+                if page > 0 {
+                    set_page(&mut this.state, 0);
+                }
+                cx.notify();
+            })),
+        )
         .child(
             widgets::btn(
                 cx,
@@ -851,6 +868,23 @@ fn pager(
             .on_click(cx.listener(move |this, _, _, cx| {
                 if page + 1 < pages {
                     set_page(&mut this.state, page + 1);
+                }
+                cx.notify();
+            })),
+        )
+        .child(
+            widgets::btn(
+                cx,
+                p,
+                SharedString::from(format!("{id_prefix}-last")),
+                BtnKind::Soft,
+                BtnSize::Small,
+                tr!("pager.last"),
+            )
+            .disabled(page + 1 >= pages)
+            .on_click(cx.listener(move |this, _, _, cx| {
+                if page + 1 < pages {
+                    set_page(&mut this.state, pages - 1);
                 }
                 cx.notify();
             })),

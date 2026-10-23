@@ -148,8 +148,10 @@ categories:
   subtitle: "共 %{count} 个内置分类，数据来自 winget 源标签映射"
 
 pager:
+  first: "首页"
   prev: "上一页"
   next: "下一页"
+  last: "末页"
   status: "第 %{page} / %{pages} 页 · 共 %{count} 项"
 
 search:

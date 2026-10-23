@@ -148,8 +148,10 @@ categories:
   subtitle: "winget 소스 태그에서 매핑된 기본 제공 카테고리 %{count}개"
 
 pager:
+  first: "처음"
   prev: "이전"
   next: "다음"
+  last: "마지막"
   status: "%{page} / %{pages} 페이지 · 총 %{count}개"
 
 search:

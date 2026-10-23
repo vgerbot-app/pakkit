@@ -148,8 +148,10 @@ categories:
   subtitle: "%{count} built-in categories, mapped from winget source tags"
 
 pager:
+  first: "First"
   prev: "Prev"
   next: "Next"
+  last: "Last"
   status: "Page %{page} of %{pages} · %{count} items"
 
 search:
