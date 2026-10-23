@@ -1182,7 +1182,14 @@ impl AppView {
                     .id("content")
                     .flex_1()
                     .min_h_0()
-                    .overflow_y_scroll()
+                    // Search owns its scroll region (the card grid) and pins
+                    // its pager, so the pane must clip instead of scroll.
+                    .when(self.state.route == Route::Search, |this| {
+                        this.overflow_hidden()
+                    })
+                    .when(self.state.route != Route::Search, |this| {
+                        this.overflow_y_scroll()
+                    })
                     .child(views::render(
                         &self.state,
                         &self.shell_inputs(),

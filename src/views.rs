@@ -946,68 +946,96 @@ fn search(
             )),
         );
 
+    // The view fills the content pane: head/filters/command stay pinned and
+    // only the card grid scrolls, so the pager keeps a fixed slot at the
+    // bottom instead of riding along with the cards.
     let body = if results.is_empty() {
-        widgets::page_body().child(widgets::empty_state(
-            p,
-            IconKey::Search,
-            if state.query.trim().is_empty() {
-                tr!("search.empty_none")
-            } else {
-                tr!("search.empty_no_match")
-            },
-            tr!("search.empty_hint"),
-            vec![
-                widgets::btn(
-                    cx,
-                    p,
-                    "empty-all-src",
-                    BtnKind::Primary,
-                    BtnSize::Regular,
-                    tr!("search.search_all_sources"),
-                )
-                .on_click(cx.listener(|this, _, window, cx| {
-                    this.set_search_source(SearchSource::All, window, cx);
-                }))
-                .into_any_element(),
-                widgets::btn(
-                    cx,
-                    p,
-                    "empty-sources",
-                    BtnKind::Outline,
-                    BtnSize::Regular,
-                    tr!("home.manage_sources"),
-                )
-                .on_click(cx.listener(|this, _, window, cx| {
-                    this.navigate(Route::Sources, window, cx);
-                }))
-                .into_any_element(),
-            ],
-        ))
+        div()
+            .id("search-body")
+            .flex_1()
+            .min_h_0()
+            .overflow_y_scroll()
+            .child(widgets::page_body().child(widgets::empty_state(
+                p,
+                IconKey::Search,
+                if state.query.trim().is_empty() {
+                    tr!("search.empty_none")
+                } else {
+                    tr!("search.empty_no_match")
+                },
+                tr!("search.empty_hint"),
+                vec![
+                    widgets::btn(
+                        cx,
+                        p,
+                        "empty-all-src",
+                        BtnKind::Primary,
+                        BtnSize::Regular,
+                        tr!("search.search_all_sources"),
+                    )
+                    .on_click(cx.listener(|this, _, window, cx| {
+                        this.set_search_source(SearchSource::All, window, cx);
+                    }))
+                    .into_any_element(),
+                    widgets::btn(
+                        cx,
+                        p,
+                        "empty-sources",
+                        BtnKind::Outline,
+                        BtnSize::Regular,
+                        tr!("home.manage_sources"),
+                    )
+                    .on_click(cx.listener(|this, _, window, cx| {
+                        this.navigate(Route::Sources, window, cx);
+                    }))
+                    .into_any_element(),
+                ],
+            )))
+            .into_any_element()
     } else {
-        widgets::page_body()
+        div()
+            .flex_1()
+            .min_h_0()
+            .flex()
+            .flex_col()
             .child(
                 div()
-                    .flex()
-                    .flex_wrap()
-                    .gap(px(12.))
-                    .children(page_rows.iter().map(|pkg| package_card(state, p, pkg, cx))),
+                    .id("search-results")
+                    .flex_1()
+                    .min_h_0()
+                    .overflow_y_scroll()
+                    .child(widgets::page_body().child(
+                        div()
+                            .flex()
+                            .flex_wrap()
+                            .gap(px(12.))
+                            .children(page_rows.iter().map(|pkg| package_card(state, p, pkg, cx))),
+                    )),
             )
             .when(pages > 1, |this| {
-                this.child(pager(
-                    p,
-                    "search-pager",
-                    page,
-                    pages,
-                    results.len(),
-                    cx,
-                    |state, next| state.search_page = next,
-                ))
+                this.child(
+                    div()
+                        .flex_none()
+                        .border_t_1()
+                        .border_color(p.line)
+                        .child(pager(
+                            p,
+                            "search-pager",
+                            page,
+                            pages,
+                            results.len(),
+                            cx,
+                            |state, next| state.search_page = next,
+                        )),
+                )
             })
+            .into_any_element()
     };
 
     div()
         .flex()
         .flex_col()
+        .h_full()
         .child(head)
         .child(filter_card)
         .child(command_line)
