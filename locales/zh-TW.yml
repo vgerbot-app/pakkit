@@ -133,7 +133,6 @@ home:
   view_all: "檢視全部 ›"
   featured: "高分精選"
   recent: "最近更新"
-  hero_pill: "基於 winget CLI · 無需手動下載安裝程式"
   hero_title: "在 Windows 上優雅地安裝軟體"
   hero_body: "檢索 winget 官方來源與 msstore，一鍵安裝、升級與解除安裝。所有操作都會對應為可複製的 winget 命令列，透明可控。"
   manage_installed: "管理已安裝"

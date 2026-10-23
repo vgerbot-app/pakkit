@@ -133,7 +133,6 @@ home:
   view_all: "View all ›"
   featured: "Top rated"
   recent: "Recently updated"
-  hero_pill: "Powered by winget CLI · no manual installer downloads"
   hero_title: "Install software on Windows, elegantly"
   hero_body: "Search the official winget source and msstore; install, upgrade and uninstall in one click. Every action maps to a winget command line you can copy — transparent and controllable."
   manage_installed: "Manage installed"

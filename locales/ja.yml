@@ -133,7 +133,6 @@ home:
   view_all: "すべて表示 ›"
   featured: "高評価"
   recent: "最近の更新"
-  hero_pill: "winget CLI ベース · インストーラーの手動ダウンロードは不要"
   hero_title: "Windows でエレガントにソフトウェアをインストール"
   hero_body: "winget 公式ソースと msstore を検索し、ワンクリックでインストール、アップグレード、アンインストール。すべての操作はコピー可能な winget コマンドに対応し、透明で制御可能です。"
   manage_installed: "インストール済みを管理"

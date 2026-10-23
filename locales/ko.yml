@@ -133,7 +133,6 @@ home:
   view_all: "모두 보기 ›"
   featured: "높은 평점"
   recent: "최근 업데이트"
-  hero_pill: "winget CLI 기반 · 설치 관리자 수동 다운로드 불필요"
   hero_title: "Windows에서 우아하게 소프트웨어 설치"
   hero_body: "winget 공식 소스와 msstore를 검색하고 한 번의 클릭으로 설치, 업그레이드 및 제거합니다. 모든 작업은 복사 가능한 winget 명령에 해당하며 투명하게 제어할 수 있습니다."
   manage_installed: "설치된 항목 관리"
