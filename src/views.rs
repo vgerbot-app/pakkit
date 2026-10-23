@@ -207,7 +207,6 @@ fn hero(state: &AppState, p: &Palette, cx: &mut Context<AppView>) -> AnyElement 
                     div()
                         .flex_1()
                         .min_w(px(320.))
-                        .child(widgets::pill(p, PillKind::Accent, tr!("home.hero_pill")))
                         .child(
                             div()
                                 .text_size(px(24.))
@@ -595,35 +594,31 @@ fn category_detail(
         .map(|pkg| pkg.id.clone())
         .collect();
 
-    let mut children: Vec<AnyElement> = vec![
-        div()
-            .px(px(24.))
-            .pt(px(20.))
-            .child(
-                div()
-                    .id("cat-back")
-                    .flex()
-                    .items_center()
-                    .gap(px(4.))
-                    .text_size(px(12.5))
-                    .text_color(p.muted)
-                    .cursor_pointer()
-                    .hover(move |this| this.text_color(p.ink))
-                    .on_click(cx.listener(|this, _, window, cx| {
-                        this.navigate(Route::Categories, window, cx);
-                    }))
-                    .child(icon(IconKey::Back, px(13.), p.muted))
-                    .child(tr!("category.back")),
-            )
-            .into_any_element(),
-    ];
+    let back = div()
+        .px(px(24.))
+        .pt(px(20.))
+        .child(
+            div()
+                .id("cat-back")
+                .flex()
+                .items_center()
+                .gap(px(4.))
+                .text_size(px(12.5))
+                .text_color(p.muted)
+                .cursor_pointer()
+                .hover(move |this| this.text_color(p.ink))
+                .on_click(cx.listener(|this, _, window, cx| {
+                    this.navigate(Route::Categories, window, cx);
+                }))
+                .child(icon(IconKey::Back, px(13.), p.muted))
+                .child(tr!("category.back")),
+        );
 
     // Hero banner tinted by the category colour.
-    children.push(
-        div()
-            .px(px(24.))
-            .pt(px(12.))
-            .child(
+    let hero = div()
+        .px(px(24.))
+        .pt(px(12.))
+        .child(
                 widgets::card(p)
                     .relative()
                     .overflow_hidden()
@@ -658,11 +653,17 @@ fn category_detail(
                                             .text_color(p.ink2)
                                             .child(id.description()),
                                     )
-                                    .child(div().mt(px(6.)).child(widgets::pill(
-                                        p,
-                                        PillKind::Line,
-                                        tr!("category.packages_count", count = packages.len()),
-                                    ))),
+                                    // A horizontal flex hugs its main-axis
+                                    // content, so the pill shrinks to the
+                                    // label instead of stretching across the
+                                    // hero like a block child would.
+                                    .child(
+                                        div().mt(px(6.)).flex().child(widgets::pill(
+                                            p,
+                                            PillKind::Line,
+                                            tr!("category.packages_count", count = packages.len()),
+                                        )),
+                                    ),
                             )
                             .child(
                                 widgets::btn(
@@ -693,81 +694,99 @@ fn category_detail(
                                 )),
                             ),
                     ),
-            )
-            .into_any_element(),
-    );
-    children.push(
-        div()
-        .h(px(10.))
-        .into_any_element(),
-    );
+            );
 
-    children.push(
-        widgets::page_body()
-            .child(
+    let sort_bar = div()
+        .px(px(24.))
+        .pt(px(10.))
+        .child(
+            div()
+                .flex()
+                .items_center()
+                .flex_wrap()
+                .gap(px(10.))
+                .child(
+                    div()
+                        .flex()
+                        .items_center()
+                        .gap(px(8.))
+                        .child(widgets::section_label(p, tr!("category.sort_label")))
+                        .child(widgets::seg_control(
+                            p,
+                            "cat-sort",
+                            &items,
+                            state.category_sort,
+                            seg_handler(cx, |this, value, _, cx| {
+                                this.state.category_sort = value;
+                                this.state.category_page = 0;
+                                cx.notify();
+                            }),
+                        )),
+                )
+                .child(div().ml_auto().flex().items_center().gap(px(6.)).children(
+                    others.iter().map(|other| {
+                        let other = *other;
+                        widgets::pill_button(
+                            p,
+                            SharedString::from(format!("sib-{}", other.key())),
+                            other.label(),
+                            cx.listener(move |this, _, window, cx| {
+                                this.navigate(Route::Category(other), window, cx);
+                            }),
+                        )
+                    }),
+                )),
+        );
+
+    // The view fills the content pane: back/hero/sort stay pinned and only
+    // the card grid scrolls, so the pager keeps a fixed slot at the bottom
+    // instead of riding along with the cards.
+    let body = div()
+        .flex_1()
+        .min_h_0()
+        .flex()
+        .flex_col()
+        .child(
+            div()
+                .id("category-results")
+                .flex_1()
+                .min_h_0()
+                .overflow_y_scroll()
+                .child(widgets::page_body().child(
+                    div()
+                        .pt(px(14.))
+                        .flex()
+                        .flex_wrap()
+                        .gap(px(12.))
+                        .children(page_rows.iter().map(|pkg| package_card(state, p, pkg, cx))),
+                )),
+        )
+        .when(pages > 1, |this| {
+            this.child(
                 div()
-                    .flex()
-                    .items_center()
-                    .flex_wrap()
-                    .gap(px(10.))
-                    .child(
-                        div()
-                            .flex()
-                            .items_center()
-                            .gap(px(8.))
-                            .child(widgets::section_label(p, tr!("category.sort_label")))
-                            .child(widgets::seg_control(
-                                p,
-                                "cat-sort",
-                                &items,
-                                state.category_sort,
-                                seg_handler(cx, |this, value, _, cx| {
-                                    this.state.category_sort = value;
-                                    this.state.category_page = 0;
-                                    cx.notify();
-                                }),
-                            )),
-                    )
-                    .child(div().ml_auto().flex().items_center().gap(px(6.)).children(
-                        others.iter().map(|other| {
-                            let other = *other;
-                            widgets::pill_button(
-                                p,
-                                SharedString::from(format!("sib-{}", other.key())),
-                                other.label(),
-                                cx.listener(move |this, _, window, cx| {
-                                    this.navigate(Route::Category(other), window, cx);
-                                }),
-                            )
-                        }),
+                    .flex_none()
+                    .border_t_1()
+                    .border_color(p.line)
+                    .child(pager(
+                        p,
+                        "category-pager",
+                        page,
+                        pages,
+                        packages.len(),
+                        cx,
+                        |state, next| state.category_page = next,
                     )),
             )
-            .child(
-                div()
-                    .pt(px(14.))
-                    .flex()
-                    .flex_wrap()
-                    .gap(px(12.))
-                    .children(page_rows.iter().map(|pkg| package_card(state, p, pkg, cx))),
-            )
-            .when(pages > 1, |this| {
-                this.child(pager(
-                    p,
-                    "category-pager",
-                    page,
-                    pages,
-                    packages.len(),
-                    cx,
-                    |state, next| state.category_page = next,
-                ))
-            })
-            .into_any_element(),
-    );
+        });
 
     div()
         .flex()
         .flex_col()
-        .children(children)
+        .h_full()
+        .child(back)
+        .child(hero)
+        .child(sort_bar)
+        .child(body)
         .into_any_element()
 }
 
