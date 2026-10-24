@@ -9,8 +9,13 @@
 use gpui_kit::component::TitleBar;
 use gpui_kit::{App, AppContext as _, Bounds, Point, WindowBounds, WindowOptions, px, size};
 
+use pakkit::icons::window_icon;
 use pakkit::shell::AppView;
 use pakkit::theme;
+
+/// Ties windows to `pakkit.desktop`; Wayland compositors resolve the taskbar
+/// icon through that desktop entry.
+const APP_ID: &str = "pakkit";
 
 fn main() {
     gpui_kit::application()
@@ -19,6 +24,8 @@ fn main() {
             gpui_kit::init(cx);
             theme::init(cx);
             let options = WindowOptions {
+                app_id: Some(APP_ID.to_string()),
+                icon: window_icon(),
                 window_min_size: Some(size(px(720.), px(520.))),
                 window_bounds: Some(WindowBounds::Windowed(Bounds {
                     origin: Point::default(),

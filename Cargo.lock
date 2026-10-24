@@ -4903,7 +4903,10 @@ name = "pakkit"
 version = "0.1.0"
 dependencies = [
  "dirs 6.0.0",
+ "embed-resource",
  "gpui-kit",
+ "image",
+ "resvg 0.46.0",
  "rust-i18n",
  "serde",
  "serde_json",

@@ -1,0 +1,11 @@
+[Desktop Entry]
+Type=Application
+Name=Pakkit
+GenericName=Package Manager
+Comment=A native multi-backend package manager GUI (winget / apt / flatpak)
+Exec=pakkit
+Icon=pakkit
+Terminal=false
+Categories=System;PackageManager;
+Keywords=package;manager;winget;apt;flatpak;
+StartupWMClass=pakkit

@@ -6,6 +6,8 @@
 //! gpui-kit icon catalog. Each SVG uses `stroke="currentColor"` so the
 //! element's `text_color` drives the glyph colour.
 
+use std::sync::Arc;
+
 use gpui_kit::component::{Icon, Sizable as _, Size};
 use gpui_kit::{Hsla, Styled as _};
 
@@ -122,6 +124,53 @@ pub fn icon(key: IconKey, size: impl Into<Size>, color: Hsla) -> Icon {
         .text_color(color)
 }
 
+/// Rasterizes the brand mark for the X11 `_NET_WM_ICON` property (Wayland
+/// compositors resolve the taskbar icon from `pakkit.desktop` instead;
+/// Windows reads the icon resource embedded by `build.rs`).
+pub fn window_icon() -> Option<Arc<image::RgbaImage>> {
+    brand_tile_image(256).map(Arc::new)
+}
+
+/// Rasterizes the brand tile at `icon_px` square pixels: the logo glyph in
+/// white on the rounded accent tile, mirroring the in-app brand mark.
+///
+/// The glyph SVG strokes in `currentColor`, which has no embedding context
+/// here, so the colours are baked in. Pixels are straight-alpha RGBA.
+pub fn brand_tile_image(icon_px: u32) -> Option<image::RgbaImage> {
+    let glyph = String::from_utf8_lossy(IconKey::Logo.svg());
+    let inner = glyph
+        .split_once('>')
+        .map(|(_, rest)| rest.trim_end_matches("</svg>"))?;
+    let svg = format!(
+        "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\">\
+         <rect width=\"24\" height=\"24\" rx=\"5.5\" fill=\"#2563eb\"/>\
+         <g fill=\"none\" stroke=\"#ffffff\" stroke-width=\"1.7\" stroke-linecap=\"round\" \
+         stroke-linejoin=\"round\" transform=\"translate(4 4) scale(0.667)\">{inner}</g></svg>"
+    );
+
+    let tree =
+        resvg::usvg::Tree::from_data(svg.as_bytes(), &resvg::usvg::Options::default()).ok()?;
+    let mut pixmap = resvg::tiny_skia::Pixmap::new(icon_px, icon_px)?;
+    let scale = icon_px as f32 / tree.size().width();
+    resvg::render(
+        &tree,
+        resvg::tiny_skia::Transform::from_scale(scale, scale),
+        &mut pixmap.as_mut(),
+    );
+
+    // tiny-skia pixels are premultiplied; `_NET_WM_ICON` wants straight alpha.
+    let mut data = pixmap.take();
+    for px in data.as_chunks_mut::<4>().0 {
+        let a = u32::from(px[3]);
+        if a != 0 && a != 255 {
+            for c in &mut px[..3] {
+                *c = ((u32::from(*c) * 255 + a / 2) / a) as u8;
+            }
+        }
+    }
+    image::RgbaImage::from_raw(icon_px, icon_px, data)
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -185,6 +234,17 @@ mod tests {
                 "{key:?} is not 24x24"
             );
         }
+    }
+
+    /// The window icon rasterizes to a tile: transparent rounded corners,
+    /// brand-blue body.
+    #[test]
+    fn window_icon_is_the_brand_tile() {
+        let icon = window_icon().expect("logo rasterizes");
+        assert_eq!((icon.width(), icon.height()), (256, 256));
+        assert_eq!(icon.get_pixel(0, 0).0[3], 0, "corner must be transparent");
+        // (128, 240) lands on the tile below the glyph: brand blue, opaque.
+        assert_eq!(icon.get_pixel(128, 240).0, [0x25, 0x63, 0xeb, 0xff]);
     }
 
     #[test]
