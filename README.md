@@ -1,3 +1,5 @@
+<div align="center"><img src="./assets/logo.svg" alt="Pakkit logo" width="96" height="96"></div>
+
 # Pakkit
 
 <div align="center"><img alt="CI" src="https://github.com/vgerbot-app/winget-gui/actions/workflows/ci.yml/badge.svg"> <img alt="License" src="https://img.shields.io/badge/license-MIT-blue.svg"> <img alt="Version" src="https://img.shields.io/badge/version-0.1.0-green.svg"> <img alt="Rust" src="https://img.shields.io/badge/rust-1.92%2B-orange.svg"> <img alt="Platform" src="https://img.shields.io/badge/platform-Windows-0078D6.svg"></div>
