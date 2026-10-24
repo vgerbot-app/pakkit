@@ -53,6 +53,8 @@ pub enum IconKey {
     Driver,
     // Spare slot for a glyph a view needs that the prototype never drew.
     Package,
+    // The Pakkit logo: an open-top box.
+    Logo,
     Play,
 }
 
@@ -103,6 +105,9 @@ impl IconKey {
             IconKey::Driver => br#"<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="12" rx="2"/><path d="M7 10h3M7 14h6M16 10h1"/></svg>"#,
             IconKey::Package => br#"<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8 12 3 3 8v8l9 5 9-5z"/><path d="m3 8 9 5 9-5"/><path d="M12 13v8"/></svg>"#,
             IconKey::Play => br#"<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m6 4 14 8-14 8z"/></svg>"#,
+            // The logo is an open variant of `Package`: same iso box, lid
+            // flaps splayed outward. Mirrored in `assets/logo.svg`.
+            IconKey::Logo => br#"<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10l8-4-2.5-2.5-8 4z"/><path d="M12 6l8 4 2.5-2.5-8-4z"/><path d="M4 10l8 4 8-4v6l-8 4-8-4z"/><path d="M12 14v6"/></svg>"#,
         }
     }
 }
@@ -154,6 +159,7 @@ mod tests {
             IconKey::Warning,
             IconKey::Copy,
             IconKey::Edit,
+            IconKey::Logo,
             IconKey::Code,
             IconKey::Office,
             IconKey::Media,

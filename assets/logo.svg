@@ -1,0 +1,4 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" color="#2563eb"><!-- Pakkit logo: an open-top box. The glyph is stroked in currentColor: an
+  embedding context drives the colour; standalone it defaults to the
+  light-theme Primary #2563eb and follows the system dark mode via the style
+  below (dark-theme Primary #4f8cff). --><style>:root{color:#2563eb}@media (prefers-color-scheme:dark){:root{color:#4f8cff}}</style><path d="M4 10l8-4-2.5-2.5-8 4z"/><path d="M12 6l8 4 2.5-2.5-8-4z"/><path d="M4 10l8 4 8-4v6l-8 4-8-4z"/><path d="M12 14v6"/></svg>
