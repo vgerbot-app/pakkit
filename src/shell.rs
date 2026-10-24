@@ -1446,7 +1446,7 @@ fn queue_row(
         .into_any_element()
 }
 
-/// The 28 px gradient tile with the download glyph.
+/// The 28 px gradient tile with the Pakkit logo glyph.
 fn brand_mark(p: &Palette) -> impl IntoElement {
     div()
         .size(px(28.))
@@ -1456,7 +1456,7 @@ fn brand_mark(p: &Palette) -> impl IntoElement {
         .items_center()
         .justify_center()
         .bg(p.accent)
-        .child(icon(IconKey::Download, px(15.), p.on_accent))
+        .child(icon(IconKey::Logo, px(15.), p.on_accent))
 }
 
 /// The wordmark row: gradient tile, name, prototype pill.
