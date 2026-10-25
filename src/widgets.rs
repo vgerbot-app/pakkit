@@ -523,6 +523,58 @@ pub fn progress_indeterminate(p: &Palette, offset: f32) -> Div {
         )
 }
 
+/// A rounded `surface3` bar — the building block of skeleton placeholders.
+pub fn skeleton_bar(p: &Palette, w: f32, h: f32) -> Div {
+    div().w(px(w)).h(px(h)).rounded(px(6.)).bg(p.surface3)
+}
+
+/// A static placeholder mimicking the package card's layout (280 px wide,
+/// 14 px padding) while a catalogue query is in flight.
+pub fn skeleton_card(p: &Palette) -> Div {
+    card(p)
+        .w(px(280.))
+        .flex_none()
+        .flex()
+        .flex_col()
+        .p(px(14.))
+        .gap(px(10.))
+        .child(
+            div()
+                .flex()
+                .items_start()
+                .gap(px(10.))
+                .child(div().size(px(44.)).rounded(px(12.)).bg(p.surface3))
+                .child(
+                    div()
+                        .flex_1()
+                        .flex()
+                        .flex_col()
+                        .gap(px(6.))
+                        .child(skeleton_bar(p, 140., 13.))
+                        .child(skeleton_bar(p, 90., 11.)),
+                ),
+        )
+        .child(
+            div()
+                .flex()
+                .items_center()
+                .gap(px(10.))
+                .child(skeleton_bar(p, 60., 11.))
+                .child(skeleton_bar(p, 44., 11.)),
+        )
+        .child(
+            div()
+                .flex()
+                .items_center()
+                .gap(px(8.))
+                .pt(px(10.))
+                .border_t_1()
+                .border_color(p.line)
+                .child(div().w(px(72.)).h(px(29.)).rounded(px(8.)).bg(p.surface3))
+                .child(div().w(px(52.)).h(px(20.)).rounded(px(99.)).bg(p.surface3)),
+        )
+}
+
 /// The prototype's `stars()` — five 11 px glyphs filled up to the rounded
 /// rating, followed by the value.
 pub fn stars(p: &Palette, rating: f32) -> Div {

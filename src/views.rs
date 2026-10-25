@@ -1002,7 +1002,21 @@ fn search(
     // The view fills the content pane: head/filters/command stay pinned and
     // only the card grid scrolls, so the pager keeps a fixed slot at the
     // bottom instead of riding along with the cards.
-    let body = if results.is_empty() {
+    let body = if results.is_empty() && state.searching {
+        div()
+            .id("search-body")
+            .flex_1()
+            .min_h_0()
+            .overflow_y_scroll()
+            .child(widgets::page_body().child(
+                div()
+                    .flex()
+                    .flex_wrap()
+                    .gap(px(12.))
+                    .children((0..8).map(|_| widgets::skeleton_card(p).into_any_element())),
+            ))
+            .into_any_element()
+    } else if results.is_empty() {
         div()
             .id("search-body")
             .flex_1()

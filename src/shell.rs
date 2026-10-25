@@ -134,6 +134,10 @@ impl AppView {
                     let text = this.search_input.read(cx).value().to_string();
                     this.state.query = text;
                     this.state.search_page = 0;
+                    // The keystroke is already a query in flight: the debounced
+                    // search resolves the flag in every path, so the view shows
+                    // skeletons instead of a stale "no matches" empty state.
+                    this.state.searching = true;
                     // Typing from another route navigates here first; the query
                     // still has to be run, or the view filters a stale catalogue.
                     if this.state.route != Route::Search {
@@ -372,6 +376,7 @@ impl AppView {
     /// in sync directly.
     pub fn refresh_search(&mut self, cx: &mut Context<Self>) {
         let Some(backend) = self.backend.clone() else {
+            self.state.searching = false;
             cx.notify();
             return;
         };
@@ -390,11 +395,13 @@ impl AppView {
         // Backends with a full-catalog empty search (flatpak, apt) run it.
         if query.trim().is_empty() && !backend.empty_query_searches_catalog() {
             self.state.packages = merge_catalog(&[], &self.list_rows, &self.installed_ids, cli_name);
+            self.state.searching = false;
             self.state.status = self.state.status_for(self.state.route);
             cx.notify();
             return;
         }
 
+        self.state.searching = true;
         self.state.status = tr!("status.searching_catalog");
         cx.notify();
 
@@ -412,6 +419,7 @@ impl AppView {
                 }
                 this.state.packages =
                     merge_catalog(&search, &this.list_rows, &this.installed_ids, cli_name);
+                this.state.searching = false;
                 this.state.status = this.state.status_for(this.state.route);
                 cx.notify();
             });
@@ -452,6 +460,7 @@ impl AppView {
 
     pub fn refresh_packages(&mut self, cx: &mut Context<Self>) {
         let Some(backend) = self.backend.clone() else {
+            self.state.searching = false;
             cx.notify();
             return;
         };
@@ -470,6 +479,7 @@ impl AppView {
         self.search_epoch += 1;
         let epoch = self.search_epoch;
 
+        self.state.searching = true;
         self.state.status = tr!("status.searching_catalog");
         cx.notify();
 
@@ -501,6 +511,7 @@ impl AppView {
                 if epoch == this.search_epoch {
                     this.state.packages =
                         merge_catalog(&search, &this.list_rows, &this.installed_ids, cli_name);
+                    this.state.searching = false;
                     this.state.status = this.state.status_for(this.state.route);
                 }
                 cx.notify();

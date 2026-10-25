@@ -371,6 +371,10 @@ pub struct AppState {
     pub backend_kind: BackendKind,
     /// What the detected backend can do; drives UI feature gating.
     pub capabilities: Capabilities,
+    /// A catalogue query is in flight (debounce pending or backend search
+    /// running). The search view renders skeleton cards instead of the
+    /// "no matching packages" empty state while this is set.
+    pub searching: bool,
     /// Why the backend is unavailable, when it is. The app still runs and
     /// every data view shows an empty state.
     pub backend_error: Option<String>,
@@ -402,6 +406,7 @@ impl Default for AppState {
             backend_name: crate::backends::platform_kind().cli_name().to_owned(),
             backend_kind: crate::backends::platform_kind(),
             capabilities: Capabilities::default(),
+            searching: false,
             backend_error: None,
         }
     }
@@ -1053,6 +1058,11 @@ mod tests {
             .map(|i| pkg(&format!("P{i}"), "p", CategoryId::Dev))
             .collect();
         assert_eq!(state.catalog_label(), "11.8k");
+    }
+
+    #[test]
+    fn searching_defaults_to_false() {
+        assert!(!AppState::default().searching);
     }
 
     #[test]
