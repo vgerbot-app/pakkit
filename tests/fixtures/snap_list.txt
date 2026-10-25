@@ -1,0 +1,7 @@
+Name                   Version                         Rev    Tracking         Publisher       Notes
+bare                   1.0                             5      latest/stable    canonical**     base
+core                   16-2.61.4-20260225              17292  latest/stable    canonical**     core
+dbeaver-ce             26.2.3                          569    latest/stable    dbeaver-corp    classic
+ffmpeg-2204            8.1                             150    latest/stable    snapcrafters*   -
+firefox                158.0-2                         9057   latest/stable    mozilla**       -
+gtk-theme-breeze       1.5                             8      latest/stable/…  kde**           -

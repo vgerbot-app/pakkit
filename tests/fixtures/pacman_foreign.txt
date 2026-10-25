@@ -1,0 +1,2 @@
+cool-retro-term
+firefox-nightly

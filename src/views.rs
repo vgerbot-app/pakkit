@@ -1547,6 +1547,8 @@ fn sources(state: &AppState, p: &Palette, cx: &mut Context<AppView>) -> AnyEleme
             format!("{} remote-add --if-not-exists <name> <url>", state.backend_name)
         }
         BackendKind::Apt => format!("{} edit-sources", state.backend_name),
+        BackendKind::Pacman => "# /etc/pacman.conf".to_owned(),
+        BackendKind::Snap => "# Snap Store only".to_owned(),
     };
 
     div()
@@ -1747,6 +1749,8 @@ fn settings(
         BackendKind::Winget => format!("{} install --source <name>", state.backend_name),
         BackendKind::Flatpak => format!("{} install <remote> <id>", state.backend_name),
         BackendKind::Apt => format!("{} install <pkg>", state.backend_name),
+        BackendKind::Pacman => format!("{} -S <pkg>", state.backend_name),
+        BackendKind::Snap => format!("{} install <name>", state.backend_name),
     };
     let mut install_rows: Vec<AnyElement> = Vec::new();
     if state.capabilities.sources_view {

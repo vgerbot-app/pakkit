@@ -1,0 +1,6 @@
+Name                    Version               Publisher           Notes  Summary
+hello                   2.10                  canonical**         -      GNU Hello, the "hello world" snap
+hello-world             6.4                   canonical**         -      The 'hello-world' of snaps
+hello-nginx             2.2.0                 carlos-bravo        -      Zero-config nginx web server for developers, listening on port 8080
+hello-pasman            0.25                  pasman1             -      Hello and welcome greetings.
+helloworld-gui          1.5                   enjoysoftware       -      GUI version of HelloWorld - Displays the famous "Hello, world!" message

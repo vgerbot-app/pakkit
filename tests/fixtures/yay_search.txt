@@ -1,0 +1,4 @@
+aur/firefox-nightly 147.0a1.20251021-1 (+25 0.86)
+    Standalone web browser from mozilla.org, nightly build
+aur/cool-retro-term 1.2.0-3 (+310 1.24) [installed]
+    A good looking terminal emulator which mimics the old cathode display

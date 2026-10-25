@@ -10,6 +10,8 @@ pub mod exec;
 pub mod flatpak;
 #[cfg(target_os = "linux")]
 pub mod packagekit;
+pub mod pacman;
+pub mod snap;
 pub mod types;
 pub mod winget;
 
@@ -28,6 +30,8 @@ pub enum BackendKind {
     Winget,
     Flatpak,
     Apt,
+    Pacman,
+    Snap,
 }
 
 impl BackendKind {
@@ -38,6 +42,8 @@ impl BackendKind {
             BackendKind::Winget => "winget",
             BackendKind::Flatpak => "flatpak",
             BackendKind::Apt => "apt",
+            BackendKind::Pacman => "pacman",
+            BackendKind::Snap => "snap",
         }
     }
 
@@ -47,6 +53,8 @@ impl BackendKind {
             BackendKind::Winget => "winget",
             BackendKind::Flatpak => "Flatpak",
             BackendKind::Apt => "APT",
+            BackendKind::Pacman => "pacman",
+            BackendKind::Snap => "Snap",
         }
     }
 
@@ -56,6 +64,8 @@ impl BackendKind {
             "winget" => Some(BackendKind::Winget),
             "flatpak" => Some(BackendKind::Flatpak),
             "apt" => Some(BackendKind::Apt),
+            "pacman" => Some(BackendKind::Pacman),
+            "snap" => Some(BackendKind::Snap),
             _ => None,
         }
     }
@@ -64,7 +74,12 @@ impl BackendKind {
     /// first. A single-entry list means no choice (and no settings row).
     pub fn available() -> &'static [BackendKind] {
         if cfg!(target_os = "linux") {
-            &[BackendKind::Flatpak, BackendKind::Apt]
+            &[
+                BackendKind::Flatpak,
+                BackendKind::Apt,
+                BackendKind::Pacman,
+                BackendKind::Snap,
+            ]
         } else {
             &[BackendKind::Winget]
         }
@@ -306,6 +321,11 @@ pub fn detect(
             .map(|f| Arc::new(f) as Arc<dyn PackageBackend>),
         BackendKind::Apt => {
             apt::Apt::resolve(configured_path).map(|a| Arc::new(a) as Arc<dyn PackageBackend>)
+        }
+        BackendKind::Pacman => pacman::Pacman::resolve(configured_path)
+            .map(|p| Arc::new(p) as Arc<dyn PackageBackend>),
+        BackendKind::Snap => {
+            snap::Snap::resolve(configured_path).map(|s| Arc::new(s) as Arc<dyn PackageBackend>)
         }
     }
 }

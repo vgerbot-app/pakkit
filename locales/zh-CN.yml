@@ -132,7 +132,7 @@ home:
   view_all: "查看全部 ›"
   featured: "高分精选"
   recent: "最近更新"
-  hero_title: "一个界面，统管 winget、apt、flatpak 与 pacman"
+  hero_title: "一个界面，统管 winget、apt、flatpak、pacman 与 snap"
   hero_body: "将多个主流包管理器整合为统一的图形化体验：安装、更新、卸载一气呵成——告别命令行与多工具切换。"
   manage_installed: "管理已安装"
   manage_sources: "管理源"

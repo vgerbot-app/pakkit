@@ -4,7 +4,7 @@ version = "0.1.0"
 edition = "2024"
 rust-version = "1.92"
 license = "MIT"
-description = "A native multi-backend package manager GUI (winget / apt / flatpak / pacman) built with gpui-kit."
+description = "A native multi-backend package manager GUI (winget / apt / flatpak / pacman / snap) built with gpui-kit."
 
 [dependencies]
 dirs = "6"

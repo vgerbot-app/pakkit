@@ -1,6 +1,6 @@
 <div align="center"><img src="./assets/logo.svg" alt="Pakkit logo" width="96" height="96"></div>
 
-# Pakkit: One GUI for winget, apt, flatpak and pacman
+# Pakkit: One GUI for winget, apt, flatpak, pacman and snap
 
 <div align="center"><img alt="CI" src="https://github.com/vgerbot-app/pakkit/actions/workflows/ci.yml/badge.svg"> <img alt="License" src="https://img.shields.io/badge/license-MIT-blue.svg"> <img alt="Version" src="https://img.shields.io/badge/version-0.1.0-green.svg"> <img alt="Rust" src="https://img.shields.io/badge/rust-1.92%2B-orange.svg"> <img alt="Platform" src="https://img.shields.io/badge/platform-Windows-0078D6.svg"></div>
 
@@ -10,7 +10,7 @@
 
 **Click to install, commands in the open.**
 
-Mainstream package managers unified into one graphical experience — from winget to pacman, install, update and uninstall in one place, without juggling terminals or hopping between tools. Built with Rust + [gpui-kit](https://crates.io/crates/gpui-kit) 0.8: a real native window, no Electron / WebView.
+Mainstream package managers unified into one graphical experience — from winget to snap, install, update and uninstall in one place, without juggling terminals or hopping between tools. Built with Rust + [gpui-kit](https://crates.io/crates/gpui-kit) 0.8: a real native window, no Electron / WebView.
 
 Every operation is a transparent wrapper around the backend CLI: the command line shown in the UI is exactly the command line that gets executed — nothing hidden, nothing rewritten.
 
@@ -30,13 +30,13 @@ Every operation is a transparent wrapper around the backend CLI: the command lin
 
 - **Seven views**: Discover, Categories, All Packages, Installed, Updates, Sources, Settings
 - **Queue drawer**: installs / upgrades run serially with configurable concurrency (1–3), showing the command line and progress for each item
-- **Package details**: sourced from `winget show --id --exact`, fetched in the background and cached — multi-line description, release notes, tags, publisher, license, homepage, installer type, release date, and more
+- **Package details**: fetched in the background from the backend's own detail command (`winget show`, `apt show`, `pacman -Si`, `snap info`, …) and cached — multi-line description, release notes, tags, publisher, license, homepage, installer type, release date, and more
 - **Package icons**: favicons fetched automatically and cached to disk
 - **Source management**: add / edit / remove / reset / update sources, with source export
-- **Manifest import & export**: built on `winget export` / `winget import`
+- **Manifest import & export**: built on `winget export` / `winget import` (winget backend)
 - **Themes**: dark / light / follow-system, with 5 accent colors
 - **Multilingual UI**: five languages with instant switching and persistence; follows the OS language on first launch
-- **Friendly error messages**: winget exit codes mapped to readable descriptions; benign codes treated as success
+- **Friendly error messages**: backend exit codes mapped to readable descriptions (winget's full table, pkexec/polkit denials elsewhere); benign codes treated as success
 
 ## Installation
 

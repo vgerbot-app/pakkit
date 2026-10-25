@@ -7,6 +7,17 @@
 
 ### 新增
 
+- 新增 pacman 后端（检测到 yay 时附带 AUR 支持）：只读查询直跑
+  `pacman`，变更操作与 apt 一样优先走 PackageKit D-Bus 通道、不可用时
+  回退 `pkexec pacman …`；搜索在有 yay 时追加 AUR 结果（id 前缀
+  `aur/`），AUR 安装/升级经 `--from-aur` 标记改道直跑
+  `yay -S --noconfirm`——yay 须以普通用户身份构建并自行调 sudo，不能
+  套 pkexec；本应用以空 stdin 运行子进程，交互式 sudo 会失败，故 AUR
+  安装需要免密 sudo，失败原因显示在队列的错误详情里。已安装列表用
+  `pacman -Qmq` 标记 AUR 包，卸载统一走 `pacman -R`。
+- 新增 snap 后端：snapd 自行弹 polkit 授权（同 flatpak，无需 pkexec）；
+  Snap Store 是唯一来源，不开放源管理；`全部更新` 合并为一次
+  `snap refresh` 事务。
 - apt 后端的安装/升级/卸载/刷新改走 PackageKit D-Bus 通道：
   其 polkit 授权（`auth_admin_keep`）缓存约 5 分钟，一批队列任务最多弹
   一次密码框，替代此前每个任务一次 pkexec 弹窗；PackageKit 不可用时

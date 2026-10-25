@@ -1,0 +1,17 @@
+Repository      : extra
+Name            : firefox
+Version         : 145.0-1
+Description     : Fast, Private & Safe Web Browser
+Architecture    : x86_64
+URL             : https://www.mozilla.org/firefox/
+Licenses        : MPL-2.0
+Groups          : None
+Provides        : None
+Depends On      : dbus  ffmpeg  gtk3
+Optional Deps   : None
+Conflicts With  : None
+Replaces        : None
+Download Size   : 78.5 MiB
+Packager        : Arch Linux <build@archlinux.org>
+Build Date      : Tue 21 Oct 2025 10:00:00 AM UTC
+Validated By    : SHA-256 Sum

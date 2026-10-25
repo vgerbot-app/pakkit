@@ -31,13 +31,16 @@ pub fn root() -> Option<PathBuf> {
     Some(root)
 }
 
-/// `details/<id-lowercase>.json` for one package.
+/// The file name an id caches under: lowercased, with `/` becoming `__` so
+/// ids like pacman's `aur/<name>` stay a single file instead of a
+/// subdirectory that never exists.
+fn detail_file_name(id: &str) -> String {
+    format!("{}.json", id.to_lowercase().replace('/', "__"))
+}
+
+/// `details/<id>.json` for one package (see [`detail_file_name`]).
 pub fn detail_path(id: &str) -> Option<PathBuf> {
-    Some(
-        root()?
-            .join("details")
-            .join(format!("{}.json", id.to_lowercase())),
-    )
+    Some(root()?.join("details").join(detail_file_name(id)))
 }
 
 /// `icons/<host>.img` — the favicon bytes gpui renders directly.
@@ -210,6 +213,13 @@ mod tests {
             publisher_url: publisher_url.to_owned(),
             ..PackageDetail::default()
         }
+    }
+
+    #[test]
+    fn detail_file_names_escape_slashed_ids() {
+        // `aur/firefox-nightly` must map to one flat file, not a subdir.
+        assert_eq!(detail_file_name("aur/Firefox-Nightly"), "aur__firefox-nightly.json");
+        assert_eq!(detail_file_name("firefox"), "firefox.json");
     }
 
     #[test]

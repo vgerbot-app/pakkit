@@ -1,4 +1,5 @@
-//! PackageKit D-Bus client: the privileged execution path for apt mutations.
+//! PackageKit D-Bus client: the privileged execution path for apt and
+//! pacman mutations.
 //!
 //! Instead of wrapping every mutation in `pkexec` (one polkit prompt per
 //! spawned process), mutations go to the `org.freedesktop.PackageKit` system
@@ -52,22 +53,24 @@ const STATUS_AUTH_DENIED: u32 = 127;
 /// A mutation expressed as a PackageKit operation.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum PkOp {
-    /// `install -y <name>`
+    /// `install -y <name>` (apt) / `-S --noconfirm <name>` (pacman; pacman's
+    /// single-package upgrade is also `-S`, so it maps here too).
     Install { name: String },
     /// `install --only-upgrade -y <name>` — apt's single-package upgrade.
     UpgradeOne { name: String },
-    /// `remove -y <name>`
+    /// `remove -y <name>` (apt) / `-R --noconfirm <name>` (pacman).
     Remove { name: String },
-    /// `upgrade -y`
+    /// `upgrade -y` (apt) / `-Syu --noconfirm` (pacman).
     UpgradeAll,
-    /// `update` — refresh the package lists.
+    /// `update` (apt) / `-Sy` (pacman) — refresh the package lists.
     RefreshCache,
 }
 
-/// Map apt-get mutation arguments to a PackageKit operation.
+/// Map backend mutation arguments to a PackageKit operation.
 ///
-/// Returns `None` for shapes the planner does not recognize; the caller
-/// falls back to the pkexec pipeline for those.
+/// The apt and pacman shapes are disjoint, so one planner serves both
+/// backends. Returns `None` for shapes the planner does not recognize; the
+/// caller falls back to the pkexec pipeline for those.
 pub fn plan(args: &[&str]) -> Option<PkOp> {
     match args {
         ["install", "-y", name] => Some(PkOp::Install {
@@ -81,6 +84,14 @@ pub fn plan(args: &[&str]) -> Option<PkOp> {
         }),
         ["upgrade", "-y"] => Some(PkOp::UpgradeAll),
         ["update"] => Some(PkOp::RefreshCache),
+        ["-S", "--noconfirm", name] => Some(PkOp::Install {
+            name: (*name).to_owned(),
+        }),
+        ["-R", "--noconfirm", name] => Some(PkOp::Remove {
+            name: (*name).to_owned(),
+        }),
+        ["-Syu", "--noconfirm"] => Some(PkOp::UpgradeAll),
+        ["-Sy"] => Some(PkOp::RefreshCache),
         _ => None,
     }
 }
@@ -440,10 +451,31 @@ mod tests {
     }
 
     #[test]
+    fn plan_covers_the_pacman_mutation_shapes() {
+        assert_eq!(
+            plan(&["-S", "--noconfirm", "curl"]),
+            Some(PkOp::Install {
+                name: "curl".to_owned()
+            })
+        );
+        assert_eq!(
+            plan(&["-R", "--noconfirm", "curl"]),
+            Some(PkOp::Remove {
+                name: "curl".to_owned()
+            })
+        );
+        assert_eq!(plan(&["-Syu", "--noconfirm"]), Some(PkOp::UpgradeAll));
+        assert_eq!(plan(&["-Sy"]), Some(PkOp::RefreshCache));
+    }
+
+    #[test]
     fn plan_rejects_unknown_shapes_for_the_pkexec_fallback() {
         assert_eq!(plan(&["list", "--installed"]), None);
         assert_eq!(plan(&["install", "curl"]), None);
         assert_eq!(plan(&["purge", "-y", "curl"]), None);
+        // pacman's read-only queries and its AUR marker shape never plan.
+        assert_eq!(plan(&["-Ss", "firefox"]), None);
+        assert_eq!(plan(&["--from-aur", "-S", "--noconfirm", "foo"]), None);
         assert_eq!(plan(&[]), None);
     }
 

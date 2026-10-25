@@ -1,0 +1,15 @@
+Repository      : aur
+Name            : firefox-nightly
+Version         : 147.0a1.20251021-1
+Description     : Standalone web browser from mozilla.org, nightly build
+URL             : https://www.mozilla.org/firefox/
+AUR URL         : https://aur.archlinux.org/packages/firefox-nightly
+Groups          : None
+Licenses        : MPL-2.0
+Provides        : None
+Depends On      : dbus  ffmpeg  gtk3
+Maintainer      : someuser
+Votes           : 25
+Popularity      : 0.86
+First Submitted : Wed 15 Nov 2017 09:00:00 AM UTC
+Last Modified   : Tue 21 Oct 2025 10:00:00 AM UTC

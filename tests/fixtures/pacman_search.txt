@@ -1,0 +1,5 @@
+extra/firefox 145.0-1 [installed]
+    Fast, Private & Safe Web Browser
+extra/firefox-i18n-zh-cn 145.0-1
+    Chinese (Simplified) language pack for Firefox
+core/curl 8.16.0-1
