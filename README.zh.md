@@ -1,8 +1,8 @@
 <div align="center"><img src="./assets/logo.svg" alt="Pakkit logo" width="96" height="96"></div>
 
-# Pakkit
+# Pakkit: One GUI for winget, apt, flatpak and pacman
 
-<div align="center"><img alt="CI" src="https://github.com/vgerbot-app/winget-gui/actions/workflows/ci.yml/badge.svg"> <img alt="License" src="https://img.shields.io/badge/license-MIT-blue.svg"> <img alt="Version" src="https://img.shields.io/badge/version-0.1.0-green.svg"> <img alt="Rust" src="https://img.shields.io/badge/rust-1.92%2B-orange.svg"> <img alt="Platform" src="https://img.shields.io/badge/platform-Windows-0078D6.svg"></div>
+<div align="center"><img alt="CI" src="https://github.com/vgerbot-app/pakkit/actions/workflows/ci.yml/badge.svg"> <img alt="License" src="https://img.shields.io/badge/license-MIT-blue.svg"> <img alt="Version" src="https://img.shields.io/badge/version-0.1.0-green.svg"> <img alt="Rust" src="https://img.shields.io/badge/rust-1.92%2B-orange.svg"> <img alt="Platform" src="https://img.shields.io/badge/platform-Windows-0078D6.svg"></div>
 
 <p align="center">
 🇺🇸 <a href="./README.md">English</a> | 🇨🇳 <a href="./README.zh.md">简体中文</a>
@@ -10,7 +10,7 @@
 
 **点一下就装好，命令看得见。**
 
-winget / apt / flatpak 的统一图形客户端，使用 Rust + [gpui-kit](https://crates.io/crates/gpui-kit) 0.8 构建 —— 原生窗口，无 Electron / WebView。
+将多个主流包管理器整合为统一的图形化操作体验。从 Winget 到 Pacman，安装、更新、卸载一气呵成——告别命令行与多工具切换。使用 Rust + [gpui-kit](https://crates.io/crates/gpui-kit) 0.8 构建 —— 原生窗口，无 Electron / WebView。
 
 所有操作都是对后端命令行的一层透明封装：界面上显示的命令行就是实际执行的命令行，不隐藏、不改写。
 

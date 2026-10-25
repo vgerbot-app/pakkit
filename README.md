@@ -1,6 +1,6 @@
 <div align="center"><img src="./assets/logo.svg" alt="Pakkit logo" width="96" height="96"></div>
 
-# Pakkit
+# Pakkit: One GUI for winget, apt, flatpak and pacman
 
 <div align="center"><img alt="CI" src="https://github.com/vgerbot-app/pakkit/actions/workflows/ci.yml/badge.svg"> <img alt="License" src="https://img.shields.io/badge/license-MIT-blue.svg"> <img alt="Version" src="https://img.shields.io/badge/version-0.1.0-green.svg"> <img alt="Rust" src="https://img.shields.io/badge/rust-1.92%2B-orange.svg"> <img alt="Platform" src="https://img.shields.io/badge/platform-Windows-0078D6.svg"></div>
 
@@ -10,7 +10,7 @@
 
 **Click to install, commands in the open.**
 
-A native graphical client for your package managers — winget, apt and flatpak — built with Rust + [gpui-kit](https://crates.io/crates/gpui-kit) 0.8. A real native window, no Electron / WebView.
+Mainstream package managers unified into one graphical experience — from winget to pacman, install, update and uninstall in one place, without juggling terminals or hopping between tools. Built with Rust + [gpui-kit](https://crates.io/crates/gpui-kit) 0.8: a real native window, no Electron / WebView.
 
 Every operation is a transparent wrapper around the backend CLI: the command line shown in the UI is exactly the command line that gets executed — nothing hidden, nothing rewritten.
 
