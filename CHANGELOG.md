@@ -7,6 +7,13 @@
 
 ### 新增
 
+- 发布流水线扩展为多平台：Windows / Linux × x86_64 / arm64 四组合原生构建
+  （Linux arm64 使用 GitHub 原生 ARM runner），产物新增 Linux `.deb` /
+  `.rpm` / `.AppImage` 与 Windows `.msi` 安装包（MSI 仅 x86_64——
+  cargo-wix 捆绑的 WiX 3.x 无法生成 arm64 安装包），并统一附带
+  `pakkit-<版本>-checksums.txt` 校验和文件；release.yml 支持
+  `workflow_dispatch` 手动 dry-run（跳过发布）。
+- CI 新增 cargo-deny 检查：依赖许可证白名单、安全公告与 yanked 包审计。
 - 新增 pacman 后端（检测到 yay 时附带 AUR 支持）：只读查询直跑
   `pacman`，变更操作与 apt 一样优先走 PackageKit D-Bus 通道、不可用时
   回退 `pkexec pacman …`；搜索在有 yay 时追加 AUR 结果（id 前缀
@@ -37,23 +44,6 @@
   首次启动按操作系统语言选择，设置持久化到 `settings.json`。
 - 设置持久化：主题、强调色、语言及全部设置项写入
   `配置目录/wingetgui/settings.json`，下次启动自动恢复。
-
-### 修复
-
-- winget 参数标志位曾放在子命令之前，导致每次调用都报
-  `Argument name was not recognized for the current command`（写在 **stdout**，
-  stderr 为空，退出码 2 且输出的是帮助文本），界面始终为空。
-  现在按命令派生标志位并插在子命令（`source` 为子动词）之后，并用
-  `run_checked` 把非良性退出码转成错误而不是喂给解析器。
-- 冷启动时「已安装」与「更新」为空：`winget search` 无查询词匹配不到任何东西。
-  现在合并 `winget list`，并用 `winget export` 的集合排除 winget 无法升级的
-  ARP/MSIX 条目。
-- 单个刷新任务槽会取消在途任务，导致启动时的源加载取消软件包加载。
-- 在非搜索路由输入时只导航不查询，过滤的是陈旧数据。
-- winget 的 moniker/tag 命中（如 `Moniker: vscode`）被客户端子串过滤丢弃。
-- 幽灵按钮对 `Button` 设置 hover 触发 `hover style already set` 断言崩溃。
-- 设置页在自身渲染中读取实体，触发 `cannot read … while already being updated` 崩溃。
-- `themes/wingetgui.json` 从未被加载，内置组件一直使用 gpui-kit 默认配色。
 
 ## [0.1.0]
 

@@ -2,7 +2,7 @@
 
 # Pakkit: One GUI for winget, apt, flatpak, pacman and snap
 
-<div align="center"><img alt="CI" src="https://github.com/vgerbot-app/pakkit/actions/workflows/ci.yml/badge.svg"> <img alt="License" src="https://img.shields.io/badge/license-MIT-blue.svg"> <img alt="Version" src="https://img.shields.io/badge/version-0.1.0-green.svg"> <img alt="Rust" src="https://img.shields.io/badge/rust-1.92%2B-orange.svg"> <img alt="Platform" src="https://img.shields.io/badge/platform-Windows-0078D6.svg"></div>
+<div align="center"><img alt="CI" src="https://github.com/vgerbot-app/pakkit/actions/workflows/ci.yml/badge.svg"> <img alt="License" src="https://img.shields.io/badge/license-MIT-blue.svg"> <img alt="Version" src="https://img.shields.io/badge/version-0.1.0-green.svg"> <img alt="Rust" src="https://img.shields.io/badge/rust-1.92%2B-orange.svg"> <img alt="Platform" src="https://img.shields.io/badge/platform-Windows%20%7C%20Linux-0078D6.svg"></div>
 
 <p align="center">
 🇺🇸 <a href="./README.md">English</a> | 🇨🇳 <a href="./README.zh.md">简体中文</a>
@@ -42,20 +42,30 @@
 
 ### 下载预构建版本
 
-从 [GitHub Releases](https://github.com/vgerbot-app/winget-gui/releases) 下载最新的 Windows 构建。
+从 [GitHub Releases](https://github.com/vgerbot-app/pakkit/releases) 下载最新构建：
+
+| 平台 | 架构 | 产物 |
+| --- | --- | --- |
+| Windows | x86_64 | `.zip`（便携版）、`.msi`（安装包） |
+| Windows | arm64 | `.zip`（便携版；暂无 MSI——cargo-wix 尚不能生成 arm64 安装包） |
+| Linux | x86_64 / arm64 | `.deb`、`.rpm`、`.AppImage` |
+
+每个版本同时附带 `pakkit-<版本>-checksums.txt`，可用 `sha256sum -c` 校验下载文件。
+
+Linux 包会把二进制安装到 `/usr/bin/pakkit`，并附带桌面入口与图标。Windows 下解压 zip 直接运行 `pakkit.exe` 即可，也可使用 MSI 安装包（可选将 pakkit 加入 `PATH`）。
 
 ### 从源码构建
 
-要求：Rust 1.92+（见 `rust-toolchain.toml`），Windows 平台。
+要求：Rust 1.92+（见 `rust-toolchain.toml`），Windows 或 Linux（X11/Wayland）。
 
 ```bash
-git clone https://github.com/vgerbot-app/winget-gui.git
-cd winget-gui
+git clone https://github.com/vgerbot-app/pakkit.git
+cd pakkit
 cargo build --release
 ```
 
 > [!NOTE]
-> 运行需要系统已安装 [winget](https://learn.microsoft.com/windows/package-manager/winget/)（Windows 10 1809+ / Windows 11 通常已内置）。
+> Windows 下运行需要系统已安装 [winget](https://learn.microsoft.com/windows/package-manager/winget/)（Windows 10 1809+ / Windows 11 通常已内置）。Linux 下自动驱动检测到的本机后端：apt、flatpak、pacman（含 yay/AUR）与 snap。
 
 ## 使用
 

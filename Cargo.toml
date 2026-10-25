@@ -4,6 +4,8 @@ version = "0.1.0"
 edition = "2024"
 rust-version = "1.92"
 license = "MIT"
+authors = ["vgerbot-app"]
+repository = "https://github.com/vgerbot-app/pakkit"
 description = "A native multi-backend package manager GUI (winget / apt / flatpak / pacman / snap) built with gpui-kit."
 
 [dependencies]
@@ -56,3 +58,37 @@ module_name_repetitions = "allow"
 
 [target.'cfg(target_os = "linux")'.dependencies]
 zbus = { version = "5", default-features = false, features = ["blocking-api"] }
+
+# --- Packaging metadata (used by the release workflow) ---
+
+[package.metadata.deb]
+maintainer = "vgerbot-app <noreply@users.noreply.github.com>"
+copyright = "MIT"
+section = "utils"
+priority = "optional"
+depends = "$auto"
+extended-description = """
+Mainstream package managers unified into one graphical experience — \
+from winget to snap, install, update and uninstall in one place. \
+Built with Rust + gpui-kit: a real native window, no Electron / WebView.\
+"""
+assets = [
+    ["target/release/pakkit", "usr/bin/pakkit", "755"],
+    ["packaging/pakkit.desktop", "usr/share/applications/pakkit.desktop", "644"],
+    ["assets/logo.svg", "usr/share/icons/hicolor/scalable/apps/pakkit.svg", "644"],
+]
+
+[package.metadata.generate-rpm]
+assets = [
+    { source = "target/release/pakkit", dest = "/usr/bin/pakkit", mode = "755" },
+    { source = "packaging/pakkit.desktop", dest = "/usr/share/applications/pakkit.desktop", mode = "644" },
+    { source = "assets/logo.svg", dest = "/usr/share/icons/hicolor/scalable/apps/pakkit.svg", mode = "644" },
+]
+
+[package.metadata.wix]
+upgrade-guid = "2581990d-124e-47d3-a923-b058feefd705"
+path-guid = "a76c9c00-50ba-477b-b9a1-d3c2a3531523"
+license = false
+eula = false
+product-icon = "assets/pakkit.ico"
+help-url = "https://github.com/vgerbot-app/pakkit"

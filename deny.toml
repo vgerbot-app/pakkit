@@ -5,7 +5,11 @@ allow = [
     "Apache-2.0 WITH LLVM-exception",
     "BSD-2-Clause",
     "BSD-3-Clause",
+    "0BSD",
+    "CC0-1.0",
+    "CDLA-Permissive-2.0",
     "ISC",
+    "MPL-2.0",
     "Unicode-3.0",
     "Zlib",
 ]
@@ -13,6 +17,19 @@ allow = [
 [advisories]
 version = 2
 yanked = "deny"
+# Unmaintained advisories we accept for now: every entry is a transitive
+# dependency we cannot drop without upstream (gpui/zbus/serde_yaml) changes.
+ignore = [
+    { id = "RUSTSEC-2024-0384", reason = "instant: transitive via gpui/wgpu" },
+    { id = "RUSTSEC-2024-0436", reason = "paste: transitive via gpui stack" },
+    { id = "RUSTSEC-2024-0449", reason = "unsafe-libyaml: via serde_yaml (dev-only)" },
+    { id = "RUSTSEC-2025-0134", reason = "rustls-pemfile: transitive via gpui-pre-reqwest" },
+    { id = "RUSTSEC-2026-0192", reason = "ttf-parser: transitive via gpui text stack" },
+    { id = "RUSTSEC-2026-0206", reason = "rustybuzz: transitive via gpui text stack" },
+    { id = "RUSTSEC-2026-0370", reason = "zvariant: pinned by zbus 5" },
+    { id = "RUSTSEC-2026-0371", reason = "zbus_names: pinned by zbus 5" },
+    { id = "RUSTSEC-2026-0372", reason = "zvariant_derive: pinned by zbus 5" },
+]
 
 [bans]
 multiple-versions = "warn"

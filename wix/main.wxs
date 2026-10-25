@@ -1,0 +1,139 @@
+<?xml version='1.0' encoding='windows-1252'?>
+
+<!--
+  WiX source for the pakkit MSI installer, rendered from the `cargo wix init`
+  template. Regenerate with `cargo wix init` after changing the
+  [package.metadata.wix] section in Cargo.toml, then re-apply the Start Menu
+  shortcut below.
+
+  Predefined variables set by `cargo wix` at installer creation time:
+  TargetTriple, TargetEnv, TargetVendor, CargoTargetBinDir, CargoTargetDir,
+  CargoProfile, Version.
+-->
+
+<!--
+  Do not remove this If-Else block: `cargo wix` uses it to pick the 32-bit
+  versus 64-bit installation destination.
+-->
+<?if $(sys.BUILDARCH) = x64 or $(sys.BUILDARCH) = arm64 ?>
+    <?define PlatformProgramFilesFolder = "ProgramFiles64Folder" ?>
+<?else ?>
+    <?define PlatformProgramFilesFolder = "ProgramFilesFolder" ?>
+<?endif ?>
+
+<Wix xmlns='http://schemas.microsoft.com/wix/2006/wi'>
+
+    <Product
+        Id='*'
+        Name='pakkit'
+        UpgradeCode='2581990d-124e-47d3-a923-b058feefd705'
+        Manufacturer='vgerbot-app'
+        Language='1033'
+        Codepage='1252'
+        Version='$(var.Version)'>
+
+        <Package Id='*'
+            Keywords='Installer'
+            Description='A native multi-backend package manager GUI (winget / apt / flatpak / pacman / snap) built with gpui-kit.'
+            Manufacturer='vgerbot-app'
+            InstallerVersion='450'
+            Languages='1033'
+            Compressed='yes'
+            InstallScope='perMachine'
+            SummaryCodepage='1252'
+            />
+
+        <MajorUpgrade
+            Schedule='afterInstallInitialize'
+            DowngradeErrorMessage='A newer version of [ProductName] is already installed. Setup will now exit.'/>
+
+        <Media Id='1' Cabinet='media1.cab' EmbedCab='yes' DiskPrompt='CD-ROM #1'/>
+        <Property Id='DiskPrompt' Value='pakkit Installation'/>
+
+        <Directory Id='TARGETDIR' Name='SourceDir'>
+            <Directory Id='$(var.PlatformProgramFilesFolder)' Name='PFiles'>
+                <Directory Id='APPLICATIONFOLDER' Name='pakkit'>
+                    <Directory Id='Bin' Name='bin'>
+                        <Component Id='Path' Guid='a76c9c00-50ba-477b-b9a1-d3c2a3531523' KeyPath='yes'>
+                            <Environment
+                                Id='PATH'
+                                Name='PATH'
+                                Value='[Bin]'
+                                Permanent='no'
+                                Part='last'
+                                Action='set'
+                                System='yes'/>
+                        </Component>
+                        <Component Id='binary0' Guid='*'>
+                            <File
+                                Id='exe0'
+                                Name='pakkit.exe'
+                                DiskId='1'
+                                Source='$(var.CargoTargetBinDir)\pakkit.exe'
+                                KeyPath='yes'/>
+                        </Component>
+                    </Directory>
+                </Directory>
+            </Directory>
+            <Directory Id='ProgramMenuFolder'>
+                <Directory Id='ApplicationProgramsFolder' Name='pakkit'/>
+            </Directory>
+        </Directory>
+
+        <DirectoryRef Id='ApplicationProgramsFolder'>
+            <Component Id='StartMenuShortcut' Guid='*'>
+                <Shortcut
+                    Id='PakkitStartMenuShortcut'
+                    Name='pakkit'
+                    Description='A native multi-backend package manager GUI'
+                    Target='[#exe0]'
+                    WorkingDirectory='Bin'/>
+                <RemoveFolder Id='ApplicationProgramsFolder' On='uninstall'/>
+                <RegistryValue
+                    Root='HKCU'
+                    Key='Software\pakkit'
+                    Name='installed'
+                    Type='integer'
+                    Value='1'
+                    KeyPath='yes'/>
+            </Component>
+        </DirectoryRef>
+
+        <Feature
+            Id='Binaries'
+            Title='Application'
+            Description='Installs the pakkit executable.'
+            Level='1'
+            ConfigurableDirectory='APPLICATIONFOLDER'
+            AllowAdvertise='no'
+            Display='expand'
+            Absent='disallow'>
+            <ComponentRef Id='binary0'/>
+            <ComponentRef Id='StartMenuShortcut'/>
+
+            <Feature
+                Id='Environment'
+                Title='PATH Environment Variable'
+                Description='Add the install location of the [ProductName] executable to the PATH system environment variable. This allows the [ProductName] executable to be called from any location.'
+                Level='1'
+                Absent='allow'>
+                <ComponentRef Id='Path'/>
+            </Feature>
+        </Feature>
+
+        <SetProperty Id='ARPINSTALLLOCATION' Value='[APPLICATIONFOLDER]' After='CostFinalize'/>
+
+        <Icon Id='ProductICO' SourceFile='assets\pakkit.ico'/>
+        <Property Id='ARPPRODUCTICON' Value='ProductICO' />
+        <Property Id='ARPHELPLINK' Value='https://github.com/vgerbot-app/pakkit'/>
+
+        <UI>
+            <UIRef Id='WixUI_FeatureTree'/>
+            <!-- No EULA: skip the license dialog (eula = false in Cargo.toml). -->
+            <Publish Dialog='WelcomeDlg' Control='Next' Event='NewDialog' Value='CustomizeDlg' Order='99'>1</Publish>
+            <Publish Dialog='CustomizeDlg' Control='Back' Event='NewDialog' Value='WelcomeDlg' Order='99'>1</Publish>
+        </UI>
+
+    </Product>
+
+</Wix>
