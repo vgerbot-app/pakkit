@@ -44,9 +44,6 @@ sort:
 source:
   all: "すべてのソース"
 
-scope:
-  user: "現在のユーザー"
-  machine: "マシン全体（管理者）"
 
 theme:
   dark: "ダーク"
@@ -199,8 +196,6 @@ settings:
   install_defaults: "インストールの既定値"
   install_defaults_hint: "インストールとアップグレード時に既定で付与される引数。"
   default_source: "既定のソース"
-  arch: "アーキテクチャ"
-  scope: "インストール範囲"
   location: "カスタム インストール場所"
   accept_agreements: "契約に自動同意"
   silent: "サイレント インストール"

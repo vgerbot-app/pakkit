@@ -24,7 +24,6 @@ use crate::model::{Package, Source};
 use crate::queue::QueueAction;
 use crate::state::{CategorySort, Language, SearchSource, SortMode, StatusFilter};
 use crate::theme::{ModeChoice, Palette};
-use crate::backends::types::{Arch, Scope};
 
 /// `.card` — surface panel with a hairline border and the 14 px radius.
 pub fn card(p: &Palette) -> Div {
@@ -711,22 +710,6 @@ pub fn source_items(sources: &[Source]) -> Vec<(SearchSource, String)> {
         .collect();
     items.push((SearchSource::All, tr!("source.all")));
     items
-}
-
-/// The `--architecture` segments.
-pub fn arch_items() -> Vec<(Arch, String)> {
-    Arch::ALL
-        .iter()
-        .map(|a| (*a, a.as_str().to_owned()))
-        .collect()
-}
-
-/// The `--scope` segments.
-pub fn scope_items() -> Vec<(Scope, String)> {
-    vec![
-        (Scope::User, tr!("scope.user")),
-        (Scope::Machine, tr!("scope.machine")),
-    ]
 }
 
 /// The concurrency segments.

@@ -1734,22 +1734,6 @@ fn settings(
             default_source_control(state, p, cx),
         ));
     }
-    if state.capabilities.install_arch {
-        install_rows.push(seg_row(
-            p,
-            &tr!("settings.arch"),
-            &format!("{} install --architecture <arch>", state.backend_name),
-            arch_segments(state, p, cx),
-        ));
-    }
-    if state.capabilities.install_scope {
-        install_rows.push(seg_row(
-            p,
-            &tr!("settings.scope"),
-            &format!("{} install --scope <scope>", state.backend_name),
-            scope_segments(state, p, cx),
-        ));
-    }
     if state.capabilities.install_location {
         install_rows.push(field_row(
             p,
@@ -2084,38 +2068,6 @@ fn backend_segments(state: &AppState, p: &Palette, cx: &mut Context<AppView>) ->
         state.backend_kind,
         seg_handler(cx, |this, kind, window, cx| {
             this.switch_backend(kind, window, cx);
-        }),
-    )
-    .into_any_element()
-}
-
-fn arch_segments(state: &AppState, p: &Palette, cx: &mut Context<AppView>) -> AnyElement {
-    let items = widgets::arch_items();
-    widgets::seg_control(
-        p,
-        "arch-seg",
-        &items,
-        state.settings.arch,
-        seg_handler(cx, |this, value, _, cx| {
-            this.state.settings.arch = value;
-            this.persist_settings();
-            cx.notify();
-        }),
-    )
-    .into_any_element()
-}
-
-fn scope_segments(state: &AppState, p: &Palette, cx: &mut Context<AppView>) -> AnyElement {
-    let items = widgets::scope_items();
-    widgets::seg_control(
-        p,
-        "scope-seg",
-        &items,
-        state.settings.scope,
-        seg_handler(cx, |this, value, _, cx| {
-            this.state.settings.scope = value;
-            this.persist_settings();
-            cx.notify();
         }),
     )
     .into_any_element()

@@ -76,8 +76,6 @@ impl PackageBackend for Flatpak {
         Capabilities {
             source_edit: false,
             export: false,
-            install_arch: false,
-            install_scope: false,
             install_location: false,
             silent: false,
             agreements: false,
@@ -409,8 +407,6 @@ mod tests {
         assert!(caps.source_add);
         assert!(!caps.source_edit);
         assert!(!caps.export);
-        assert!(!caps.install_arch);
-        assert!(!caps.install_scope);
         assert!(!caps.install_location);
         assert!(!caps.silent);
         assert!(!caps.agreements);

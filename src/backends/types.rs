@@ -75,55 +75,18 @@ pub struct PackageDetail {
     pub offline_distribution: String,
 }
 
-/// Target CPU architecture for installs that offer one (winget
-/// `--architecture`).
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Default, Serialize, Deserialize)]
-pub enum Arch {
-    #[default]
-    X64,
-    X86,
-    Arm64,
-}
-
-impl Arch {
-    pub const ALL: [Arch; 3] = [Arch::X64, Arch::X86, Arch::Arm64];
-
-    pub const fn as_str(self) -> &'static str {
-        match self {
-            Arch::X64 => "x64",
-            Arch::X86 => "x86",
-            Arch::Arm64 => "arm64",
-        }
-    }
-}
-
-/// Install scope for backends that distinguish per-user from machine-wide
-/// installs (winget `--scope`).
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Default, Serialize, Deserialize)]
-pub enum Scope {
-    #[default]
-    User,
-    Machine,
-}
-
-impl Scope {
-    pub const fn as_str(self) -> &'static str {
-        match self {
-            Scope::User => "user",
-            Scope::Machine => "machine",
-        }
-    }
-}
-
 /// Options shared by install and upgrade.
 ///
 /// Backends read the fields they understand: winget honours all of them,
 /// flatpak only `source` (as the remote).
+///
+/// Architecture and scope are deliberately absent: forcing either filters the
+/// manifest's installers, and a package without a matching entry (e.g. an
+/// x86-only or scope-less manifest) fails with "no applicable installer".
+/// Leaving them unset lets the backend pick.
 #[derive(Debug, Clone, PartialEq, Eq, Default)]
 pub struct InstallOptions {
     pub source: Option<String>,
-    pub arch: Arch,
-    pub scope: Scope,
     pub location: Option<String>,
     pub silent: bool,
     pub accept: bool,

@@ -44,9 +44,6 @@ sort:
 source:
   all: "全部源"
 
-scope:
-  user: "当前用户"
-  machine: "全局(需提权)"
 
 theme:
   dark: "深色"
@@ -199,8 +196,6 @@ settings:
   install_defaults: "安装默认值"
   install_defaults_hint: "安装与升级时默认附带的参数。"
   default_source: "默认来源"
-  arch: "系统架构"
-  scope: "安装范围"
   location: "自定义安装位置"
   accept_agreements: "自动接受协议"
   silent: "静默安装"

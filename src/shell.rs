@@ -1697,8 +1697,6 @@ mod tests {
         let state = AppState {
             settings: crate::state::Settings {
                 default_source: "winget".into(),
-                arch: crate::backends::types::Arch::X86,
-                scope: crate::backends::types::Scope::User,
                 ..crate::state::Settings::default()
             },
             ..AppState::default()
@@ -1707,9 +1705,11 @@ mod tests {
         let command = install_command(&state, "Microsoft.PowerToys", &backend());
         assert!(command.starts_with("winget install --id Microsoft.PowerToys"));
         assert!(command.contains("--source winget"));
-        assert!(command.contains("--architecture x86"));
-        assert!(command.contains("--scope user"));
         assert!(command.contains("--silent"));
+        assert!(
+            !command.contains("--architecture") && !command.contains("--scope"),
+            "installs must not force an architecture or scope"
+        );
     }
 
     #[test]

@@ -8,7 +8,7 @@
 use serde::{Deserialize, Serialize};
 
 use crate::backends::{BackendKind, Capabilities};
-use crate::backends::types::{Arch, InstallOptions, Scope, SearchFilters};
+use crate::backends::types::{InstallOptions, SearchFilters};
 use crate::model::{CategoryId, Package, Source};
 use crate::theme::ModeChoice;
 
@@ -228,8 +228,6 @@ impl Language {
 #[serde(default)]
 pub struct Settings {
     pub default_source: String,
-    pub arch: Arch,
-    pub scope: Scope,
     pub install_location: String,
     pub accept_agreements: bool,
     pub silent: bool,
@@ -258,8 +256,6 @@ impl Default for Settings {
     fn default() -> Self {
         Self {
             default_source: "winget".to_owned(),
-            arch: Arch::X64,
-            scope: Scope::User,
             install_location: String::new(),
             accept_agreements: true,
             silent: true,
@@ -283,8 +279,6 @@ impl Settings {
     pub fn install_options(&self) -> InstallOptions {
         InstallOptions {
             source: Some(self.default_source.clone()),
-            arch: self.arch,
-            scope: self.scope,
             location: Some(self.install_location.trim().to_owned()).filter(|s| !s.is_empty()),
             silent: self.silent,
             accept: self.accept_agreements,
@@ -956,8 +950,6 @@ mod tests {
     fn install_options_follow_the_settings() {
         let settings = Settings {
             default_source: "msstore".into(),
-            arch: Arch::Arm64,
-            scope: Scope::Machine,
             silent: false,
             install_location: "  D:\\Software  ".into(),
             ..Settings::default()
@@ -965,8 +957,6 @@ mod tests {
 
         let options = settings.install_options();
         assert_eq!(options.source.as_deref(), Some("msstore"));
-        assert_eq!(options.arch, Arch::Arm64);
-        assert_eq!(options.scope, Scope::Machine);
         assert!(!options.silent);
         assert_eq!(options.location.as_deref(), Some("D:\\Software"));
     }

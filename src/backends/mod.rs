@@ -84,10 +84,6 @@ pub struct Capabilities {
     pub source_edit: bool,
     /// The installed set can be exported as a manifest document.
     pub export: bool,
-    /// Installs can target a CPU architecture.
-    pub install_arch: bool,
-    /// Installs can target a user/machine scope.
-    pub install_scope: bool,
     /// Installs can target an explicit location.
     pub install_location: bool,
     /// Installs can run silently.
@@ -105,8 +101,6 @@ impl Default for Capabilities {
             source_add: true,
             source_edit: true,
             export: true,
-            install_arch: true,
-            install_scope: true,
             install_location: true,
             silent: true,
             agreements: true,

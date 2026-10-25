@@ -44,9 +44,6 @@ sort:
 source:
   all: "모든 소스"
 
-scope:
-  user: "현재 사용자"
-  machine: "전체 시스템(관리자)"
 
 theme:
   dark: "어두운 테마"
@@ -199,8 +196,6 @@ settings:
   install_defaults: "설치 기본값"
   install_defaults_hint: "설치 및 업그레이드 시 기본으로 전달되는 인수입니다."
   default_source: "기본 소스"
-  arch: "아키텍처"
-  scope: "설치 범위"
   location: "사용자 지정 설치 위치"
   accept_agreements: "계약 자동 동의"
   silent: "자동 설치"

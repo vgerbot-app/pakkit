@@ -44,9 +44,6 @@ sort:
 source:
   all: "All sources"
 
-scope:
-  user: "Current user"
-  machine: "Machine-wide (admin)"
 
 theme:
   dark: "Dark"
@@ -199,8 +196,6 @@ settings:
   install_defaults: "Install defaults"
   install_defaults_hint: "Arguments passed by default during install and upgrade."
   default_source: "Default source"
-  arch: "Architecture"
-  scope: "Install scope"
   location: "Custom install location"
   accept_agreements: "Auto-accept agreements"
   silent: "Silent install"

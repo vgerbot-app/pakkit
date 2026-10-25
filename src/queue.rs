@@ -334,7 +334,6 @@ pub fn is_busy(state: &AppState, id: &str) -> bool {
 mod tests {
     use super::*;
     use crate::model::CategoryId;
-    use crate::backends::types::Arch;
 
     fn output(status: u32) -> Output {
         Output {
@@ -445,14 +444,14 @@ mod tests {
     fn begin_writes_the_command_line_from_the_settings() {
         let mut state = state_with(&["A"]);
         state.settings.default_source = "winget".into();
-        state.settings.arch = Arch::X86;
-        state.settings.scope = crate::backends::types::Scope::Machine;
         enqueue(&mut state, "A", QueueAction::Install);
 
         let command = begin(&mut state, 0, &backend()).expect("the entry starts");
         assert!(command.starts_with("winget install --id A"));
-        assert!(command.contains("--architecture x86"));
-        assert!(command.contains("--scope machine"));
+        assert!(
+            !command.contains("--architecture") && !command.contains("--scope"),
+            "installs must not force an architecture or scope"
+        );
         assert_eq!(state.queue[0].state, QueueState::Running);
         assert_eq!(state.queue[0].log, command);
     }

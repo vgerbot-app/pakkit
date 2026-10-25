@@ -116,10 +116,8 @@ pub fn install(id: &str, options: &InstallOptions) -> Vec<String> {
         args.push("--source".into());
         args.push(source.to_owned());
     }
-    args.push("--architecture".into());
-    args.push(options.arch.as_str().into());
-    args.push("--scope".into());
-    args.push(options.scope.as_str().into());
+    // No `--architecture`/`--scope`: forcing either filters the manifest's
+    // installers and fails packages that don't declare a match.
     if let Some(location) = options.location.as_deref()
         && !location.trim().is_empty()
     {
@@ -431,7 +429,6 @@ impl PackageBackend for Winget {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::backends::types::{Arch, Scope};
 
     #[test]
     fn count_is_clamped_to_the_documented_range() {
@@ -494,8 +491,6 @@ mod tests {
     fn install_emits_settings_in_order_and_omits_blank_location() {
         let options = InstallOptions {
             source: Some("winget".into()),
-            arch: Arch::X64,
-            scope: Scope::Machine,
             location: Some("   ".into()),
             silent: true,
             accept: true,
@@ -510,16 +505,22 @@ mod tests {
                 "--exact",
                 "--source",
                 "winget",
-                "--architecture",
-                "x64",
-                "--scope",
-                "machine",
                 "--silent",
                 // `--accept-source-agreements` is added by the runner as a
                 // common flag; only the package agreement lives here.
                 "--accept-package-agreements",
             ]
         );
+    }
+
+    #[test]
+    fn install_never_forces_architecture_or_scope() {
+        // A package whose manifest only declares an x86, scope-less installer
+        // (e.g. Kingsoft.WPSOffice.CN) fails outright when either flag is
+        // passed, so the builder must not emit them.
+        let args = install("Git.Git", &InstallOptions::default());
+        assert!(!args.iter().any(|a| a == "--architecture"));
+        assert!(!args.iter().any(|a| a == "--scope"));
     }
 
     #[test]
