@@ -463,6 +463,89 @@ fn command_block(
         )
 }
 
+/// 错误详情 — the full failure report behind a queue row's 详情 button.
+///
+/// The report is snapshotted when the dialog opens: it never changes while
+/// open, so unlike [`pkg_detail`] the builder does not re-read the view.
+pub fn error_detail(view: &mut AppView, uid: u64, window: &mut Window, cx: &mut Context<AppView>) {
+    let Some((name, detail)) = view
+        .state
+        .queue
+        .iter()
+        .find(|item| item.uid == uid)
+        .and_then(|item| item.detail.clone().map(|detail| (item.name.clone(), detail)))
+    else {
+        return;
+    };
+    let this = cx.weak_entity();
+
+    window.open_dialog(cx, move |dialog, _, cx| {
+        let p = Palette::of(cx);
+        let copy_view = this.clone();
+        let copy_text = detail.clone();
+        dialog
+            .w(px(560.))
+            .title(tr!("dialog.error_title"))
+            .child(
+                div()
+                    .flex()
+                    .flex_col()
+                    .gap(px(6.))
+                    .child(widgets::section_label(&p, name.clone()))
+                    .child(
+                        div()
+                            .id("error-detail-body")
+                            .max_h(px(320.))
+                            .overflow_y_scroll()
+                            .p(px(10.))
+                            .rounded(px(10.))
+                            .bg(p.surface2)
+                            .border_1()
+                            .border_color(p.line)
+                            .font_family("Cascadia Code")
+                            .text_size(px(11.5))
+                            .line_height(relative(1.5))
+                            .text_color(p.ink2)
+                            .children(detail.lines().map(|line| div().child(line.to_owned()))),
+                    ),
+            )
+            .footer(
+                div()
+                    .flex()
+                    .items_center()
+                    .gap(px(8.))
+                    .child(
+                        widgets::btn(
+                            cx,
+                            &p,
+                            "error-copy",
+                            BtnKind::Outline,
+                            BtnSize::Regular,
+                            tr!("dialog.copy_error"),
+                        )
+                        .on_click(move |_, window, cx| {
+                            let _ = copy_view.update(cx, |this, cx| {
+                                this.copy(&copy_text, window, cx);
+                            });
+                        }),
+                    )
+                    .child(div().ml_auto().child(
+                        widgets::btn(
+                            cx,
+                            &p,
+                            "error-close",
+                            BtnKind::Primary,
+                            BtnSize::Regular,
+                            tr!("common.close"),
+                        )
+                        .on_click(move |_, window, cx| {
+                            window.close_dialog(cx);
+                        }),
+                    )),
+            )
+    });
+}
+
 /// 高级筛选 — the four flag checkboxes that re-run the search.
 pub fn advanced_search(view: &mut AppView, window: &mut Window, cx: &mut Context<AppView>) {
     let filters = Rc::new(Cell::new(view.state.settings.search_filters()));

@@ -103,6 +103,8 @@ queue:
   elevation_note: "（管理者権限が必要です）"
   failed_code: "%{action}に失敗：%{code} %{desc}%{note}"
   failed: "%{action}に失敗：%{error}"
+  details: "詳細"
+  detail_exit_code: "終了コード"
   state:
     pending: "保留中"
     running: "インストール中"
@@ -226,6 +228,12 @@ settings:
   proxy_hint: "HTTP プロキシ アドレス"
   telemetry: "使用状況データ"
   telemetry_hint: "匿名の使用状況データを許可"
+  logs: "ログ"
+  logs_hint: "インストールと更新の実行記録。1 日間保持され、期限切れは自動削除されます。"
+  log_file: "ログファイル"
+  log_open: "開く"
+  log_unavailable: "ログディレクトリが利用できません"
+  log_open_record: "設定ページからログファイルを開きました"
   about: "バージョン情報"
   detect: "検出"
   backend_version: "現在の %{backend} バージョン"
@@ -235,6 +243,8 @@ dialog:
   no_description: "説明はありません。"
   related: "関連するパッケージ"
   copy_command: "コマンドをコピー"
+  error_title: "エラーの詳細"
+  copy_error: "エラー情報をコピー"
   equivalent_command: "同等のコマンド"
   version: "バージョン"
   publisher: "発行元"
@@ -277,6 +287,7 @@ common:
   add: "追加"
   delete: "削除"
   uninstall: "アンインストール"
+  close: "閉じる"
 
 notification:
   source_switched: "検索ソース：%{source}"

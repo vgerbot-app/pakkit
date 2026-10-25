@@ -10,6 +10,7 @@ use std::time::Duration;
 use crate::backends::{self, PackageBackend, types};
 use crate::config;
 use crate::icons::{IconKey, icon};
+use crate::logging;
 use crate::model::Package;
 use crate::queue::{self, Enqueued, QueueAction, QueueState};
 use crate::state::{AppState, Route, SearchSource};
@@ -845,6 +846,10 @@ impl AppView {
             let uid = self.state.queue[ix].uid;
             let item = self.state.queue[ix].clone();
             let args = queue::args_for(&item, &self.state.settings, &*backend);
+            logging::append(
+                "start",
+                &format!("{} {} → {}", item.action.label(), item.name, item.log),
+            );
 
             let runner = backend.clone();
             cx.spawn(async move |this, cx| {
@@ -859,6 +864,22 @@ impl AppView {
                     .await;
                 let _ = this.update(cx, |this, cx| {
                     queue::complete(&mut this.state, uid, result, &*runner);
+                    if let Some(item) = this.state.queue.iter().find(|item| item.uid == uid) {
+                        match item.state {
+                            QueueState::Done => {
+                                logging::append("done", &format!("{} · {}", item.name, item.log))
+                            }
+                            QueueState::Error => {
+                                let mut record = format!("{} · {}", item.name, item.log);
+                                if let Some(detail) = &item.detail {
+                                    record.push('\n');
+                                    record.push_str(detail);
+                                }
+                                logging::append("error", &record);
+                            }
+                            _ => {}
+                        }
+                    }
                     // Keep the keystroke-search cache in step with the queue:
                     // a successful install joins the installed set.
                     if let Some(item) =
@@ -999,6 +1020,10 @@ impl AppView {
         let Some(backend) = self.backend.clone() else {
             return;
         };
+        logging::append(
+            "start",
+            &format!("uninstall {id} → {} {}", backend.cli_name(), args.join(" ")),
+        );
         let id = id.to_owned();
         self.spawn_refresh(cx.spawn_in(window, async move |this, cx| {
             let result = cx
@@ -1018,6 +1043,10 @@ impl AppView {
                 if ok {
                     this.state.mark_uninstalled(&id);
                     this.installed_ids.retain(|key| key != &id.to_lowercase());
+                    logging::append(
+                        "done",
+                        &format!("uninstall {id} · {}", tr!("notification.uninstalled")),
+                    );
                     window.push_notification(
                         Notification::success(tr!("notification.uninstalled")),
                         cx,
@@ -1040,6 +1069,7 @@ impl AppView {
                         .unwrap_or_else(|error| {
                             tr!("notification.uninstall_failed", error = error.localized())
                         });
+                    logging::append("error", &format!("uninstall {id} · {message}"));
                     window.push_notification(Notification::error(message), cx);
                 }
                 cx.notify();
@@ -1445,6 +1475,8 @@ struct QueueRowModel {
     state: QueueState,
     progress: f32,
     log: String,
+    /// A failure carries a full report; the log line becomes clickable.
+    has_detail: bool,
     glyph: IconKey,
     tint: &'static str,
 }
@@ -1457,6 +1489,7 @@ impl QueueRowModel {
             state: item.state,
             progress: item.progress,
             log: item.log.clone(),
+            has_detail: item.detail.is_some(),
             glyph: pkg.map_or(IconKey::Package, |pkg| pkg.category.icon()),
             tint: pkg.map_or("#4f8cff", |pkg| pkg.category.color()),
         }
@@ -1465,6 +1498,9 @@ impl QueueRowModel {
 
 fn queue_row(p: &Palette, row: &QueueRowModel, view: gpui_kit::WeakEntity<AppView>) -> AnyElement {
     let uid = row.uid;
+    // The remove button's `move` closure takes `view`; the detail affordance
+    // further down needs its own clone.
+    let detail_view = view.clone();
     let (color, label) = match row.state {
         QueueState::Pending => (p.muted, tr!("queue.row.pending")),
         QueueState::Running => (p.accent, tr!("queue.row.running")),
@@ -1514,15 +1550,52 @@ fn queue_row(p: &Palette, row: &QueueRowModel, view: gpui_kit::WeakEntity<AppVie
                         .mt(px(8.))
                         .child(widgets::progress_bar(p, row.progress)),
                 )
-                .child(
-                    div()
-                        .mt(px(6.))
-                        .text_size(px(11.))
-                        .font_family("Cascadia Code")
-                        .text_color(p.muted)
-                        .truncate()
-                        .child(row.log.clone()),
-                ),
+                .child({
+                    // A failure's log line is the 详情 button; the inline icon
+                    // and label stay within the text line so every row keeps
+                    // the uniform height the virtual list measures once.
+                    if row.has_detail {
+                        div()
+                            .id(SharedString::from(format!("queue-detail-{uid}")))
+                            .mt(px(6.))
+                            .flex()
+                            .items_center()
+                            .gap(px(4.))
+                            .cursor_pointer()
+                            .on_click(move |_, window, cx| {
+                                let _ = detail_view.update(cx, |this, cx| {
+                                    crate::dialogs::error_detail(this, uid, window, cx);
+                                });
+                            })
+                            .child(icon(IconKey::Info, px(11.), p.danger))
+                            .child(
+                                div()
+                                    .flex_1()
+                                    .min_w_0()
+                                    .text_size(px(11.))
+                                    .font_family("Cascadia Code")
+                                    .text_color(p.danger)
+                                    .truncate()
+                                    .child(row.log.clone()),
+                            )
+                            .child(
+                                div()
+                                    .text_size(px(10.5))
+                                    .text_color(p.accent)
+                                    .child(tr!("queue.details")),
+                            )
+                            .into_any_element()
+                    } else {
+                        div()
+                            .mt(px(6.))
+                            .text_size(px(11.))
+                            .font_family("Cascadia Code")
+                            .text_color(p.muted)
+                            .truncate()
+                            .child(row.log.clone())
+                            .into_any_element()
+                    }
+                }),
         )
         .into_any_element()
 }

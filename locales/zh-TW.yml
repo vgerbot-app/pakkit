@@ -103,6 +103,8 @@ queue:
   elevation_note: "（需要系統管理員權限）"
   failed_code: "%{action}失敗：%{code} %{desc}%{note}"
   failed: "%{action}失敗：%{error}"
+  details: "詳情"
+  detail_exit_code: "結束碼"
   state:
     pending: "待安裝"
     running: "安裝中"
@@ -226,6 +228,12 @@ settings:
   proxy_hint: "HTTP 代理位址"
   telemetry: "使用統計"
   telemetry_hint: "允許匿名使用資料"
+  logs: "日誌"
+  logs_hint: "安裝與更新的執行記錄，保留 1 天，過期自動刪除。"
+  log_file: "日誌檔案"
+  log_open: "開啟"
+  log_unavailable: "日誌目錄不可用"
+  log_open_record: "在設定頁中開啟了日誌檔案"
   about: "關於"
   detect: "偵測"
   backend_version: "目前 %{backend} 版本"
@@ -235,6 +243,8 @@ dialog:
   no_description: "暫無描述。"
   related: "同類推薦"
   copy_command: "複製命令"
+  error_title: "錯誤詳情"
+  copy_error: "複製錯誤資訊"
   equivalent_command: "對等命令"
   version: "版本"
   publisher: "發行者"
@@ -277,6 +287,7 @@ common:
   add: "新增"
   delete: "刪除"
   uninstall: "解除安裝"
+  close: "關閉"
 
 notification:
   source_switched: "搜尋來源：%{source}"

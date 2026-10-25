@@ -103,6 +103,8 @@ queue:
   elevation_note: " (administrator rights required)"
   failed_code: "%{action} failed: %{code} %{desc}%{note}"
   failed: "%{action} failed: %{error}"
+  details: "Details"
+  detail_exit_code: "Exit code"
   state:
     pending: "Pending"
     running: "Installing"
@@ -226,6 +228,12 @@ settings:
   proxy_hint: "HTTP proxy address"
   telemetry: "Telemetry"
   telemetry_hint: "Allow anonymous usage data"
+  logs: "Logs"
+  logs_hint: "Records of install and update runs, kept for 1 day and pruned automatically."
+  log_file: "Log file"
+  log_open: "Open"
+  log_unavailable: "Log directory unavailable"
+  log_open_record: "Opened the log file from the settings page"
   about: "About"
   detect: "Detect"
   backend_version: "Current %{backend} version"
@@ -235,6 +243,8 @@ dialog:
   no_description: "No description available."
   related: "Related packages"
   copy_command: "Copy command"
+  error_title: "Error details"
+  copy_error: "Copy error info"
   equivalent_command: "Equivalent command"
   version: "Version"
   publisher: "Publisher"
@@ -277,6 +287,7 @@ common:
   add: "Add"
   delete: "Delete"
   uninstall: "Uninstall"
+  close: "Close"
 
 notification:
   source_switched: "Search source: %{source}"

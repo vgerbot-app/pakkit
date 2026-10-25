@@ -8,7 +8,7 @@
 
 use std::time::Instant;
 
-use crate::backends::{PackageBackend, exec::Output, types::BackendError};
+use crate::backends::{PackageBackend, exec, exec::Output, types::BackendError};
 use crate::model::Package;
 use crate::state::{AppState, Settings};
 
@@ -87,6 +87,9 @@ pub struct QueueItem {
     pub progress: f32,
     /// The command line while running, or the outcome once finished.
     pub log: String,
+    /// The full failure report — command line, exit code, complete output —
+    /// behind the drawer's 详情 button. Only set on error.
+    pub detail: Option<String>,
     /// The raw winget exit code, once the process has exited.
     pub exit: Option<u32>,
     /// Set when the process exited, so the drawer can show the elapsed time.
@@ -104,6 +107,7 @@ impl QueueItem {
             state: QueueState::Pending,
             progress: 0.0,
             log: tr!("queue.waiting"),
+            detail: None,
             exit: None,
             started: None,
         }
@@ -275,6 +279,9 @@ pub fn complete(
     let action = state.queue[ix].action;
     let id = state.queue[ix].id.clone();
     let elapsed = state.queue[ix].elapsed_secs();
+    // While running, `log` still holds the command line `begin` wrote — it
+    // heads the failure report so the dialog shows exactly what was run.
+    let command = state.queue[ix].log.clone();
 
     match result {
         Ok(output) if output.status == 0 || backend.exit_is_benign(output.status) => {
@@ -300,17 +307,42 @@ pub fn complete(
             } else {
                 String::new()
             };
+            // Surface the run's own first message: the bare exit code alone
+            // ("失败：1 未知错误") leaves backend-specific errors — e.g.
+            // PackageKit's ErrorCode details — undiagnosable from the drawer.
+            let detail = exec::first_message(&output);
+            let detail = if detail.is_empty() {
+                detail
+            } else {
+                format!(" — {detail}")
+            };
+            let full_output = output.combined();
+            let report = format!(
+                "$ {command}\n{}: {}\n{}{}",
+                tr!("queue.detail_exit_code"),
+                backend.format_exit_code(output.status),
+                description,
+                if full_output.is_empty() {
+                    String::new()
+                } else {
+                    format!("\n{full_output}")
+                }
+            );
             let item = &mut state.queue[ix];
             item.state = QueueState::Error;
             item.progress = 100.0;
             item.exit = Some(output.status);
-            item.log = tr!(
-                "queue.failed_code",
-                action = action.label(),
-                code = backend.format_exit_code(output.status),
-                desc = description,
-                note = note
+            item.log = format!(
+                "{}{detail}",
+                tr!(
+                    "queue.failed_code",
+                    action = action.label(),
+                    code = backend.format_exit_code(output.status),
+                    desc = description,
+                    note = note
+                )
             );
+            item.detail = Some(report);
         }
         Err(error) => {
             let item = &mut state.queue[ix];
@@ -321,6 +353,7 @@ pub fn complete(
                 action = action.label(),
                 error = error.localized()
             );
+            item.detail = Some(format!("$ {command}\n{}", error.localized()));
         }
     }
 
@@ -574,6 +607,70 @@ mod tests {
         // Success applied every pending update at once.
         assert!(state.updates().is_empty());
         assert!(state.packages.iter().all(|pkg| pkg.version == "2.0"));
+    }
+
+    #[test]
+    fn a_failed_run_shows_the_processes_own_first_message() {
+        crate::ensure_zh_locale();
+        let mut state = state_with(&["A"]);
+        let Enqueued::Added(uid) = enqueue(&mut state, "A", QueueAction::Upgrade) else {
+            panic!("enqueue");
+        };
+        begin(&mut state, 0, &backend());
+        let failed = Output {
+            status: 1,
+            stdout: String::new(),
+            stderr: "E: Package A has no available update".to_owned(),
+        };
+        complete(&mut state, uid, Ok(failed), &backend());
+        assert_eq!(state.queue[0].state, QueueState::Error);
+        assert!(
+            state.queue[0]
+                .log
+                .contains("E: Package A has no available update"),
+            "the stderr detail reached the drawer: {}",
+            state.queue[0].log
+        );
+    }
+
+    #[test]
+    fn a_failed_run_keeps_the_full_report_behind_the_detail_button() {
+        crate::ensure_zh_locale();
+        let mut state = state_with(&["A"]);
+        let Enqueued::Added(uid) = enqueue(&mut state, "A", QueueAction::Install) else {
+            panic!("enqueue");
+        };
+        begin(&mut state, 0, &backend());
+        let failed = Output {
+            status: 1,
+            stdout: "Resolving dependencies…".to_owned(),
+            stderr: "E: Unable to locate package A".to_owned(),
+        };
+        complete(&mut state, uid, Ok(failed), &backend());
+
+        let detail = state.queue[0].detail.as_ref().expect("a failure reports");
+        assert!(
+            detail.starts_with("$ winget install --id A"),
+            "the report opens with the command line: {detail}"
+        );
+        assert!(detail.contains("0x00000001"), "the exit code: {detail}");
+        assert!(detail.contains("Resolving dependencies…"), "stdout: {detail}");
+        assert!(
+            detail.contains("E: Unable to locate package A"),
+            "stderr: {detail}"
+        );
+    }
+
+    #[test]
+    fn a_successful_run_carries_no_error_detail() {
+        crate::ensure_zh_locale();
+        let mut state = state_with(&["A"]);
+        let Enqueued::Added(uid) = enqueue(&mut state, "A", QueueAction::Install) else {
+            panic!("enqueue");
+        };
+        begin(&mut state, 0, &backend());
+        complete(&mut state, uid, Ok(output(0)), &backend());
+        assert_eq!(state.queue[0].detail, None);
     }
 
     #[test]

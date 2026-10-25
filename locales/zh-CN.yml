@@ -103,6 +103,8 @@ queue:
   elevation_note: "（需要管理员权限）"
   failed_code: "%{action}失败：%{code} %{desc}%{note}"
   failed: "%{action}失败：%{error}"
+  details: "详情"
+  detail_exit_code: "退出码"
   state:
     pending: "待安装"
     running: "安装中"
@@ -226,6 +228,12 @@ settings:
   proxy_hint: "HTTP 代理地址"
   telemetry: "使用统计"
   telemetry_hint: "允许匿名使用数据"
+  logs: "日志"
+  logs_hint: "安装与更新的执行记录，保留 1 天，过期自动删除。"
+  log_file: "日志文件"
+  log_open: "打开"
+  log_unavailable: "日志目录不可用"
+  log_open_record: "在设置页中打开了日志文件"
   about: "关于"
   detect: "检测"
   backend_version: "当前 %{backend} 版本"
@@ -235,6 +243,8 @@ dialog:
   no_description: "暂无描述。"
   related: "同类推荐"
   copy_command: "复制命令"
+  error_title: "错误详情"
+  copy_error: "复制错误信息"
   equivalent_command: "等价命令"
   version: "版本"
   publisher: "发布者"
@@ -277,6 +287,7 @@ common:
   add: "添加"
   delete: "删除"
   uninstall: "卸载"
+  close: "关闭"
 
 notification:
   source_switched: "搜索源：%{source}"

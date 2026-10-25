@@ -20,6 +20,7 @@ pub mod cache;
 pub mod config;
 pub mod dialogs;
 pub mod icons;
+pub mod logging;
 pub mod model;
 pub mod queue;
 pub mod shell;

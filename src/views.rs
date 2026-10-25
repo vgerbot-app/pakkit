@@ -5,6 +5,7 @@
 use crate::backends::BackendKind;
 use crate::dialogs;
 use crate::icons::{IconKey, icon};
+use crate::logging;
 use crate::model::{CategoryId, Package};
 use crate::queue::QueueAction;
 use crate::shell::AppView;
@@ -1912,6 +1913,7 @@ fn settings(
         advanced_rows,
     );
 
+    let logs_card = logs_card(p, cx);
     let about_card = about(p, state, cx);
 
     div()
@@ -1943,6 +1945,7 @@ fn settings(
                             .gap(px(14.))
                             .child(appearance_card)
                             .child(advanced_card)
+                            .child(logs_card)
                             .child(about_card),
                     ),
             ),
@@ -2205,6 +2208,60 @@ fn seg_handler<T: Clone + 'static>(
 /// entities down so the renderer never re-borrows the view.
 fn input_field(p: &Palette, input: &Entity<InputState>) -> AnyElement {
     widgets::field(p, input).w(px(200.)).into_any_element()
+}
+
+/// 日志 — the current log file's path, one click opens it in the OS default
+/// app. Files older than a day are pruned on the next write.
+fn logs_card(p: &Palette, cx: &mut Context<AppView>) -> AnyElement {
+    let path = logging::current_log_file();
+    let path_text = path
+        .as_ref()
+        .map(|path| path.display().to_string())
+        .unwrap_or_else(|| tr!("settings.log_unavailable"));
+    let open_path = path.clone();
+    let copy_path = path_text.clone();
+    settings_card(
+        p,
+        &tr!("settings.logs"),
+        &tr!("settings.logs_hint"),
+        vec![row_shell(
+            p,
+            &tr!("settings.log_file"),
+            &path_text,
+            div()
+                .flex()
+                .items_center()
+                .gap(px(6.))
+                .child(
+                    widgets::btn(
+                        cx,
+                        p,
+                        "log-open",
+                        BtnKind::Outline,
+                        BtnSize::Small,
+                        tr!("settings.log_open"),
+                    )
+                    .on_click(cx.listener(move |_, _, _, _| {
+                        if let Some(path) = &open_path {
+                            // First run may have no file yet; create it so the
+                            // opener never errors on a missing path.
+                            if !path.exists() {
+                                logging::append("info", &tr!("settings.log_open_record"));
+                            }
+                            logging::open_with_default_app(path);
+                        }
+                    })),
+                )
+                .child(
+                    widgets::icon_btn("log-copy", IconKey::Copy, 24., p.muted).on_click(
+                        cx.listener(move |this, _, window, cx| {
+                            this.copy(&copy_path, window, cx);
+                        }),
+                    ),
+                )
+                .into_any_element(),
+        )],
+    )
 }
 
 fn about(p: &Palette, state: &AppState, cx: &mut Context<AppView>) -> AnyElement {
