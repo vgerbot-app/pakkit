@@ -221,7 +221,7 @@ fn hero(state: &AppState, p: &Palette, cx: &mut Context<AppView>) -> AnyElement 
                                 .line_height(relative(1.6))
                                 .text_color(p.ink2)
                                 .mt(px(8.))
-                                .child(tr!("home.hero_body")),
+                                .child(tr!("home.hero_body", backend = state.backend_name)),
                         )
                         .child(
                             div()
