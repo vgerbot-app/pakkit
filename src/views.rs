@@ -1116,7 +1116,9 @@ fn installed(state: &AppState, p: &Palette, cx: &mut Context<AppView>) -> AnyEle
     let rows = state.installed();
     let all_ids: Vec<String> = rows.iter().map(|pkg| pkg.id.clone()).collect();
     // `rows`/`all_ids` stay full so 升级全部 enqueues everything; only the
-    // table is paged.
+    // table is paged. Backends with `batch_upgrade` run one transaction
+    // instead of a per-package sweep.
+    let batch = state.capabilities.batch_upgrade;
     let (page_rows, page, pages) = page_slice(&rows, state.installed_page);
 
     let mut head_actions = Vec::new();
@@ -1147,8 +1149,12 @@ fn installed(state: &AppState, p: &Palette, cx: &mut Context<AppView>) -> AnyEle
         )
         .disabled(all_ids.is_empty())
         .on_click(cx.listener(move |this, _, window, cx| {
-            for id in &all_ids {
-                this.enqueue(id, QueueAction::Upgrade, window, cx);
+            if batch {
+                this.enqueue_upgrade_all(window, cx);
+            } else {
+                for id in &all_ids {
+                    this.enqueue(id, QueueAction::Upgrade, window, cx);
+                }
             }
         }))
         .into_any_element(),
@@ -1344,6 +1350,9 @@ fn installed_row(
 fn updates(state: &AppState, p: &Palette, cx: &mut Context<AppView>) -> AnyElement {
     let rows = state.updates();
     let all_ids: Vec<String> = rows.iter().map(|pkg| pkg.id.clone()).collect();
+    // apt/flatpak batch the whole run into one transaction (one dependency
+    // resolution, one polkit prompt); winget keeps per-package tasks.
+    let batch = state.capabilities.batch_upgrade;
 
     let head = widgets::page_head(
         p,
@@ -1360,8 +1369,12 @@ fn updates(state: &AppState, p: &Palette, cx: &mut Context<AppView>) -> AnyEleme
             )
             .disabled(all_ids.is_empty())
             .on_click(cx.listener(move |this, _, window, cx| {
-                for id in &all_ids {
-                    this.enqueue(id, QueueAction::Upgrade, window, cx);
+                if batch {
+                    this.enqueue_upgrade_all(window, cx);
+                } else {
+                    for id in &all_ids {
+                        this.enqueue(id, QueueAction::Upgrade, window, cx);
+                    }
                 }
             }))
             .into_any_element(),

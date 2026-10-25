@@ -54,6 +54,11 @@ pub enum QueueAction {
     Install,
     /// `winget upgrade --id` — the 更新 view's button.
     Upgrade,
+    /// `upgrade -y` — one backend-wide transaction for every pending update.
+    /// Backends with `Capabilities::batch_upgrade` (apt, flatpak) route their
+    /// 全部更新 button here: a single dependency resolution and a single
+    /// polkit authorization instead of one per package.
+    UpgradeAll,
 }
 
 impl QueueAction {
@@ -62,6 +67,7 @@ impl QueueAction {
         match self {
             QueueAction::Install => tr!("queue.action.install"),
             QueueAction::Upgrade => tr!("queue.action.upgrade"),
+            QueueAction::UpgradeAll => tr!("queue.action.upgrade_all"),
         }
     }
 }
@@ -132,6 +138,7 @@ pub fn args_for(
     match item.action {
         QueueAction::Install => backend.install_args(&item.id, &settings.install_options()),
         QueueAction::Upgrade => backend.upgrade_args(&item.id),
+        QueueAction::UpgradeAll => backend.upgrade_all_args(),
     }
 }
 
@@ -169,6 +176,32 @@ pub fn enqueue(state: &mut AppState, id: &str, action: QueueAction) -> Enqueued 
 
     let uid = state.next_queue_uid();
     state.queue.push(QueueItem::new(uid, &package, action));
+    Enqueued::Added(uid)
+}
+
+/// The id the batch-upgrade entry carries; no package owns it.
+pub const UPGRADE_ALL_ID: &str = "*";
+
+/// Enqueue the single batch-upgrade task. Unlike [`enqueue`] there is no
+/// catalog lookup — the entry is synthetic — and a second click while one
+/// is active is a duplicate.
+pub fn enqueue_upgrade_all(state: &mut AppState) -> Enqueued {
+    if state
+        .queue
+        .iter()
+        .any(|item| item.action == QueueAction::UpgradeAll && item.state.is_active())
+    {
+        return Enqueued::Duplicate(tr!("queue.action.upgrade_all"));
+    }
+    let package = Package {
+        id: UPGRADE_ALL_ID.to_owned(),
+        name: tr!("queue.action.upgrade_all"),
+        ..Package::default()
+    };
+    let uid = state.next_queue_uid();
+    state
+        .queue
+        .push(QueueItem::new(uid, &package, QueueAction::UpgradeAll));
     Enqueued::Added(uid)
 }
 
@@ -296,6 +329,7 @@ pub fn complete(
         match action {
             QueueAction::Install => state.mark_installed(&id),
             QueueAction::Upgrade => state.mark_update_applied(&id),
+            QueueAction::UpgradeAll => state.mark_all_updates_applied(),
         }
     }
 }
@@ -323,11 +357,12 @@ pub fn active_count(state: &AppState) -> usize {
 }
 
 /// Whether the package is already waiting or running, for the card button.
+/// An active batch upgrade covers every package.
 pub fn is_busy(state: &AppState, id: &str) -> bool {
-    state
-        .queue
-        .iter()
-        .any(|item| item.id.eq_ignore_ascii_case(id) && item.state.is_active())
+    state.queue.iter().any(|item| {
+        item.state.is_active()
+            && (item.action == QueueAction::UpgradeAll || item.id.eq_ignore_ascii_case(id))
+    })
 }
 
 #[cfg(test)]
@@ -488,6 +523,57 @@ mod tests {
         enqueue(&mut state, "A", QueueAction::Upgrade);
         let command = command_line(&state.queue[0], &state.settings, &backend());
         assert!(command.starts_with("winget upgrade --id A"));
+    }
+
+    #[test]
+    fn the_batch_upgrade_enqueues_once_and_runs_upgrade_all_args() {
+        let mut state = AppState {
+            packages: ["A", "B"]
+                .iter()
+                .map(|id| Package {
+                    id: (*id).to_owned(),
+                    name: (*id).to_owned(),
+                    version: "1.0".into(),
+                    available: Some("2.0".into()),
+                    installed: true,
+                    category: CategoryId::Dev,
+                    ..Package::default()
+                })
+                .collect(),
+            ..AppState::default()
+        };
+        let Enqueued::Added(uid) = enqueue_upgrade_all(&mut state) else {
+            panic!("expected the batch task to be queued");
+        };
+        assert_eq!(state.queue.len(), 1);
+        assert_eq!(state.queue[0].action, QueueAction::UpgradeAll);
+        assert_eq!(state.queue[0].id, UPGRADE_ALL_ID);
+
+        // A second click while the first is active is a duplicate.
+        assert!(matches!(
+            enqueue_upgrade_all(&mut state),
+            Enqueued::Duplicate(_)
+        ));
+        assert_eq!(state.queue.len(), 1, "no second batch task");
+
+        // The entry runs the backend-wide command, not a per-package one.
+        let command = begin(&mut state, 0, &backend()).expect("the entry starts");
+        assert_eq!(command, "winget upgrade --all");
+
+        // While it runs, every package reads busy.
+        assert!(is_busy(&state, "A"));
+        assert!(is_busy(&state, "B"));
+
+        // A finished batch frees the next one.
+        complete(&mut state, uid, Ok(output(0)), &backend());
+        assert!(matches!(
+            enqueue_upgrade_all(&mut state),
+            Enqueued::Added(_)
+        ));
+
+        // Success applied every pending update at once.
+        assert!(state.updates().is_empty());
+        assert!(state.packages.iter().all(|pkg| pkg.version == "2.0"));
     }
 
     #[test]

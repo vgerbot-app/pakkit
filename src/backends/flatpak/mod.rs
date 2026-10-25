@@ -80,6 +80,9 @@ impl PackageBackend for Flatpak {
             silent: false,
             agreements: false,
             search_filters: false,
+            // One `flatpak update --assumeyes` covers every ref in a single
+            // transaction (and a single polkit authorization).
+            batch_upgrade: true,
             ..Capabilities::default()
         }
     }
@@ -411,6 +414,7 @@ mod tests {
         assert!(!caps.silent);
         assert!(!caps.agreements);
         assert!(!caps.search_filters);
+        assert!(caps.batch_upgrade);
     }
 
     #[test]

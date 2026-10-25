@@ -716,6 +716,9 @@ pub fn install_label(pkg: &Package, queued: bool, action: QueueAction) -> (Strin
     }
     match action {
         QueueAction::Upgrade => (tr!("queue.action.upgrade"), IconKey::Download),
+        // Batch upgrades are enqueued by the view-level button directly;
+        // `package_action` never yields this for a per-package button.
+        QueueAction::UpgradeAll => (tr!("queue.action.upgrade_all"), IconKey::Download),
         QueueAction::Install if pkg.installed => (tr!("queue.reinstall"), IconKey::Refresh),
         QueueAction::Install => (tr!("queue.action.install"), IconKey::Download),
     }

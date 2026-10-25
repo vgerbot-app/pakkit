@@ -809,6 +809,30 @@ impl AppView {
         cx.notify();
     }
 
+    /// Enqueue the single batch-upgrade task; the 全部更新 button on backends
+    /// with `Capabilities::batch_upgrade` lands here.
+    pub fn enqueue_upgrade_all(&mut self, window: &mut Window, cx: &mut Context<Self>) {
+        match queue::enqueue_upgrade_all(&mut self.state) {
+            Enqueued::Added(_) => {
+                self.state.queue_open = true;
+                window.push_notification(
+                    Notification::info(tr!(
+                        "notification.enqueued",
+                        name = tr!("queue.action.upgrade_all")
+                    )),
+                    cx,
+                );
+                self.pump(cx);
+            }
+            Enqueued::Duplicate(name) => window.push_notification(
+                Notification::warning(tr!("notification.duplicate", name = name)),
+                cx,
+            ),
+            Enqueued::Unknown => {}
+        }
+        cx.notify();
+    }
+
     /// Start every entry the concurrency limit allows.
     pub fn pump(&mut self, cx: &mut Context<Self>) {
         let Some(backend) = self.backend.clone() else {

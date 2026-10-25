@@ -608,6 +608,17 @@ impl AppState {
         }
     }
 
+    /// Apply every pending upgrade, the way a successful batch run
+    /// (`upgrade -y`) does. Optimistic: packages apt held back reappear on
+    /// the next updates refresh.
+    pub fn mark_all_updates_applied(&mut self) {
+        for pkg in &mut self.packages {
+            if let Some(available) = pkg.available.take() {
+                pkg.version = available;
+            }
+        }
+    }
+
     /// Apply a `winget list`-derived upgrade to a package. Used after an
     /// upgrade succeeds so the row drops out of the updates view immediately.
     pub fn mark_update_applied(&mut self, id: &str) {
@@ -1036,9 +1047,15 @@ mod tests {
         };
 
         assert_eq!(state.updates().len(), 1);
+        state.mark_all_updates_applied();
+        assert_eq!(state.updates().len(), 0, "the batch applies every update");
+        assert_eq!(state.packages[0].version, "2.0");
+
+        state.packages[0].available = Some("3.0".into());
+        assert_eq!(state.updates().len(), 1);
         state.mark_update_applied("b");
         assert_eq!(state.updates().len(), 0, "id matching is case-insensitive");
-        assert_eq!(state.packages[0].version, "2.0");
+        assert_eq!(state.packages[0].version, "3.0");
 
         state.mark_uninstalled("B");
         assert!(!state.packages[0].installed);

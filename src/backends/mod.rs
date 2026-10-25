@@ -94,6 +94,10 @@ pub struct Capabilities {
     pub agreements: bool,
     /// The search supports the advanced filter flags.
     pub search_filters: bool,
+    /// 全部更新 runs as one backend-wide transaction (`upgrade -y`) instead of
+    /// one queue item per package — a single dependency resolution and a
+    /// single polkit authorization. Off for winget, which upgrades per id.
+    pub batch_upgrade: bool,
 }
 
 impl Default for Capabilities {
@@ -107,6 +111,7 @@ impl Default for Capabilities {
             silent: true,
             agreements: true,
             search_filters: true,
+            batch_upgrade: false,
         }
     }
 }

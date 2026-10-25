@@ -132,7 +132,9 @@ impl PackageBackend for Apt {
 
     /// apt exposes none of the winget-profile surface: no source management
     /// (repos are root-owned deb822 files), no export, no install targeting,
-    /// and no interactivity to switch off.
+    /// and no interactivity to switch off. `batch_upgrade` is on: apt
+    /// resolves dependencies across the whole transaction, so 全部更新 runs
+    /// one `upgrade -y` instead of per-package upgrades.
     fn capabilities(&self) -> Capabilities {
         Capabilities {
             sources_view: false,
@@ -143,6 +145,7 @@ impl PackageBackend for Apt {
             silent: false,
             agreements: false,
             search_filters: false,
+            batch_upgrade: true,
         }
     }
 
@@ -392,6 +395,7 @@ mod tests {
         assert!(!caps.silent);
         assert!(!caps.agreements);
         assert!(!caps.search_filters);
+        assert!(caps.batch_upgrade);
     }
 
     #[test]
