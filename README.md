@@ -2,7 +2,7 @@
 
 # Pakkit
 
-<div align="center"><img alt="CI" src="https://github.com/vgerbot-app/winget-gui/actions/workflows/ci.yml/badge.svg"> <img alt="License" src="https://img.shields.io/badge/license-MIT-blue.svg"> <img alt="Version" src="https://img.shields.io/badge/version-0.1.0-green.svg"> <img alt="Rust" src="https://img.shields.io/badge/rust-1.92%2B-orange.svg"> <img alt="Platform" src="https://img.shields.io/badge/platform-Windows-0078D6.svg"></div>
+<div align="center"><img alt="CI" src="https://github.com/vgerbot-app/pakkit/actions/workflows/ci.yml/badge.svg"> <img alt="License" src="https://img.shields.io/badge/license-MIT-blue.svg"> <img alt="Version" src="https://img.shields.io/badge/version-0.1.0-green.svg"> <img alt="Rust" src="https://img.shields.io/badge/rust-1.92%2B-orange.svg"> <img alt="Platform" src="https://img.shields.io/badge/platform-Windows-0078D6.svg"></div>
 
 <p align="center">
 🇺🇸 <a href="./README.md">English</a> | 🇨🇳 <a href="./README.zh.md">简体中文</a>
@@ -42,15 +42,15 @@ Every operation is a transparent wrapper around the backend CLI: the command lin
 
 ### Download a prebuilt release
 
-Grab the latest Windows build from [GitHub Releases](https://github.com/vgerbot-app/winget-gui/releases).
+Grab the latest Windows build from [GitHub Releases](https://github.com/vgerbot-app/pakkit/releases).
 
 ### Build from source
 
 Requirements: Rust 1.92+ (see `rust-toolchain.toml`), Windows.
 
 ```bash
-git clone https://github.com/vgerbot-app/winget-gui.git
-cd winget-gui
+git clone https://github.com/vgerbot-app/pakkit.git
+cd pakkit
 cargo build --release
 ```
 
