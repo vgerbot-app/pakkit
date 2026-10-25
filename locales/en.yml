@@ -111,6 +111,7 @@ queue:
   action:
     install: "Install"
     upgrade: "Upgrade"
+    upgrade_all: "Upgrade all"
   row:
     pending: "Waiting"
     running: "Running"
@@ -328,6 +329,8 @@ exitcode:
   network_unavailable: "Network unavailable"
   reboot_required: "Restart required to complete the operation"
   cancelled: "Operation cancelled"
+  auth_dismissed: "Authorization prompt dismissed"
+  auth_denied: "Authorization denied"
   other_version_installed: "A different version is installed"
   no_downgrade: "Downgrade not allowed"
   no_upgrade_support: "Package does not support upgrade"

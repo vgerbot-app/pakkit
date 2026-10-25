@@ -8,6 +8,8 @@
 pub mod apt;
 pub mod exec;
 pub mod flatpak;
+#[cfg(target_os = "linux")]
+pub mod packagekit;
 pub mod types;
 pub mod winget;
 

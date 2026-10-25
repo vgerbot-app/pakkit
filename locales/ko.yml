@@ -111,6 +111,7 @@ queue:
   action:
     install: "설치"
     upgrade: "업데이트"
+    upgrade_all: "모두 업그레이드"
   row:
     pending: "대기 중"
     running: "진행 중"
@@ -328,6 +329,8 @@ exitcode:
   network_unavailable: "네트워크를 사용할 수 없습니다"
   reboot_required: "작업을 완료하려면 다시 시작해야 합니다"
   cancelled: "작업이 취소되었습니다"
+  auth_dismissed: "인증 프롬프트가 닫혔습니다"
+  auth_denied: "인증이 거부되었습니다"
   other_version_installed: "다른 버전이 설치되어 있습니다"
   no_downgrade: "다운그레이드는 허용되지 않습니다"
   no_upgrade_support: "이 패키지는 업그레이드를 지원하지 않습니다"

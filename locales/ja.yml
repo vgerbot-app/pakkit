@@ -111,6 +111,7 @@ queue:
   action:
     install: "インストール"
     upgrade: "更新"
+    upgrade_all: "すべて更新"
   row:
     pending: "待機中"
     running: "実行中"
@@ -328,6 +329,8 @@ exitcode:
   network_unavailable: "ネットワークを利用できません"
   reboot_required: "操作を完了するには再起動が必要です"
   cancelled: "操作はキャンセルされました"
+  auth_dismissed: "認証プロンプトが閉じられました"
+  auth_denied: "認証が拒否されました"
   other_version_installed: "別のバージョンがインストールされています"
   no_downgrade: "ダウングレードは許可されていません"
   no_upgrade_support: "このパッケージはアップグレードをサポートしていません"

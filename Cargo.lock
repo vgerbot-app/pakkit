@@ -4915,6 +4915,7 @@ dependencies = [
  "thiserror 2.0.21",
  "ureq",
  "url",
+ "zbus",
 ]
 
 [[package]]

@@ -111,6 +111,7 @@ queue:
   action:
     install: "安装"
     upgrade: "更新"
+    upgrade_all: "全部升级"
   row:
     pending: "等待中"
     running: "进行中"
@@ -328,6 +329,8 @@ exitcode:
   network_unavailable: "网络不可用"
   reboot_required: "需要重启以完成操作"
   cancelled: "操作已取消"
+  auth_dismissed: "授权提示已关闭"
+  auth_denied: "授权被拒绝"
   other_version_installed: "已安装其他版本"
   no_downgrade: "不允许降级"
   no_upgrade_support: "该软件包不支持升级"

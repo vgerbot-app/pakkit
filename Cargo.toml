@@ -53,3 +53,6 @@ unwrap_used = "warn"
 dbg_macro = "warn"
 todo = "warn"
 module_name_repetitions = "allow"
+
+[target.'cfg(target_os = "linux")'.dependencies]
+zbus = { version = "5", default-features = false, features = ["blocking-api"] }
