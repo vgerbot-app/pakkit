@@ -5,6 +5,11 @@
 //! listener is created before the dialog opens. Inside the builder the view is
 //! reached through a captured [`WeakEntity`], because the builder only gets
 //! `&mut App`, never the view's own context.
+//!
+//! Click handlers must use `WeakEntity::update` with the handler's own
+//! `&mut Window`, never `update_in`: event dispatch runs while the window is
+//! taken out of the app's window map, so `update_in`'s window re-lookup always
+//! fails mid-click and the handler silently does nothing.
 
 use gpui_kit::component::button::ButtonVariant;
 use gpui_kit::component::input::{Input, InputState};
@@ -185,7 +190,9 @@ pub fn pkg_detail(view: &mut AppView, id: &str, window: &mut Window, cx: &mut Co
                                     }),
                             ),
                     )
-                    .child(prose_lines(&p, &description))
+                    .when(!loading, |this| {
+                        this.child(prose_lines(&p, &description))
+                    })
                     .when(loading, |this| {
                         this.child(
                             div()
@@ -303,8 +310,8 @@ pub fn pkg_detail(view: &mut AppView, id: &str, window: &mut Window, cx: &mut Co
                             )
                             .on_click({
                                 let id = uninstall_id.clone();
-                                move |_, _window, cx| {
-                                    let _ = uninstall_view.update_in(cx, |this, window, cx| {
+                                move |_, window, cx| {
+                                    let _ = uninstall_view.update(cx, |this, cx| {
                                         confirm_uninstall(this, &id, window, cx);
                                     });
                                 }
@@ -324,8 +331,8 @@ pub fn pkg_detail(view: &mut AppView, id: &str, window: &mut Window, cx: &mut Co
                             .disabled(busy)
                             .on_click({
                                 let id = install_id.clone();
-                                move |_, _window, cx| {
-                                    let _ = install_view.update_in(cx, |this, window, cx| {
+                                move |_, window, cx| {
+                                    let _ = install_view.update(cx, |this, cx| {
                                         this.enqueue(&id, action, window, cx);
                                     });
                                 }
@@ -614,11 +621,11 @@ pub fn add_source(view: &mut AppView, window: &mut Window, cx: &mut Context<AppV
                         BtnSize::Regular,
                         tr!("common.add"),
                     )
-                    .on_click(move |_, _window, cx| {
+                    .on_click(move |_, window, cx| {
                         let name = name_input.read(cx).value().to_string();
                         let url = url_input.read(cx).value().to_string();
                         let trimmed = name.trim().to_owned();
-                        let _ = submit_view.update_in(cx, |this, window, cx| {
+                        let _ = submit_view.update(cx, |this, cx| {
                             if trimmed.is_empty() {
                                 window.push_notification(
                                     Notification::error(tr!("notification.source_name_empty")),
@@ -731,10 +738,10 @@ pub fn edit_source(view: &mut AppView, name: &str, window: &mut Window, cx: &mut
                         BtnSize::Regular,
                         tr!("common.save"),
                     )
-                    .on_click(move |_, _window, cx| {
+                    .on_click(move |_, window, cx| {
                         let flag = explicit.get();
                         let name = source_name.clone();
-                        let _ = save_view.update_in(cx, |this, window, cx| {
+                        let _ = save_view.update(cx, |this, cx| {
                             let Some(backend) = this.backend.clone() else {
                                 return;
                             };
@@ -811,9 +818,9 @@ pub fn confirm_uninstall(
             .ok_variant(ButtonVariant::Danger)
             .cancel_text(tr!("common.cancel"))
             .show_cancel(true)
-            .on_ok(move |_: &ClickEvent, _window, cx| {
+            .on_ok(move |_: &ClickEvent, window, cx| {
                 let id = pkg_id.clone();
-                let _ = run_view.update_in(cx, |this, window, cx| {
+                let _ = run_view.update(cx, |this, cx| {
                     let Some(backend) = this.backend.clone() else {
                         return;
                     };
@@ -851,9 +858,9 @@ pub fn confirm_remove_source(
             .ok_variant(ButtonVariant::Danger)
             .cancel_text(tr!("common.cancel"))
             .show_cancel(true)
-            .on_ok(move |_: &ClickEvent, _window, cx| {
+            .on_ok(move |_: &ClickEvent, window, cx| {
                 let name = source_name.clone();
-                let _ = run_view.update_in(cx, |this, window, cx| {
+                let _ = run_view.update(cx, |this, cx| {
                     if this.state.default_source == name {
                         let fallback = this
                             .state
