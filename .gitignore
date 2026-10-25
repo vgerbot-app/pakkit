@@ -2,3 +2,6 @@ target/
 .ref/
 .scratch/
 .smoke*.png
+
+# OMC tooling state
+.omc/
