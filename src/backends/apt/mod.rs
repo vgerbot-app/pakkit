@@ -16,10 +16,12 @@
 //! commands.
 //!
 //! Two semantic differences versus the pkexec pipeline are accepted:
-//! `upgrade -y` maps to GetUpdates + UpdatePackages, which may install new
-//! dependencies (plain `apt-get upgrade` never does); and removals use
-//! polkit action `package-remove`, which is `auth_admin` — one prompt per
-//! removal, not cached.
+//! `upgrade -y` maps to GetUpdates + InstallPackages of the candidate ids
+//! (UpdatePackages is broken in PackageKit 1.3.x's apt backend — it rejects
+//! its own GetUpdates ids), which may install new dependencies (plain
+//! `apt-get upgrade` never does); and removals use polkit action
+//! `package-remove`, which is `auth_admin` — one prompt per removal, not
+//! cached.
 //!
 //! Repository management is out of scope — deb822 sources need root and key
 //! handling to change — so every capability flag is off and the UI hides the

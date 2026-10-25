@@ -281,6 +281,47 @@ fn outcome_to_output(outcome: Outcome) -> Output {
     }
 }
 
+/// Keep the update ids whose package name matches; `None` keeps them all.
+///
+/// Upgrades install the *candidate* version id that `GetUpdates` emits —
+/// the id of the installed version does not select an update. And they go
+/// through `InstallPackages`, not `UpdatePackages`: PackageKit 1.3.x's apt
+/// backend rejects its own GetUpdates ids from UpdatePackages ("not
+/// available as an update candidate"), while installing the candidate id
+/// is exactly apt's `install --only-upgrade` semantics.
+fn matching_update_ids(packages: &[PackageSignal], name: Option<&str>) -> Vec<String> {
+    packages
+        .iter()
+        .filter(|(_, id, _)| {
+            name.is_none_or(|name| {
+                parse_package_id(id).is_some_and(|(pkg_name, _, _, _)| pkg_name == name)
+            })
+        })
+        .map(|(_, id, _)| id.clone())
+        .collect()
+}
+
+/// Collect the update ids from `GetUpdates`, optionally narrowed to one
+/// package name. An empty result with `Some(name)` is an error — the caller
+/// asked to update a package that has no update pending.
+fn update_ids(conn: &blocking::Connection, name: Option<&str>) -> Result<Vec<String>, RunError> {
+    let outcome = transact(conn, |txn| txn.call("GetUpdates", &0_u64)).map_err(|error| {
+        match method_error_output(&error) {
+            Some(output) => RunError::Transaction(output),
+            None => RunError::Transport(error),
+        }
+    })?;
+    let ids = matching_update_ids(&outcome.packages, name);
+    if ids.is_empty() && let Some(name) = name {
+        return Err(RunError::Transaction(Output {
+            status: 100, // apt's "unable to locate package"
+            stdout: String::new(),
+            stderr: format!("E: Package {name} has no available update"),
+        }));
+    }
+    Ok(ids)
+}
+
 /// Resolve a plain package name to full PackageKit ids, keeping the first
 /// signal whose info enum matches `wanted_info` (installed or available).
 fn resolve_ids(
@@ -338,8 +379,12 @@ pub fn run(op: &PkOp) -> Result<Output, RunError> {
             act(&conn, |txn| txn.call("InstallPackages", &(0_u64, ids)))
         }
         PkOp::UpgradeOne { name } => {
-            let ids = resolve_ids(&conn, name, PK_INFO_INSTALLED)?;
-            act(&conn, |txn| txn.call("UpdatePackages", &(0_u64, ids)))
+            let ids = update_ids(&conn, Some(name))?;
+            // InstallPackages, not UpdatePackages: the 1.3.x apt backend
+            // rejects its own GetUpdates ids from UpdatePackages ("not
+            // available as an update candidate"), while installing the
+            // candidate version id is exactly `install --only-upgrade`.
+            act(&conn, |txn| txn.call("InstallPackages", &(0_u64, ids)))
         }
         PkOp::Remove { name } => {
             let ids = resolve_ids(&conn, name, PK_INFO_INSTALLED)?;
@@ -351,16 +396,7 @@ pub fn run(op: &PkOp) -> Result<Output, RunError> {
             })
         }
         PkOp::UpgradeAll => {
-            let outcome = transact(&conn, |txn| txn.call("GetUpdates", &0_u64))
-                .map_err(|error| match method_error_output(&error) {
-                    Some(output) => RunError::Transaction(output),
-                    None => RunError::Transport(error),
-                })?;
-            let ids: Vec<String> = outcome
-                .packages
-                .iter()
-                .map(|(_, id, _)| id.clone())
-                .collect();
+            let ids = update_ids(&conn, None)?;
             if ids.is_empty() {
                 return Ok(Output {
                     status: 0,
@@ -368,7 +404,8 @@ pub fn run(op: &PkOp) -> Result<Output, RunError> {
                     stderr: String::new(),
                 });
             }
-            act(&conn, |txn| txn.call("UpdatePackages", &(0_u64, ids)))
+            // InstallPackages here too — see UpgradeOne.
+            act(&conn, |txn| txn.call("InstallPackages", &(0_u64, ids)))
         }
         PkOp::RefreshCache => act(&conn, |txn| txn.call("RefreshCache", &false)),
     }
@@ -425,6 +462,23 @@ mod tests {
         );
         assert_eq!(parse_package_id("curl"), None);
         assert_eq!(parse_package_id(";8.0;amd64;x"), None);
+    }
+
+    #[test]
+    fn update_ids_filter_by_package_name() {
+        let packages: Vec<PackageSignal> = vec![
+            (9, "curl;8.5.0-2;amd64;noble-updates".to_owned(), String::new()),
+            (9, "wget;1.21.4-1;amd64;noble-updates".to_owned(), String::new()),
+        ];
+        // A name filter keeps only that package's update id — the shape
+        // aptcc's UpdatePackages requires (the installed id fails).
+        assert_eq!(
+            matching_update_ids(&packages, Some("curl")),
+            vec!["curl;8.5.0-2;amd64;noble-updates".to_owned()]
+        );
+        assert!(matching_update_ids(&packages, Some("git")).is_empty());
+        // No filter keeps every id, for the batch upgrade.
+        assert_eq!(matching_update_ids(&packages, None).len(), 2);
     }
 
     #[test]
