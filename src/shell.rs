@@ -30,7 +30,7 @@ use gpui_kit::prelude::{
 use gpui_kit::{
     AnyElement, AppContext as _, ClipboardItem, Context, Entity, Focusable as _, Hsla, IntoElement,
     KeyBinding, ParentElement as _, Render, SharedString, Styled as _, Subscription, Task, Window,
-    actions, div, px,
+    actions, div, px, uniform_list,
 };
 
 actions!(pakkit, [FocusSearch]);
@@ -1319,14 +1319,10 @@ impl AppView {
             )
             .child(
                 div()
-                    .id("queue-body")
                     .flex_1()
                     .min_h_0()
-                    .overflow_y_scroll()
-                    .p(px(14.))
-                    .flex()
-                    .flex_col()
-                    .gap(px(10.))
+                    .pt(px(14.))
+                    .px(px(14.))
                     .when(self.state.queue.is_empty(), |this| {
                         this.child(
                             div()
@@ -1335,14 +1331,34 @@ impl AppView {
                                 .child(tr!("queue.empty")),
                         )
                     })
-                    .children(self.state.queue.iter().map(|item| {
-                        let pkg = self
+                    .when(!self.state.queue.is_empty(), |this| {
+                        // Snapshot the rows the virtual list will render: its
+                        // closure is 'static and cannot borrow self.state.
+                        let rows: Vec<QueueRowModel> = self
                             .state
-                            .packages
+                            .queue
                             .iter()
-                            .find(|p| p.key() == item.id.to_lowercase());
-                        queue_row(p, item, pkg, view.clone())
-                    })),
+                            .map(|item| {
+                                let pkg = self
+                                    .state
+                                    .packages
+                                    .iter()
+                                    .find(|pkg| pkg.key() == item.id.to_lowercase());
+                                QueueRowModel::new(item, pkg)
+                            })
+                            .collect();
+                        let count = rows.len();
+                        let view = view.clone();
+                        let p = *p;
+                        this.child(
+                            uniform_list("queue-body", count, move |range, _, _| {
+                                range
+                                    .map(|ix| queue_row(&p, &rows[ix], view.clone()))
+                                    .collect()
+                            })
+                            .size_full(),
+                        )
+                    }),
             )
             .child(
                 h_flex()
@@ -1397,62 +1413,92 @@ fn nav_row(
         .into_any_element()
 }
 
-fn queue_row(
-    p: &Palette,
-    item: &crate::queue::QueueItem,
-    pkg: Option<&Package>,
-    view: gpui_kit::WeakEntity<AppView>,
-) -> AnyElement {
-    let uid = item.uid;
-    let (color, label) = match item.state {
+/// One queue row as owned data. The uniform_list render closure is 'static
+/// and cannot borrow `self.state`, so each row is snapshotted up front.
+struct QueueRowModel {
+    uid: u64,
+    name: String,
+    state: QueueState,
+    progress: f32,
+    log: String,
+    glyph: IconKey,
+    tint: &'static str,
+}
+
+impl QueueRowModel {
+    fn new(item: &crate::queue::QueueItem, pkg: Option<&Package>) -> Self {
+        Self {
+            uid: item.uid,
+            name: item.name.clone(),
+            state: item.state,
+            progress: item.progress,
+            log: item.log.clone(),
+            glyph: pkg.map_or(IconKey::Package, |pkg| pkg.category.icon()),
+            tint: pkg.map_or("#4f8cff", |pkg| pkg.category.color()),
+        }
+    }
+}
+
+fn queue_row(p: &Palette, row: &QueueRowModel, view: gpui_kit::WeakEntity<AppView>) -> AnyElement {
+    let uid = row.uid;
+    let (color, label) = match row.state {
         QueueState::Pending => (p.muted, tr!("queue.row.pending")),
         QueueState::Running => (p.accent, tr!("queue.row.running")),
         QueueState::Done => (p.ok, tr!("queue.row.done")),
         QueueState::Error => (p.danger, tr!("queue.row.error")),
     };
-    let glyph = pkg.map_or(IconKey::Package, |p| p.category.icon());
-    let hex = pkg.map_or("#4f8cff", |p| p.category.color());
 
-    widgets::card(p)
-        .p(px(10.))
+    // The trailing padding replaces the old column gap; every row carries it
+    // so heights stay uniform for the list's first-item measurement.
+    div()
+        .pb(px(10.))
         .child(
-            h_flex()
-                .gap(px(8.))
-                .child(widgets::tinted_chip(p, glyph, hex, 30., 15.))
+            widgets::card(p)
+                .p(px(10.))
                 .child(
-                    v_flex()
-                        .flex_1()
-                        .min_w_0()
+                    h_flex()
+                        .gap(px(8.))
+                        .child(widgets::tinted_chip(p, row.glyph, row.tint, 30., 15.))
                         .child(
-                            div()
-                                .text_size(px(12.5))
-                                .font_medium()
-                                .truncate()
-                                .child(item.name.clone()),
+                            v_flex()
+                                .flex_1()
+                                .min_w_0()
+                                .child(
+                                    div()
+                                        .text_size(px(12.5))
+                                        .font_medium()
+                                        .truncate()
+                                        .child(row.name.clone()),
+                                )
+                                .child(div().text_size(px(11.)).text_color(color).child(label)),
                         )
-                        .child(div().text_size(px(11.)).text_color(color).child(label)),
+                        .child(
+                            widgets::icon_btn(
+                                format!("queue-remove-{uid}"),
+                                IconKey::Close,
+                                24.,
+                                p.muted,
+                            )
+                            .on_click(move |_, _, cx| {
+                                let _ =
+                                    view.update(cx, |this, cx| this.remove_queue_item(uid, cx));
+                            }),
+                        ),
                 )
                 .child(
-                    widgets::icon_btn("queue-remove", IconKey::Close, 24., p.muted).on_click(
-                        move |_, _, cx| {
-                            let _ = view.update(cx, |this, cx| this.remove_queue_item(uid, cx));
-                        },
-                    ),
+                    div()
+                        .mt(px(8.))
+                        .child(widgets::progress_bar(p, row.progress)),
+                )
+                .child(
+                    div()
+                        .mt(px(6.))
+                        .text_size(px(11.))
+                        .font_family("Cascadia Code")
+                        .text_color(p.muted)
+                        .truncate()
+                        .child(row.log.clone()),
                 ),
-        )
-        .child(
-            div()
-                .mt(px(8.))
-                .child(widgets::progress_bar(p, item.progress)),
-        )
-        .child(
-            div()
-                .mt(px(6.))
-                .text_size(px(11.))
-                .font_family("Cascadia Code")
-                .text_color(p.muted)
-                .truncate()
-                .child(item.log.clone()),
         )
         .into_any_element()
 }
