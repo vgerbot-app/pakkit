@@ -65,7 +65,9 @@ pub fn parse_search(stdout: &str) -> Vec<SearchRow> {
                 Some(cols[4..].join(" "))
             } else {
                 // A truncated row may carry the summary in the Notes slot.
-                cols.get(3).filter(|cell| **cell != "-").map(|s| (*s).to_owned())
+                cols.get(3)
+                    .filter(|cell| **cell != "-")
+                    .map(|s| (*s).to_owned())
             };
             SearchRow {
                 name: cols[0].to_owned(),
@@ -149,7 +151,11 @@ pub fn parse_show(stdout: &str) -> PackageDetail {
             "description" => description = value.to_owned(),
             "installed" => {
                 // `2.77.1 (28254) 46.9MB snapd` — first token is the version.
-                detail.version = value.split_whitespace().next().unwrap_or_default().to_owned();
+                detail.version = value
+                    .split_whitespace()
+                    .next()
+                    .unwrap_or_default()
+                    .to_owned();
             }
             _ => {}
         }
@@ -186,7 +192,10 @@ mod tests {
         );
 
         // Summaries containing single spaces stay one description.
-        let nginx = rows.iter().find(|row| row.id == "hello-nginx").expect("row");
+        let nginx = rows
+            .iter()
+            .find(|row| row.id == "hello-nginx")
+            .expect("row");
         assert!(
             nginx
                 .description

@@ -37,7 +37,9 @@ use std::sync::atomic::{AtomicU8, Ordering};
 use super::exec::{self, Output};
 #[cfg(target_os = "linux")]
 use super::packagekit;
-use super::types::{BackendError, InstallOptions, ListRow, PackageDetail, SearchFilters, SearchRow};
+use super::types::{
+    BackendError, InstallOptions, ListRow, PackageDetail, SearchFilters, SearchRow,
+};
 use super::{BackendKind, Capabilities, PackageBackend};
 use crate::model::Source;
 
@@ -334,7 +336,12 @@ mod tests {
             vec!["search", ""]
         );
         assert_eq!(
-            b.search_args("firefox", Some("ignored"), SearchFilters::default(), Some(10)),
+            b.search_args(
+                "firefox",
+                Some("ignored"),
+                SearchFilters::default(),
+                Some(10)
+            ),
             vec!["search", "firefox"]
         );
         assert_eq!(b.list_args(None), vec!["list", "--installed"]);
@@ -345,7 +352,10 @@ mod tests {
     #[test]
     fn sources_are_out_of_scope() {
         let b = apt();
-        assert_eq!(b.source_add_args("x", "https://example.com"), Vec::<String>::new());
+        assert_eq!(
+            b.source_add_args("x", "https://example.com"),
+            Vec::<String>::new()
+        );
         assert_eq!(b.source_edit_args("x", Some(true)), None);
         assert_eq!(b.source_remove_args("x"), Vec::<String>::new());
     }

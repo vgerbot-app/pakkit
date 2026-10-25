@@ -148,7 +148,8 @@ impl fmt::Display for RunError {
 pub fn available() -> bool {
     let probe = || -> zbus::Result<()> {
         let conn = blocking::Connection::system()?;
-        let root = blocking::Proxy::new(&conn, DESTINATION, ROOT_PATH, "org.freedesktop.PackageKit")?;
+        let root =
+            blocking::Proxy::new(&conn, DESTINATION, ROOT_PATH, "org.freedesktop.PackageKit")?;
         let _: String = root.call("GetDaemonState", &())?;
         Ok(())
     };
@@ -323,7 +324,9 @@ fn update_ids(conn: &blocking::Connection, name: Option<&str>) -> Result<Vec<Str
         }
     })?;
     let ids = matching_update_ids(&outcome.packages, name);
-    if ids.is_empty() && let Some(name) = name {
+    if ids.is_empty()
+        && let Some(name) = name
+    {
         return Err(RunError::Transaction(Output {
             status: 100, // apt's "unable to locate package"
             stdout: String::new(),
@@ -499,8 +502,16 @@ mod tests {
     #[test]
     fn update_ids_filter_by_package_name() {
         let packages: Vec<PackageSignal> = vec![
-            (9, "curl;8.5.0-2;amd64;noble-updates".to_owned(), String::new()),
-            (9, "wget;1.21.4-1;amd64;noble-updates".to_owned(), String::new()),
+            (
+                9,
+                "curl;8.5.0-2;amd64;noble-updates".to_owned(),
+                String::new(),
+            ),
+            (
+                9,
+                "wget;1.21.4-1;amd64;noble-updates".to_owned(),
+                String::new(),
+            ),
         ];
         // A name filter keeps only that package's update id — the shape
         // aptcc's UpdatePackages requires (the installed id fails).

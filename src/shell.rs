@@ -100,7 +100,8 @@ impl AppView {
             input
         });
         let backend_path_input = cx.new(|cx| {
-            let mut input = InputState::new(window, cx).placeholder(tr!("placeholder.backend_path"));
+            let mut input =
+                InputState::new(window, cx).placeholder(tr!("placeholder.backend_path"));
             input.set_value(settings.backend_path.clone(), window, cx);
             input
         });
@@ -395,7 +396,8 @@ impl AppView {
         // process entirely and show just the cached installed packages.
         // Backends with a full-catalog empty search (flatpak, apt) run it.
         if query.trim().is_empty() && !backend.empty_query_searches_catalog() {
-            self.state.packages = merge_catalog(&[], &self.list_rows, &self.installed_ids, cli_name);
+            self.state.packages =
+                merge_catalog(&[], &self.list_rows, &self.installed_ids, cli_name);
             self.state.searching = false;
             self.state.status = self.state.status_for(self.state.route);
             cx.notify();
@@ -489,13 +491,12 @@ impl AppView {
                 .background_spawn(async move {
                     // An empty query matches nothing on winget; backends with
                     // a full-catalog empty search (flatpak, apt) run it.
-                    let search = if query.trim().is_empty()
-                        && !backend.empty_query_searches_catalog()
-                    {
-                        Vec::new()
-                    } else {
-                        backend.search_packages(&query, Some(&source), filters, None)
-                    };
+                    let search =
+                        if query.trim().is_empty() && !backend.empty_query_searches_catalog() {
+                            Vec::new()
+                        } else {
+                            backend.search_packages(&query, Some(&source), filters, None)
+                        };
 
                     let list = backend.list_installed();
                     let installed = backend.managed_ids(&list);
@@ -1209,9 +1210,7 @@ impl AppView {
             .children(
                 routes
                     .into_iter()
-                    .filter(|(key, ..)| {
-                        *key != "sources" || self.state.capabilities.sources_view
-                    })
+                    .filter(|(key, ..)| *key != "sources" || self.state.capabilities.sources_view)
                     .map(|(key, label, glyph, route)| {
                         SidebarMenuItem::new(label)
                             .min_h(px(38.))
@@ -1251,17 +1250,11 @@ impl AppView {
                     // (the card grid) and pin their pager, so the pane must
                     // clip instead of scroll.
                     .when(
-                        matches!(
-                            self.state.route,
-                            Route::Search | Route::Category(_)
-                        ),
+                        matches!(self.state.route, Route::Search | Route::Category(_)),
                         |this| this.overflow_hidden(),
                     )
                     .when(
-                        !matches!(
-                            self.state.route,
-                            Route::Search | Route::Category(_)
-                        ),
+                        !matches!(self.state.route, Route::Search | Route::Category(_)),
                         |this| this.overflow_y_scroll(),
                     )
                     .child(views::render(
@@ -1540,8 +1533,7 @@ fn queue_row(p: &Palette, row: &QueueRowModel, view: gpui_kit::WeakEntity<AppVie
                                 p.muted,
                             )
                             .on_click(move |_, _, cx| {
-                                let _ =
-                                    view.update(cx, |this, cx| this.remove_queue_item(uid, cx));
+                                let _ = view.update(cx, |this, cx| this.remove_queue_item(uid, cx));
                             }),
                         ),
                 )
@@ -1681,10 +1673,11 @@ fn merge_catalog(
     // Hash indexes keep this linear: a full-catalog backend (apt's empty
     // search) returns ~80k rows, and a quadratic scan over them blocks the
     // UI thread for minutes.
-    let installed: std::collections::HashSet<&str> =
-        installed.iter().map(String::as_str).collect();
-    let by_id: std::collections::HashMap<String, &types::ListRow> =
-        list.iter().map(|row| (row.id.to_lowercase(), row)).collect();
+    let installed: std::collections::HashSet<&str> = installed.iter().map(String::as_str).collect();
+    let by_id: std::collections::HashMap<String, &types::ListRow> = list
+        .iter()
+        .map(|row| (row.id.to_lowercase(), row))
+        .collect();
 
     let mut packages: Vec<Package> = Vec::with_capacity(search.len());
     let mut seen: std::collections::HashSet<String> =

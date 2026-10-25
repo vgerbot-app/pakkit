@@ -37,7 +37,9 @@ use std::sync::atomic::{AtomicU8, Ordering};
 use super::exec::{self, Output};
 #[cfg(target_os = "linux")]
 use super::packagekit;
-use super::types::{BackendError, InstallOptions, ListRow, PackageDetail, SearchFilters, SearchRow};
+use super::types::{
+    BackendError, InstallOptions, ListRow, PackageDetail, SearchFilters, SearchRow,
+};
 use super::{BackendKind, Capabilities, PackageBackend};
 use crate::model::Source;
 
@@ -466,10 +468,7 @@ mod tests {
             b.uninstall_args("aur/firefox-nightly"),
             vec!["-R", "--noconfirm", "firefox-nightly"]
         );
-        assert_eq!(
-            b.upgrade_args("curl"),
-            vec!["-S", "--noconfirm", "curl"]
-        );
+        assert_eq!(b.upgrade_args("curl"), vec!["-S", "--noconfirm", "curl"]);
         assert_eq!(
             b.upgrade_args("aur/firefox-nightly"),
             vec!["--from-aur", "-S", "--noconfirm", "firefox-nightly"]
@@ -487,7 +486,12 @@ mod tests {
             vec!["-Ss", ""]
         );
         assert_eq!(
-            b.search_args("firefox", Some("ignored"), SearchFilters::default(), Some(10)),
+            b.search_args(
+                "firefox",
+                Some("ignored"),
+                SearchFilters::default(),
+                Some(10)
+            ),
             vec!["-Ss", "firefox"]
         );
         assert_eq!(b.list_args(None), vec!["-Q"]);
@@ -498,7 +502,10 @@ mod tests {
     #[test]
     fn sources_are_out_of_scope() {
         let b = pacman();
-        assert_eq!(b.source_add_args("x", "https://example.com"), Vec::<String>::new());
+        assert_eq!(
+            b.source_add_args("x", "https://example.com"),
+            Vec::<String>::new()
+        );
         assert_eq!(b.source_edit_args("x", Some(true)), None);
         assert_eq!(b.source_remove_args("x"), Vec::<String>::new());
     }

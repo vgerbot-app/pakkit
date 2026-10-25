@@ -50,7 +50,11 @@ pub fn parse_search(stdout: &str) -> Vec<SearchRow> {
         }
         let name = cols.next().unwrap_or_default().trim();
         let row = SearchRow {
-            name: if name.is_empty() { id.to_owned() } else { name.to_owned() },
+            name: if name.is_empty() {
+                id.to_owned()
+            } else {
+                name.to_owned()
+            },
             id: id.to_owned(),
             version: cols.next().unwrap_or_default().trim().to_owned(),
             match_kind: None,
@@ -84,7 +88,11 @@ fn parse_list_row(line: &str) -> Option<ListRow> {
     }
     let name = cols.next().unwrap_or_default().trim();
     Some(ListRow {
-        name: if name.is_empty() { id.to_owned() } else { name.to_owned() },
+        name: if name.is_empty() {
+            id.to_owned()
+        } else {
+            name.to_owned()
+        },
         id: id.to_owned(),
         version: cols.next().unwrap_or_default().trim().to_owned(),
         available: None,
@@ -206,7 +214,10 @@ mod tests {
             .find(|row| row.id == "com.example.bianjiqi")
             .expect("CJK row");
         assert_eq!(bianjiqi.name, "编辑器");
-        assert_eq!(bianjiqi.description.as_deref(), Some("一个简单的文本编辑器"));
+        assert_eq!(
+            bianjiqi.description.as_deref(),
+            Some("一个简单的文本编辑器")
+        );
     }
 
     #[test]

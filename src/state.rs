@@ -7,8 +7,8 @@
 
 use serde::{Deserialize, Serialize};
 
-use crate::backends::{BackendKind, Capabilities};
 use crate::backends::types::{InstallOptions, SearchFilters};
+use crate::backends::{BackendKind, Capabilities};
 use crate::model::{CategoryId, Package, Source};
 use crate::theme::ModeChoice;
 

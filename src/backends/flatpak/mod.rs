@@ -165,7 +165,11 @@ impl PackageBackend for Flatpak {
 
     /// `uninstall --assumeyes <id>`
     fn uninstall_args(&self, id: &str) -> Vec<String> {
-        vec!["uninstall".to_owned(), "--assumeyes".to_owned(), id.to_owned()]
+        vec![
+            "uninstall".to_owned(),
+            "--assumeyes".to_owned(),
+            id.to_owned(),
+        ]
     }
 
     /// `update --assumeyes <id>`
@@ -250,9 +254,8 @@ impl PackageBackend for Flatpak {
     /// `info` covers installed apps only; anything else falls back to
     /// `remote-info` against the named remote (flathub by default).
     fn show_package(&self, id: &str, source: Option<&str>) -> Option<PackageDetail> {
-        let present = |detail: &PackageDetail| {
-            !detail.version.is_empty() || !detail.description.is_empty()
-        };
+        let present =
+            |detail: &PackageDetail| !detail.version.is_empty() || !detail.description.is_empty();
 
         let args = self.show_args(id, source);
         let refs: Vec<&str> = args.iter().map(String::as_str).collect();
@@ -319,7 +322,12 @@ mod tests {
         let args = flatpak().install_args("org.gnome.Epiphany.Devel", &options);
         assert_eq!(
             args,
-            vec!["install", "--assumeyes", "gnome-nightly", "org.gnome.Epiphany.Devel"]
+            vec![
+                "install",
+                "--assumeyes",
+                "gnome-nightly",
+                "org.gnome.Epiphany.Devel"
+            ]
         );
 
         let options = InstallOptions {
@@ -356,7 +364,10 @@ mod tests {
                 "https://distribute.kde.org/kdeapps.flatpakrepo"
             ]
         );
-        assert_eq!(b.source_remove_args("kdeapps"), vec!["remote-delete", "kdeapps"]);
+        assert_eq!(
+            b.source_remove_args("kdeapps"),
+            vec!["remote-delete", "kdeapps"]
+        );
         assert_eq!(
             b.source_update_args(Some("flathub")),
             vec!["update", "--appstream", "flathub"]

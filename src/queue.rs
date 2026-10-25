@@ -147,11 +147,7 @@ pub fn args_for(
 }
 
 /// The full command line a queue entry shows, prefixed with the CLI's name.
-pub fn command_line(
-    item: &QueueItem,
-    settings: &Settings,
-    backend: &dyn PackageBackend,
-) -> String {
+pub fn command_line(item: &QueueItem, settings: &Settings, backend: &dyn PackageBackend) -> String {
     let args = args_for(item, settings, backend);
     format!("{} {}", backend.cli_name(), args.join(" "))
 }
@@ -654,7 +650,10 @@ mod tests {
             "the report opens with the command line: {detail}"
         );
         assert!(detail.contains("0x00000001"), "the exit code: {detail}");
-        assert!(detail.contains("Resolving dependencies…"), "stdout: {detail}");
+        assert!(
+            detail.contains("Resolving dependencies…"),
+            "stdout: {detail}"
+        );
         assert!(
             detail.contains("E: Unable to locate package A"),
             "stderr: {detail}"

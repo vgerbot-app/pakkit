@@ -18,9 +18,7 @@ pub mod winget;
 use std::sync::Arc;
 
 use exec::Output;
-use types::{
-    BackendError, InstallOptions, ListRow, PackageDetail, SearchFilters, SearchRow,
-};
+use types::{BackendError, InstallOptions, ListRow, PackageDetail, SearchFilters, SearchRow};
 
 use crate::model::Source;
 
@@ -322,8 +320,9 @@ pub fn detect(
         BackendKind::Apt => {
             apt::Apt::resolve(configured_path).map(|a| Arc::new(a) as Arc<dyn PackageBackend>)
         }
-        BackendKind::Pacman => pacman::Pacman::resolve(configured_path)
-            .map(|p| Arc::new(p) as Arc<dyn PackageBackend>),
+        BackendKind::Pacman => {
+            pacman::Pacman::resolve(configured_path).map(|p| Arc::new(p) as Arc<dyn PackageBackend>)
+        }
         BackendKind::Snap => {
             snap::Snap::resolve(configured_path).map(|s| Arc::new(s) as Arc<dyn PackageBackend>)
         }

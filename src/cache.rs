@@ -218,7 +218,10 @@ mod tests {
     #[test]
     fn detail_file_names_escape_slashed_ids() {
         // `aur/firefox-nightly` must map to one flat file, not a subdir.
-        assert_eq!(detail_file_name("aur/Firefox-Nightly"), "aur__firefox-nightly.json");
+        assert_eq!(
+            detail_file_name("aur/Firefox-Nightly"),
+            "aur__firefox-nightly.json"
+        );
         assert_eq!(detail_file_name("firefox"), "firefox.json");
     }
 

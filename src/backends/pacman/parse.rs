@@ -35,7 +35,11 @@ fn parse_package_line(line: &str) -> Option<PackageLine<'_>> {
         return None;
     }
     let version = tokens.next().unwrap_or_default();
-    Some(PackageLine { repo, name, version })
+    Some(PackageLine {
+        repo,
+        name,
+        version,
+    })
 }
 
 /// `-Ss <query>`: a `repo/name version [marker]` line per package, each
@@ -65,10 +69,7 @@ pub fn parse_search(stdout: &str) -> Vec<SearchRow> {
             continue;
         };
         let (id, source) = if parsed.repo == "aur" {
-            (
-                format!("{AUR_ID_PREFIX}{}", parsed.name),
-                "aur".to_owned(),
-            )
+            (format!("{AUR_ID_PREFIX}{}", parsed.name), "aur".to_owned())
         } else {
             (parsed.name.to_owned(), parsed.repo.to_owned())
         };

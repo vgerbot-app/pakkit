@@ -25,12 +25,12 @@ use gpui_kit::{
 use std::cell::Cell;
 use std::rc::Rc;
 
+use crate::backends::types::PackageDetail;
 use crate::icons::{IconKey, icon};
 use crate::model::Package;
 use crate::shell::AppView;
 use crate::theme::Palette;
 use crate::widgets::{self, BtnKind, BtnSize, PillKind};
-use crate::backends::types::PackageDetail;
 
 /// 软件包详情 — the large modal a card's 查看详情 opens.
 ///
@@ -190,9 +190,7 @@ pub fn pkg_detail(view: &mut AppView, id: &str, window: &mut Window, cx: &mut Co
                                     }),
                             ),
                     )
-                    .when(!loading, |this| {
-                        this.child(prose_lines(&p, &description))
-                    })
+                    .when(!loading, |this| this.child(prose_lines(&p, &description)))
                     .when(loading, |this| {
                         this.child(
                             div()
@@ -473,7 +471,11 @@ pub fn error_detail(view: &mut AppView, uid: u64, window: &mut Window, cx: &mut 
         .queue
         .iter()
         .find(|item| item.uid == uid)
-        .and_then(|item| item.detail.clone().map(|detail| (item.name.clone(), detail)))
+        .and_then(|item| {
+            item.detail
+                .clone()
+                .map(|detail| (item.name.clone(), detail))
+        })
     else {
         return;
     };
@@ -529,19 +531,21 @@ pub fn error_detail(view: &mut AppView, uid: u64, window: &mut Window, cx: &mut 
                             });
                         }),
                     )
-                    .child(div().ml_auto().child(
-                        widgets::btn(
-                            cx,
-                            &p,
-                            "error-close",
-                            BtnKind::Primary,
-                            BtnSize::Regular,
-                            tr!("common.close"),
-                        )
-                        .on_click(move |_, window, cx| {
-                            window.close_dialog(cx);
-                        }),
-                    )),
+                    .child(
+                        div().ml_auto().child(
+                            widgets::btn(
+                                cx,
+                                &p,
+                                "error-close",
+                                BtnKind::Primary,
+                                BtnSize::Regular,
+                                tr!("common.close"),
+                            )
+                            .on_click(move |_, window, cx| {
+                                window.close_dialog(cx);
+                            }),
+                        ),
+                    ),
             )
     });
 }

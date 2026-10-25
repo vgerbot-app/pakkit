@@ -95,11 +95,7 @@ fn home(state: &AppState, p: &Palette, cx: &mut Context<AppView>) -> AnyElement 
             .child(hero(state, p, cx))
             .into_any_element(),
     );
-    children.push(
-        div()
-        .h(px(10.))
-        .into_any_element(),
-    );
+    children.push(div().h(px(10.)).into_any_element());
 
     // 常用分类
     children.push(
@@ -590,112 +586,100 @@ fn category_detail(
         .map(|pkg| pkg.id.clone())
         .collect();
 
-    let back = div()
-        .px(px(24.))
-        .pt(px(20.))
-        .child(
-            div()
-                .id("cat-back")
-                .flex()
-                .items_center()
-                .gap(px(4.))
-                .text_size(px(12.5))
-                .text_color(p.muted)
-                .cursor_pointer()
-                .hover(move |this| this.text_color(p.ink))
-                .on_click(cx.listener(|this, _, window, cx| {
-                    this.navigate(Route::Categories, window, cx);
-                }))
-                .child(icon(IconKey::Back, px(13.), p.muted))
-                .child(tr!("category.back")),
-        );
+    let back = div().px(px(24.)).pt(px(20.)).child(
+        div()
+            .id("cat-back")
+            .flex()
+            .items_center()
+            .gap(px(4.))
+            .text_size(px(12.5))
+            .text_color(p.muted)
+            .cursor_pointer()
+            .hover(move |this| this.text_color(p.ink))
+            .on_click(cx.listener(|this, _, window, cx| {
+                this.navigate(Route::Categories, window, cx);
+            }))
+            .child(icon(IconKey::Back, px(13.), p.muted))
+            .child(tr!("category.back")),
+    );
 
     // Hero banner tinted by the category colour.
-    let hero = div()
-        .px(px(24.))
-        .pt(px(12.))
-        .child(
-                widgets::card(p)
+    let hero = div().px(px(24.)).pt(px(12.)).child(
+        widgets::card(p)
+            .relative()
+            .overflow_hidden()
+            .rounded(px(18.))
+            .p(px(20.))
+            .child(
+                div()
+                    .absolute()
+                    .top(px(-70.))
+                    .right(px(-30.))
+                    .size(px(240.))
+                    .rounded(px(9999.))
+                    .bg(Hsla { a: 0.18, ..color }),
+            )
+            .child(
+                div()
                     .relative()
-                    .overflow_hidden()
-                    .rounded(px(18.))
-                    .p(px(20.))
+                    .flex()
+                    .items_center()
+                    .gap(px(14.))
+                    .child(widgets::tinted_chip(p, id.icon(), id.color(), 52., 26.))
                     .child(
                         div()
-                            .absolute()
-                            .top(px(-70.))
-                            .right(px(-30.))
-                            .size(px(240.))
-                            .rounded(px(9999.))
-                            .bg(Hsla { a: 0.18, ..color }),
-                    )
-                    .child(
-                        div()
-                            .relative()
-                            .flex()
-                            .items_center()
-                            .gap(px(14.))
-                            .child(widgets::tinted_chip(p, id.icon(), id.color(), 52., 26.))
+                            .flex_1()
+                            .min_w_0()
+                            .child(div().text_size(px(20.)).font_semibold().child(id.label()))
                             .child(
                                 div()
-                                    .flex_1()
-                                    .min_w_0()
-                                    .child(
-                                        div().text_size(px(20.)).font_semibold().child(id.label()),
-                                    )
-                                    .child(
-                                        div()
-                                            .text_size(px(12.5))
-                                            .text_color(p.ink2)
-                                            .child(id.description()),
-                                    )
-                                    // A horizontal flex hugs its main-axis
-                                    // content, so the pill shrinks to the
-                                    // label instead of stretching across the
-                                    // hero like a block child would.
-                                    .child(
-                                        div().mt(px(6.)).flex().child(widgets::pill(
-                                            p,
-                                            PillKind::Line,
-                                            tr!("category.packages_count", count = packages.len()),
-                                        )),
-                                    ),
+                                    .text_size(px(12.5))
+                                    .text_color(p.ink2)
+                                    .child(id.description()),
                             )
-                            .child(
-                                widgets::btn(
-                                    cx,
-                                    p,
-                                    "cat-install-all",
-                                    BtnKind::Primary,
-                                    BtnSize::Regular,
-                                    tr!("category.install_all"),
-                                )
-                                // The disabled style fades the label to 50% of
-                                // the muted colour, so it is swapped for a
-                                // readable one plus a tooltip that says why.
-                                .when(install_all.is_empty(), |button| {
-                                    button
-                                        .disabled(true)
-                                        .text_color(p.muted)
-                                        .bg(p.tint(p.accent, 0.15))
-                                        .border_color(p.tint(p.accent, 0.25))
-                                        .tooltip(tr!("category.all_installed"))
-                                })
-                                .on_click(cx.listener(
-                                    move |this, _, window, cx| {
-                                        for id in &install_all {
-                                            this.enqueue(id, QueueAction::Install, window, cx);
-                                        }
-                                    },
-                                )),
-                            ),
+                            // A horizontal flex hugs its main-axis
+                            // content, so the pill shrinks to the
+                            // label instead of stretching across the
+                            // hero like a block child would.
+                            .child(div().mt(px(6.)).flex().child(widgets::pill(
+                                p,
+                                PillKind::Line,
+                                tr!("category.packages_count", count = packages.len()),
+                            ))),
+                    )
+                    .child(
+                        widgets::btn(
+                            cx,
+                            p,
+                            "cat-install-all",
+                            BtnKind::Primary,
+                            BtnSize::Regular,
+                            tr!("category.install_all"),
+                        )
+                        // The disabled style fades the label to 50% of
+                        // the muted colour, so it is swapped for a
+                        // readable one plus a tooltip that says why.
+                        .when(install_all.is_empty(), |button| {
+                            button
+                                .disabled(true)
+                                .text_color(p.muted)
+                                .bg(p.tint(p.accent, 0.15))
+                                .border_color(p.tint(p.accent, 0.25))
+                                .tooltip(tr!("category.all_installed"))
+                        })
+                        .on_click(cx.listener(
+                            move |this, _, window, cx| {
+                                for id in &install_all {
+                                    this.enqueue(id, QueueAction::Install, window, cx);
+                                }
+                            },
+                        )),
                     ),
-            );
+            ),
+    );
 
-    let sort_bar = div()
-        .px(px(24.))
-        .pt(px(10.))
-        .child(
+    let sort_bar =
+        div().px(px(24.)).pt(px(10.)).child(
             div()
                 .flex()
                 .items_center()
@@ -737,43 +721,43 @@ fn category_detail(
     // The view fills the content pane: back/hero/sort stay pinned and only
     // the card grid scrolls, so the pager keeps a fixed slot at the bottom
     // instead of riding along with the cards.
-    let body = div()
-        .flex_1()
-        .min_h_0()
-        .flex()
-        .flex_col()
-        .child(
-            div()
-                .id("category-results")
-                .flex_1()
-                .min_h_0()
-                .overflow_y_scroll()
-                .child(widgets::page_body().child(
-                    div()
-                        .pt(px(14.))
-                        .flex()
-                        .flex_wrap()
-                        .gap(px(12.))
-                        .children(page_rows.iter().map(|pkg| package_card(state, p, pkg, cx))),
-                )),
-        )
-        .when(pages > 1, |this| {
-            this.child(
+    let body =
+        div()
+            .flex_1()
+            .min_h_0()
+            .flex()
+            .flex_col()
+            .child(
                 div()
-                    .flex_none()
-                    .border_t_1()
-                    .border_color(p.line)
-                    .child(pager(
-                        p,
-                        "category-pager",
-                        page,
-                        pages,
-                        packages.len(),
-                        cx,
-                        |state, next| state.category_page = next,
-                    )),
+                    .id("category-results")
+                    .flex_1()
+                    .min_h_0()
+                    .overflow_y_scroll()
+                    .child(
+                        widgets::page_body().child(
+                            div().pt(px(14.)).flex().flex_wrap().gap(px(12.)).children(
+                                page_rows.iter().map(|pkg| package_card(state, p, pkg, cx)),
+                            ),
+                        ),
+                    ),
             )
-        });
+            .when(pages > 1, |this| {
+                this.child(
+                    div()
+                        .flex_none()
+                        .border_t_1()
+                        .border_color(p.line)
+                        .child(pager(
+                            p,
+                            "category-pager",
+                            page,
+                            pages,
+                            packages.len(),
+                            cx,
+                            |state, next| state.category_page = next,
+                        )),
+                )
+            });
 
     div()
         .flex()
@@ -840,17 +824,12 @@ fn pager(
                 cx.notify();
             })),
         )
-        .child(
-            div()
-                .text_size(px(11.))
-                .text_color(p.muted)
-                .child(tr!(
-                    "pager.status",
-                    page = page + 1,
-                    pages = pages,
-                    count = count
-                )),
-        )
+        .child(div().text_size(px(11.)).text_color(p.muted).child(tr!(
+            "pager.status",
+            page = page + 1,
+            pages = pages,
+            count = count
+        )))
         .child(
             widgets::btn(
                 cx,
@@ -890,12 +869,7 @@ fn pager(
 
 // ------------------------------------------------------------------- 搜索
 
-fn search(
-    state: &AppState,
-    command: &str,
-    p: &Palette,
-    cx: &mut Context<AppView>,
-) -> AnyElement {
+fn search(state: &AppState, command: &str, p: &Palette, cx: &mut Context<AppView>) -> AnyElement {
     let results = state.filtered();
     // The subtitle keeps the full count; only the grid is paged.
     let (page_rows, page, pages) = page_slice(&results, state.search_page);
@@ -998,36 +972,39 @@ fn search(
     // The view fills the content pane: head/filters/command stay pinned and
     // only the card grid scrolls, so the pager keeps a fixed slot at the
     // bottom instead of riding along with the cards.
-    let body = if results.is_empty() && state.searching {
-        div()
-            .id("search-body")
-            .flex_1()
-            .min_h_0()
-            .overflow_y_scroll()
-            .child(widgets::page_body().child(
-                div()
-                    .flex()
-                    .flex_wrap()
-                    .gap(px(12.))
-                    .children((0..8).map(|_| widgets::skeleton_card(p).into_any_element())),
-            ))
-            .into_any_element()
-    } else if results.is_empty() {
-        div()
-            .id("search-body")
-            .flex_1()
-            .min_h_0()
-            .overflow_y_scroll()
-            .child(widgets::page_body().child(widgets::empty_state(
-                p,
-                IconKey::Search,
-                if state.query.trim().is_empty() {
-                    tr!("search.empty_none")
-                } else {
-                    tr!("search.empty_no_match")
-                },
-                tr!("search.empty_hint"),
-                vec![
+    let body =
+        if results.is_empty() && state.searching {
+            div()
+                .id("search-body")
+                .flex_1()
+                .min_h_0()
+                .overflow_y_scroll()
+                .child(
+                    widgets::page_body().child(
+                        div()
+                            .flex()
+                            .flex_wrap()
+                            .gap(px(12.))
+                            .children((0..8).map(|_| widgets::skeleton_card(p).into_any_element())),
+                    ),
+                )
+                .into_any_element()
+        } else if results.is_empty() {
+            div()
+                .id("search-body")
+                .flex_1()
+                .min_h_0()
+                .overflow_y_scroll()
+                .child(widgets::page_body().child(widgets::empty_state(
+                    p,
+                    IconKey::Search,
+                    if state.query.trim().is_empty() {
+                        tr!("search.empty_none")
+                    } else {
+                        tr!("search.empty_no_match")
+                    },
+                    tr!("search.empty_hint"),
+                    vec![
                     widgets::btn(
                         cx,
                         p,
@@ -1053,47 +1030,45 @@ fn search(
                     }))
                     .into_any_element(),
                 ],
-            )))
-            .into_any_element()
-    } else {
-        div()
-            .flex_1()
-            .min_h_0()
-            .flex()
-            .flex_col()
-            .child(
-                div()
-                    .id("search-results")
-                    .flex_1()
-                    .min_h_0()
-                    .overflow_y_scroll()
-                    .child(widgets::page_body().child(
-                        div()
-                            .flex()
-                            .flex_wrap()
-                            .gap(px(12.))
-                            .children(page_rows.iter().map(|pkg| package_card(state, p, pkg, cx))),
-                    )),
-            )
-            .when(pages > 1, |this| {
-                this.child(
+                )))
+                .into_any_element()
+        } else {
+            div()
+                .flex_1()
+                .min_h_0()
+                .flex()
+                .flex_col()
+                .child(
                     div()
-                        .flex_none()
-                        .border_t_1()
-                        .border_color(p.line)
-                        .child(pager(
-                            p,
-                            "search-pager",
-                            page,
-                            pages,
-                            results.len(),
-                            cx,
-                            |state, next| state.search_page = next,
+                        .id("search-results")
+                        .flex_1()
+                        .min_h_0()
+                        .overflow_y_scroll()
+                        .child(widgets::page_body().child(
+                            div().flex().flex_wrap().gap(px(12.)).children(
+                                page_rows.iter().map(|pkg| package_card(state, p, pkg, cx)),
+                            ),
                         )),
                 )
-            })
-            .into_any_element()
-    };
+                .when(pages > 1, |this| {
+                    this.child(
+                        div()
+                            .flex_none()
+                            .border_t_1()
+                            .border_color(p.line)
+                            .child(pager(
+                                p,
+                                "search-pager",
+                                page,
+                                pages,
+                                results.len(),
+                                cx,
+                                |state, next| state.search_page = next,
+                            )),
+                    )
+                })
+                .into_any_element()
+        };
 
     div()
         .flex()
@@ -1541,10 +1516,16 @@ fn sources(state: &AppState, p: &Palette, cx: &mut Context<AppView>) -> AnyEleme
     // flatpak adds a remote. Shown only when the backend can add one at all.
     let add_hint = match state.backend_kind {
         BackendKind::Winget => {
-            format!("{} source add --name <name> --arg <url>", state.backend_name)
+            format!(
+                "{} source add --name <name> --arg <url>",
+                state.backend_name
+            )
         }
         BackendKind::Flatpak => {
-            format!("{} remote-add --if-not-exists <name> <url>", state.backend_name)
+            format!(
+                "{} remote-add --if-not-exists <name> <url>",
+                state.backend_name
+            )
         }
         BackendKind::Apt => format!("{} edit-sources", state.backend_name),
         BackendKind::Pacman => "# /etc/pacman.conf".to_owned(),
@@ -1708,9 +1689,11 @@ fn source_card(
                             28.,
                             p.muted,
                         )
-                        .on_click(cx.listener(move |this, _, window, cx| {
-                            dialogs::edit_source(this, &edit_name, window, cx);
-                        })),
+                        .on_click(cx.listener(
+                            move |this, _, window, cx| {
+                                dialogs::edit_source(this, &edit_name, window, cx);
+                            },
+                        )),
                     )
                 })
                 .child(
@@ -1774,10 +1757,7 @@ fn settings(
             cx,
             p,
             &tr!("settings.accept_agreements"),
-            &format!(
-                "{} install --accept-package-agreements",
-                state.backend_name
-            ),
+            &format!("{} install --accept-package-agreements", state.backend_name),
             state.settings.accept_agreements,
             |this, value, cx| {
                 this.state.settings.accept_agreements = value;
@@ -2328,7 +2308,10 @@ fn about(p: &Palette, state: &AppState, cx: &mut Context<AppView>) -> AnyElement
                 .border_color(p.line)
                 .text_size(px(12.))
                 .text_color(p.muted)
-                .child(tr!("settings.backend_version", backend = state.backend_name))
+                .child(tr!(
+                    "settings.backend_version",
+                    backend = state.backend_name
+                ))
                 .child(widgets::code_chip(p, version))
                 .into_any_element(),
         ],

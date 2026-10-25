@@ -12,7 +12,9 @@ pub mod parse;
 use std::path::PathBuf;
 
 use super::exec::{self, Output};
-use super::types::{BackendError, InstallOptions, ListRow, PackageDetail, SearchFilters, SearchRow};
+use super::types::{
+    BackendError, InstallOptions, ListRow, PackageDetail, SearchFilters, SearchRow,
+};
 use super::{BackendKind, Capabilities, PackageBackend};
 use crate::model::Source;
 
@@ -213,7 +215,12 @@ mod tests {
         let b = snap();
         assert!(!b.empty_query_searches_catalog());
         assert_eq!(
-            b.search_args("firefox", Some("ignored"), SearchFilters::default(), Some(10)),
+            b.search_args(
+                "firefox",
+                Some("ignored"),
+                SearchFilters::default(),
+                Some(10)
+            ),
             vec!["find", "firefox"]
         );
         assert_eq!(b.list_args(None), vec!["list"]);
@@ -224,7 +231,10 @@ mod tests {
     #[test]
     fn sources_are_out_of_scope() {
         let b = snap();
-        assert_eq!(b.source_add_args("x", "https://example.com"), Vec::<String>::new());
+        assert_eq!(
+            b.source_add_args("x", "https://example.com"),
+            Vec::<String>::new()
+        );
         assert_eq!(b.source_edit_args("x", Some(true)), None);
         assert_eq!(b.source_remove_args("x"), Vec::<String>::new());
         assert_eq!(b.source_update_args(None), Vec::<String>::new());
@@ -253,9 +263,6 @@ mod tests {
     #[test]
     fn an_invalid_configured_path_is_rejected() {
         let result = Snap::resolve("/definitely/not/a/snap");
-        assert!(matches!(
-            result,
-            Err(BackendError::InvalidPath("snap", _))
-        ));
+        assert!(matches!(result, Err(BackendError::InvalidPath("snap", _))));
     }
 }

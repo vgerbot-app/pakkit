@@ -4,8 +4,8 @@
 //! rating, an install count and an "updated" date, which no winget source
 //! provides. Those stay `Option` and render as `—` when absent.
 
-use crate::icons::IconKey;
 use crate::backends::types::{ListRow, PackageDetail, SearchRow};
+use crate::icons::IconKey;
 
 /// A built-in category. The set is fixed and client-side.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, PartialOrd, Ord, Default)]
