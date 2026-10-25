@@ -126,15 +126,14 @@ pkg:
   details: "Details ›"
 
 home:
-  subtitle: "Built-in categories + live search across the official winget source"
   check_updates: "Check for updates"
   sync_sources: "Sync sources"
   categories_section: "Popular categories"
   view_all: "View all ›"
   featured: "Top rated"
   recent: "Recently updated"
-  hero_title: "Every package, one elegant window"
-  hero_body: "Search, install, upgrade and remove software across all your sources. Every action maps to a real %{backend} command you can copy — transparent, scriptable, and always under your control."
+  hero_title: "One GUI for winget, apt, flatpak and pacman"
+  hero_body: "Your package managers, unified in a single graphical experience. Install, update and remove in one flow — no more command lines or switching between tools."
   manage_installed: "Manage installed"
   manage_sources: "Manage sources"
   stat_sources: "Sources"
@@ -142,9 +141,6 @@ home:
   stat_installed: "Installed"
   backend_missing: "%{backend} was not detected. Set its path under Settings → System & Advanced, then click Detect."
   go_settings: "Open settings"
-
-categories:
-  subtitle: "%{count} built-in categories, mapped from winget source tags"
 
 pager:
   first: "First"
@@ -163,7 +159,7 @@ search:
   search_all_sources: "Search all sources"
 
 installed:
-  subtitle: "%{count} apps managed by winget"
+  subtitle: "%{count} packages"
   export: "Export manifest"
   upgrade_all: "Upgrade all"
   upgrade: "Upgrade"

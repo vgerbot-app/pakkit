@@ -126,15 +126,14 @@ pkg:
   details: "자세히 보기 ›"
 
 home:
-  subtitle: "기본 제공 카테고리 + winget 공식 소스 실시간 검색"
   check_updates: "업데이트 확인"
   sync_sources: "소스 동기화"
   categories_section: "자주 쓰는 카테고리"
   view_all: "모두 보기 ›"
   featured: "높은 평점"
   recent: "최근 업데이트"
-  hero_title: "모든 패키지를 하나의 창에서"
-  hero_body: "모든 소스에서 소프트웨어를 검색, 설치, 업그레이드 및 제거하세요. 모든 작업은 복사 가능한 %{backend} 명령에 해당하며 투명하고 재현 가능하며 항상 사용자가 제어할 수 있습니다."
+  hero_title: "winget, apt, flatpak, pacman을 하나의 GUI로"
+  hero_body: "주요 패키지 관리자를 하나의 그래픽 경험으로 통합했습니다. 설치, 업데이트, 제거를 한 번에——더 이상 명령줄과 여러 도구 사이를 오갈 필요가 없습니다."
   manage_installed: "설치된 항목 관리"
   manage_sources: "소스 관리"
   stat_sources: "소스 수"
@@ -142,9 +141,6 @@ home:
   stat_installed: "설치됨"
   backend_missing: "%{backend}이 감지되지 않았습니다. 「설정 → 시스템 및 고급」에서 경로를 지정한 후 감지를 클릭하세요."
   go_settings: "설정으로 이동"
-
-categories:
-  subtitle: "winget 소스 태그에서 매핑된 기본 제공 카테고리 %{count}개"
 
 pager:
   first: "처음"
@@ -163,7 +159,7 @@ search:
   search_all_sources: "모든 소스에서 검색"
 
 installed:
-  subtitle: "winget으로 관리되는 소프트웨어 %{count}개"
+  subtitle: "소프트웨어 %{count}개"
   export: "목록 내보내기"
   upgrade_all: "모두 업그레이드"
   upgrade: "업그레이드"

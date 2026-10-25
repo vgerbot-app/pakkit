@@ -126,15 +126,14 @@ pkg:
   details: "查看详情 ›"
 
 home:
-  subtitle: "内置分类 + winget 官方源实时检索"
   check_updates: "检查更新"
   sync_sources: "同步源"
   categories_section: "常用分类"
   view_all: "查看全部 ›"
   featured: "高分精选"
   recent: "最近更新"
-  hero_title: "所有软件包，尽在一窗"
-  hero_body: "跨全部软件源搜索、安装、升级与卸载软件。每个操作都映射为一条可复制的 %{backend} 命令——透明、可复现，始终由你掌控。"
+  hero_title: "一个界面，统管 winget、apt、flatpak 与 pacman"
+  hero_body: "将多个主流包管理器整合为统一的图形化体验：安装、更新、卸载一气呵成——告别命令行与多工具切换。"
   manage_installed: "管理已安装"
   manage_sources: "管理源"
   stat_sources: "源数量"
@@ -142,9 +141,6 @@ home:
   stat_installed: "已安装"
   backend_missing: "未检测到 %{backend}，请在“设置 → 系统与高级”中指定路径后点击检测。"
   go_settings: "前往设置"
-
-categories:
-  subtitle: "共 %{count} 个内置分类，数据来自 winget 源标签映射"
 
 pager:
   first: "首页"
@@ -163,7 +159,7 @@ search:
   search_all_sources: "在全部源中搜索"
 
 installed:
-  subtitle: "%{count} 个软件通过 winget 管理"
+  subtitle: "%{count} 个软件"
   export: "导出清单"
   upgrade_all: "全部升级"
   upgrade: "升级"

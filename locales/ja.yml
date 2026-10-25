@@ -126,15 +126,14 @@ pkg:
   details: "詳細を見る ›"
 
 home:
-  subtitle: "組み込みカテゴリ + winget 公式ソースのリアルタイム検索"
   check_updates: "更新を確認"
   sync_sources: "ソースを同期"
   categories_section: "よく使うカテゴリ"
   view_all: "すべて表示 ›"
   featured: "高評価"
   recent: "最近の更新"
-  hero_title: "すべてのパッケージを、ひとつのウィンドウで"
-  hero_body: "すべてのソースを横断してソフトウェアを検索・インストール・アップグレード・削除。すべての操作はコピー可能な %{backend} コマンドに対応し、透明で再現可能、常にあなたの管理下にあります。"
+  hero_title: "winget、apt、flatpak、pacman をひとつの GUI に"
+  hero_body: "主要なパッケージマネージャーをひとつのグラフィカルな体験に統合。インストール、更新、削除をシームレスに——コマンドラインやツールの切り替えはもう不要です。"
   manage_installed: "インストール済みを管理"
   manage_sources: "ソースを管理"
   stat_sources: "ソース数"
@@ -142,9 +141,6 @@ home:
   stat_installed: "インストール済み"
   backend_missing: "%{backend} が検出されませんでした。「設定 → システムと詳細」でパスを指定し、検出をクリックしてください。"
   go_settings: "設定を開く"
-
-categories:
-  subtitle: "%{count} 件の組み込みカテゴリ。winget ソースのタグからマッピング"
 
 pager:
   first: "最初へ"
@@ -163,7 +159,7 @@ search:
   search_all_sources: "すべてのソースで検索"
 
 installed:
-  subtitle: "%{count} 個のソフトウェアを winget で管理"
+  subtitle: "%{count} 個のソフトウェア"
   export: "一覧をエクスポート"
   upgrade_all: "すべてアップグレード"
   upgrade: "アップグレード"

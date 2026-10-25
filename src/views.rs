@@ -62,7 +62,7 @@ fn home(state: &AppState, p: &Palette, cx: &mut Context<AppView>) -> AnyElement 
         widgets::page_head(
             p,
             tr!("nav.home"),
-            Some(tr!("home.subtitle").into()),
+            None,
             vec![
                 widgets::btn(
                     cx,
@@ -221,7 +221,7 @@ fn hero(state: &AppState, p: &Palette, cx: &mut Context<AppView>) -> AnyElement 
                                 .line_height(relative(1.6))
                                 .text_color(p.ink2)
                                 .mt(px(8.))
-                                .child(tr!("home.hero_body", backend = state.backend_name)),
+                                .child(tr!("home.hero_body")),
                         )
                         .child(
                             div()
@@ -549,12 +549,7 @@ fn recent_row(
 // ------------------------------------------------------------------- 分类
 
 fn categories(_state: &AppState, p: &Palette, cx: &mut Context<AppView>) -> AnyElement {
-    let head = widgets::page_head(
-        p,
-        tr!("nav.categories"),
-        Some(tr!("categories.subtitle", count = CategoryId::ALL.len()).into()),
-        Vec::new(),
-    );
+    let head = widgets::page_head(p, tr!("nav.categories"), None, Vec::new());
 
     div()
         .flex()
