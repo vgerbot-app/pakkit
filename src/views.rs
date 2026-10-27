@@ -1527,6 +1527,10 @@ fn sources(state: &AppState, p: &Palette, cx: &mut Context<AppView>) -> AnyEleme
                 state.backend_name
             )
         }
+        BackendKind::Chocolatey => format!(
+            "{} source add --name <name> --source <url>",
+            state.backend_name
+        ),
         BackendKind::Apt => format!("{} edit-sources", state.backend_name),
         BackendKind::Pacman => "# /etc/pacman.conf".to_owned(),
         BackendKind::Snap => "# Snap Store only".to_owned(),
@@ -1730,6 +1734,7 @@ fn settings(
     // a winget-only install flag, gated on the matching capability.
     let source_hint = match state.backend_kind {
         BackendKind::Winget => format!("{} install --source <name>", state.backend_name),
+        BackendKind::Chocolatey => format!("{} install <pkg>", state.backend_name),
         BackendKind::Flatpak => format!("{} install <remote> <id>", state.backend_name),
         BackendKind::Apt => format!("{} install <pkg>", state.backend_name),
         BackendKind::Pacman => format!("{} -S <pkg>", state.backend_name),

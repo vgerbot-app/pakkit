@@ -25,6 +25,11 @@
 - 新增 snap 后端：snapd 自行弹 polkit 授权（同 flatpak，无需 pkexec）；
   Snap Store 是唯一来源，不开放源管理；`全部更新` 合并为一次
   `snap refresh` 事务。
+- 新增 Chocolatey 后端（Windows，设置中可与 winget 切换）：面向 choco
+  v2 的 `--limit-output` 管道输出（`name|version`）解析；`全部更新`
+  合并为一次 `choco upgrade all` 事务，被固定（pinned）的包不列入
+  更新；源管理支持添加/删除（`choco source …`），禁用的源显示为
+  未验证；可执行文件除 `PATH` 外还回退到 `%ChocolateyInstall%\bin`。
 - apt 后端的安装/升级/卸载/刷新改走 PackageKit D-Bus 通道：
   其 polkit 授权（`auth_admin_keep`）缓存约 5 分钟，一批队列任务最多弹
   一次密码框，替代此前每个任务一次 pkexec 弹窗；PackageKit 不可用时

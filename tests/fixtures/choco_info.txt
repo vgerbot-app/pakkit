@@ -1,0 +1,13 @@
+Chocolatey v2.3.0
+git 2.45.2
+Title: Git
+Published: 6/3/2024
+Number of Downloads: 91234567
+Downloads for this version: 1234567
+Package url: https://community.chocolatey.org/packages/git
+Tags: git vcs version-control dvcs admin
+Description: Git for Windows focuses on offering a lightweight, native set of tools
+  that bring the full feature set of the Git SCM to Windows while providing
+  appropriate user interfaces for experienced Git users and novices alike.
+
+Release Notes: https://github.com/git-for-windows/git/releases/tag/v2.45.2.windows.1

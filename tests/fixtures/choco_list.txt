@@ -1,0 +1,5 @@
+7zip|23.1
+chocolatey|2.3.0
+git|2.44.0
+notepadplusplus|8.6.8
+vscode|1.90.2

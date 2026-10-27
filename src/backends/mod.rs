@@ -6,6 +6,7 @@
 //! the shared process plumbing.
 
 pub mod apt;
+pub mod chocolatey;
 pub mod exec;
 pub mod flatpak;
 #[cfg(target_os = "linux")]
@@ -26,6 +27,7 @@ use crate::model::Source;
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum BackendKind {
     Winget,
+    Chocolatey,
     Flatpak,
     Apt,
     Pacman,
@@ -38,6 +40,7 @@ impl BackendKind {
     pub const fn cli_name(self) -> &'static str {
         match self {
             BackendKind::Winget => "winget",
+            BackendKind::Chocolatey => "choco",
             BackendKind::Flatpak => "flatpak",
             BackendKind::Apt => "apt",
             BackendKind::Pacman => "pacman",
@@ -49,6 +52,7 @@ impl BackendKind {
     pub const fn display_name(self) -> &'static str {
         match self {
             BackendKind::Winget => "winget",
+            BackendKind::Chocolatey => "Chocolatey",
             BackendKind::Flatpak => "Flatpak",
             BackendKind::Apt => "APT",
             BackendKind::Pacman => "pacman",
@@ -60,6 +64,7 @@ impl BackendKind {
     pub fn from_name(name: &str) -> Option<Self> {
         match name.trim() {
             "winget" => Some(BackendKind::Winget),
+            "choco" | "chocolatey" => Some(BackendKind::Chocolatey),
             "flatpak" => Some(BackendKind::Flatpak),
             "apt" => Some(BackendKind::Apt),
             "pacman" => Some(BackendKind::Pacman),
@@ -79,7 +84,7 @@ impl BackendKind {
                 BackendKind::Snap,
             ]
         } else {
-            &[BackendKind::Winget]
+            &[BackendKind::Winget, BackendKind::Chocolatey]
         }
     }
 }
@@ -315,6 +320,8 @@ pub fn detect(
         BackendKind::Winget => {
             winget::Winget::resolve(configured_path).map(|w| Arc::new(w) as Arc<dyn PackageBackend>)
         }
+        BackendKind::Chocolatey => chocolatey::Chocolatey::resolve(configured_path)
+            .map(|c| Arc::new(c) as Arc<dyn PackageBackend>),
         BackendKind::Flatpak => flatpak::Flatpak::resolve(configured_path)
             .map(|f| Arc::new(f) as Arc<dyn PackageBackend>),
         BackendKind::Apt => {

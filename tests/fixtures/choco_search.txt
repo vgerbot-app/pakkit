@@ -1,0 +1,5 @@
+7zip|23.1
+git|2.45.2
+git.install|2.45.2
+notepadplusplus|8.6.8
+vscode|1.90.2

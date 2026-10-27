@@ -1,6 +1,6 @@
 <div align="center"><img src="./assets/logo.svg" alt="Pakkit logo" width="96" height="96"></div>
 
-# Pakkit: One GUI for winget, apt, flatpak, pacman and snap
+# Pakkit: One GUI for winget, Chocolatey, apt, flatpak, pacman and snap
 
 <div align="center"><img alt="CI" src="https://github.com/vgerbot-app/pakkit/actions/workflows/ci.yml/badge.svg"> <img alt="License" src="https://img.shields.io/badge/license-MIT-blue.svg"> <img alt="Version" src="https://img.shields.io/badge/version-0.1.0-green.svg"> <img alt="Rust" src="https://img.shields.io/badge/rust-1.92%2B-orange.svg"> <img alt="Platform" src="https://img.shields.io/badge/platform-Windows%20%7C%20Linux-0078D6.svg"></div>
 
@@ -10,7 +10,7 @@
 
 **点一下就装好，命令看得见。**
 
-将多个主流包管理器整合为统一的图形化操作体验。从 Winget 到 Snap，安装、更新、卸载一气呵成——告别命令行与多工具切换。使用 Rust + [gpui-kit](https://crates.io/crates/gpui-kit) 0.8 构建 —— 原生窗口，无 Electron / WebView。
+将多个主流包管理器整合为统一的图形化操作体验。从 Winget、Chocolatey 到 Snap，安装、更新、卸载一气呵成——告别命令行与多工具切换。使用 Rust + [gpui-kit](https://crates.io/crates/gpui-kit) 0.8 构建 —— 原生窗口，无 Electron / WebView。
 
 所有操作都是对后端命令行的一层透明封装：界面上显示的命令行就是实际执行的命令行，不隐藏、不改写。
 
@@ -30,7 +30,7 @@
 
 - **七个视图**：发现、分类、全部包、已安装、更新、源管理、设置
 - **队列抽屉**：安装 / 升级串行执行，并发可调（1–3），逐项显示命令行与进度
-- **软件包详情**：后台调用后端自身的详情命令（`winget show`、`apt show`、`pacman -Si`、`snap info`……）抓取并缓存，展示多行描述、发布说明、标签、发布者、许可、主页、安装类型、发布日期等
+- **软件包详情**：后台调用后端自身的详情命令（`winget show`、`choco info`、`apt show`、`pacman -Si`、`snap info`……）抓取并缓存，展示多行描述、发布说明、标签、发布者、许可、主页、安装类型、发布日期等
 - **软件包图标**：自动抓取 favicon 并持久化缓存到磁盘
 - **源管理**：添加 / 编辑 / 删除 / 重置 / 更新源，支持源导出
 - **清单导入导出**：基于 `winget export` / `winget import`（winget 后端）
@@ -65,7 +65,7 @@ cargo build --release
 ```
 
 > [!NOTE]
-> Windows 下运行需要系统已安装 [winget](https://learn.microsoft.com/windows/package-manager/winget/)（Windows 10 1809+ / Windows 11 通常已内置）。Linux 下自动驱动检测到的本机后端：apt、flatpak、pacman（含 yay/AUR）与 snap。
+> Windows 下运行需要系统已安装 [winget](https://learn.microsoft.com/windows/package-manager/winget/)（Windows 10 1809+ / Windows 11 通常已内置）或 [Chocolatey](https://chocolatey.org/) v2。Linux 下自动驱动检测到的本机后端：apt、flatpak、pacman（含 yay/AUR）与 snap。
 
 ## 使用
 
