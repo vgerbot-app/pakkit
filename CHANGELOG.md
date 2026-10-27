@@ -7,6 +7,25 @@
 
 ### 新增
 
+- 新增 dnf 后端（Fedora/RHEL，兼容 dnf5）：只读查询直跑 `dnf`，变更
+  操作优先走 PackageKit D-Bus 通道、不可用时回退 `pkexec dnf …`；
+  `check-update` 的退出码 100（有待更新包）按良性处理；源管理不开放
+  （`/etc/yum.repos.d` 为 root 所有）。
+- 新增 Zypper 后端（openSUSE）：所有调用携带 `--non-interactive`；变更
+  操作走 PackageKit（zypp 后端）并回退 `pkexec zypper …`；zypper 的
+  信息类退出码 102/103（需重启系统/会话）按成功处理。
+- 新增 apk 后端（Alpine）：只读查询直跑 `apk`，变更经 `pkexec apk …`
+  （Alpine 通常无 PackageKit/polkit，此时 spawn 失败会显示在队列错误
+  详情中）；源管理不开放（`/etc/apk/repositories` 为 root 所有）。
+- 新增 Homebrew 后端（macOS 与 Linux/linuxbrew，首个 macOS 平台后端）：
+  brew 拒绝 root，全程不提权；cask（图形应用）以 id 前缀 `cask/` 与
+  formula 区分并贯穿搜索/安装/升级全流程；源管理对应 taps
+  （`brew tap`/`untap`）；可执行文件除 `PATH` 外还探测
+  `/opt/homebrew`、`/usr/local` 与 linuxbrew 固定前缀。
+- 新增 Scoop 后端（Windows，设置中可与 winget/Chocolatey 切换）：scoop
+  免管理员全程不提权；`全部更新` 合并为一次 `scoop update *`；源管理
+  对应 buckets（`scoop bucket add/rm`）；可执行文件解析 `scoop.exe`
+  shim（`PATH` 或 `%USERPROFILE%\scoop\shims`）。
 - 发布流水线扩展为多平台：Windows / Linux × x86_64 / arm64 四组合原生构建
   （Linux arm64 使用 GitHub 原生 ARM runner），产物新增 Linux `.deb` /
   `.rpm` / `.AppImage` 与 Windows `.msi` 安装包（MSI 仅 x86_64——

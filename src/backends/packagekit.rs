@@ -1,5 +1,5 @@
-//! PackageKit D-Bus client: the privileged execution path for apt and
-//! pacman mutations.
+//! PackageKit D-Bus client: the privileged execution path for apt, dnf,
+//! pacman and zypper mutations.
 //!
 //! Instead of wrapping every mutation in `pkexec` (one polkit prompt per
 //! spawned process), mutations go to the `org.freedesktop.PackageKit` system
@@ -56,21 +56,25 @@ pub enum PkOp {
     /// `install -y <name>` (apt) / `-S --noconfirm <name>` (pacman; pacman's
     /// single-package upgrade is also `-S`, so it maps here too).
     Install { name: String },
-    /// `install --only-upgrade -y <name>` — apt's single-package upgrade.
+    /// `install --only-upgrade -y <name>` (apt) / `upgrade -y <name>` (dnf) /
+    /// `--non-interactive update <name>` (zypper) — a single-package upgrade.
     UpgradeOne { name: String },
-    /// `remove -y <name>` (apt) / `-R --noconfirm <name>` (pacman).
+    /// `remove -y <name>` (apt/dnf) / `-R --noconfirm <name>` (pacman) /
+    /// `--non-interactive remove <name>` (zypper).
     Remove { name: String },
-    /// `upgrade -y` (apt) / `-Syu --noconfirm` (pacman).
+    /// `upgrade -y` (apt/dnf) / `-Syu --noconfirm` (pacman) /
+    /// `--non-interactive update` (zypper).
     UpgradeAll,
-    /// `update` (apt) / `-Sy` (pacman) — refresh the package lists.
+    /// `update` (apt) / `-Sy` (pacman) / `makecache --refresh` (dnf) /
+    /// `--non-interactive refresh` (zypper) — refresh the package lists.
     RefreshCache,
 }
 
 /// Map backend mutation arguments to a PackageKit operation.
 ///
-/// The apt and pacman shapes are disjoint, so one planner serves both
-/// backends. Returns `None` for shapes the planner does not recognize; the
-/// caller falls back to the pkexec pipeline for those.
+/// The apt, dnf, pacman and zypper shapes are disjoint, so one planner
+/// serves all four backends. Returns `None` for shapes the planner does not
+/// recognize; the caller falls back to the pkexec pipeline for those.
 pub fn plan(args: &[&str]) -> Option<PkOp> {
     match args {
         ["install", "-y", name] => Some(PkOp::Install {
@@ -84,6 +88,11 @@ pub fn plan(args: &[&str]) -> Option<PkOp> {
         }),
         ["upgrade", "-y"] => Some(PkOp::UpgradeAll),
         ["update"] => Some(PkOp::RefreshCache),
+        // dnf's single-package upgrade and metadata refresh.
+        ["upgrade", "-y", name] => Some(PkOp::UpgradeOne {
+            name: (*name).to_owned(),
+        }),
+        ["makecache", "--refresh"] => Some(PkOp::RefreshCache),
         ["-S", "--noconfirm", name] => Some(PkOp::Install {
             name: (*name).to_owned(),
         }),
@@ -92,6 +101,18 @@ pub fn plan(args: &[&str]) -> Option<PkOp> {
         }),
         ["-Syu", "--noconfirm"] => Some(PkOp::UpgradeAll),
         ["-Sy"] => Some(PkOp::RefreshCache),
+        // zypper's mutations all carry the global `--non-interactive` flag.
+        ["--non-interactive", "install", name] => Some(PkOp::Install {
+            name: (*name).to_owned(),
+        }),
+        ["--non-interactive", "remove", name] => Some(PkOp::Remove {
+            name: (*name).to_owned(),
+        }),
+        ["--non-interactive", "update", name] => Some(PkOp::UpgradeOne {
+            name: (*name).to_owned(),
+        }),
+        ["--non-interactive", "update"] => Some(PkOp::UpgradeAll),
+        ["--non-interactive", "refresh"] => Some(PkOp::RefreshCache),
         _ => None,
     }
 }
@@ -469,6 +490,45 @@ mod tests {
         );
         assert_eq!(plan(&["-Syu", "--noconfirm"]), Some(PkOp::UpgradeAll));
         assert_eq!(plan(&["-Sy"]), Some(PkOp::RefreshCache));
+    }
+
+    #[test]
+    fn plan_covers_the_dnf_and_zypper_mutation_shapes() {
+        // dnf shares apt's install/remove/upgrade-all shapes; its own are:
+        assert_eq!(
+            plan(&["upgrade", "-y", "curl"]),
+            Some(PkOp::UpgradeOne {
+                name: "curl".to_owned()
+            })
+        );
+        assert_eq!(plan(&["makecache", "--refresh"]), Some(PkOp::RefreshCache));
+        // zypper carries the global --non-interactive flag on every shape.
+        assert_eq!(
+            plan(&["--non-interactive", "install", "curl"]),
+            Some(PkOp::Install {
+                name: "curl".to_owned()
+            })
+        );
+        assert_eq!(
+            plan(&["--non-interactive", "remove", "curl"]),
+            Some(PkOp::Remove {
+                name: "curl".to_owned()
+            })
+        );
+        assert_eq!(
+            plan(&["--non-interactive", "update", "curl"]),
+            Some(PkOp::UpgradeOne {
+                name: "curl".to_owned()
+            })
+        );
+        assert_eq!(
+            plan(&["--non-interactive", "update"]),
+            Some(PkOp::UpgradeAll)
+        );
+        assert_eq!(
+            plan(&["--non-interactive", "refresh"]),
+            Some(PkOp::RefreshCache)
+        );
     }
 
     #[test]

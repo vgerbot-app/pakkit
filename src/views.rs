@@ -1532,8 +1532,13 @@ fn sources(state: &AppState, p: &Palette, cx: &mut Context<AppView>) -> AnyEleme
             state.backend_name
         ),
         BackendKind::Apt => format!("{} edit-sources", state.backend_name),
+        BackendKind::Dnf => "# /etc/yum.repos.d/".to_owned(),
+        BackendKind::Zypper => "# /etc/zypp/repos.d/".to_owned(),
+        BackendKind::Apk => "# /etc/apk/repositories".to_owned(),
         BackendKind::Pacman => "# /etc/pacman.conf".to_owned(),
         BackendKind::Snap => "# Snap Store only".to_owned(),
+        BackendKind::Brew => format!("{} tap <user/repo>", state.backend_name),
+        BackendKind::Scoop => format!("{} bucket add <name>", state.backend_name),
     };
 
     div()
@@ -1737,8 +1742,13 @@ fn settings(
         BackendKind::Chocolatey => format!("{} install <pkg>", state.backend_name),
         BackendKind::Flatpak => format!("{} install <remote> <id>", state.backend_name),
         BackendKind::Apt => format!("{} install <pkg>", state.backend_name),
+        BackendKind::Dnf => format!("{} install <pkg>", state.backend_name),
+        BackendKind::Zypper => format!("{} install <pkg>", state.backend_name),
+        BackendKind::Apk => format!("{} add <pkg>", state.backend_name),
         BackendKind::Pacman => format!("{} -S <pkg>", state.backend_name),
         BackendKind::Snap => format!("{} install <name>", state.backend_name),
+        BackendKind::Brew => format!("{} install <pkg>", state.backend_name),
+        BackendKind::Scoop => format!("{} install <pkg>", state.backend_name),
     };
     let mut install_rows: Vec<AnyElement> = Vec::new();
     if state.capabilities.sources_view {
@@ -1856,7 +1866,7 @@ fn settings(
     );
 
     // The backend switcher only exists where the platform offers a choice;
-    // Windows builds ship winget alone and skip the row.
+    // single-backend platforms (e.g. macOS with brew alone) skip the row.
     let mut advanced_rows: Vec<AnyElement> = Vec::new();
     if BackendKind::available().len() > 1 {
         advanced_rows.push(seg_row(

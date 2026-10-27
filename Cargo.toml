@@ -6,7 +6,7 @@ rust-version = "1.92"
 license = "MIT"
 authors = ["vgerbot-app"]
 repository = "https://github.com/vgerbot-app/pakkit"
-description = "A native multi-backend package manager GUI (winget / apt / flatpak / pacman / snap) built with gpui-kit."
+description = "A native multi-backend package manager GUI (winget / Chocolatey / Scoop / Homebrew / apt / dnf / flatpak / pacman / zypper / apk / snap) built with gpui-kit."
 
 [dependencies]
 dirs = "6"

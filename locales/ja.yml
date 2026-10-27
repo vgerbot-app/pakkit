@@ -132,7 +132,7 @@ home:
   view_all: "すべて表示 ›"
   featured: "高評価"
   recent: "最近の更新"
-  hero_title: "winget、chocolatey、apt、flatpak、pacman、snap をひとつの GUI に"
+  hero_title: "winget、chocolatey、Scoop、Homebrew、apt、dnf、flatpak、pacman、zypper、apk、snap をひとつの GUI に"
   hero_body: "主要なパッケージマネージャーをひとつのグラフィカルな体験に統合。インストール、更新、削除をシームレスに——コマンドラインやツールの切り替えはもう不要です。"
   manage_installed: "インストール済みを管理"
   manage_sources: "ソースを管理"

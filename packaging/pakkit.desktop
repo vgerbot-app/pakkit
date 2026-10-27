@@ -2,10 +2,10 @@
 Type=Application
 Name=Pakkit
 GenericName=Package Manager
-Comment=A native multi-backend package manager GUI (winget / apt / flatpak / pacman / snap)
+Comment=A native multi-backend package manager GUI (winget / Chocolatey / Scoop / Homebrew / apt / dnf / flatpak / pacman / zypper / apk / snap)
 Exec=pakkit
 Icon=pakkit
 Terminal=false
 Categories=System;PackageManager;
-Keywords=package;manager;winget;apt;flatpak;pacman;snap;
+Keywords=package;manager;winget;chocolatey;scoop;homebrew;apt;dnf;flatpak;pacman;zypper;apk;snap;
 StartupWMClass=pakkit

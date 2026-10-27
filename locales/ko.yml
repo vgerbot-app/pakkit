@@ -132,7 +132,7 @@ home:
   view_all: "모두 보기 ›"
   featured: "높은 평점"
   recent: "최근 업데이트"
-  hero_title: "winget, chocolatey, apt, flatpak, pacman, snap을 하나의 GUI로"
+  hero_title: "winget, chocolatey, Scoop, Homebrew, apt, dnf, flatpak, pacman, zypper, apk, snap을 하나의 GUI로"
   hero_body: "주요 패키지 관리자를 하나의 그래픽 경험으로 통합했습니다. 설치, 업데이트, 제거를 한 번에——더 이상 명령줄과 여러 도구 사이를 오갈 필요가 없습니다."
   manage_installed: "설치된 항목 관리"
   manage_sources: "소스 관리"

@@ -5,16 +5,21 @@
 //! parsers; [`types`] holds the data shapes they all produce and [`exec`]
 //! the shared process plumbing.
 
+pub mod apk;
 pub mod apt;
+pub mod brew;
 pub mod chocolatey;
+pub mod dnf;
 pub mod exec;
 pub mod flatpak;
 #[cfg(target_os = "linux")]
 pub mod packagekit;
 pub mod pacman;
+pub mod scoop;
 pub mod snap;
 pub mod types;
 pub mod winget;
+pub mod zypper;
 
 use std::sync::Arc;
 
@@ -28,10 +33,15 @@ use crate::model::Source;
 pub enum BackendKind {
     Winget,
     Chocolatey,
+    Scoop,
     Flatpak,
     Apt,
+    Dnf,
     Pacman,
+    Zypper,
+    Apk,
     Snap,
+    Brew,
 }
 
 impl BackendKind {
@@ -41,10 +51,15 @@ impl BackendKind {
         match self {
             BackendKind::Winget => "winget",
             BackendKind::Chocolatey => "choco",
+            BackendKind::Scoop => "scoop",
             BackendKind::Flatpak => "flatpak",
             BackendKind::Apt => "apt",
+            BackendKind::Dnf => "dnf",
             BackendKind::Pacman => "pacman",
+            BackendKind::Zypper => "zypper",
+            BackendKind::Apk => "apk",
             BackendKind::Snap => "snap",
+            BackendKind::Brew => "brew",
         }
     }
 
@@ -53,10 +68,15 @@ impl BackendKind {
         match self {
             BackendKind::Winget => "winget",
             BackendKind::Chocolatey => "Chocolatey",
+            BackendKind::Scoop => "Scoop",
             BackendKind::Flatpak => "Flatpak",
             BackendKind::Apt => "APT",
+            BackendKind::Dnf => "DNF",
             BackendKind::Pacman => "pacman",
+            BackendKind::Zypper => "Zypper",
+            BackendKind::Apk => "apk",
             BackendKind::Snap => "Snap",
+            BackendKind::Brew => "Homebrew",
         }
     }
 
@@ -65,10 +85,15 @@ impl BackendKind {
         match name.trim() {
             "winget" => Some(BackendKind::Winget),
             "choco" | "chocolatey" => Some(BackendKind::Chocolatey),
+            "scoop" => Some(BackendKind::Scoop),
             "flatpak" => Some(BackendKind::Flatpak),
             "apt" => Some(BackendKind::Apt),
+            "dnf" | "dnf5" => Some(BackendKind::Dnf),
             "pacman" => Some(BackendKind::Pacman),
+            "zypper" => Some(BackendKind::Zypper),
+            "apk" => Some(BackendKind::Apk),
             "snap" => Some(BackendKind::Snap),
+            "brew" | "homebrew" => Some(BackendKind::Brew),
             _ => None,
         }
     }
@@ -80,11 +105,17 @@ impl BackendKind {
             &[
                 BackendKind::Flatpak,
                 BackendKind::Apt,
+                BackendKind::Dnf,
                 BackendKind::Pacman,
+                BackendKind::Zypper,
+                BackendKind::Apk,
                 BackendKind::Snap,
+                BackendKind::Brew,
             ]
+        } else if cfg!(target_os = "macos") {
+            &[BackendKind::Brew]
         } else {
-            &[BackendKind::Winget, BackendKind::Chocolatey]
+            &[BackendKind::Winget, BackendKind::Chocolatey, BackendKind::Scoop]
         }
     }
 }
@@ -302,10 +333,12 @@ pub trait PackageBackend: Send + Sync {
 }
 
 /// The backend kind [`detect`] tries on this platform: winget on Windows,
-/// flatpak on Linux (and winget elsewhere until another backend lands).
+/// flatpak on Linux, brew on macOS (and winget elsewhere).
 pub const fn platform_kind() -> BackendKind {
     if cfg!(target_os = "linux") {
         BackendKind::Flatpak
+    } else if cfg!(target_os = "macos") {
+        BackendKind::Brew
     } else {
         BackendKind::Winget
     }
@@ -322,16 +355,31 @@ pub fn detect(
         }
         BackendKind::Chocolatey => chocolatey::Chocolatey::resolve(configured_path)
             .map(|c| Arc::new(c) as Arc<dyn PackageBackend>),
+        BackendKind::Scoop => {
+            scoop::Scoop::resolve(configured_path).map(|s| Arc::new(s) as Arc<dyn PackageBackend>)
+        }
         BackendKind::Flatpak => flatpak::Flatpak::resolve(configured_path)
             .map(|f| Arc::new(f) as Arc<dyn PackageBackend>),
         BackendKind::Apt => {
             apt::Apt::resolve(configured_path).map(|a| Arc::new(a) as Arc<dyn PackageBackend>)
         }
+        BackendKind::Dnf => {
+            dnf::Dnf::resolve(configured_path).map(|d| Arc::new(d) as Arc<dyn PackageBackend>)
+        }
         BackendKind::Pacman => {
             pacman::Pacman::resolve(configured_path).map(|p| Arc::new(p) as Arc<dyn PackageBackend>)
         }
+        BackendKind::Zypper => {
+            zypper::Zypper::resolve(configured_path).map(|z| Arc::new(z) as Arc<dyn PackageBackend>)
+        }
+        BackendKind::Apk => {
+            apk::Apk::resolve(configured_path).map(|a| Arc::new(a) as Arc<dyn PackageBackend>)
+        }
         BackendKind::Snap => {
             snap::Snap::resolve(configured_path).map(|s| Arc::new(s) as Arc<dyn PackageBackend>)
+        }
+        BackendKind::Brew => {
+            brew::Brew::resolve(configured_path).map(|b| Arc::new(b) as Arc<dyn PackageBackend>)
         }
     }
 }

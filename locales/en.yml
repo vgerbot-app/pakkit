@@ -132,7 +132,7 @@ home:
   view_all: "View all ›"
   featured: "Top rated"
   recent: "Recently updated"
-  hero_title: "One GUI for winget, Chocolatey, apt, flatpak, pacman and snap"
+  hero_title: "One GUI for winget, Chocolatey, Scoop, Homebrew, apt, dnf, flatpak, pacman, zypper, apk and snap"
   hero_body: "Your package managers, unified in a single graphical experience. Install, update and remove in one flow — no more command lines or switching between tools."
   manage_installed: "Manage installed"
   manage_sources: "Manage sources"
