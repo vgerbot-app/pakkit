@@ -1,0 +1,28 @@
+redis-7.2.11-r0 description:
+Advanced key-value store
+
+redis-7.2.11-r0 webpage:
+https://redis.io/
+
+redis-7.2.11-r0 installed size:
+3501 KiB
+
+redis-7.2.11-r0 depends on:
+/bin/sh
+so:libc.musl-x86_64.so.1
+so:libcrypto.so.3
+so:libssl.so.3
+
+redis-7.2.11-r0 provides:
+cmd:redis-benchmark=7.2.11-r0
+cmd:redis-check-aof=7.2.11-r0
+cmd:redis-check-rdb=7.2.11-r0
+cmd:redis-cli=7.2.11-r0
+cmd:redis-sentinel=7.2.11-r0
+cmd:redis-server=7.2.11-r0
+
+redis-7.2.11-r0 has auto-install rule:
+
+redis-7.2.11-r0 license:
+BSD-3-Clause
+

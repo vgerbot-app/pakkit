@@ -1,0 +1,14 @@
+abuild-sudo-3.14.1-r4 - Simple privilege elevation tools for building packages
+doas-sudo-shim-0.1.1-r1 - A shim for the sudo command that utilizes doas
+doas-sudo-shim-doc-0.1.1-r1 - A shim for the sudo command that utilizes doas (documentation)
+gnome-sudoku-47.1.1-r0 - Test your logic skills in this number grid puzzle
+gnome-sudoku-doc-47.1.1-r0 - Test your logic skills in this number grid puzzle (documentation)
+gnome-sudoku-lang-47.1.1-r0 - Languages for package gnome-sudoku
+lxqt-sudo-2.1.0-r1 - Tools to sudoure LXQt and the underlying operating system
+lxqt-sudo-doc-2.1.0-r1 - Tools to sudoure LXQt and the underlying operating system (documentation)
+lxqt-sudo-lang-2.1.0-r1 - Tools to sudoure LXQt and the underlying operating system
+s6-2.13.1.0-r0 - skarnet.org's small & secure supervision software suite.
+sudo-1.9.17_p1-r0 - Give certain users the ability to run some commands as root
+sudo-dev-1.9.17_p1-r0 - Give certain users the ability to run some commands as root (development files)
+sudo-doc-1.9.17_p1-r0 - Give certain users the ability to run some commands as root (documentation)
+sudo-doc-extra-1.9.17_p1-r0 - Give certain users the ability to run some commands as root (examples and news)

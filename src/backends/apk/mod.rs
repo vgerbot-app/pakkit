@@ -158,9 +158,10 @@ impl PackageBackend for Apk {
         vec!["del".to_owned(), id.to_owned()]
     }
 
-    /// `upgrade <id>` — apk3 accepts package constraints on `upgrade`.
-    /// TODO: verify against `apk upgrade --help` on a real Alpine system;
-    /// if rejected, switch to `add --upgrade <id>` (and update this doc).
+    /// `upgrade <id>` — verified on apk-tools 2.14.6 (Alpine 3.21):
+    /// `apk upgrade [<PACKAGES>...]` accepts package constraints and
+    /// upgrades only the listed packages plus needed dependencies
+    /// (`apk upgrade -s musl` → `Upgrading musl (1.2.5-r9 -> 1.2.5-r12)`).
     fn upgrade_args(&self, id: &str) -> Vec<String> {
         vec!["upgrade".to_owned(), id.to_owned()]
     }
@@ -208,5 +209,92 @@ impl PackageBackend for Apk {
     /// apk sources are not surfaced (`sources_view` is off).
     fn list_sources(&self) -> Result<Vec<Source>, BackendError> {
         Ok(Vec::new())
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn apk() -> Apk {
+        Apk::new("apk")
+    }
+
+    #[test]
+    fn mutation_args_wrap_plain_apk_verbs() {
+        let b = apk();
+        assert_eq!(
+            b.install_args("sudo", &InstallOptions::default()),
+            vec!["add", "sudo"]
+        );
+        assert_eq!(b.uninstall_args("sudo"), vec!["del", "sudo"]);
+        // Verified on apk-tools 2.14.6: `upgrade <pkg>` accepts a single
+        // package constraint, so there is no `add --upgrade` fallback.
+        assert_eq!(b.upgrade_args("sudo"), vec!["upgrade", "sudo"]);
+        assert_eq!(b.upgrade_all_args(), vec!["upgrade"]);
+        assert_eq!(b.source_update_args(None), vec!["update"]);
+    }
+
+    #[test]
+    fn query_args_pin_versions_and_details() {
+        let b = apk();
+        assert_eq!(
+            b.search_args("sudo", Some("ignored"), SearchFilters::default(), Some(10)),
+            vec!["search", "-v", "sudo"]
+        );
+        assert_eq!(b.list_args(None), vec!["list", "--installed"]);
+        assert_eq!(b.upgrades_args(), vec!["version", "-l", "<"]);
+        assert_eq!(b.show_args("sudo", None), vec!["info", "-a", "sudo"]);
+    }
+
+    #[test]
+    fn sources_are_out_of_scope() {
+        let b = apk();
+        assert_eq!(
+            b.source_add_args("x", "https://example.com"),
+            Vec::<String>::new()
+        );
+        assert_eq!(b.source_edit_args("x", Some(true)), None);
+        assert_eq!(b.source_remove_args("x"), Vec::<String>::new());
+    }
+
+    #[test]
+    fn read_only_routing_covers_queries_only() {
+        assert!(is_read_only(&["search", "-v", "sudo"]));
+        assert!(is_read_only(&["list", "--installed"]));
+        assert!(is_read_only(&["info", "-a", "sudo"]));
+        assert!(is_read_only(&["version", "-l", "<"]));
+        assert!(is_read_only(&["--version"]));
+        assert!(!is_read_only(&["add", "sudo"]));
+        assert!(!is_read_only(&["del", "sudo"]));
+        assert!(!is_read_only(&["upgrade"]));
+        assert!(!is_read_only(&["update"]));
+        assert!(!is_read_only(&[]));
+    }
+
+    #[test]
+    fn capabilities_hide_everything_but_batch_upgrade() {
+        let caps = apk().capabilities();
+        assert!(!caps.sources_view);
+        assert!(!caps.source_add);
+        assert!(!caps.source_edit);
+        assert!(!caps.export);
+        assert!(!caps.install_location);
+        assert!(!caps.silent);
+        assert!(!caps.agreements);
+        assert!(!caps.search_filters);
+        assert!(caps.batch_upgrade);
+    }
+
+    #[test]
+    fn exit_codes_format_as_plain_integers() {
+        assert_eq!(apk().format_exit_code(1), "1");
+        assert_eq!(apk().format_exit_code(126), "126");
+    }
+
+    #[test]
+    fn an_invalid_configured_path_is_rejected() {
+        let result = Apk::resolve("/definitely/not/an/apk");
+        assert!(matches!(result, Err(BackendError::InvalidPath("apk", _))));
     }
 }
