@@ -22,7 +22,9 @@ use std::sync::atomic::{AtomicU8, Ordering};
 use super::exec::{self, Output};
 #[cfg(target_os = "linux")]
 use super::packagekit;
-use super::types::{BackendError, InstallOptions, ListRow, PackageDetail, SearchFilters, SearchRow};
+use super::types::{
+    BackendError, InstallOptions, ListRow, PackageDetail, SearchFilters, SearchRow,
+};
 use super::{BackendKind, Capabilities, PackageBackend};
 use crate::model::Source;
 
@@ -290,5 +292,148 @@ impl PackageBackend for Zypper {
     /// zypper sources are not surfaced (`sources_view` is off).
     fn list_sources(&self) -> Result<Vec<Source>, BackendError> {
         Ok(Vec::new())
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn zypper() -> Zypper {
+        Zypper::new("zypper")
+    }
+
+    #[test]
+    fn mutation_args_follow_the_packagekit_contract() {
+        let b = zypper();
+        assert_eq!(
+            b.install_args("curl", &InstallOptions::default()),
+            vec!["--non-interactive", "install", "curl"]
+        );
+        assert_eq!(
+            b.uninstall_args("curl"),
+            vec!["--non-interactive", "remove", "curl"]
+        );
+        assert_eq!(
+            b.upgrade_args("curl"),
+            vec!["--non-interactive", "update", "curl"]
+        );
+        assert_eq!(b.upgrade_all_args(), vec!["--non-interactive", "update"]);
+        assert_eq!(
+            b.source_update_args(None),
+            vec!["--non-interactive", "refresh"]
+        );
+    }
+
+    #[test]
+    fn query_args_carry_the_noninteractive_flag() {
+        let b = zypper();
+        assert_eq!(
+            b.search_args("sudo", Some("ignored"), SearchFilters::default(), Some(10)),
+            vec!["--non-interactive", "search", "sudo"]
+        );
+        assert_eq!(
+            b.list_args(None),
+            vec!["--non-interactive", "packages", "--installed-only"]
+        );
+        assert_eq!(b.upgrades_args(), vec!["--non-interactive", "list-updates"]);
+        assert_eq!(
+            b.show_args("sudo", None),
+            vec!["--non-interactive", "info", "sudo"]
+        );
+    }
+
+    #[test]
+    fn sources_are_out_of_scope() {
+        let b = zypper();
+        assert_eq!(
+            b.source_add_args("x", "https://example.com"),
+            Vec::<String>::new()
+        );
+        assert_eq!(b.source_edit_args("x", Some(true)), None);
+        assert_eq!(b.source_remove_args("x"), Vec::<String>::new());
+    }
+
+    /// Every mutation shape the arg builders produce must be plannable as a
+    /// PackageKit operation — otherwise that operation silently drops to the
+    /// per-task pkexec prompts.
+    #[cfg(target_os = "linux")]
+    #[test]
+    fn mutation_shapes_are_packagekit_plannable() {
+        use crate::backends::packagekit;
+        let b = zypper();
+        let shapes: Vec<Vec<String>> = vec![
+            b.install_args("curl", &InstallOptions::default()),
+            b.uninstall_args("curl"),
+            b.upgrade_args("curl"),
+            b.upgrade_all_args(),
+            b.source_update_args(None),
+        ];
+        for shape in shapes {
+            let refs: Vec<&str> = shape.iter().map(String::as_str).collect();
+            assert!(packagekit::plan(&refs).is_some(), "unplannable: {refs:?}");
+        }
+    }
+
+    #[test]
+    fn read_only_routing_skips_the_global_flag() {
+        // The leading `--non-interactive` global flag is skipped before the
+        // subcommand is matched.
+        assert!(is_read_only(&["--non-interactive", "search", "sudo"]));
+        assert!(is_read_only(&[
+            "--non-interactive",
+            "packages",
+            "--installed-only"
+        ]));
+        assert!(is_read_only(&["--non-interactive", "list-updates"]));
+        assert!(is_read_only(&["--non-interactive", "info", "sudo"]));
+        assert!(is_read_only(&["--version"]));
+        // Mutations are never read-only.
+        assert!(!is_read_only(&["--non-interactive", "install", "sudo"]));
+        assert!(!is_read_only(&["--non-interactive", "remove", "sudo"]));
+        assert!(!is_read_only(&["--non-interactive", "update", "sudo"]));
+        assert!(!is_read_only(&["--non-interactive", "update"]));
+        assert!(!is_read_only(&["--non-interactive", "refresh"]));
+        assert!(!is_read_only(&[]));
+    }
+
+    #[test]
+    fn capabilities_hide_everything_but_batch_upgrade() {
+        let caps = zypper().capabilities();
+        assert!(!caps.sources_view);
+        assert!(!caps.source_add);
+        assert!(!caps.source_edit);
+        assert!(!caps.export);
+        assert!(!caps.install_location);
+        assert!(!caps.silent);
+        assert!(!caps.agreements);
+        assert!(!caps.search_filters);
+        assert!(caps.batch_upgrade);
+    }
+
+    #[test]
+    fn exit_codes_format_as_plain_integers() {
+        assert_eq!(zypper().format_exit_code(102), "102");
+        assert_eq!(zypper().format_exit_code(1), "1");
+    }
+
+    #[test]
+    fn informational_exit_codes_are_benign() {
+        let b = zypper();
+        // 102 (reboot needed) and 103 (restart needed) report success.
+        assert!(b.exit_is_benign(102));
+        assert!(b.exit_is_benign(103));
+        // 100 (ZYPPER_EXIT_ERR_BUG) and 101 (ZYPPER_EXIT_ERR_SYNTAX) do not.
+        assert!(!b.exit_is_benign(100));
+        assert!(!b.exit_is_benign(101));
+    }
+
+    #[test]
+    fn an_invalid_configured_path_is_rejected() {
+        let result = Zypper::resolve("/definitely/not/a/zypper");
+        assert!(matches!(
+            result,
+            Err(BackendError::InvalidPath("zypper", _))
+        ));
     }
 }

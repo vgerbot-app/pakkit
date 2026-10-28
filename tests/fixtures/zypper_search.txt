@@ -1,0 +1,15 @@
+Retrieving repository 'openSUSE-Tumbleweed-Oss' metadata [....done]
+Building repository 'openSUSE-Tumbleweed-Oss' cache [....done]
+Loading repository data...
+Reading installed packages...
+
+S  | Name                        | Summary                                                  | Type
+---+-----------------------------+----------------------------------------------------------+--------
+   | gnome-sudoku                | Sudoku Game for GNOME                                    | package
+   | ksudoku                     | Program to generate and solve Sudoku puzzles in 2D or 3D | package
+i+ | sudo                        | Execute some commands as root                            | package
+   | sudo                        | Execute some commands as root                            | srcpackage
+   | sudo-devel                  | Header files needed for sudo plugin development          | package
+   | system-group-sudo           | System group 'sudo'                                      | package
+   | yast2-sudo                  | YaST2 - Sudo configuration                               | package
+   | wsl_base                    | Base WSL packages                                        | pattern

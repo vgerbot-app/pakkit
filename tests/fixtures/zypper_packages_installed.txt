@@ -1,0 +1,14 @@
+Loading repository data...
+Reading installed packages...
+S  | Repository                 | Name                              | Version                        | Arch
+---+----------------------------+-----------------------------------+--------------------------------+-------
+i+ | openSUSE-Tumbleweed-Oss    | aaa_base                          | 84.87+git20260924.144354a1-1.1 | x86_64
+i+ | openSUSE-Tumbleweed-Oss    | bash                              | 5.3.20-10.1                    | x86_64
+i  | openSUSE-Tumbleweed-Oss    | bash-sh                           | 5.3.20-10.1                    | noarch
+i+ | openSUSE-Tumbleweed-Oss    | coreutils                         | 9.12-1.1                       | x86_64
+i+ | openSUSE-Tumbleweed-Oss    | curl                              | 8.23.0-2.1                     | x86_64
+i+ | openSUSE-Tumbleweed-Oss    | filesystem                        | 84.87-21.2                     | x86_64
+i+ | openSUSE-Tumbleweed-Oss    | glibc                             | 2.44-3.1                       | x86_64
+i  | openSUSE-Tumbleweed-Oss    | gpg2                              | 2.5.24-1.1                     | x86_64
+i+ | openSUSE-Tumbleweed-Oss    | sudo                              | 1.9.17p2-4.1                   | x86_64
+i+ | openSUSE-Tumbleweed-Oss    | zypper                            | 1.14.101-1.1                   | x86_64

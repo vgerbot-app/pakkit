@@ -1,0 +1,30 @@
+Loading repository data...
+Reading installed packages...
+
+
+Information for package sudo:
+-----------------------------
+Repository     : openSUSE-Tumbleweed-Oss
+Name           : sudo
+Version        : 1.9.17p2-4.1
+Arch           : x86_64
+Vendor         : openSUSE
+Installed Size : 8.1 MiB
+Installed      : Yes
+Status         : up-to-date
+Source package : sudo-1.9.17p2-4.1.src
+Upstream URL   : https://www.sudo.ws/
+Summary        : Execute some commands as root
+Description    :
+    Sudo is a command that allows users to execute some commands as root.
+
+    Sudo reads either /etc/sudoers or /usr/etc/sudoers
+    (in that order, whichever one it finds first), to determine what users have
+
+
+
+    access to sudo and which commands they can run. Sudo logs all its
+    activities to syslogd, so the system administrator can keep an eye on
+    things. Sudo asks for the password to initialize a check period of a
+    given time N (where N is defined at installation and is set to 5
+    minutes by default). Administrators can edit the sudoers file with 'visudo'.
