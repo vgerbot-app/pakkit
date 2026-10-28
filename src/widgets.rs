@@ -9,14 +9,16 @@ use std::rc::Rc;
 
 use gpui_kit::component::button::{Button, ButtonCustomVariant, ButtonVariants as _};
 use gpui_kit::component::input::{Input, InputState};
+use gpui_kit::component::menu::{DropdownMenu, PopupMenuItem};
 use gpui_kit::component::switch::Switch;
 use gpui_kit::component::{StyledExt as _, h_flex};
 use gpui_kit::prelude::{
     FluentBuilder as _, InteractiveElement as _, StatefulInteractiveElement as _,
 };
 use gpui_kit::{
-    AnyElement, App, BoxShadow, ClickEvent, Div, ElementId, Hsla, ParentElement as _, Pixels, Rgba,
-    SharedString, Stateful, Styled as _, Window, div, point, px, relative,
+    AnyElement, App, BoxShadow, ClickEvent, Div, ElementId, Hsla, IntoElement as _,
+    ParentElement as _, Pixels, Rgba, SharedString, Stateful, Styled as _, Window, div, point, px,
+    relative,
 };
 
 use crate::icons::{IconKey, icon};
@@ -335,6 +337,51 @@ pub fn seg_control<T: Clone + PartialEq + 'static>(
                 .on_click(move |_, window, cx| handler(value.clone(), window, cx))
                 .child(label.clone())
         }))
+}
+
+/// The compact stand-in for [`seg_control`] once the options no longer fit a
+/// narrow window: a small outline button naming the current value, opening a
+/// popup menu with one checkable item per option.
+pub fn seg_dropdown<T: Clone + PartialEq + 'static>(
+    cx: &App,
+    p: &Palette,
+    id: impl Into<ElementId>,
+    items: &[(T, String)],
+    selected: T,
+    on_select: impl Fn(T, &mut Window, &mut App) + 'static,
+) -> AnyElement {
+    let on_select = Rc::new(on_select);
+    let current = items
+        .iter()
+        .find(|(value, _)| *value == selected)
+        .map(|(_, label)| label.clone())
+        .unwrap_or_default();
+    let menu_items = items.to_vec();
+    button_border(
+        p,
+        BtnKind::Outline,
+        btn(
+            cx,
+            p,
+            id,
+            BtnKind::Outline,
+            BtnSize::Small,
+            format!("{current} ▾"),
+        ),
+    )
+    .dropdown_menu(move |menu, _, _| {
+        menu_items.iter().fold(menu, |menu, (value, label)| {
+            let value = value.clone();
+            let is_on = value == selected;
+            let handler = on_select.clone();
+            menu.item(
+                PopupMenuItem::new(label.clone())
+                    .checked(is_on)
+                    .on_click(move |_, window, cx| handler(value.clone(), window, cx)),
+            )
+        })
+    })
+    .into_any_element()
 }
 
 /// A bare text toggle — the prototype's `.badge.badge-line` pill used as a

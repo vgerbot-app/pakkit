@@ -2079,22 +2079,23 @@ fn default_source_control(state: &AppState, p: &Palette, cx: &mut Context<AppVie
 }
 
 /// The 包管理器 switcher: one segment per backend the platform offers,
-/// switching through [`AppView::switch_backend`].
+/// switching through [`AppView::switch_backend`]. Past three options the
+/// segments would overflow a narrow window (Linux offers eight backends), so
+/// the row falls back to a dropdown.
 fn backend_segments(state: &AppState, p: &Palette, cx: &mut Context<AppView>) -> AnyElement {
     let items: Vec<(BackendKind, String)> = BackendKind::available()
         .iter()
         .map(|kind| (*kind, kind.display_name().to_owned()))
         .collect();
-    widgets::seg_control(
-        p,
-        "backend-seg",
-        &items,
-        state.backend_kind,
-        seg_handler(cx, |this, kind, window, cx| {
-            this.switch_backend(kind, window, cx);
-        }),
-    )
-    .into_any_element()
+    let on_select = seg_handler(cx, |this, kind, window, cx| {
+        this.switch_backend(kind, window, cx);
+    });
+    if items.len() > 3 {
+        widgets::seg_dropdown(cx, p, "backend-dd", &items, state.backend_kind, on_select)
+    } else {
+        widgets::seg_control(p, "backend-seg", &items, state.backend_kind, on_select)
+            .into_any_element()
+    }
 }
 
 fn concurrency_segments(state: &AppState, p: &Palette, cx: &mut Context<AppView>) -> AnyElement {
