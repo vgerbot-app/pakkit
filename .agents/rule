@@ -1,0 +1,18 @@
+# Project Rules
+
+## Rust 代码格式检查
+
+修改 Rust 代码后，必须通过格式检查：
+
+```bash
+cargo fmt --all --check
+```
+
+如果检查失败（存在格式问题），先运行以下命令修复，然后再次确认检查通过：
+
+```bash
+cargo fmt --all
+cargo fmt --all --check
+```
+
+只有在 `cargo fmt --all --check` 无报错退出后，才算完成修改。
