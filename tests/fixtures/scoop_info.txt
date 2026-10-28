@@ -1,0 +1,9 @@
+Name        : git
+Description : Distributed version control system
+Version     : 2.41.0.windows.3
+Source      : main
+Website     : https://gitforwindows.org
+License     : GPL-2.0-only
+Updated at  : 8/1/2023 10:20:30 AM
+Updated by  : ScoopInstaller
+Binaries    : git.exe

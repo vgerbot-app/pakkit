@@ -1,0 +1,4 @@
+Name   Source                                       Updated               Manifests
+----   ------                                       -------               ---------
+main   https://github.com/ScoopInstaller/Main.git   8/1/2023 10:20:30 AM       1326
+extras https://github.com/ScoopInstaller/Extras.git 8/1/2023 11:22:33 AM       2003

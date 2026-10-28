@@ -13,6 +13,12 @@
 //! Buckets are the visible source kind (like chocolatey's feeds): they can
 //! be listed, added and removed. Everything else on the winget profile is
 //! off.
+//!
+//! Scoop is Windows-only, so the parsers in [`parse`] are tested against
+//! fixtures reconstructed from Scoop's own output code
+//! (github.com/ScoopInstaller/Scoop: `libexec/scoop-*.ps1`,
+//! `lib/buckets.ps1`, `supporting/formats/ScoopTypes.Format.ps1xml`); see
+//! the `parse` module docs for the per-command provenance.
 
 pub mod parse;
 
@@ -197,8 +203,99 @@ impl PackageBackend for Scoop {
         parse::parse_show(stdout)
     }
 
-    /// The configured buckets, one per row of `scoop bucket list`.
+    /// `bucket list` — one row per configured bucket. The table's `Source`
+    /// column (a git remote, or a local path for non-git buckets) maps to
+    /// `url`; buckets are user-managed, hence trusted and explicit.
     fn list_sources(&self) -> Result<Vec<Source>, BackendError> {
-        Ok(Vec::new())
+        let out = self.run_checked(&["bucket", "list"])?;
+        Ok(parse::parse_bucket_list(&out.stdout)
+            .into_iter()
+            .map(|(name, url)| Source {
+                name,
+                url,
+                ty: "scoop-bucket".to_owned(),
+                trusted: true,
+                explicit: true,
+                packages: None,
+                updated: None,
+            })
+            .collect())
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn scoop() -> Scoop {
+        Scoop::new("scoop")
+    }
+
+    #[test]
+    fn mutation_args_are_plain_scoop_commands() {
+        let b = scoop();
+        assert_eq!(
+            b.install_args("git", &InstallOptions::default()),
+            vec!["install", "git"]
+        );
+        assert_eq!(b.uninstall_args("git"), vec!["uninstall", "git"]);
+        assert_eq!(b.upgrade_args("git"), vec!["update", "git"]);
+        // A literal asterisk: the child is spawned without a shell.
+        assert_eq!(b.upgrade_all_args(), vec!["update", "*"]);
+    }
+
+    #[test]
+    fn query_args() {
+        let b = scoop();
+        assert!(!b.empty_query_searches_catalog());
+        assert_eq!(
+            b.search_args("git", Some("main"), SearchFilters::default(), Some(25)),
+            vec!["search", "git"]
+        );
+        assert_eq!(b.list_args(None), vec!["list"]);
+        assert_eq!(b.upgrades_args(), vec!["status"]);
+        assert_eq!(b.show_args("git", None), vec!["info", "git"]);
+    }
+
+    #[test]
+    fn bucket_add_with_and_without_url_and_rm() {
+        let b = scoop();
+        assert_eq!(
+            b.source_add_args("extras", ""),
+            vec!["bucket", "add", "extras"]
+        );
+        assert_eq!(
+            b.source_add_args("mybucket", "https://example.com/mybucket.git"),
+            vec!["bucket", "add", "mybucket", "https://example.com/mybucket.git"]
+        );
+        assert_eq!(b.source_edit_args("extras", Some(true)), None);
+        assert_eq!(b.source_remove_args("extras"), vec!["bucket", "rm", "extras"]);
+        assert_eq!(b.source_update_args(None), vec!["update"]);
+    }
+
+    #[test]
+    fn capabilities() {
+        let caps = scoop().capabilities();
+        assert!(caps.sources_view);
+        assert!(caps.source_add);
+        assert!(!caps.source_edit);
+        assert!(!caps.export);
+        assert!(!caps.install_location);
+        assert!(!caps.silent);
+        assert!(!caps.agreements);
+        assert!(!caps.search_filters);
+        assert!(caps.batch_upgrade);
+    }
+
+    #[test]
+    fn exit_codes_format_as_plain_integers() {
+        assert_eq!(scoop().format_exit_code(1), "1");
+        assert_eq!(scoop().format_exit_code(1603), "1603");
+    }
+
+    #[test]
+    fn an_invalid_configured_path_is_rejected() {
+        let result = Scoop::resolve("/definitely/not/a/scoop");
+        assert!(matches!(result, Err(BackendError::InvalidPath("scoop", _))));
     }
 }

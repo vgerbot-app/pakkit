@@ -1,0 +1,8 @@
+'main' bucket:
+    git (2.41.0.windows.3) --> includes 'git.exe'
+    git-lfs (3.3.0)
+    mingit (2.41.0.windows.3)
+
+'extras' bucket:
+    gitkraken (9.5.1)
+    git-crypt (0.7.0)
