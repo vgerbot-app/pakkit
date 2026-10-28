@@ -1,0 +1,39 @@
+Last metadata expiration check: 0:00:05 ago on Tue Oct 27 14:51:56 2026.
+Installed Packages
+Name         : xz
+Epoch        : 1
+Version      : 5.4.6
+Release      : 3.fc40
+Architecture : x86_64
+Size         : 2.0 M
+Source       : xz-5.4.6-3.fc40.src.rpm
+Repository   : @System
+From repo    : fedora
+Summary      : LZMA compression utilities
+URL          : https://tukaani.org/xz/
+License      : GPLv2+ and Public Domain
+Description  : XZ Utils are an attempt to make LZMA compression easy to use on free (as in
+             : freedom) operating systems. This is achieved by providing tools and libraries
+             : which are similar to use than the equivalents of the most popular existing
+             : compression algorithms.
+             :
+             : LZMA is a general purpose compression algorithm designed by Igor Pavlov as
+             : part of 7-Zip. It provides high compression ratio while keeping the
+             : decompression speed fast.
+
+Available Packages
+Name         : xz
+Epoch        : 1
+Version      : 5.8.1
+Release      : 2.fc40
+Architecture : x86_64
+Size         : 572 k
+Source       : xz-5.8.1-2.fc40.src.rpm
+Repository   : updates
+Summary      : LZMA compression utilities
+URL          : https://tukaani.org/xz/
+License      : 0BSD AND GPL-2.0-or-later AND LicenseRef-Fedora-Public-Domain
+Description  : XZ Utils are an attempt to make LZMA compression easy to use on free (as in
+             : freedom) operating systems. This is achieved by providing tools and libraries
+             : which are similar to use than the equivalents of the most popular existing
+             : compression algorithms.

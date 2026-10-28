@@ -1,0 +1,19 @@
+========================== Name Exactly Matched: sudo ==========================
+sudo.x86_64 : Allows restricted root access for specified users
+========================= Name & Summary Matched: sudo =========================
+cros-sudo-config.noarch : sudo config for Chromium OS integration.
+libsss_sudo.x86_64 : A library to allow communication between SUDO and SSSD
+lxqt-sudo.x86_64 : GUI frontend for sudo/su
+rust-sudo+default-devel.noarch : Detect if you are running as root, restart self with sudo if needed or setup uid zero when running with the SUID flag set
+rust-sudo-devel.noarch : Detect if you are running as root, restart self with sudo if needed or setup uid zero when running with the SUID flag set
+sudo-devel.i686 : Development files for sudo
+sudo-devel.x86_64 : Development files for sudo
+sudo-python-plugin.x86_64 : Python plugin for sudo
+sudo-rs.x86_64 : Memory safe implementation of sudo and su
+============================== Name Matched: sudo ==============================
+ksudoku.x86_64 : A logic-based symbol placement puzzle
+============================ Summary Matched: sudo =============================
+nudoku.x86_64 : Ncurses based Sudoku game
+pleaser.x86_64 : Please, a polite regex-first sudo alternative
+qqwing-libs.i686 : Library for Sudoku solving and generation
+qqwing-libs.x86_64 : Library for Sudoku solving and generation

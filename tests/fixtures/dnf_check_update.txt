@@ -1,0 +1,5 @@
+Last metadata expiration check: 0:00:05 ago on Tue Oct 27 14:51:19 2026.
+
+xz.x86_64                           1:5.8.1-2.fc40                       updates
+xz-libs.x86_64                      1:5.8.1-2.fc40                       updates
+zstd.x86_64                         1.5.7-1.fc40                         updates

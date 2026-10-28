@@ -267,3 +267,134 @@ impl PackageBackend for Dnf {
         Ok(Vec::new())
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn dnf() -> Dnf {
+        Dnf::new("dnf")
+    }
+
+    #[test]
+    fn mutation_args_are_built_for_dnf() {
+        let b = dnf();
+        assert_eq!(
+            b.install_args("curl", &InstallOptions::default()),
+            vec!["install", "-y", "curl"]
+        );
+        assert_eq!(b.uninstall_args("curl"), vec!["remove", "-y", "curl"]);
+        assert_eq!(b.upgrade_args("curl"), vec!["upgrade", "-y", "curl"]);
+        assert_eq!(b.upgrade_all_args(), vec!["upgrade", "-y"]);
+        assert_eq!(
+            b.source_update_args(None),
+            vec!["makecache", "--refresh"]
+        );
+    }
+
+    #[test]
+    fn query_args_stay_minimal() {
+        let b = dnf();
+        // dnf has no source/filter/count flags; the UI never offers them
+        // and every one of these inputs is ignored.
+        assert_eq!(
+            b.search_args(
+                "sudo",
+                Some("ignored"),
+                SearchFilters::default(),
+                Some(10)
+            ),
+            vec!["search", "sudo"]
+        );
+        assert_eq!(b.list_args(None), vec!["list", "--installed"]);
+        assert_eq!(b.upgrades_args(), vec!["check-update"]);
+        assert_eq!(b.show_args("bash", None), vec!["info", "bash"]);
+    }
+
+    #[test]
+    fn an_empty_query_does_not_search_the_catalog() {
+        // Unlike apt, `dnf search ""` is an error ("no argument given"), so
+        // the empty query stays client-side with the installed set.
+        assert!(!dnf().empty_query_searches_catalog());
+    }
+
+    #[test]
+    fn sources_are_out_of_scope() {
+        let b = dnf();
+        assert_eq!(
+            b.source_add_args("x", "https://example.com"),
+            Vec::<String>::new()
+        );
+        assert_eq!(b.source_edit_args("x", Some(true)), None);
+        assert_eq!(b.source_remove_args("x"), Vec::<String>::new());
+    }
+
+    /// Every mutation shape the arg builders produce must be plannable as a
+    /// PackageKit operation — otherwise that operation silently drops to the
+    /// per-task pkexec prompts.
+    #[cfg(target_os = "linux")]
+    #[test]
+    fn mutation_shapes_are_packagekit_plannable() {
+        use crate::backends::packagekit;
+        let b = dnf();
+        let shapes: Vec<Vec<String>> = vec![
+            b.install_args("curl", &InstallOptions::default()),
+            b.uninstall_args("curl"),
+            b.upgrade_args("curl"),
+            b.upgrade_all_args(),
+            b.source_update_args(None),
+        ];
+        for shape in shapes {
+            let refs: Vec<&str> = shape.iter().map(String::as_str).collect();
+            assert!(packagekit::plan(&refs).is_some(), "unplannable: {refs:?}");
+        }
+    }
+
+    #[test]
+    fn read_only_routing_covers_queries_only() {
+        assert!(is_read_only(&["search", "sudo"]));
+        assert!(is_read_only(&["list", "--installed"]));
+        assert!(is_read_only(&["info", "bash"]));
+        assert!(is_read_only(&["check-update"]));
+        assert!(is_read_only(&["--version"]));
+        assert!(!is_read_only(&["install", "-y", "curl"]));
+        assert!(!is_read_only(&["remove", "-y", "curl"]));
+        assert!(!is_read_only(&["upgrade", "-y"]));
+        assert!(!is_read_only(&["makecache", "--refresh"]));
+        assert!(!is_read_only(&[]));
+    }
+
+    #[test]
+    fn capabilities_hide_the_entire_winget_surface() {
+        let caps = dnf().capabilities();
+        assert!(!caps.sources_view);
+        assert!(!caps.source_add);
+        assert!(!caps.source_edit);
+        assert!(!caps.export);
+        assert!(!caps.install_location);
+        assert!(!caps.silent);
+        assert!(!caps.agreements);
+        assert!(!caps.search_filters);
+        assert!(caps.batch_upgrade);
+    }
+
+    #[test]
+    fn exit_codes_format_as_plain_integers() {
+        assert_eq!(dnf().format_exit_code(100), "100");
+        assert_eq!(dnf().format_exit_code(1), "1");
+    }
+
+    #[test]
+    fn check_update_100_is_benign() {
+        let b = dnf();
+        assert!(b.exit_is_benign(100));
+        assert!(!b.exit_is_benign(0));
+        assert!(!b.exit_is_benign(1));
+    }
+
+    #[test]
+    fn an_invalid_configured_path_is_rejected() {
+        let result = Dnf::resolve("/definitely/not/a/dnf");
+        assert!(matches!(result, Err(BackendError::InvalidPath("dnf", _))));
+    }
+}
