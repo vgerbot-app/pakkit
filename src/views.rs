@@ -972,39 +972,39 @@ fn search(state: &AppState, command: &str, p: &Palette, cx: &mut Context<AppView
     // The view fills the content pane: head/filters/command stay pinned and
     // only the card grid scrolls, so the pager keeps a fixed slot at the
     // bottom instead of riding along with the cards.
-    let body =
-        if results.is_empty() && state.searching {
-            div()
-                .id("search-body")
-                .flex_1()
-                .min_h_0()
-                .overflow_y_scroll()
-                .child(
-                    widgets::page_body().child(
-                        div()
-                            .flex()
-                            .flex_wrap()
-                            .gap(px(12.))
-                            .children((0..8).map(|_| widgets::skeleton_card(p).into_any_element())),
-                    ),
-                )
-                .into_any_element()
-        } else if results.is_empty() {
-            div()
-                .id("search-body")
-                .flex_1()
-                .min_h_0()
-                .overflow_y_scroll()
-                .child(widgets::page_body().child(widgets::empty_state(
-                    p,
-                    IconKey::Search,
-                    if state.query.trim().is_empty() {
-                        tr!("search.empty_none")
-                    } else {
-                        tr!("search.empty_no_match")
-                    },
-                    tr!("search.empty_hint"),
-                    vec![
+    let body = if results.is_empty() && state.searching {
+        div()
+            .id("search-body")
+            .flex_1()
+            .min_h_0()
+            .overflow_y_scroll()
+            .child(
+                widgets::page_body().child(
+                    div()
+                        .flex()
+                        .flex_wrap()
+                        .justify_center()
+                        .gap(px(12.))
+                        .children((0..8).map(|_| widgets::skeleton_card(p).into_any_element())),
+                ),
+            )
+            .into_any_element()
+    } else if results.is_empty() {
+        div()
+            .id("search-body")
+            .flex_1()
+            .min_h_0()
+            .overflow_y_scroll()
+            .child(widgets::page_body().child(widgets::empty_state(
+                p,
+                IconKey::Search,
+                if state.query.trim().is_empty() {
+                    tr!("search.empty_none")
+                } else {
+                    tr!("search.empty_no_match")
+                },
+                tr!("search.empty_hint"),
+                vec![
                     widgets::btn(
                         cx,
                         p,
@@ -1030,45 +1030,52 @@ fn search(state: &AppState, command: &str, p: &Palette, cx: &mut Context<AppView
                     }))
                     .into_any_element(),
                 ],
-                )))
-                .into_any_element()
-        } else {
-            div()
-                .flex_1()
-                .min_h_0()
-                .flex()
-                .flex_col()
-                .child(
+            )))
+            .into_any_element()
+    } else {
+        div()
+            .flex_1()
+            .min_h_0()
+            .flex()
+            .flex_col()
+            .child(
+                div()
+                    .id("search-results")
+                    .flex_1()
+                    .min_h_0()
+                    .overflow_y_scroll()
+                    .child(
+                        widgets::page_body().child(
+                            div()
+                                .flex()
+                                .flex_wrap()
+                                .justify_center()
+                                .gap(px(12.))
+                                .children(
+                                    page_rows.iter().map(|pkg| package_card(state, p, pkg, cx)),
+                                ),
+                        ),
+                    ),
+            )
+            .when(pages > 1, |this| {
+                this.child(
                     div()
-                        .id("search-results")
-                        .flex_1()
-                        .min_h_0()
-                        .overflow_y_scroll()
-                        .child(widgets::page_body().child(
-                            div().flex().flex_wrap().gap(px(12.)).children(
-                                page_rows.iter().map(|pkg| package_card(state, p, pkg, cx)),
-                            ),
+                        .flex_none()
+                        .border_t_1()
+                        .border_color(p.line)
+                        .child(pager(
+                            p,
+                            "search-pager",
+                            page,
+                            pages,
+                            results.len(),
+                            cx,
+                            |state, next| state.search_page = next,
                         )),
                 )
-                .when(pages > 1, |this| {
-                    this.child(
-                        div()
-                            .flex_none()
-                            .border_t_1()
-                            .border_color(p.line)
-                            .child(pager(
-                                p,
-                                "search-pager",
-                                page,
-                                pages,
-                                results.len(),
-                                cx,
-                                |state, next| state.search_page = next,
-                            )),
-                    )
-                })
-                .into_any_element()
-        };
+            })
+            .into_any_element()
+    };
 
     div()
         .flex()
