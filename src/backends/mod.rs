@@ -115,7 +115,11 @@ impl BackendKind {
         } else if cfg!(target_os = "macos") {
             &[BackendKind::Brew]
         } else {
-            &[BackendKind::Winget, BackendKind::Chocolatey, BackendKind::Scoop]
+            &[
+                BackendKind::Winget,
+                BackendKind::Chocolatey,
+                BackendKind::Scoop,
+            ]
         }
     }
 }

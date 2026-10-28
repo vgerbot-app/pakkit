@@ -215,10 +215,7 @@ mod tests {
 
         // Both arches of sudo-devel collapse onto the same id once the
         // `.arch` segment is stripped.
-        assert_eq!(
-            rows.iter().filter(|row| row.id == "sudo-devel").count(),
-            2
-        );
+        assert_eq!(rows.iter().filter(|row| row.id == "sudo-devel").count(), 2);
 
         // A `+`-bearing rpm name keeps everything before the last dot.
         let plus = rows

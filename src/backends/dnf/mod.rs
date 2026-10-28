@@ -23,7 +23,9 @@ use std::sync::atomic::{AtomicU8, Ordering};
 use super::exec::{self, Output};
 #[cfg(target_os = "linux")]
 use super::packagekit;
-use super::types::{BackendError, InstallOptions, ListRow, PackageDetail, SearchFilters, SearchRow};
+use super::types::{
+    BackendError, InstallOptions, ListRow, PackageDetail, SearchFilters, SearchRow,
+};
 use super::{BackendKind, Capabilities, PackageBackend};
 use crate::model::Source;
 
@@ -286,10 +288,7 @@ mod tests {
         assert_eq!(b.uninstall_args("curl"), vec!["remove", "-y", "curl"]);
         assert_eq!(b.upgrade_args("curl"), vec!["upgrade", "-y", "curl"]);
         assert_eq!(b.upgrade_all_args(), vec!["upgrade", "-y"]);
-        assert_eq!(
-            b.source_update_args(None),
-            vec!["makecache", "--refresh"]
-        );
+        assert_eq!(b.source_update_args(None), vec!["makecache", "--refresh"]);
     }
 
     #[test]
@@ -298,12 +297,7 @@ mod tests {
         // dnf has no source/filter/count flags; the UI never offers them
         // and every one of these inputs is ignored.
         assert_eq!(
-            b.search_args(
-                "sudo",
-                Some("ignored"),
-                SearchFilters::default(),
-                Some(10)
-            ),
+            b.search_args("sudo", Some("ignored"), SearchFilters::default(), Some(10)),
             vec!["search", "sudo"]
         );
         assert_eq!(b.list_args(None), vec!["list", "--installed"]);

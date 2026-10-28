@@ -194,7 +194,10 @@ mod tests {
     fn search_switches_sections_and_prefixes_casks() {
         let rows = parse_search(SEARCH);
         assert_eq!(rows.len(), 4);
-        let formula = rows.iter().find(|row| row.name == "firefoxpwa").expect("row");
+        let formula = rows
+            .iter()
+            .find(|row| row.name == "firefoxpwa")
+            .expect("row");
         assert_eq!(formula.id, "firefoxpwa");
         assert_eq!(formula.source, "formula");
         assert_eq!(formula.version, "");
@@ -279,7 +282,10 @@ mod tests {
     #[test]
     fn tap_lists_one_name_per_line() {
         let taps = parse_tap_list(TAP);
-        assert_eq!(taps, vec!["homebrew/cask", "homebrew/core", "homebrew/services"]);
+        assert_eq!(
+            taps,
+            vec!["homebrew/cask", "homebrew/core", "homebrew/services"]
+        );
         assert!(parse_tap_list("\n\n").is_empty());
     }
 }

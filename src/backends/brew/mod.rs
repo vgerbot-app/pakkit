@@ -24,7 +24,9 @@ pub mod parse;
 use std::path::PathBuf;
 
 use super::exec::{self, Output};
-use super::types::{BackendError, InstallOptions, ListRow, PackageDetail, SearchFilters, SearchRow};
+use super::types::{
+    BackendError, InstallOptions, ListRow, PackageDetail, SearchFilters, SearchRow,
+};
 use super::{BackendKind, Capabilities, PackageBackend};
 use crate::model::Source;
 
@@ -372,7 +374,12 @@ mod tests {
             vec!["search", "/./"]
         );
         assert_eq!(
-            b.search_args("firefox", Some("ignored"), SearchFilters::default(), Some(10)),
+            b.search_args(
+                "firefox",
+                Some("ignored"),
+                SearchFilters::default(),
+                Some(10)
+            ),
             vec!["search", "firefox"]
         );
         assert_eq!(b.list_args(None), vec!["list", "--versions"]);
@@ -391,7 +398,10 @@ mod tests {
             vec!["tap", "user/repo", "https://example.com/user/homebrew-repo"]
         );
         assert_eq!(b.source_edit_args("homebrew/cask", Some(true)), None);
-        assert_eq!(b.source_remove_args("homebrew/cask"), vec!["untap", "homebrew/cask"]);
+        assert_eq!(
+            b.source_remove_args("homebrew/cask"),
+            vec!["untap", "homebrew/cask"]
+        );
         assert_eq!(b.source_update_args(None), vec!["update"]);
     }
 

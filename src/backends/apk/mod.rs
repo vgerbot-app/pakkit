@@ -18,7 +18,9 @@ pub mod parse;
 use std::path::{Path, PathBuf};
 
 use super::exec::{self, Output};
-use super::types::{BackendError, InstallOptions, ListRow, PackageDetail, SearchFilters, SearchRow};
+use super::types::{
+    BackendError, InstallOptions, ListRow, PackageDetail, SearchFilters, SearchRow,
+};
 use super::{BackendKind, Capabilities, PackageBackend};
 use crate::model::Source;
 

@@ -25,7 +25,9 @@ pub mod parse;
 use std::path::PathBuf;
 
 use super::exec::{self, Output};
-use super::types::{BackendError, InstallOptions, ListRow, PackageDetail, SearchFilters, SearchRow};
+use super::types::{
+    BackendError, InstallOptions, ListRow, PackageDetail, SearchFilters, SearchRow,
+};
 use super::{BackendKind, Capabilities, PackageBackend};
 use crate::model::Source;
 
@@ -266,10 +268,18 @@ mod tests {
         );
         assert_eq!(
             b.source_add_args("mybucket", "https://example.com/mybucket.git"),
-            vec!["bucket", "add", "mybucket", "https://example.com/mybucket.git"]
+            vec![
+                "bucket",
+                "add",
+                "mybucket",
+                "https://example.com/mybucket.git"
+            ]
         );
         assert_eq!(b.source_edit_args("extras", Some(true)), None);
-        assert_eq!(b.source_remove_args("extras"), vec!["bucket", "rm", "extras"]);
+        assert_eq!(
+            b.source_remove_args("extras"),
+            vec!["bucket", "rm", "extras"]
+        );
         assert_eq!(b.source_update_args(None), vec!["update"]);
     }
 
