@@ -1,0 +1,12 @@
+==> firefox: 121.0 (auto_updates)
+https://www.mozilla.org/firefox/
+Not installed
+From: https://github.com/Homebrew/homebrew-cask/blob/HEAD/Casks/f/firefox.rb
+==> Name
+Mozilla Firefox
+==> Description
+Web browser
+==> Artifacts
+Firefox.app (App)
+==> Analytics
+install: 65,432 (30 days), 189,001 (90 days), 720,111 (365 days)

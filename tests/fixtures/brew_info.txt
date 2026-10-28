@@ -1,0 +1,12 @@
+==> bash: stable 5.2.26 (bottled)
+Bourne-Again SHell, a UNIX command interpreter
+https://www.gnu.org/software/bash/
+Installed
+/opt/homebrew/Cellar/bash/5.2.26 (160 files, 11.9MB) *
+  Poured from bottle using the formulae.brew.sh API on 2024-01-15 at 10:00:00
+From: https://github.com/Homebrew/homebrew-core/blob/HEAD/Formula/b/bash.rb
+License: GPL-3.0-or-later
+==> Dependencies
+Required: ncurses
+==> Analytics
+install: 52,341 (30 days), 152,891 (90 days), 610,234 (365 days)

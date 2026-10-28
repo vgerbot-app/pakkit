@@ -1,0 +1,2 @@
+firefox (120.0.1) < 121.0
+raycast (1.64.4) != latest

@@ -1,0 +1,7 @@
+==> Formulae
+firefoxpwa
+
+==> Casks
+firefox
+firefox-developer-edition
+firefox-esr

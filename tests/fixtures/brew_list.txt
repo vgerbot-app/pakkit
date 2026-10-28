@@ -1,0 +1,5 @@
+bash 5.2.26
+ca-certificates 2024-11-26
+git 2.43.0 2.43.2
+ncurses 6.5
+python@3.12 3.12.1

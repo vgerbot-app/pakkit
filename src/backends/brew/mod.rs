@@ -13,6 +13,11 @@
 //!
 //! Taps are the visible source kind (like chocolatey's feeds): they can be
 //! listed, added and removed. Everything else on the winget profile is off.
+//!
+//! The parser fixtures under `tests/fixtures/brew_*.txt` follow brew 4.x's
+//! documented non-TTY output shapes; the `homebrew/brew` container pull was
+//! unavailable at authoring time, so they are written from the documented
+//! forms rather than captured from a live `brew`.
 
 pub mod parse;
 
@@ -241,8 +246,185 @@ impl PackageBackend for Brew {
         parse::parse_show(stdout)
     }
 
-    /// The configured taps, one per line of `brew tap`.
+    /// `list --versions` formula rows plus `list --cask --versions` cask
+    /// rows, id-prefixed here — neither listing carries a kind marker. Each
+    /// half tolerates failure as an empty list.
+    fn list_installed(&self) -> Vec<ListRow> {
+        let args = self.list_args(None);
+        let refs: Vec<&str> = args.iter().map(String::as_str).collect();
+        let mut rows = self
+            .run(&refs)
+            .map(|out| {
+                let mut rows = parse::parse_list(&out.stdout);
+                for row in &mut rows {
+                    row.source = FORMULA_SOURCE.to_owned();
+                }
+                rows
+            })
+            .unwrap_or_default();
+        if let Ok(out) = self.run(&["list", "--cask", "--versions"]) {
+            for mut row in parse::parse_list(&out.stdout) {
+                row.id = format!("{CASK_ID_PREFIX}{}", row.name);
+                row.source = CASK_SOURCE.to_owned();
+                rows.push(row);
+            }
+        }
+        rows
+    }
+
+    /// `outdated --verbose` formula rows plus `outdated --cask --verbose`
+    /// cask rows, id-prefixed here for the same reason as
+    /// [`Brew::list_installed`]. Each half tolerates failure as empty.
+    fn list_upgrades(&self) -> Vec<ListRow> {
+        let args = self.upgrades_args();
+        let refs: Vec<&str> = args.iter().map(String::as_str).collect();
+        let mut rows = self
+            .run(&refs)
+            .map(|out| {
+                let mut rows = parse::parse_upgrades(&out.stdout);
+                for row in &mut rows {
+                    row.source = FORMULA_SOURCE.to_owned();
+                }
+                rows
+            })
+            .unwrap_or_default();
+        if let Ok(out) = self.run(&["outdated", "--cask", "--verbose"]) {
+            for mut row in parse::parse_upgrades(&out.stdout) {
+                row.id = format!("{CASK_ID_PREFIX}{}", row.name);
+                row.source = CASK_SOURCE.to_owned();
+                rows.push(row);
+            }
+        }
+        rows
+    }
+
+    /// The configured taps, one per line of `brew tap`. An `owner/repo` tap
+    /// maps to its conventional `homebrew-<repo>` GitHub URL; anything else
+    /// (a fully custom tap name) leaves the URL empty.
     fn list_sources(&self) -> Result<Vec<Source>, BackendError> {
-        Ok(Vec::new())
+        let out = self.run_checked(&["tap"])?;
+        Ok(parse::parse_tap_list(&out.stdout)
+            .into_iter()
+            .map(|name| {
+                let url = match name.split_once('/') {
+                    Some((owner, repo)) if !owner.is_empty() && !repo.is_empty() => {
+                        format!("https://github.com/{owner}/homebrew-{repo}")
+                    }
+                    _ => String::new(),
+                };
+                Source {
+                    name,
+                    url,
+                    ty: "brew-tap".to_owned(),
+                    trusted: true,
+                    explicit: true,
+                    packages: None,
+                    updated: None,
+                }
+            })
+            .collect())
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn brew() -> Brew {
+        Brew::new("brew")
+    }
+
+    #[test]
+    fn cask_ids_route_to_the_cask_flag_shapes() {
+        let b = brew();
+        assert_eq!(
+            b.show_args("cask/firefox", None),
+            vec!["info", "--cask", "firefox"]
+        );
+        assert_eq!(b.show_args("firefox", None), vec!["info", "firefox"]);
+        assert_eq!(
+            b.install_args("cask/firefox", &InstallOptions::default()),
+            vec!["install", "--cask", "firefox"]
+        );
+        assert_eq!(
+            b.install_args("wget", &InstallOptions::default()),
+            vec!["install", "wget"]
+        );
+        assert_eq!(
+            b.uninstall_args("cask/firefox"),
+            vec!["uninstall", "--cask", "firefox"]
+        );
+        assert_eq!(b.uninstall_args("wget"), vec!["uninstall", "wget"]);
+        assert_eq!(
+            b.upgrade_args("cask/firefox"),
+            vec!["upgrade", "--cask", "firefox"]
+        );
+        assert_eq!(b.upgrade_args("wget"), vec!["upgrade", "wget"]);
+        assert_eq!(b.upgrade_all_args(), vec!["upgrade"]);
+    }
+
+    #[test]
+    fn query_args_and_the_empty_query_catalog() {
+        let b = brew();
+        assert!(b.empty_query_searches_catalog());
+        assert_eq!(
+            b.search_args("", None, SearchFilters::default(), None),
+            vec!["search", "/./"]
+        );
+        assert_eq!(
+            b.search_args("firefox", Some("ignored"), SearchFilters::default(), Some(10)),
+            vec!["search", "firefox"]
+        );
+        assert_eq!(b.list_args(None), vec!["list", "--versions"]);
+        assert_eq!(b.upgrades_args(), vec!["outdated", "--verbose"]);
+    }
+
+    #[test]
+    fn taps_have_add_and_remove_but_no_edit() {
+        let b = brew();
+        assert_eq!(
+            b.source_add_args("homebrew/cask", ""),
+            vec!["tap", "homebrew/cask"]
+        );
+        assert_eq!(
+            b.source_add_args("user/repo", "https://example.com/user/homebrew-repo"),
+            vec!["tap", "user/repo", "https://example.com/user/homebrew-repo"]
+        );
+        assert_eq!(b.source_edit_args("homebrew/cask", Some(true)), None);
+        assert_eq!(b.source_remove_args("homebrew/cask"), vec!["untap", "homebrew/cask"]);
+        assert_eq!(b.source_update_args(None), vec!["update"]);
+    }
+
+    #[test]
+    fn capabilities_show_sources_and_batch_upgrade_only() {
+        let caps = brew().capabilities();
+        assert!(caps.sources_view);
+        assert!(caps.source_add);
+        assert!(!caps.source_edit);
+        assert!(!caps.export);
+        assert!(!caps.install_location);
+        assert!(!caps.silent);
+        assert!(!caps.agreements);
+        assert!(!caps.search_filters);
+        assert!(caps.batch_upgrade);
+    }
+
+    #[test]
+    fn exit_codes_format_as_plain_integers() {
+        assert_eq!(brew().format_exit_code(1), "1");
+        assert_eq!(brew().format_exit_code(127), "127");
+    }
+
+    #[test]
+    fn cask_name_strips_only_the_prefix() {
+        assert_eq!(cask_name("cask/firefox"), Some("firefox"));
+        assert_eq!(cask_name("firefox"), None);
+        assert_eq!(cask_name("cask/"), None);
+    }
+
+    #[test]
+    fn an_invalid_configured_path_is_rejected() {
+        let result = Brew::resolve("/definitely/not/a/brew");
+        assert!(matches!(result, Err(BackendError::InvalidPath("brew", _))));
     }
 }
