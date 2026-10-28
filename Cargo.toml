@@ -40,9 +40,14 @@ rustybuzz = { opt-level = 3 }
 taffy = { opt-level = 3 }
 ttf-parser = { opt-level = 3 }
 
+# Tuned for small binaries (CI release builds): size-first codegen,
+# cross-crate dead-code elimination, no unwinding tables (src has no
+# catch_unwind). Costs build time compared to defaults.
 [profile.release]
-lto = "thin"
+opt-level = "z"
+lto = "fat"
 codegen-units = 1
+panic = "abort"
 strip = "symbols"
 
 [lints.rust]
