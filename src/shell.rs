@@ -588,20 +588,6 @@ impl AppView {
                 for source in &mut this.state.sources {
                     source.updated = Some(now_stamp());
                 }
-                // A default source the backend no longer offers (e.g. a
-                // settings file carried across platforms) snaps to the first.
-                if !this.state.sources.is_empty()
-                    && !this
-                        .state
-                        .sources
-                        .iter()
-                        .any(|source| source.name == this.state.default_source)
-                {
-                    let first = this.state.sources[0].name.clone();
-                    this.state.default_source = first.clone();
-                    this.state.settings.default_source = first;
-                    this.persist_settings();
-                }
                 cx.notify();
             });
         }));
@@ -846,7 +832,7 @@ impl AppView {
             }
             let uid = self.state.queue[ix].uid;
             let item = self.state.queue[ix].clone();
-            let args = queue::args_for(&item, &self.state.settings, &*backend);
+            let args = queue::args_for(&item, &self.state, &*backend);
             logging::append(
                 "start",
                 &format!("{} {} → {}", item.action.label(), item.name, item.log),
@@ -1653,8 +1639,17 @@ fn search_command(state: &AppState, backend: &dyn PackageBackend) -> String {
 }
 
 /// The equivalent `<cli> install` line for the current install settings.
+///
+/// The package's own source wins over the configured default, as the queue's
+/// `args_for` does — ids are only unique within a source.
 fn install_command(state: &AppState, id: &str, backend: &dyn PackageBackend) -> String {
-    let args = backend.install_args(id, &state.settings.install_options());
+    let source = state
+        .packages
+        .iter()
+        .find(|pkg| pkg.key() == id.to_lowercase())
+        .map(|pkg| pkg.source.as_str())
+        .unwrap_or_default();
+    let args = backend.install_args(id, &state.install_options_for(source));
     format!("{} {}", backend.cli_name(), args.join(" "))
 }
 
@@ -1841,22 +1836,49 @@ mod tests {
 
     #[test]
     fn install_command_line_reflects_the_settings() {
-        let state = AppState {
-            settings: crate::state::Settings {
-                default_source: "winget".into(),
-                ..crate::state::Settings::default()
-            },
-            ..AppState::default()
-        };
+        let state = AppState::default();
 
         let command = install_command(&state, "Microsoft.PowerToys", &backend());
         assert!(command.starts_with("winget install --id Microsoft.PowerToys"));
-        assert!(command.contains("--source winget"));
+        assert!(
+            !command.contains("--source"),
+            "an unknown package names no source: {command}"
+        );
         assert!(command.contains("--silent"));
         assert!(
             !command.contains("--architecture") && !command.contains("--scope"),
             "installs must not force an architecture or scope"
         );
+    }
+
+    #[test]
+    fn install_command_line_uses_the_packages_own_source() {
+        let state = AppState {
+            packages: vec![crate::model::Package {
+                id: "Microsoft.PowerToys".into(),
+                name: "PowerToys".into(),
+                source: "winget".into(),
+                ..crate::model::Package::default()
+            }],
+            sources: vec![
+                crate::model::Source {
+                    name: "winget".into(),
+                    ..crate::model::Source::default()
+                },
+                crate::model::Source {
+                    name: "msstore".into(),
+                    ..crate::model::Source::default()
+                },
+            ],
+            ..AppState::default()
+        };
+
+        let command = install_command(&state, "Microsoft.PowerToys", &backend());
+        assert!(
+            command.contains("--source winget"),
+            "the package's own source is named: {command}"
+        );
+        assert!(!command.contains("--source msstore"));
     }
 
     #[test]

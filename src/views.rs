@@ -1576,11 +1576,9 @@ fn source_card(
     cx: &mut Context<AppView>,
 ) -> AnyElement {
     let name = source.name.clone();
-    let is_default = state.default_source == source.name;
     let edit_name = source.name.clone();
     let remove_name = source.name.clone();
     let sync_name = source.name.clone();
-    let set_name = source.name.clone();
 
     widgets::card(p)
         .p(px(14.))
@@ -1608,9 +1606,6 @@ fn source_card(
                             widgets::pill(p, PillKind::Ok, tr!("sources.trusted"))
                         } else {
                             widgets::pill(p, PillKind::Warn, tr!("sources.unverified"))
-                        })
-                        .when(is_default, |this| {
-                            this.child(widgets::pill(p, PillKind::Accent, tr!("sources.default")))
                         }),
                 )
                 .child(
@@ -1672,24 +1667,6 @@ fn source_card(
                         this.sync_sources(Some(sync_name.clone()), window, cx);
                     })),
                 )
-                .when(!is_default, |this| {
-                    this.child(
-                        widgets::btn(
-                            cx,
-                            p,
-                            SharedString::from(format!("def-{set_name}")),
-                            BtnKind::Outline,
-                            BtnSize::Small,
-                            tr!("sources.set_default"),
-                        )
-                        .on_click(cx.listener(move |this, _, _, cx| {
-                            this.state.default_source = set_name.clone();
-                            this.state.settings.default_source = set_name.clone();
-                            this.persist_settings();
-                            cx.notify();
-                        })),
-                    )
-                })
                 .when(state.capabilities.source_edit, |this| {
                     this.child(
                         widgets::icon_btn(
@@ -1735,30 +1712,9 @@ fn settings(
         Vec::new(),
     );
 
-    // The default-source row's hint differs per backend; every other row is
-    // a winget-only install flag, gated on the matching capability.
-    let source_hint = match state.backend_kind {
-        BackendKind::Winget => format!("{} install --source <name>", state.backend_name),
-        BackendKind::Chocolatey => format!("{} install <pkg>", state.backend_name),
-        BackendKind::Flatpak => format!("{} install <remote> <id>", state.backend_name),
-        BackendKind::Apt => format!("{} install <pkg>", state.backend_name),
-        BackendKind::Dnf => format!("{} install <pkg>", state.backend_name),
-        BackendKind::Zypper => format!("{} install <pkg>", state.backend_name),
-        BackendKind::Apk => format!("{} add <pkg>", state.backend_name),
-        BackendKind::Pacman => format!("{} -S <pkg>", state.backend_name),
-        BackendKind::Snap => format!("{} install <name>", state.backend_name),
-        BackendKind::Brew => format!("{} install <pkg>", state.backend_name),
-        BackendKind::Scoop => format!("{} install <pkg>", state.backend_name),
-    };
+    // Every install row is a backend-specific flag, gated on the matching
+    // capability.
     let mut install_rows: Vec<AnyElement> = Vec::new();
-    if state.capabilities.sources_view {
-        install_rows.push(row_shell_plain(
-            p,
-            &tr!("settings.default_source"),
-            &source_hint,
-            default_source_control(state, p, cx),
-        ));
-    }
     if state.capabilities.install_location {
         install_rows.push(field_row(
             p,
@@ -2014,11 +1970,6 @@ fn field_row(p: &Palette, label: &str, hint: &str, control: AnyElement) -> AnyEl
     row_shell(p, label, hint, control)
 }
 
-/// A settings row whose control is a list of choices rather than a segment.
-fn row_shell_plain(p: &Palette, label: &str, hint: &str, control: AnyElement) -> AnyElement {
-    row_shell(p, label, hint, control)
-}
-
 fn switch_field_row(
     cx: &mut Context<AppView>,
     p: &Palette,
@@ -2039,43 +1990,6 @@ fn switch_field_row(
         listener,
     );
     row_shell(p, label, hint, control.into_any_element())
-}
-
-fn default_source_control(state: &AppState, p: &Palette, cx: &mut Context<AppView>) -> AnyElement {
-    // One choice per live source; nothing is invented for a backend whose
-    // sources have not loaded yet.
-    let names: Vec<String> = state.sources.iter().map(|s| s.name.clone()).collect();
-    div()
-        .flex()
-        .gap(px(6.))
-        .children(names.iter().map(|name| {
-            let key = name.clone();
-            let label = name.clone();
-            let on = state.default_source == *name;
-            div()
-                .id(SharedString::from(format!("dsrc-{name}")))
-                .text_size(px(11.5))
-                .px(px(10.))
-                .py(px(5.))
-                .rounded(px(7.))
-                .border_1()
-                .border_color(if on { p.accent } else { p.line })
-                .bg(if on {
-                    p.tint(p.accent, 0.14)
-                } else {
-                    p.surface2
-                })
-                .text_color(if on { p.accent } else { p.ink2 })
-                .cursor_pointer()
-                .on_click(cx.listener(move |this, _, _, cx| {
-                    this.state.default_source = key.clone();
-                    this.state.settings.default_source = key.clone();
-                    this.persist_settings();
-                    cx.notify();
-                }))
-                .child(label)
-        }))
-        .into_any_element()
 }
 
 /// The 包管理器 switcher: one segment per backend the platform offers,

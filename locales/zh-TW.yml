@@ -186,15 +186,12 @@ sources:
   equivalent_command: "對等命令："
   trusted: "受信任"
   unverified: "未驗證"
-  default: "預設"
   packages_count: "%{count} 個套件"
-  set_default: "設為預設"
 
 settings:
   subtitle: "所有選項將對應為後端命令列參數"
   install_defaults: "安裝預設值"
   install_defaults_hint: "安裝與升級時預設附帶的參數。"
-  default_source: "預設來源"
   location: "自訂安裝位置"
   accept_agreements: "自動接受協議"
   silent: "無訊息安裝"

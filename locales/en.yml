@@ -186,15 +186,12 @@ sources:
   equivalent_command: "Equivalent command:"
   trusted: "Trusted"
   unverified: "Unverified"
-  default: "Default"
   packages_count: "%{count} packages"
-  set_default: "Set as default"
 
 settings:
   subtitle: "Every option maps to backend command-line arguments"
   install_defaults: "Install defaults"
   install_defaults_hint: "Arguments passed by default during install and upgrade."
-  default_source: "Default source"
   location: "Custom install location"
   accept_agreements: "Auto-accept agreements"
   silent: "Silent install"

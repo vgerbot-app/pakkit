@@ -10,7 +10,7 @@ use std::time::Instant;
 
 use crate::backends::{PackageBackend, exec, exec::Output, types::BackendError};
 use crate::model::Package;
-use crate::state::{AppState, Settings};
+use crate::state::AppState;
 
 /// Where a queue entry is in its life cycle.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -80,6 +80,10 @@ pub struct QueueItem {
     pub uid: u64,
     pub id: String,
     pub name: String,
+    /// The source the package was found in. Package ids are only unique
+    /// within a source, so the install must name it rather than the
+    /// configured default.
+    pub source: String,
     pub action: QueueAction,
     pub state: QueueState,
     /// 0–100. winget exposes no progress, so this is indicative and only the
@@ -103,6 +107,7 @@ impl QueueItem {
             uid,
             id: package.id.clone(),
             name: package.name.clone(),
+            source: package.source.clone(),
             action,
             state: QueueState::Pending,
             progress: 0.0,
@@ -130,25 +135,23 @@ pub enum Enqueued {
     Unknown,
 }
 
-/// The arguments a queue entry runs, derived from the current settings.
+/// The arguments a queue entry runs, derived from the current state.
 ///
 /// This is the mapping the prototype's `buildArgs` performs; every setting on
 /// the settings screen feeds it, and the backend maps them onto its own flags.
-pub fn args_for(
-    item: &QueueItem,
-    settings: &Settings,
-    backend: &dyn PackageBackend,
-) -> Vec<String> {
+pub fn args_for(item: &QueueItem, state: &AppState, backend: &dyn PackageBackend) -> Vec<String> {
     match item.action {
-        QueueAction::Install => backend.install_args(&item.id, &settings.install_options()),
+        QueueAction::Install => {
+            backend.install_args(&item.id, &state.install_options_for(&item.source))
+        }
         QueueAction::Upgrade => backend.upgrade_args(&item.id),
         QueueAction::UpgradeAll => backend.upgrade_all_args(),
     }
 }
 
 /// The full command line a queue entry shows, prefixed with the CLI's name.
-pub fn command_line(item: &QueueItem, settings: &Settings, backend: &dyn PackageBackend) -> String {
-    let args = args_for(item, settings, backend);
+pub fn command_line(item: &QueueItem, state: &AppState, backend: &dyn PackageBackend) -> String {
+    let args = args_for(item, state, backend);
     format!("{} {}", backend.cli_name(), args.join(" "))
 }
 
@@ -228,16 +231,16 @@ pub fn startable(state: &AppState) -> Vec<usize> {
 
 /// Move entry `ix` into the running state and return the command line it shows.
 pub fn begin(state: &mut AppState, ix: usize, backend: &dyn PackageBackend) -> Option<String> {
-    let settings = state.settings.clone();
-    let item = state.queue.get_mut(ix)?;
-    if item.state != QueueState::Pending {
+    if state.queue.get(ix)?.state != QueueState::Pending {
         return None;
     }
+    let command = command_line(&state.queue[ix], state, backend);
+    let item = &mut state.queue[ix];
     item.state = QueueState::Running;
     item.progress = 0.0;
     item.started = Some(Instant::now());
-    item.log = command_line(item, &settings, backend);
-    Some(item.log.clone())
+    item.log = command.clone();
+    Some(command)
 }
 
 /// Advance the indicative progress bar.
@@ -507,7 +510,6 @@ mod tests {
     #[test]
     fn begin_writes_the_command_line_from_the_settings() {
         let mut state = state_with(&["A"]);
-        state.settings.default_source = "winget".into();
         enqueue(&mut state, "A", QueueAction::Install);
 
         let command = begin(&mut state, 0, &backend()).expect("the entry starts");
@@ -535,11 +537,11 @@ mod tests {
     fn the_settings_change_the_command_the_queue_runs() {
         let mut state = state_with(&["A"]);
         enqueue(&mut state, "A", QueueAction::Install);
-        let silent = command_line(&state.queue[0], &state.settings, &backend());
+        let silent = command_line(&state.queue[0], &state, &backend());
 
         state.settings.silent = false;
         state.settings.accept_agreements = false;
-        let verbose = command_line(&state.queue[0], &state.settings, &backend());
+        let verbose = command_line(&state.queue[0], &state, &backend());
 
         assert!(silent.contains("--silent"));
         assert!(!verbose.contains("--silent"));
@@ -547,10 +549,57 @@ mod tests {
     }
 
     #[test]
+    fn an_install_runs_against_the_packages_own_source() {
+        // Regression: the install used to name the configured default source
+        // unconditionally, so a `winget` hit installed with `--source msstore`
+        // and failed the id lookup.
+        let mut state = AppState {
+            packages: vec![Package {
+                id: "A".into(),
+                name: "A".into(),
+                source: "winget".into(),
+                category: CategoryId::Dev,
+                ..Package::default()
+            }],
+            ..AppState::default()
+        };
+        state.sources = vec![
+            crate::model::Source {
+                name: "winget".into(),
+                ..crate::model::Source::default()
+            },
+            crate::model::Source {
+                name: "msstore".into(),
+                ..crate::model::Source::default()
+            },
+        ];
+        enqueue(&mut state, "A", QueueAction::Install);
+
+        let command = command_line(&state.queue[0], &state, &backend());
+        assert!(
+            command.contains("--source winget"),
+            "the package's own source is named: {command}"
+        );
+        assert!(!command.contains("--source msstore"));
+    }
+
+    #[test]
+    fn an_install_without_a_recorded_source_names_no_source() {
+        let mut state = state_with(&["A"]);
+        enqueue(&mut state, "A", QueueAction::Install);
+
+        let command = command_line(&state.queue[0], &state, &backend());
+        assert!(
+            !command.contains("--source"),
+            "no recorded source means no --source flag: {command}"
+        );
+    }
+
+    #[test]
     fn an_upgrade_entry_runs_upgrade_not_install() {
         let mut state = state_with(&["A"]);
         enqueue(&mut state, "A", QueueAction::Upgrade);
-        let command = command_line(&state.queue[0], &state.settings, &backend());
+        let command = command_line(&state.queue[0], &state, &backend());
         assert!(command.starts_with("winget upgrade --id A"));
     }
 
@@ -882,7 +931,7 @@ mod tests {
     fn command_line_prefixes_winget_exactly_once() {
         let mut state = state_with(&["A"]);
         enqueue(&mut state, "A", QueueAction::Install);
-        let line = command_line(&state.queue[0], &state.settings, &backend());
+        let line = command_line(&state.queue[0], &state, &backend());
         assert!(line.starts_with("winget install --id A --exact"));
         // `--source winget` legitimately repeats the word, but never the
         // leading prefix.

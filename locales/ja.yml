@@ -186,15 +186,12 @@ sources:
   equivalent_command: "同等のコマンド："
   trusted: "信頼済み"
   unverified: "未検証"
-  default: "既定"
   packages_count: "%{count} 件のパッケージ"
-  set_default: "既定に設定"
 
 settings:
   subtitle: "すべてのオプションはバックエンドのコマンド ライン引数に対応します"
   install_defaults: "インストールの既定値"
   install_defaults_hint: "インストールとアップグレード時に既定で付与される引数。"
-  default_source: "既定のソース"
   location: "カスタム インストール場所"
   accept_agreements: "契約に自動同意"
   silent: "サイレント インストール"

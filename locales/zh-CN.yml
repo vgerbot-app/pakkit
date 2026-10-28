@@ -186,15 +186,12 @@ sources:
   equivalent_command: "等价命令："
   trusted: "受信任"
   unverified: "未验证"
-  default: "默认"
   packages_count: "%{count} 个包"
-  set_default: "设为默认"
 
 settings:
   subtitle: "所有选项将映射为后端命令行参数"
   install_defaults: "安装默认值"
   install_defaults_hint: "安装与升级时默认附带的参数。"
-  default_source: "默认来源"
   location: "自定义安装位置"
   accept_agreements: "自动接受协议"
   silent: "静默安装"

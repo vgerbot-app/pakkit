@@ -227,7 +227,6 @@ impl Language {
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(default)]
 pub struct Settings {
-    pub default_source: String,
     pub install_location: String,
     pub accept_agreements: bool,
     pub silent: bool,
@@ -255,7 +254,6 @@ impl Default for Settings {
     /// [`crate::backends::detect`] auto-detects until the app fills it in.
     fn default() -> Self {
         Self {
-            default_source: "winget".to_owned(),
             install_location: String::new(),
             accept_agreements: true,
             silent: true,
@@ -275,10 +273,13 @@ impl Default for Settings {
 }
 
 impl Settings {
-    /// The install options the queue derives from these settings.
+    /// The install options the queue derives from these settings. No source
+    /// is named: the package's own recorded source supplies it (see
+    /// [`AppState::install_options_for`]), and without one the CLI's native
+    /// resolution across every source applies.
     pub fn install_options(&self) -> InstallOptions {
         InstallOptions {
-            source: Some(self.default_source.clone()),
+            source: None,
             location: Some(self.install_location.trim().to_owned()).filter(|s| !s.is_empty()),
             silent: self.silent,
             accept: self.accept_agreements,
@@ -354,7 +355,6 @@ pub struct AppState {
     /// fetches land. See [`crate::cache`].
     pub icons: std::collections::HashMap<String, IconState>,
     pub sources: Vec<Source>,
-    pub default_source: String,
     pub settings: Settings,
     pub queue: Vec<crate::queue::QueueItem>,
     /// Next queue handle. Monotonic so a removed entry's handle is never
@@ -398,7 +398,6 @@ impl Default for AppState {
             category_page: 0,
             queue: Vec::new(),
             queue_uid: 0,
-            default_source: "winget".to_owned(),
             settings: Settings::default(),
             queue_open: false,
             status: tr!("status.ready"),
@@ -510,6 +509,25 @@ impl AppState {
     /// The packages the home view's stat tiles count.
     pub fn installed_count(&self) -> usize {
         self.packages.iter().filter(|p| p.installed).count()
+    }
+
+    /// The install options for one package: the recorded source is named when
+    /// it matches a live source — package ids are only unique within a source,
+    /// so installing a `winget` hit with `--source msstore` fails the lookup.
+    /// Anything else means no `--source` flag: source-less rows carry the
+    /// CLI's name as a display label (choco's feeds never report one), and
+    /// flatpak rows can hold a comma-joined remote list — neither is a valid
+    /// install source.
+    pub fn install_options_for(&self, package_source: &str) -> InstallOptions {
+        let mut options = self.settings.install_options();
+        if self
+            .sources
+            .iter()
+            .any(|source| source.name == package_source)
+        {
+            options.source = Some(package_source.to_owned());
+        }
+        options
     }
 
     /// The source options the search filter card offers, live sources first.
@@ -965,16 +983,54 @@ mod tests {
     #[test]
     fn install_options_follow_the_settings() {
         let settings = Settings {
-            default_source: "msstore".into(),
             silent: false,
             install_location: "  D:\\Software  ".into(),
             ..Settings::default()
         };
 
         let options = settings.install_options();
-        assert_eq!(options.source.as_deref(), Some("msstore"));
+        assert_eq!(options.source, None, "no source without a package's own");
         assert!(!options.silent);
         assert_eq!(options.location.as_deref(), Some("D:\\Software"));
+    }
+
+    #[test]
+    fn install_options_for_names_only_a_live_source() {
+        let mut state = AppState::default();
+        state.sources = vec![
+            Source {
+                name: "winget".into(),
+                ..Source::default()
+            },
+            Source {
+                name: "msstore".into(),
+                ..Source::default()
+            },
+        ];
+
+        assert_eq!(
+            state.install_options_for("winget").source.as_deref(),
+            Some("winget"),
+            "a recorded source that names a live source is used"
+        );
+        assert_eq!(
+            state.install_options_for("").source,
+            None,
+            "no recorded source means no --source flag"
+        );
+        // choco's search rows report no source, so their packages carry the
+        // CLI's name as a label; it is not a feed and must not reach --source.
+        assert_eq!(
+            state.install_options_for("choco").source,
+            None,
+            "a label that names no live source means no --source flag"
+        );
+        // flatpak rows can list every remote that carries the app, comma-joined.
+        assert_eq!(
+            state.install_options_for("winget,msstore").source,
+            None,
+            "a comma-joined list is not a valid install source"
+        );
     }
 
     #[test]

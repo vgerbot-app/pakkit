@@ -186,15 +186,12 @@ sources:
   equivalent_command: "해당 명령:"
   trusted: "신뢰할 수 있음"
   unverified: "확인되지 않음"
-  default: "기본값"
   packages_count: "패키지 %{count}개"
-  set_default: "기본값으로 설정"
 
 settings:
   subtitle: "모든 옵션은 백엔드 명령줄 인수에 해당합니다"
   install_defaults: "설치 기본값"
   install_defaults_hint: "설치 및 업그레이드 시 기본으로 전달되는 인수입니다."
-  default_source: "기본 소스"
   location: "사용자 지정 설치 위치"
   accept_agreements: "계약 자동 동의"
   silent: "자동 설치"

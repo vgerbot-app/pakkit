@@ -948,18 +948,6 @@ pub fn confirm_remove_source(
             .on_ok(move |_: &ClickEvent, window, cx| {
                 let name = source_name.clone();
                 let _ = run_view.update(cx, |this, cx| {
-                    if this.state.default_source == name {
-                        let fallback = this
-                            .state
-                            .sources
-                            .iter()
-                            .find(|source| source.name != name)
-                            .map(|source| source.name.clone())
-                            .unwrap_or_default();
-                        this.state.default_source = fallback.clone();
-                        this.state.settings.default_source = fallback;
-                        this.persist_settings();
-                    }
                     let Some(backend) = this.backend.clone() else {
                         return;
                     };
