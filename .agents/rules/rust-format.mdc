@@ -1,0 +1,30 @@
+# Project Rules
+
+## Rust Formatting Checks
+
+After modifying Rust code, you must pass the formatting check:
+
+```bash
+cargo fmt --all --check
+```
+
+If the check fails due to formatting issues, run the following commands to fix them, then confirm that the check passes:
+
+```bash
+cargo fmt --all
+cargo fmt --all --check
+```
+
+The formatting check is complete only when `cargo fmt --all --check` exits without errors.
+
+## Rust Clippy Checks
+
+After modifying Rust code, you must also run Clippy in addition to the formatting check, treating all warnings as errors:
+
+```bash
+cargo clippy --all-targets --locked -- -D warnings
+```
+
+If the check fails, fix all errors and warnings, then run the command again to confirm that it passes.
+
+Code changes are complete only after both `cargo fmt --all --check` and `cargo clippy --all-targets --locked -- -D warnings` exit without errors.
