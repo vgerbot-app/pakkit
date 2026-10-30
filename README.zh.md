@@ -40,6 +40,16 @@
 
 ## 安装
 
+### 系统要求
+
+| 平台 | 要求 |
+| --- | --- |
+| Windows | Windows 10 1809 或更高版本，或 Windows 11；x86_64 或 ARM64。不支持 Windows 7、8 和 8.1。 |
+| Linux | 64 位桌面系统，使用 X11 或 Wayland。预构建包基于 Ubuntu 24.04，需要兼容的 glibc 发行版；其他发行版请从源码构建。 |
+| macOS | Intel 或 Apple Silicon 设备，macOS 10.15 Catalina 或更高版本。目前不提供 macOS 预构建版本，需从源码构建。 |
+
+Pakkit 无法在 Windows 7 上运行：gpui 的 Windows 后端依赖较新的图形 API，而 Rust 的标准 MSVC 目标也要求 Windows 10 或更高版本。
+
 ### 下载预构建版本
 
 从 [GitHub Releases](https://github.com/vgerbot-app/pakkit/releases) 下载最新构建：

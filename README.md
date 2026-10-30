@@ -40,6 +40,16 @@ Every operation is a transparent wrapper around the backend CLI: the command lin
 
 ## Installation
 
+### System requirements
+
+| Platform | Requirements |
+| --- | --- |
+| Windows | Windows 10 version 1809 or later, or Windows 11; x86_64 or ARM64. Windows 7, 8 and 8.1 are not supported. |
+| Linux | A 64-bit desktop with X11 or Wayland. Prebuilt packages are built on Ubuntu 24.04 and require a compatible glibc-based distribution; build from source on other distributions. |
+| macOS | macOS 10.15 Catalina or later on Intel or Apple Silicon. macOS currently requires building from source; no prebuilt release is provided. |
+
+Windows 7 cannot run Pakkit: the gpui Windows backend requires newer graphics APIs, and Rust's standard MSVC targets require Windows 10 or later.
+
 ### Download a prebuilt release
 
 Grab the latest build from [GitHub Releases](https://github.com/vgerbot-app/pakkit/releases):

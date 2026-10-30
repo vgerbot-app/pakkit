@@ -1,4 +1,4 @@
-//! Embeds the application icon into the Windows exe; a no-op elsewhere.
+//! Embeds the application icon and manifest into the Windows exe; a no-op elsewhere.
 //!
 //! gpui's Windows backend loads the window/taskbar icon from the exe's icon
 //! resource ID 1 (`LoadImageW(module, 1, IMAGE_ICON, ..)`), which `pakkit.rc`
@@ -8,6 +8,7 @@
 fn main() {
     println!("cargo::rerun-if-changed=assets/pakkit.ico");
     println!("cargo::rerun-if-changed=pakkit.rc");
+    println!("cargo::rerun-if-changed=pakkit.exe.manifest");
     if std::env::var("CARGO_CFG_TARGET_OS").as_deref() == Ok("windows") {
         embed_resource::compile("pakkit.rc", embed_resource::NONE)
             .manifest_required()
