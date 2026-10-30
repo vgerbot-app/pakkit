@@ -996,17 +996,19 @@ mod tests {
 
     #[test]
     fn install_options_for_names_only_a_live_source() {
-        let mut state = AppState::default();
-        state.sources = vec![
-            Source {
-                name: "winget".into(),
-                ..Source::default()
-            },
-            Source {
-                name: "msstore".into(),
-                ..Source::default()
-            },
-        ];
+        let state = AppState {
+            sources: vec![
+                Source {
+                    name: "winget".into(),
+                    ..Source::default()
+                },
+                Source {
+                    name: "msstore".into(),
+                    ..Source::default()
+                },
+            ],
+            ..AppState::default()
+        };
 
         assert_eq!(
             state.install_options_for("winget").source.as_deref(),
