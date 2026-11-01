@@ -46,6 +46,7 @@ pub struct AppView {
     pub search_input: Entity<InputState>,
     pub install_location_input: Entity<InputState>,
     pub proxy_input: Entity<InputState>,
+    pub official_search_input: Entity<InputState>,
     pub backend_path_input: Entity<InputState>,
     /// In-flight refreshes. Dropping a [`Task`] cancels it, so they are held
     /// here; finished ones are pruned when the next refresh starts. A single
@@ -65,6 +66,7 @@ pub struct AppView {
     /// A result that arrives with an older id is dropped, so out-of-order
     /// completions cannot overwrite a newer query's list.
     search_epoch: u64,
+    official_epoch: u64,
     /// Cached `winget list` rows and installed ids from the last full refresh.
     /// Keystroke searches merge against these instead of re-running `list`
     /// and `export` on every pause.
@@ -94,6 +96,8 @@ impl AppView {
             input.set_value(settings.install_location.clone(), window, cx);
             input
         });
+        let official_search_input = cx
+            .new(|cx| InputState::new(window, cx).placeholder(tr!("official.search_placeholder")));
         let proxy_input = cx.new(|cx| {
             let mut input = InputState::new(window, cx).placeholder("http://127.0.0.1:7890");
             input.set_value(settings.proxy.clone(), window, cx);
@@ -115,12 +119,14 @@ impl AppView {
             search_input: search_input.clone(),
             install_location_input: install_location_input.clone(),
             proxy_input: proxy_input.clone(),
+            official_search_input: official_search_input.clone(),
             backend_path_input: backend_path_input.clone(),
             refresh_tasks: Vec::new(),
             ticker: None,
             debounce: None,
             search_task: None,
             search_epoch: 0,
+            official_epoch: 0,
             list_rows: Vec::new(),
             installed_ids: Vec::new(),
             detail_inflight: std::collections::HashSet::new(),
@@ -156,6 +162,17 @@ impl AppView {
                 InputEvent::Focus | InputEvent::Blur => cx.notify(),
             },
         ));
+        view._subscriptions.push(cx.subscribe_in(
+            &official_search_input,
+            window,
+            |this: &mut Self, _, event: &InputEvent, _, cx| {
+                if matches!(event, InputEvent::Change) {
+                    this.state.official.query =
+                        this.official_search_input.read(cx).value().to_string();
+                    cx.notify();
+                }
+            },
+        ));
 
         for entity in [&install_location_input, &proxy_input, &backend_path_input] {
             view._subscriptions.push(cx.subscribe_in(
@@ -185,6 +202,7 @@ impl AppView {
         // The disk caches warm the detail/icon maps even when the backend is
         // missing, so this runs before the resolve below can early-return.
         self.load_cache(cx);
+        self.refresh_official_catalog(cx);
         let backend = match backends::detect(
             self.state.settings.backend_kind(),
             &self.state.settings.backend_path,
@@ -243,6 +261,8 @@ impl AppView {
             }
             Err(error) => {
                 let message = error.localized();
+                self.backend = None;
+                self.state.backend_version.clear();
                 self.state.backend_error = Some(message.clone());
                 self.state.status = message;
             }
@@ -295,7 +315,7 @@ impl AppView {
         self.state.category_page = 0;
         self.state
             .queue
-            .retain(|item| item.state != QueueState::Pending);
+            .retain(|item| item.official.is_some() || item.state != QueueState::Pending);
         self.search_task = None;
         self.search_epoch += 1;
         self.state.backend_version.clear();
@@ -457,6 +477,153 @@ impl AppView {
     fn spawn_refresh(&mut self, task: Task<()>) {
         self.refresh_tasks.retain(|task| !task.is_ready());
         self.refresh_tasks.push(task);
+    }
+
+    pub fn refresh_official_catalog(&mut self, cx: &mut Context<Self>) {
+        self.official_epoch += 1;
+        let epoch = self.official_epoch;
+        let url = crate::official::catalog_url();
+        let proxy = self.state.settings.proxy.clone();
+        self.state.official.status = crate::official::OfficialLoadState::Loading;
+        self.state.official.catalog = None;
+        self.state.official.installed.clear();
+        self.state.status = self.state.status_for(self.state.route);
+        cx.notify();
+        self.spawn_refresh(cx.spawn(async move |this, cx| {
+            let result = cx
+                .background_spawn(async move { crate::official::fetch_catalog(&url, &proxy) })
+                .await;
+            let _ = this.update(cx, |this, cx| {
+                if epoch != this.official_epoch {
+                    return;
+                }
+                match result {
+                    Ok(catalog) => {
+                        let detections: Vec<(String, Option<crate::official::OfficialDetection>)> =
+                            catalog
+                                .apps
+                                .iter()
+                                .flat_map(|app| app.variants.iter())
+                                .map(|variant| (variant.id.clone(), variant.detection.clone()))
+                                .collect();
+                        for (id, _) in &detections {
+                            this.state.official.installed.insert(
+                                id.clone(),
+                                crate::official::OfficialInstallState::Checking,
+                            );
+                        }
+                        this.state.official.catalog = Some(catalog);
+                        this.state.official.status = crate::official::OfficialLoadState::Ready;
+                        this.state.status = this.state.status_for(this.state.route);
+                        cx.notify();
+                        this.spawn_refresh(cx.spawn(async move |this, cx| {
+                            let results = cx
+                                .background_spawn(async move {
+                                    detections
+                                        .into_iter()
+                                        .map(|(id, detection)| {
+                                            let state = crate::official::detect_installation(
+                                                detection.as_ref(),
+                                            );
+                                            (id, state)
+                                        })
+                                        .collect::<Vec<_>>()
+                                })
+                                .await;
+                            let _ = this.update(cx, |this, cx| {
+                                if epoch != this.official_epoch {
+                                    return;
+                                }
+                                for (id, state) in results {
+                                    this.state.official.installed.insert(id, state);
+                                }
+                                cx.notify();
+                            });
+                        }));
+                    }
+                    Err(error) => {
+                        this.state.official.catalog = None;
+                        this.state.official.installed.clear();
+                        this.state.official.status =
+                            crate::official::OfficialLoadState::Failed(error.localized());
+                        this.state.status = this.state.status_for(this.state.route);
+                        cx.notify();
+                    }
+                }
+            });
+        }));
+    }
+
+    fn detect_official_variant(&mut self, variant_id: String, cx: &mut Context<Self>) {
+        let detection = self.state.official.catalog.as_ref().and_then(|catalog| {
+            catalog
+                .apps
+                .iter()
+                .flat_map(|app| app.variants.iter())
+                .find(|variant| variant.id == variant_id)
+                .and_then(|variant| variant.detection.clone())
+        });
+        self.state.official.installed.insert(
+            variant_id.clone(),
+            crate::official::OfficialInstallState::Checking,
+        );
+        self.spawn_refresh(cx.spawn(async move |this, cx| {
+            let state = cx
+                .background_spawn(async move {
+                    crate::official::detect_installation(detection.as_ref())
+                })
+                .await;
+            let _ = this.update(cx, |this, cx| {
+                this.state.official.installed.insert(variant_id, state);
+                cx.notify();
+            });
+        }));
+    }
+
+    pub fn enqueue_official(
+        &mut self,
+        variant_id: &str,
+        window: &mut Window,
+        cx: &mut Context<Self>,
+    ) {
+        let spec = self.state.official.catalog.as_ref().and_then(|catalog| {
+            catalog.apps.iter().find_map(|app| {
+                app.variants
+                    .iter()
+                    .find(|variant| variant.id == variant_id)
+                    .map(|variant| crate::queue::OfficialQueueSpec::new(app, variant))
+            })
+        });
+        let Some(spec) = spec else {
+            window.push_notification(Notification::error(tr!("notification.pkg_not_found")), cx);
+            return;
+        };
+        let name = spec.app_id.clone();
+        match crate::queue::enqueue_official(&mut self.state, spec) {
+            Enqueued::Added(_) => {
+                self.state.queue_open = true;
+                window.push_notification(
+                    Notification::info(tr!("notification.enqueued", name = name)),
+                    cx,
+                );
+                self.pump(cx);
+            }
+            Enqueued::Duplicate(name) => window.push_notification(
+                Notification::warning(tr!("notification.duplicate", name = name)),
+                cx,
+            ),
+            Enqueued::Unknown => {}
+        }
+        cx.notify();
+    }
+
+    pub fn open_official_url(&mut self, url: String, window: &mut Window, cx: &mut Context<Self>) {
+        match crate::official::open_path(std::path::Path::new(&url)) {
+            Ok(()) => {
+                window.push_notification(Notification::success(tr!("official.success.page")), cx)
+            }
+            Err(error) => window.push_notification(Notification::error(error.localized()), cx),
+        }
     }
 
     // ------------------------------------------------------------------ data
@@ -823,10 +990,58 @@ impl AppView {
 
     /// Start every entry the concurrency limit allows.
     pub fn pump(&mut self, cx: &mut Context<Self>) {
-        let Some(backend) = self.backend.clone() else {
-            return;
-        };
         for ix in queue::startable(&self.state) {
+            let official_variant_id = self.state.queue[ix]
+                .official
+                .as_ref()
+                .map(|spec| spec.variant.id.clone());
+            if let Some(official_variant_id) = official_variant_id {
+                if queue::begin_official(&mut self.state, ix).is_none() {
+                    continue;
+                }
+                let item = self.state.queue[ix].clone();
+                let uid = item.uid;
+                let proxy = self.state.settings.proxy.clone();
+                let allow_http = std::env::var_os("PAKKIT_OFFICIAL_CATALOG_URL").is_some();
+                logging::append(
+                    "start",
+                    &format!("{} {} → {}", item.action.label(), item.name, item.log),
+                );
+                cx.spawn(async move |this, cx| {
+                    let result = cx
+                        .background_spawn(async move {
+                            let spec = item.official.as_ref().expect("official queue item");
+                            crate::official::run_method(
+                                &spec.variant.method,
+                                spec.variant.interactive,
+                                &proxy,
+                                allow_http,
+                            )
+                        })
+                        .await;
+                    let _ = this.update(cx, |this, cx| {
+                        queue::complete_official(&mut this.state, uid, result);
+                        if let Some(item) = this.state.queue.iter().find(|item| item.uid == uid) {
+                            logging::append(
+                                if item.state == QueueState::Done {
+                                    "done"
+                                } else {
+                                    "error"
+                                },
+                                &format!("{} · {}", item.name, item.log),
+                            );
+                        }
+                        this.detect_official_variant(official_variant_id, cx);
+                        this.pump(cx);
+                        cx.notify();
+                    });
+                })
+                .detach();
+                continue;
+            }
+            let Some(backend) = self.backend.clone() else {
+                continue;
+            };
             if queue::begin(&mut self.state, ix, &*backend).is_none() {
                 continue;
             }
@@ -1128,7 +1343,7 @@ impl AppView {
         let queue_count = queue::active_count(&self.state);
         let theme_label = self.state.settings.theme.label();
 
-        let routes: [(&str, String, IconKey, Route); 7] = [
+        let routes: [(&str, String, IconKey, Route); 8] = [
             ("home", tr!("nav.home"), IconKey::Home, Route::Home),
             (
                 "categories",
@@ -1137,6 +1352,12 @@ impl AppView {
                 Route::Categories,
             ),
             ("search", tr!("nav.search"), IconKey::Search, Route::Search),
+            (
+                "official-install",
+                tr!("nav.official"),
+                IconKey::Network,
+                Route::OfficialInstall,
+            ),
             (
                 "installed",
                 tr!("nav.installed"),
@@ -1219,6 +1440,7 @@ impl AppView {
             install_location: self.install_location_input.clone(),
             proxy: self.proxy_input.clone(),
             backend_path: self.backend_path_input.clone(),
+            official_search: self.official_search_input.clone(),
         }
     }
 
@@ -1458,6 +1680,7 @@ struct QueueRowModel {
     has_detail: bool,
     glyph: IconKey,
     tint: &'static str,
+    downloaded_path: Option<std::path::PathBuf>,
 }
 
 impl QueueRowModel {
@@ -1471,6 +1694,7 @@ impl QueueRowModel {
             has_detail: item.detail.is_some(),
             glyph: pkg.map_or(IconKey::Package, |pkg| pkg.category.icon()),
             tint: pkg.map_or("#4f8cff", |pkg| pkg.category.color()),
+            downloaded_path: item.downloaded_path.clone(),
         }
     }
 }
@@ -1479,6 +1703,7 @@ fn queue_row(p: &Palette, row: &QueueRowModel, view: gpui_kit::WeakEntity<AppVie
     let uid = row.uid;
     // The remove button's `move` closure takes `view`; the detail affordance
     // further down needs its own clone.
+    let folder_view = view.clone();
     let detail_view = view.clone();
     let (color, label) = match row.state {
         QueueState::Pending => (p.muted, tr!("queue.row.pending")),
@@ -1528,6 +1753,32 @@ fn queue_row(p: &Palette, row: &QueueRowModel, view: gpui_kit::WeakEntity<AppVie
                         .mt(px(8.))
                         .child(widgets::progress_bar(p, row.progress)),
                 )
+                .when_some(row.downloaded_path.clone(), |this, path| {
+                    this.child(
+                        gpui_kit::component::button::Button::new(format!(
+                            "queue-open-folder-{uid}"
+                        ))
+                        .label(tr!("queue.open_folder"))
+                        .h(px(29.))
+                        .rounded(px(8.))
+                        .on_click(move |_, window, cx| {
+                            let _ = folder_view.update(cx, |_, cx| {
+                                if let Some(parent) = path.parent() {
+                                    match crate::official::open_path(parent) {
+                                        Ok(()) => window.push_notification(
+                                            Notification::success(tr!("queue.folder_opened")),
+                                            cx,
+                                        ),
+                                        Err(error) => window.push_notification(
+                                            Notification::error(error.localized()),
+                                            cx,
+                                        ),
+                                    }
+                                }
+                            });
+                        }),
+                    )
+                })
                 .child({
                     // A failure's log line is the 详情 button; the inline icon
                     // and label stay within the text line so every row keeps
@@ -1742,6 +1993,35 @@ const _: Option<SharedString> = None;
 mod tests {
     use super::*;
     use crate::backends::types::{ListRow, SearchRow};
+    use gpui_kit::{TestAppContext, WindowOptions};
+
+    #[gpui_kit::test]
+    fn failed_redetection_clears_stale_backend(cx: &mut TestAppContext) {
+        cx.update(gpui_kit::init);
+        cx.update(crate::theme::init);
+        let (window, view) = cx.update(|cx| {
+            gpui_kit::open_window(WindowOptions::default(), cx, |window, cx| {
+                cx.new(|cx| AppView::new(window, cx))
+            })
+            .expect("window")
+        });
+        cx.update_window(window, |_, _, cx| {
+            view.update(cx, |view, cx| {
+                view.backend = Some(
+                    crate::backends::detect(crate::backends::BackendKind::Winget, "/bin/sh")
+                        .expect("test backend"),
+                );
+                view.state.backend_version = "stale".to_owned();
+                view.state.settings.backend = "apt".to_owned();
+                view.state.settings.backend_path = "/definitely/not/a/backend".to_owned();
+                view.redetect_backend(cx);
+                assert!(view.backend.is_none());
+                assert!(view.state.backend_version.is_empty());
+                assert!(view.state.backend_error.is_some());
+            });
+        })
+        .expect("window");
+    }
 
     fn search_row(id: &str, name: &str) -> SearchRow {
         SearchRow {

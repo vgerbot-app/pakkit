@@ -28,7 +28,8 @@ Every operation is a transparent wrapper around the backend CLI: the command lin
 
 ## Features
 
-- **Seven views**: Discover, Categories, All Packages, Installed, Updates, Sources, Settings
+- **Eight views**: Discover, Categories, All Packages, Installed, Updates, Sources, Settings, and Official Install
+- **Official Install**: a remote, validated catalog of vendor-provided scripts, installers, and portable downloads. Every command or URL is shown for confirmation; completion distinguishes downloads, opened terminals, and launched installers from verified installation.
 - **Queue drawer**: installs / upgrades run serially with configurable concurrency (1–3), showing the command line and progress for each item
 - **Package details**: fetched in the background from the backend's own detail command (`winget show`, `choco info`, `scoop info`, `apt show`, `dnf info`, `pacman -Si`, `zypper info`, `apk info`, `snap info`, `brew info`, …) and cached — multi-line description, release notes, tags, publisher, license, homepage, installer type, release date, and more
 - **Package icons**: favicons fetched automatically and cached to disk
@@ -92,6 +93,7 @@ Or run `target/release/pakkit.exe` directly.
 - Upgrade individual or all packages in the "Updates" view
 - Add private sources in "Sources" (requires administrator privileges)
 - Switch theme, accent color, and language in "Settings → Appearance"; settings persist to `settings.json`
+- Open "Official Install" to search the remote catalog and filter by category, operating system, or architecture. Pakkit validates the entire catalog before showing entries; loading failures offer retry and never fall back to stale or built-in entries.
 
 ## Localization
 

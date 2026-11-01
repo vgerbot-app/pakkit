@@ -20,6 +20,7 @@ pub enum Route {
     Categories,
     Category(CategoryId),
     Search,
+    OfficialInstall,
     Installed,
     Updates,
     Sources,
@@ -33,6 +34,7 @@ impl Route {
             Route::Home => "home",
             Route::Categories | Route::Category(_) => "categories",
             Route::Search => "search",
+            Route::OfficialInstall => "official-install",
             Route::Installed => "installed",
             Route::Updates => "updates",
             Route::Sources => "sources",
@@ -378,6 +380,7 @@ pub struct AppState {
     /// Why the backend is unavailable, when it is. The app still runs and
     /// every data view shows an empty state.
     pub backend_error: Option<String>,
+    pub official: crate::official::OfficialCatalogState,
 }
 
 impl Default for AppState {
@@ -407,6 +410,7 @@ impl Default for AppState {
             capabilities: Capabilities::default(),
             searching: false,
             backend_error: None,
+            official: crate::official::OfficialCatalogState::default(),
         }
     }
 }
@@ -611,6 +615,27 @@ impl AppState {
                 }
             }
             Route::Installed => tr!("status.installed_mgmt"),
+            Route::OfficialInstall => {
+                let count = crate::official::visible_official_apps_for_language(
+                    &self.official,
+                    &self.settings.language,
+                )
+                .len();
+                let version = self
+                    .official
+                    .catalog
+                    .as_ref()
+                    .map_or("—", |catalog| catalog.catalog_version.as_str());
+                let os = self.official.os.map_or("—", |os| os.label());
+                let arch = self.official.arch.map_or("—", |arch| arch.label());
+                tr!(
+                    "status.official_ready",
+                    version = version,
+                    count = count,
+                    os = os,
+                    arch = arch
+                )
+            }
             Route::Updates => tr!("status.check_updates"),
             Route::Sources => tr!("status.sources_count", count = self.sources.len()),
             Route::Settings => tr!("status.settings"),

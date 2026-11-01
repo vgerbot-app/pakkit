@@ -12,6 +12,7 @@ nav:
   sources: "ソース管理"
   settings: "設定"
   theme: "テーマ"
+  official: "公式サイトからインストール"
   queue: "インストール キュー"
 
 status:
@@ -28,6 +29,7 @@ status:
   sources_count: "ソース %{count}"
   queue_count: "キュー %{count}"
   settings: "設定"
+  official_ready: "カタログ %{version} · %{count} 件"
 
 filter:
   all: "すべて"
@@ -95,6 +97,8 @@ queue:
   clear: "クリア"
   empty: "キューは空です"
   serial_hint: "パッケージマネージャーのロック競合を避けるため、ジョブは順次実行されます"
+  open_folder: "保存先フォルダーを開く"
+  folder_opened: "保存先フォルダーを開きました"
   waiting: "待機中…"
   queued: "キューに追加済み"
   reinstall: "再インストール"
@@ -114,6 +118,7 @@ queue:
     install: "インストール"
     upgrade: "更新"
     upgrade_all: "すべて更新"
+    official_install: "公式サイトからインストール"
   row:
     pending: "待機中"
     running: "実行中"
@@ -123,6 +128,7 @@ queue:
 pkg:
   installed: "インストール済み"
   updatable: "更新可能"
+  not_installed: "未インストール"
   details: "詳細を見る ›"
 
 home:
@@ -298,10 +304,17 @@ notification:
   source_added: "ソースを追加しました"
   source_updated: "ソースを更新しました"
   source_removed: "ソースを削除しました"
+  official_variant_missing: "インストール方法が変更されました。カタログを更新して再試行してください。"
+  official_submission_unavailable: "カタログの準備ができていないため、まだソフトウェアを送信できません。"
+  official_name_empty: "ソフトウェア名を入力してください"
+  official_url_invalid: "有効な HTTPS の公式リンクを入力してください"
+  official_submission_invalid: "送信リンクを作成できません。カタログのアドレスを確認してください。"
 
 placeholder:
   backend_path: "空の場合は自動検出"
   source_name: "例：contoso"
+  official_name: "例：Deno"
+  official_note: "公式サイト、対応プラットフォーム、その他の説明（任意）"
 
 error:
   not_found: "%{backend} が見つかりません（パッケージマネージャーがインストールされていることを確認してください）"
@@ -339,3 +352,75 @@ exitcode:
   no_downgrade: "ダウングレードは許可されていません"
   no_upgrade_support: "このパッケージはアップグレードをサポートしていません"
   unknown: "不明なエラー"
+
+official:
+  title: "公式サイトからインストール"
+  subtitle: "開発元の公式サイトから、透明性の高い手順でソフトウェアを入手"
+  refresh: "カタログを更新"
+  submit: "ソフトウェアを提案"
+  trust_title: "公式ソースと透明なインストール"
+  trust_copy: "実行前に完全なコマンドと権限要件を表示し、内容を確認してから判断できます。"
+  trust_official: "公式リリースのみにリンク"
+  trust_unhosted: "インストーラーをホストしません"
+  loading: "公式カタログを読み込み中…"
+  loading_hint: "リモートカタログのみを読み込み、内蔵エントリや古いキャッシュは使用しません。"
+  load_failed: "公式カタログを読み込めませんでした"
+  retry: "再試行"
+  status_ready: "カタログ %{version} · %{count} 件"
+  status_empty: "カタログにソフトウェアがありません"
+  all: "すべてのソフトウェア"
+  group_count: "%{count} 件"
+  empty: "一致するソフトウェアが見つかりません"
+  empty_hint: "別の名前、「すべてのソフトウェア」、または別のプラットフォームをお試しください。"
+  official: "公式"
+  details: "詳細を見る ›"
+  admin_required: "認証が必要"
+  current_user: "現在のユーザー"
+  state:
+    checking: "確認中"
+    unknown: "不明"
+  method:
+    script: "公式スクリプト"
+    installer: "公式インストーラー"
+    package: "公式パッケージ"
+    portable: "ポータブル版"
+    official_page: "公式リリースページ"
+  action:
+    script: "インストール"
+    installer: "インストーラーを起動"
+    package: "パッケージをダウンロード"
+    portable: "ポータブル版をダウンロード"
+    official_page: "公式サイトを開く"
+  detail:
+    source: "公式ソース"
+    homepage: "ソフトウェア公式サイト"
+    admin: "管理者の認証が必要な場合があります"
+    interactive: "対話式"
+    non_interactive: "非対話式で実行"
+    command: "実行する公式コマンド"
+    download_url: "公式アドレス"
+    https_direct: "HTTPS · Pakkit サーバーを経由しません"
+    copy: "コピー"
+    no_sha: "カタログに SHA-256 がないため、ダウンロード後にファイルの整合性を検証できません。"
+    queue: "インストール キューに追加"
+    semantic_terminal: "表示されるターミナルでこのコマンドを実行します。ターミナルの起動はインストール完了を意味しません。"
+    semantic_script: "上記の公式スクリプトを実行します。スクリプトの正常終了は、自動的にソフトウェアのインストール完了を意味しません。"
+    semantic_installer: "公式インストーラーをダウンロードして起動します。起動はインストール完了を意味しません。"
+    semantic_package: "公式パッケージをダウンロードして保存するだけで、自動的にはインストールしません。"
+    semantic_portable: "ポータブル版をダウンロードして保存するだけで、自動的には実行またはインストールしません。"
+    semantic_page: "システムのブラウザーで公式リリースページを開きます。ダウンロードやインストールは行いません。"
+  submission:
+    title: "公式インストール対象を提案"
+    subtitle: "開発元のダウンロードページまたはインストール手順を提供してください"
+    name: "ソフトウェア名"
+    url: "公式ダウンロードページ / インストール手順"
+    note: "補足説明（任意）"
+    hint: "入力済みの新しい GitHub Issue を開きます。GitHub で確認して送信する必要があり、ページを開いただけでは送信や承認はされません。"
+    open: "GitHub の送信ページを開く"
+  success:
+    script: "スクリプトの実行が完了しました"
+    terminal: "ターミナルを開きました"
+    installer: "インストーラーを起動しました"
+    package: "インストールパッケージをダウンロードしました"
+    portable: "ポータブル版をダウンロードしました"
+    page: "公式サイトを開きました"

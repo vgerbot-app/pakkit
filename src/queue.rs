@@ -59,6 +59,7 @@ pub enum QueueAction {
     /// 全部更新 button here: a single dependency resolution and a single
     /// polkit authorization instead of one per package.
     UpgradeAll,
+    OfficialInstall,
 }
 
 impl QueueAction {
@@ -68,6 +69,7 @@ impl QueueAction {
             QueueAction::Install => tr!("queue.action.install"),
             QueueAction::Upgrade => tr!("queue.action.upgrade"),
             QueueAction::UpgradeAll => tr!("queue.action.upgrade_all"),
+            QueueAction::OfficialInstall => tr!("queue.action.official_install"),
         }
     }
 }
@@ -96,6 +98,10 @@ pub struct QueueItem {
     pub detail: Option<String>,
     /// The raw winget exit code, once the process has exited.
     pub exit: Option<u32>,
+    /// Downloads are retained for the drawer's open-folder action.
+    pub downloaded_path: Option<std::path::PathBuf>,
+    /// Immutable catalog variant captured when the user confirmed it.
+    pub official: Option<OfficialQueueSpec>,
     /// Set when the process exited, so the drawer can show the elapsed time.
     started: Option<Instant>,
 }
@@ -114,6 +120,8 @@ impl QueueItem {
             log: tr!("queue.waiting"),
             detail: None,
             exit: None,
+            downloaded_path: None,
+            official: None,
             started: None,
         }
     }
@@ -121,6 +129,31 @@ impl QueueItem {
     /// Elapsed seconds since the run started, for the completion log.
     pub fn elapsed_secs(&self) -> f32 {
         self.started.map_or(0.0, |t| t.elapsed().as_secs_f32())
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct OfficialQueueSpec {
+    pub app_id: String,
+    pub variant: crate::official::OfficialVariant,
+    pub display: String,
+}
+
+impl OfficialQueueSpec {
+    pub fn new(
+        app: &crate::official::OfficialApp,
+        variant: &crate::official::OfficialVariant,
+    ) -> Self {
+        let display = match &variant.method {
+            crate::official::OfficialMethod::Script { command, .. } => command.clone(),
+            crate::official::OfficialMethod::Artifact { url, .. }
+            | crate::official::OfficialMethod::OfficialPage { url } => url.clone(),
+        };
+        Self {
+            app_id: app.id.clone(),
+            variant: variant.clone(),
+            display,
+        }
     }
 }
 
@@ -146,6 +179,7 @@ pub fn args_for(item: &QueueItem, state: &AppState, backend: &dyn PackageBackend
         }
         QueueAction::Upgrade => backend.upgrade_args(&item.id),
         QueueAction::UpgradeAll => backend.upgrade_all_args(),
+        QueueAction::OfficialInstall => Vec::new(),
     }
 }
 
@@ -179,6 +213,40 @@ pub fn enqueue(state: &mut AppState, id: &str, action: QueueAction) -> Enqueued 
 
     let uid = state.next_queue_uid();
     state.queue.push(QueueItem::new(uid, &package, action));
+    Enqueued::Added(uid)
+}
+
+pub fn enqueue_official(state: &mut AppState, spec: OfficialQueueSpec) -> Enqueued {
+    let name = state
+        .official
+        .catalog
+        .as_ref()
+        .and_then(|catalog| catalog.apps.iter().find(|app| app.id == spec.app_id))
+        .map_or_else(|| spec.variant.id.clone(), |app| app.name.clone());
+    if state.queue.iter().any(|item| {
+        item.official
+            .as_ref()
+            .is_some_and(|current| current.variant.id == spec.variant.id && item.state.is_active())
+    }) {
+        return Enqueued::Duplicate(name);
+    }
+    let uid = state.next_queue_uid();
+    let id = format!("official:{}:{}", spec.app_id, spec.variant.id);
+    state.queue.push(QueueItem {
+        uid,
+        id,
+        name,
+        source: String::new(),
+        action: QueueAction::OfficialInstall,
+        state: QueueState::Pending,
+        progress: 0.0,
+        log: tr!("queue.waiting"),
+        detail: None,
+        exit: None,
+        started: None,
+        downloaded_path: None,
+        official: Some(spec),
+    });
     Enqueued::Added(uid)
 }
 
@@ -242,7 +310,18 @@ pub fn begin(state: &mut AppState, ix: usize, backend: &dyn PackageBackend) -> O
     item.log = command.clone();
     Some(command)
 }
-
+pub fn begin_official(state: &mut AppState, ix: usize) -> Option<String> {
+    let item = state.queue.get_mut(ix)?;
+    if item.state != QueueState::Pending {
+        return None;
+    }
+    let command = item.official.as_ref()?.display.clone();
+    item.state = QueueState::Running;
+    item.progress = 0.0;
+    item.started = Some(Instant::now());
+    item.log = command.clone();
+    Some(command)
+}
 /// Advance the indicative progress bar.
 ///
 /// winget reports nothing machine-readable, so the bar eases toward a
@@ -362,13 +441,60 @@ pub fn complete(
             QueueAction::Install => state.mark_installed(&id),
             QueueAction::Upgrade => state.mark_update_applied(&id),
             QueueAction::UpgradeAll => state.mark_all_updates_applied(),
+            QueueAction::OfficialInstall => {}
+        }
+    }
+}
+
+pub fn complete_official(
+    state: &mut AppState,
+    uid: u64,
+    result: Result<crate::official::OfficialOutcome, crate::official::OfficialError>,
+) {
+    let Some(item) = state.queue.iter_mut().find(|item| item.uid == uid) else {
+        return;
+    };
+    let command = item.log.clone();
+    match result {
+        Ok(outcome) => {
+            item.downloaded_path = outcome.downloaded_path().map(std::path::Path::to_path_buf);
+            item.state = QueueState::Done;
+            item.progress = 100.0;
+            item.exit = Some(0);
+            item.log = match outcome {
+                crate::official::OfficialOutcome::ScriptCompleted { log } => {
+                    if !log.trim().is_empty() {
+                        item.detail = Some(format!("$ {command}\n{log}"));
+                    }
+                    tr!("official.success.script")
+                }
+                crate::official::OfficialOutcome::TerminalOpened => {
+                    tr!("official.success.terminal")
+                }
+                crate::official::OfficialOutcome::InstallerStarted { .. } => {
+                    tr!("official.success.installer")
+                }
+                crate::official::OfficialOutcome::PackageDownloaded { .. } => {
+                    tr!("official.success.package")
+                }
+                crate::official::OfficialOutcome::PortableDownloaded { .. } => {
+                    tr!("official.success.portable")
+                }
+                crate::official::OfficialOutcome::OfficialPageOpened => {
+                    tr!("official.success.page")
+                }
+            };
+        }
+        Err(error) => {
+            item.state = QueueState::Error;
+            item.progress = 100.0;
+            item.log = error.localized();
+            item.detail = Some(format!("$ {command}\n{error}"));
         }
     }
 }
 
 /// Drop every finished entry, as the drawer's 清除 button does.
-///
-/// Failures stay: they carry the error message the operator has to read.
 pub fn clear_finished(state: &mut AppState) {
     state.queue.retain(|item| item.state != QueueState::Done);
 }
@@ -406,8 +532,69 @@ mod tests {
         Output {
             status,
             stdout: String::new(),
+            signal_terminated: false,
             stderr: String::new(),
         }
+    }
+
+    #[test]
+    fn official_download_does_not_mark_package_or_variant_installed() {
+        crate::ensure_zh_locale();
+        let mut state = state_with(&["official-app"]);
+        let app = crate::official::OfficialApp {
+            id: "official-app".to_owned(),
+            name: "Official App".to_owned(),
+            publisher: "Publisher".to_owned(),
+            category: "tools".to_owned(),
+            summary: crate::official::LocalizedText {
+                zh_cn: "摘要".to_owned(),
+                zh_tw: "摘要".to_owned(),
+                en: "Summary".to_owned(),
+                ja: "概要".to_owned(),
+                ko: "요약".to_owned(),
+            },
+            homepage: "https://example.com".to_owned(),
+            mark: "O".to_owned(),
+            accent: "#70d6a2".to_owned(),
+            variants: Vec::new(),
+        };
+        let variant = crate::official::OfficialVariant {
+            id: "official-app-linux".to_owned(),
+            os: crate::official::OfficialOs::Linux,
+            architectures: vec![crate::official::OfficialArch::X86_64],
+            requires_admin: false,
+            interactive: false,
+            note: app.summary.clone(),
+            source_url: app.homepage.clone(),
+            method: crate::official::OfficialMethod::OfficialPage {
+                url: app.homepage.clone(),
+            },
+            detection: None,
+        };
+        let spec = OfficialQueueSpec::new(&app, &variant);
+        let Enqueued::Added(uid) = enqueue_official(&mut state, spec.clone()) else {
+            panic!("enqueue official");
+        };
+        assert!(matches!(
+            enqueue_official(&mut state, spec),
+            Enqueued::Duplicate(_)
+        ));
+        assert_eq!(
+            state.queue[0].id,
+            "official:official-app:official-app-linux"
+        );
+        begin_official(&mut state, 0);
+        complete_official(
+            &mut state,
+            uid,
+            Ok(crate::official::OfficialOutcome::PortableDownloaded {
+                path: std::path::PathBuf::from("/tmp/example.AppImage"),
+            }),
+        );
+        assert_eq!(state.queue[0].state, QueueState::Done);
+        assert_eq!(state.queue[0].log, "便携版已下载");
+        assert!(!state.packages[0].installed);
+        assert!(state.official.installed.is_empty());
     }
 
     /// A winget handle for building command lines; nothing is ever spawned.
@@ -666,6 +853,7 @@ mod tests {
             status: 1,
             stdout: String::new(),
             stderr: "E: Package A has no available update".to_owned(),
+            signal_terminated: false,
         };
         complete(&mut state, uid, Ok(failed), &backend());
         assert_eq!(state.queue[0].state, QueueState::Error);
@@ -690,6 +878,7 @@ mod tests {
             status: 1,
             stdout: "Resolving dependencies…".to_owned(),
             stderr: "E: Unable to locate package A".to_owned(),
+            signal_terminated: false,
         };
         complete(&mut state, uid, Ok(failed), &backend());
 

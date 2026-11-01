@@ -207,6 +207,7 @@ mod tests {
             stdout: String::new(),
             stderr: "Windows Package Manager v1.29.380\n© 2026 Microsoft.\n\n需要管理员权限\n"
                 .into(),
+            signal_terminated: false,
         };
         assert_eq!(first_message(&output), "需要管理员权限");
     }

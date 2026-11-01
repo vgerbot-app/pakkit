@@ -22,6 +22,7 @@ pub mod dialogs;
 pub mod icons;
 pub mod logging;
 pub mod model;
+pub mod official;
 pub mod queue;
 pub mod shell;
 pub mod state;

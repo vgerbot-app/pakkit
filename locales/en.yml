@@ -12,6 +12,7 @@ nav:
   sources: "Sources"
   settings: "Settings"
   theme: "Theme"
+  official: "Official Install"
   queue: "Install Queue"
 
 status:
@@ -28,6 +29,7 @@ status:
   sources_count: "Sources %{count}"
   queue_count: "Queue %{count}"
   settings: "Settings"
+  official_ready: "Catalog %{version} · %{count} apps"
 
 filter:
   all: "All"
@@ -95,6 +97,8 @@ queue:
   clear: "Clear"
   empty: "Queue is empty"
   serial_hint: "Jobs run serially to avoid package manager lock conflicts"
+  open_folder: "Open containing folder"
+  folder_opened: "Containing folder opened"
   waiting: "Waiting…"
   queued: "Queued"
   reinstall: "Reinstall"
@@ -113,6 +117,7 @@ queue:
   action:
     install: "Install"
     upgrade: "Upgrade"
+    official_install: "Official install"
     upgrade_all: "Upgrade all"
   row:
     pending: "Waiting"
@@ -123,6 +128,7 @@ queue:
 pkg:
   installed: "Installed"
   updatable: "Update available"
+  not_installed: "Not installed"
   details: "Details ›"
 
 home:
@@ -298,10 +304,17 @@ notification:
   source_added: "Source added"
   source_updated: "Source updated"
   source_removed: "Source removed"
+  official_variant_missing: "This install method changed. Refresh the catalog and try again."
+  official_submission_unavailable: "The catalog is not ready, so software cannot be submitted yet."
+  official_name_empty: "Software name cannot be empty"
+  official_url_invalid: "Enter a valid HTTPS official link"
+  official_submission_invalid: "Could not create the submission link; check the catalog address."
 
 placeholder:
   backend_path: "Leave empty to auto-detect"
   source_name: "e.g. contoso"
+  official_name: "e.g. Deno"
+  official_note: "Homepage, supported platforms, or other notes (optional)"
 
 error:
   not_found: "%{backend} not found (make sure the package manager is installed)"
@@ -339,3 +352,75 @@ exitcode:
   no_downgrade: "Downgrade not allowed"
   no_upgrade_support: "Package does not support upgrade"
   unknown: "Unknown error"
+
+official:
+  title: "Official Install"
+  subtitle: "Get software from developer websites with a transparent install process"
+  refresh: "Refresh catalog"
+  submit: "Submit software"
+  trust_title: "Official sources, transparent installs"
+  trust_copy: "Review the complete command and permission requirements before deciding whether to run it."
+  trust_official: "Official releases only"
+  trust_unhosted: "No hosted installers"
+  loading: "Loading official catalog…"
+  loading_hint: "Reading only the remote catalog; no built-in entries or stale cache."
+  load_failed: "Could not load official catalog"
+  retry: "Retry"
+  status_ready: "Catalog %{version} · %{count} apps"
+  status_empty: "No software in the catalog"
+  all: "All software"
+  group_count: "%{count} apps"
+  empty: "No matching software"
+  empty_hint: "Try another name, All software, or a different platform."
+  official: "Official"
+  details: "Details ›"
+  admin_required: "Authorization"
+  current_user: "Current user"
+  state:
+    checking: "Checking"
+    unknown: "Unknown"
+  method:
+    script: "Official script"
+    installer: "Official installer"
+    package: "Official package"
+    portable: "Portable version"
+    official_page: "Official release page"
+  action:
+    script: "Install"
+    installer: "Run installer"
+    package: "Download package"
+    portable: "Download portable"
+    official_page: "Open website"
+  detail:
+    source: "Official source"
+    homepage: "Software homepage"
+    admin: "Administrator authorization may be required"
+    interactive: "Interactive"
+    non_interactive: "Non-interactive"
+    command: "Official command to execute"
+    download_url: "Official address"
+    https_direct: "HTTPS · Not through Pakkit servers"
+    copy: "Copy"
+    no_sha: "The catalog does not provide SHA-256, so file integrity cannot be verified after download."
+    queue: "Add to install queue"
+    semantic_terminal: "A visible terminal will run this command. Opening the terminal does not mean installation completed."
+    semantic_script: "This official script will run. A successful script exit does not automatically mean the software is installed."
+    semantic_installer: "The official installer will be downloaded and started. Starting it does not mean installation completed."
+    semantic_package: "Only downloads and saves the official package; it will not be installed automatically."
+    semantic_portable: "Only downloads and saves the portable version; it will not be run or installed automatically."
+    semantic_page: "Opens the official release page in your browser. Nothing will be downloaded or installed."
+  submission:
+    title: "Submit official-install software"
+    subtitle: "Provide the developer's download page or installation guide"
+    name: "Software name"
+    url: "Official download page / installation guide"
+    note: "Additional notes (optional)"
+    hint: "This opens a prefilled new GitHub issue. Review and submit it on GitHub; opening the page does not mean it was submitted or approved."
+    open: "Open GitHub submission"
+  success:
+    script: "Script execution completed"
+    terminal: "Terminal opened"
+    installer: "Installer started"
+    package: "Package downloaded"
+    portable: "Portable version downloaded"
+    page: "Official website opened"

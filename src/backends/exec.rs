@@ -23,6 +23,8 @@ pub struct Output {
     pub status: u32,
     pub stdout: String,
     pub stderr: String,
+    /// Unix signal termination has no exit code and must not be a success.
+    pub signal_terminated: bool,
 }
 
 impl Output {
@@ -72,6 +74,7 @@ pub fn run_process(
         status: proc_output.status.code().unwrap_or(0) as u32,
         stdout: String::from_utf8_lossy(&proc_output.stdout).into_owned(),
         stderr: String::from_utf8_lossy(&proc_output.stderr).into_owned(),
+        signal_terminated: proc_output.status.code().is_none(),
     })
 }
 

@@ -279,12 +279,14 @@ fn method_error_output(error: &zbus::Error) -> Option<Output> {
         Some(Output {
             status: STATUS_AUTH_DISMISSED,
             stdout: String::new(),
+            signal_terminated: false,
             stderr: detail,
         })
     } else if name.contains("NotAuthorized") {
         Some(Output {
             status: STATUS_AUTH_DENIED,
             stdout: String::new(),
+            signal_terminated: false,
             stderr: detail,
         })
     } else {
@@ -311,6 +313,7 @@ fn outcome_to_output(outcome: Outcome) -> Output {
         status: exit_to_status(outcome.exit),
         stdout,
         stderr: outcome.error.unwrap_or_default(),
+        signal_terminated: false,
     }
 }
 
@@ -352,6 +355,7 @@ fn update_ids(conn: &blocking::Connection, name: Option<&str>) -> Result<Vec<Str
             status: 100, // apt's "unable to locate package"
             stdout: String::new(),
             stderr: format!("E: Package {name} has no available update"),
+            signal_terminated: false,
         }));
     }
     Ok(ids)
@@ -383,6 +387,7 @@ fn resolve_ids(
             status: 100, // apt's "unable to locate package"
             stdout: String::new(),
             stderr: format!("E: Unable to locate package {name}"),
+            signal_terminated: false,
         }));
     }
     Ok(ids)
@@ -437,6 +442,7 @@ pub fn run(op: &PkOp) -> Result<Output, RunError> {
                     status: 0,
                     stdout: "All packages are up to date.\n".to_owned(),
                     stderr: String::new(),
+                    signal_terminated: false,
                 });
             }
             // InstallPackages here too — see UpgradeOne.

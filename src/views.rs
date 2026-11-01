@@ -7,6 +7,10 @@ use crate::dialogs;
 use crate::icons::{IconKey, icon};
 use crate::logging;
 use crate::model::{CategoryId, Package};
+use crate::official::{
+    ArtifactAction, OfficialApp, OfficialArch, OfficialInstallState, OfficialLoadState,
+    OfficialMethod, OfficialOs, OfficialVariant, variant_for, visible_official_apps_for_language,
+};
 use crate::queue::QueueAction;
 use crate::shell::AppView;
 use crate::state::{AppState, Language, Route, SearchSource, page_slice};
@@ -30,6 +34,7 @@ pub struct ShellInputs {
     pub install_location: Entity<InputState>,
     pub proxy: Entity<InputState>,
     pub backend_path: Entity<InputState>,
+    pub official_search: Entity<InputState>,
 }
 
 /// Dispatch to the active route's renderer.
@@ -48,6 +53,7 @@ pub fn render(
         Route::Categories => categories(state, &p, cx),
         Route::Category(id) => category_detail(state, &p, id, cx),
         Route::Search => search(state, search_command, &p, cx),
+        Route::OfficialInstall => official_install(state, inputs, &p, cx),
         Route::Installed => installed(state, &p, cx),
         Route::Updates => updates(state, &p, cx),
         Route::Sources => sources(state, &p, cx),
@@ -1321,6 +1327,636 @@ fn installed_row(
                 ),
         )
         .into_any_element()
+}
+
+// --------------------------------------------------------------- 官网直装
+
+fn official_install(
+    state: &AppState,
+    inputs: &ShellInputs,
+    p: &Palette,
+    cx: &mut Context<AppView>,
+) -> AnyElement {
+    let loading = matches!(state.official.status, OfficialLoadState::Loading);
+    let head = widgets::page_head(
+        p,
+        tr!("official.title"),
+        Some(tr!("official.subtitle").into()),
+        vec![
+            widgets::button_border(
+                p,
+                BtnKind::Soft,
+                widgets::btn(
+                    cx,
+                    p,
+                    "official-refresh",
+                    BtnKind::Soft,
+                    BtnSize::Regular,
+                    tr!("official.refresh"),
+                )
+                .disabled(loading)
+                .on_click(cx.listener(|this, _, _, cx| {
+                    this.refresh_official_catalog(cx);
+                })),
+            )
+            .into_any_element(),
+            widgets::btn(
+                cx,
+                p,
+                "official-submit",
+                BtnKind::Primary,
+                BtnSize::Regular,
+                tr!("official.submit"),
+            )
+            .on_click(cx.listener(|this, _, window, cx| {
+                dialogs::official_submission(this, window, cx);
+            }))
+            .into_any_element(),
+        ],
+    );
+
+    let trust = div().px(px(24.)).child(
+        div()
+            .flex()
+            .items_center()
+            .flex_wrap()
+            .gap(px(14.))
+            .p(px(16.))
+            .rounded(px(13.))
+            .bg(p.tint(p.accent, 0.07))
+            .border_1()
+            .border_color(p.tint(p.accent, 0.25))
+            .child(widgets::tinted_chip(
+                p,
+                IconKey::Shield,
+                "#4f8cff",
+                40.,
+                21.,
+            ))
+            .child(
+                div()
+                    .flex_1()
+                    .min_w(px(220.))
+                    .child(
+                        div()
+                            .text_size(px(13.))
+                            .font_semibold()
+                            .child(tr!("official.trust_title")),
+                    )
+                    .child(
+                        div()
+                            .mt(px(3.))
+                            .text_size(px(11.5))
+                            .text_color(p.ink2)
+                            .child(tr!("official.trust_copy")),
+                    ),
+            )
+            .child(
+                div()
+                    .flex()
+                    .flex_wrap()
+                    .gap(px(12.))
+                    .text_size(px(11.))
+                    .text_color(p.muted)
+                    .child(
+                        div()
+                            .flex()
+                            .items_center()
+                            .gap(px(5.))
+                            .child(icon(IconKey::Check, px(13.), p.ok))
+                            .child(tr!("official.trust_official")),
+                    )
+                    .child(
+                        div()
+                            .flex()
+                            .items_center()
+                            .gap(px(5.))
+                            .child(icon(IconKey::Check, px(13.), p.ok))
+                            .child(tr!("official.trust_unhosted")),
+                    ),
+            ),
+    );
+
+    let body = match &state.official.status {
+        OfficialLoadState::Loading => widgets::empty_state(
+            p,
+            IconKey::Refresh,
+            tr!("official.loading"),
+            tr!("official.loading_hint"),
+            Vec::new(),
+        )
+        .into_any_element(),
+        OfficialLoadState::Failed(error) => widgets::empty_state(
+            p,
+            IconKey::Warning,
+            tr!("official.load_failed"),
+            error.clone(),
+            vec![
+                widgets::btn(
+                    cx,
+                    p,
+                    "official-retry",
+                    BtnKind::Primary,
+                    BtnSize::Regular,
+                    tr!("official.retry"),
+                )
+                .on_click(cx.listener(|this, _, _, cx| {
+                    this.refresh_official_catalog(cx);
+                }))
+                .into_any_element(),
+            ],
+        )
+        .into_any_element(),
+        OfficialLoadState::Ready => official_ready(state, inputs, p, cx),
+    };
+
+    let status = match &state.official.status {
+        OfficialLoadState::Ready => state.official.catalog.as_ref().map_or_else(
+            || tr!("official.status_empty"),
+            |catalog| {
+                tr!(
+                    "official.status_ready",
+                    version = catalog.catalog_version.clone(),
+                    count = catalog.apps.len()
+                )
+            },
+        ),
+        OfficialLoadState::Loading => tr!("official.loading"),
+        OfficialLoadState::Failed(_) => tr!("official.load_failed"),
+    };
+    let platform = format!(
+        "{} · {}",
+        state.official.os.map_or("—", OfficialOs::label),
+        state.official.arch.map_or("—", OfficialArch::label)
+    );
+
+    div()
+        .flex()
+        .flex_col()
+        .h_full()
+        .child(head)
+        .child(
+            div()
+                .id("official-content")
+                .flex_1()
+                .min_h_0()
+                .overflow_y_scroll()
+                .child(trust)
+                .child(widgets::page_body().pt(px(16.)).child(body)),
+        )
+        .child(
+            div()
+                .flex_none()
+                .min_h(px(28.))
+                .px(px(12.))
+                .flex()
+                .items_center()
+                .justify_between()
+                .gap(px(12.))
+                .border_t_1()
+                .border_color(p.line)
+                .bg(p.surface)
+                .text_size(px(10.5))
+                .text_color(p.muted)
+                .child(status)
+                .child(platform),
+        )
+        .into_any_element()
+}
+
+fn official_ready(
+    state: &AppState,
+    inputs: &ShellInputs,
+    p: &Palette,
+    cx: &mut Context<AppView>,
+) -> AnyElement {
+    let language = state.settings.language.as_str();
+    let visible = visible_official_apps_for_language(&state.official, language);
+    let os_items: Vec<(Option<OfficialOs>, String)> = OfficialOs::ALL
+        .iter()
+        .map(|os| (Some(*os), os.label().to_owned()))
+        .collect();
+    let arch_items: Vec<(Option<OfficialArch>, String)> = OfficialArch::ALL
+        .iter()
+        .map(|arch| (Some(*arch), arch.label().to_owned()))
+        .collect();
+
+    let filters = div()
+        .flex()
+        .items_center()
+        .flex_wrap()
+        .gap(px(9.))
+        .mb(px(16.))
+        .child(
+            div().flex_1().min_w(px(200.)).child(
+                gpui_kit::component::input::Input::new(&inputs.official_search)
+                    .prefix(icon(IconKey::Search, px(15.), p.muted).into_any_element())
+                    .h(px(38.))
+                    .appearance(true)
+                    .bordered(true)
+                    .cleanable(true)
+                    .rounded(px(9.))
+                    .bg(p.surface)
+                    .border_color(p.line),
+            ),
+        )
+        .child(widgets::seg_dropdown(
+            cx,
+            p,
+            "official-os",
+            &os_items,
+            state.official.os,
+            seg_handler(cx, |this, value, _, cx| {
+                this.state.official.os = value;
+                this.state.status = this.state.status_for(this.state.route);
+                cx.notify();
+            }),
+        ))
+        .child(widgets::seg_dropdown(
+            cx,
+            p,
+            "official-arch",
+            &arch_items,
+            state.official.arch,
+            seg_handler(cx, |this, value, _, cx| {
+                this.state.official.arch = value;
+                this.state.status = this.state.status_for(this.state.route);
+                cx.notify();
+            }),
+        ));
+
+    let mut categories = div().flex().flex_wrap().gap(px(7.)).mb(px(22.));
+    let total = official_platform_count(state, None);
+    categories = categories.child(official_category_button(
+        state,
+        p,
+        None,
+        &tr!("official.all"),
+        IconKey::Grid,
+        total,
+        cx,
+    ));
+    if let Some(catalog) = &state.official.catalog {
+        for category in &catalog.categories {
+            let count = official_platform_count(state, Some(&category.id));
+            categories = categories.child(official_category_button(
+                state,
+                p,
+                Some(&category.id),
+                category.name.get(language),
+                official_category_icon(&category.icon),
+                count,
+                cx,
+            ));
+        }
+    }
+
+    let mut groups = Vec::new();
+    if let Some(catalog) = &state.official.catalog {
+        for category in &catalog.categories {
+            let apps: Vec<_> = visible
+                .iter()
+                .copied()
+                .filter(|app| app.category == category.id)
+                .collect();
+            if apps.is_empty() {
+                continue;
+            }
+            let color = Palette::from_hex(&category.accent);
+            groups.push(
+                div()
+                    .mb(px(24.))
+                    .child(
+                        div()
+                            .flex()
+                            .items_center()
+                            .flex_wrap()
+                            .gap(px(8.))
+                            .mb(px(11.))
+                            .child(icon(official_category_icon(&category.icon), px(17.), color))
+                            .child(
+                                div()
+                                    .text_size(px(14.))
+                                    .font_semibold()
+                                    .child(category.name.get(language).to_owned()),
+                            )
+                            .child(
+                                div()
+                                    .text_size(px(11.))
+                                    .text_color(p.muted)
+                                    .child(tr!("official.group_count", count = apps.len())),
+                            )
+                            .child(
+                                div()
+                                    .text_size(px(11.))
+                                    .text_color(p.muted)
+                                    .child(category.description.get(language).to_owned()),
+                            ),
+                    )
+                    .child(
+                        div()
+                            .flex()
+                            .flex_wrap()
+                            .gap(px(11.))
+                            .children(apps.iter().map(|app| {
+                                let Some(variant) = state.official.os.and_then(|os| {
+                                    state
+                                        .official
+                                        .arch
+                                        .and_then(|arch| variant_for(app, os, arch))
+                                }) else {
+                                    return div().into_any_element();
+                                };
+                                official_card(state, p, app, variant, cx)
+                            })),
+                    )
+                    .into_any_element(),
+            );
+        }
+    }
+
+    div()
+        .child(filters)
+        .child(categories)
+        .when(groups.is_empty(), |this| {
+            this.child(widgets::empty_state(
+                p,
+                IconKey::Search,
+                tr!("official.empty"),
+                tr!("official.empty_hint"),
+                Vec::new(),
+            ))
+        })
+        .children(groups)
+        .into_any_element()
+}
+
+fn official_platform_count(state: &AppState, category: Option<&str>) -> usize {
+    let (Some(catalog), Some(os), Some(arch)) = (
+        state.official.catalog.as_ref(),
+        state.official.os,
+        state.official.arch,
+    ) else {
+        return 0;
+    };
+    catalog
+        .apps
+        .iter()
+        .filter(|app| category.is_none_or(|id| id == app.category))
+        .filter(|app| variant_for(app, os, arch).is_some())
+        .count()
+}
+
+fn official_category_icon(value: &str) -> IconKey {
+    match value {
+        "code" => IconKey::Code,
+        "network" => IconKey::Network,
+        "remote" => IconKey::Package,
+        _ => IconKey::Wrench,
+    }
+}
+
+fn official_category_button(
+    state: &AppState,
+    p: &Palette,
+    category: Option<&str>,
+    label: &str,
+    glyph: IconKey,
+    count: usize,
+    cx: &mut Context<AppView>,
+) -> AnyElement {
+    let selected = state.official.category.as_deref() == category;
+    let category = category.map(str::to_owned);
+    let id = category.as_deref().unwrap_or("all").to_owned();
+    div()
+        .id(SharedString::from(format!("official-category-{id}")))
+        .flex()
+        .items_center()
+        .gap(px(6.))
+        .h(px(31.))
+        .px(px(11.))
+        .rounded(px(8.))
+        .border_1()
+        .border_color(if selected {
+            p.tint(p.accent, 0.45)
+        } else {
+            p.line
+        })
+        .bg(if selected {
+            p.tint(p.accent, 0.10)
+        } else {
+            p.surface
+        })
+        .text_size(px(11.5))
+        .text_color(if selected { p.accent } else { p.ink2 })
+        .cursor_pointer()
+        .on_click(cx.listener(move |this, _, _, cx| {
+            this.state.official.category = category.clone();
+            cx.notify();
+        }))
+        .child(icon(
+            glyph,
+            px(13.),
+            if selected { p.accent } else { p.muted },
+        ))
+        .child(label.to_owned())
+        .child(
+            div()
+                .text_size(px(10.))
+                .text_color(p.muted)
+                .child(count.to_string()),
+        )
+        .into_any_element()
+}
+
+fn official_method_labels(method: &OfficialMethod) -> (String, String) {
+    match method {
+        OfficialMethod::Script { .. } => {
+            (tr!("official.method.script"), tr!("official.action.script"))
+        }
+        OfficialMethod::Artifact { action, .. } => match action {
+            ArtifactAction::RunInstaller => (
+                tr!("official.method.installer"),
+                tr!("official.action.installer"),
+            ),
+            ArtifactAction::DownloadPackage => (
+                tr!("official.method.package"),
+                tr!("official.action.package"),
+            ),
+            ArtifactAction::DownloadPortable => (
+                tr!("official.method.portable"),
+                tr!("official.action.portable"),
+            ),
+        },
+        OfficialMethod::OfficialPage { .. } => (
+            tr!("official.method.official_page"),
+            tr!("official.action.official_page"),
+        ),
+    }
+}
+
+fn official_card(
+    state: &AppState,
+    p: &Palette,
+    app: &OfficialApp,
+    variant: &OfficialVariant,
+    cx: &mut Context<AppView>,
+) -> AnyElement {
+    let variant_id = variant.id.clone();
+    let detail_id = variant_id.clone();
+    let action_id = variant_id.clone();
+    let install_state = state
+        .official
+        .installed
+        .get(&variant.id)
+        .copied()
+        .unwrap_or(OfficialInstallState::Unknown);
+    let state_kind = match install_state {
+        OfficialInstallState::Checking => PillKind::Accent,
+        OfficialInstallState::Installed => PillKind::Ok,
+        OfficialInstallState::NotInstalled => PillKind::Line,
+        OfficialInstallState::Unknown => PillKind::Warn,
+    };
+    let (method_label, action_label) = official_method_labels(&variant.method);
+    let accent = Palette::from_hex(&app.accent);
+
+    widgets::card_hover(
+        p,
+        widgets::card(p)
+            .w(px(300.))
+            .flex_none()
+            .p(px(15.))
+            .child(
+                div()
+                    .flex()
+                    .items_start()
+                    .gap(px(10.))
+                    .child(
+                        div()
+                            .size(px(42.))
+                            .flex_none()
+                            .flex()
+                            .items_center()
+                            .justify_center()
+                            .rounded(px(11.))
+                            .bg(p.tint(accent, 0.12))
+                            .border_1()
+                            .border_color(p.tint(accent, 0.25))
+                            .text_color(accent)
+                            .text_size(px(17.))
+                            .font_semibold()
+                            .child(app.mark.clone()),
+                    )
+                    .child(
+                        div()
+                            .flex_1()
+                            .min_w_0()
+                            .child(
+                                div()
+                                    .flex()
+                                    .items_center()
+                                    .flex_wrap()
+                                    .gap(px(6.))
+                                    .child(
+                                        div()
+                                            .text_size(px(13.5))
+                                            .font_semibold()
+                                            .child(app.name.clone()),
+                                    )
+                                    .child(widgets::pill(p, state_kind, install_state.label())),
+                            )
+                            .child(
+                                div()
+                                    .mt(px(2.))
+                                    .text_size(px(10.5))
+                                    .text_color(p.muted)
+                                    .child(app.publisher.clone()),
+                            ),
+                    )
+                    .child(widgets::pill(p, PillKind::Ok, tr!("official.official"))),
+            )
+            .child(
+                div()
+                    .my(px(12.))
+                    .min_h(px(38.))
+                    .text_size(px(11.5))
+                    .line_height(relative(1.6))
+                    .text_color(p.ink2)
+                    .child(app.summary.get(&state.settings.language).to_owned()),
+            )
+            .child(
+                div()
+                    .flex()
+                    .items_center()
+                    .gap(px(6.))
+                    .p(px(8.))
+                    .rounded(px(8.))
+                    .border_1()
+                    .border_color(p.line)
+                    .bg(p.surface2)
+                    .text_size(px(10.5))
+                    .child(icon(
+                        if matches!(variant.method, OfficialMethod::Script { .. }) {
+                            IconKey::Terminal
+                        } else {
+                            IconKey::Download
+                        },
+                        px(13.),
+                        p.muted,
+                    ))
+                    .child(method_label)
+                    .child(
+                        div()
+                            .ml_auto()
+                            .text_color(if variant.requires_admin {
+                                p.warn
+                            } else {
+                                p.muted
+                            })
+                            .child(if variant.requires_admin {
+                                tr!("official.admin_required")
+                            } else {
+                                tr!("official.current_user")
+                            }),
+                    ),
+            )
+            .child(
+                div()
+                    .flex()
+                    .items_center()
+                    .justify_between()
+                    .gap(px(8.))
+                    .mt(px(12.))
+                    .child(
+                        div()
+                            .id(SharedString::from(format!("official-detail-{detail_id}")))
+                            .text_size(px(11.))
+                            .text_color(p.muted)
+                            .cursor_pointer()
+                            .hover(|this| this.text_color(p.accent))
+                            .on_click(cx.listener(move |this, _, window, cx| {
+                                dialogs::official_detail(this, &detail_id, window, cx);
+                            }))
+                            .child(tr!("official.details")),
+                    )
+                    .child(
+                        widgets::btn(
+                            cx,
+                            p,
+                            SharedString::from(format!("official-action-{action_id}")),
+                            BtnKind::Primary,
+                            BtnSize::Small,
+                            action_label,
+                        )
+                        .on_click(cx.listener(
+                            move |this, _, window, cx| {
+                                dialogs::official_detail(this, &action_id, window, cx);
+                            },
+                        )),
+                    ),
+            ),
+    )
+    .into_any_element()
 }
 
 // ------------------------------------------------------------------- 更新

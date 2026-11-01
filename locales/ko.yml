@@ -12,6 +12,7 @@ nav:
   sources: "소스 관리"
   settings: "설정"
   theme: "테마"
+  official: "공식 사이트 설치"
   queue: "설치 큐"
 
 status:
@@ -28,6 +29,7 @@ status:
   sources_count: "소스 %{count}"
   queue_count: "큐 %{count}"
   settings: "설정"
+  official_ready: "카탈로그 %{version} · 소프트웨어 %{count}개"
 
 filter:
   all: "전체"
@@ -95,6 +97,8 @@ queue:
   clear: "지우기"
   empty: "큐가 비어 있습니다"
   serial_hint: "패키지 관리자 잠금 충돌을 방지하기 위해 작업을 순차적으로 실행합니다"
+  open_folder: "저장 폴터 열기"
+  folder_opened: "저장 폴터를 열었습니다"
   waiting: "대기 중…"
   queued: "큐에 추가됨"
   reinstall: "다시 설치"
@@ -114,6 +118,7 @@ queue:
     install: "설치"
     upgrade: "업데이트"
     upgrade_all: "모두 업그레이드"
+    official_install: "공식 사이트 설치"
   row:
     pending: "대기 중"
     running: "진행 중"
@@ -122,6 +127,7 @@ queue:
 
 pkg:
   installed: "설치됨"
+  not_installed: "설치되지 않음"
   updatable: "업데이트 가능"
   details: "자세히 보기 ›"
 
@@ -298,10 +304,17 @@ notification:
   source_added: "소스가 추가되었습니다"
   source_updated: "소스가 업데이트되었습니다"
   source_removed: "소스가 삭제되었습니다"
+  official_variant_missing: "설치 방법이 변경되었습니다. 카탈로그를 새로 고친 후 다시 시도하세요."
+  official_submission_unavailable: "카탈로그가 준비되지 않아 소프트웨어를 제출할 수 없습니다."
+  official_name_empty: "소프트웨어 이름은 비워 둘 수 없습니다"
+  official_url_invalid: "유효한 HTTPS 공식 링크를 입력하세요"
+  official_submission_invalid: "제출 링크를 만들 수 없습니다. 카탈로그 주소를 확인하세요."
 
 placeholder:
   backend_path: "비어 있으면 자동 감지"
   source_name: "예: contoso"
+  official_name: "예: Deno"
+  official_note: "홈페이지, 지원 플랫폼 또는 기타 참고 사항(선택)"
 
 error:
   not_found: "%{backend}를 찾을 수 없습니다(패키지 관리자가 설치되어 있는지 확인하세요)"
@@ -339,3 +352,75 @@ exitcode:
   no_downgrade: "다운그레이드는 허용되지 않습니다"
   no_upgrade_support: "이 패키지는 업그레이드를 지원하지 않습니다"
   unknown: "알 수 없는 오류"
+
+official:
+  title: "공식 사이트 설치"
+  subtitle: "개발자 공식 사이트에서 소프트웨어를 받고 설치 과정을 투명하게 확인합니다"
+  refresh: "카탈로그 새로 고침"
+  submit: "소프트웨어 제출"
+  trust_title: "공식 소스, 투명한 설치"
+  trust_copy: "실행 여부를 결정하기 전에 전체 명령과 권한 요구 사항을 검토하세요."
+  trust_official: "공식 릴리스만 연결"
+  trust_unhosted: "설치 파일을 호스팅하지 않음"
+  loading: "공식 카탈로그 로드 중…"
+  loading_hint: "원격 카탈로그만 읽으며 기본 항목이나 오래된 캐시를 사용하지 않습니다."
+  load_failed: "공식 카탈로그를 불러올 수 없습니다"
+  retry: "다시 시도"
+  status_ready: "카탈로그 %{version} · 소프트웨어 %{count}개"
+  status_empty: "카탈로그에 소프트웨어가 없습니다"
+  all: "모든 소프트웨어"
+  group_count: "%{count}개"
+  empty: "일치하는 소프트웨어가 없습니다"
+  empty_hint: "다른 이름이나 모든 소프트웨어를 선택하거나 플랫폼을 변경하세요."
+  official: "공식"
+  details: "자세히 ›"
+  admin_required: "권한 필요"
+  current_user: "현재 사용자"
+  state:
+    checking: "확인 중"
+    unknown: "알 수 없음"
+  method:
+    script: "공식 스크립트"
+    installer: "공식 설치 프로그램"
+    package: "공식 패키지"
+    portable: "휴장용 버전"
+    official_page: "공식 릴리스 페이지"
+  action:
+    script: "설치"
+    installer: "설치 프로그램 실행"
+    package: "패키지 다운로드"
+    portable: "휴장용 버전 다운로드"
+    official_page: "공식 사이트 열기"
+  detail:
+    source: "공식 소스"
+    homepage: "소프트웨어 홈페이지"
+    admin: "관리자 권한이 필요할 수 있습니다"
+    interactive: "대화형"
+    non_interactive: "비대화형"
+    command: "실행할 공식 명령"
+    download_url: "공식 주소"
+    https_direct: "HTTPS · Pakkit 서버를 거치지 않음"
+    copy: "복사"
+    no_sha: "카탈로그가 SHA-256을 제공하지 않아 다운로드 후 파일 무결성을 확인할 수 없습니다."
+    queue: "설치 큐에 추가"
+    semantic_terminal: "터미널 창에서 명령을 실행합니다. 터미널이 열린다고 설치가 완료되는 것은 아닙니다."
+    semantic_script: "공식 스크립트를 실행합니다. 스크립트가 정상 종료되어도 설치 여부는 별도로 확인합니다."
+    semantic_installer: "공식 설치 프로그램을 다운로드하여 시작합니다. 시작되었다고 설치가 완료되는 것은 아닙니다."
+    semantic_package: "공식 패키지를 다운로드하여 저장만 하며 자동으로 설치하지 않습니다."
+    semantic_portable: "휴장용 버전을 다운로드하여 저장만 하며 자동으로 실행하거나 설치하지 않습니다."
+    semantic_page: "브라우저에서 공식 릴리스 페이지를 엽니다. 다운로드하거나 설치하지 않습니다."
+  submission:
+    title: "공식 사이트 설치 소프트웨어 제출"
+    subtitle: "개발자의 다운로드 페이지 또는 설치 안내를 제공하세요"
+    name: "소프트웨어 이름"
+    url: "공식 다운로드 페이지 / 설치 안내"
+    note: "추가 설명(선택)"
+    hint: "내용이 입력된 새 GitHub 이슈를 엽니다. GitHub에서 검토 후 제출하세요. 페이지를 여는 것이 제출이나 승인을 의미하지 않습니다."
+    open: "GitHub 제출 열기"
+  success:
+    script: "스크립트 실행 완료"
+    terminal: "터미널을 열었습니다"
+    installer: "설치 프로그램을 시작했습니다"
+    package: "설치 패키지를 다운로드했습니다"
+    portable: "휴장용 버전을 다운로드했습니다"
+    page: "공식 사이트를 열었습니다"

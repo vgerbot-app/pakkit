@@ -461,6 +461,526 @@ fn command_block(
         )
 }
 
+/// 官网直装详情 — snapshot the selected catalog variant, show exactly what
+/// will run or download, and only enqueue after explicit confirmation.
+pub fn official_detail(
+    view: &mut AppView,
+    variant_id: &str,
+    window: &mut Window,
+    cx: &mut Context<AppView>,
+) {
+    let selected = view.state.official.catalog.as_ref().and_then(|catalog| {
+        catalog.apps.iter().find_map(|app| {
+            app.variants
+                .iter()
+                .find(|variant| variant.id == variant_id)
+                .map(|variant| (app.clone(), variant.clone()))
+        })
+    });
+    let Some((app, variant)) = selected else {
+        window.push_notification(
+            Notification::error(tr!("notification.official_variant_missing")),
+            cx,
+        );
+        return;
+    };
+    let language = view.state.settings.language.clone();
+    let queue_id = variant.id.clone();
+    let this = cx.weak_entity();
+
+    window.open_dialog(cx, move |dialog, _, cx| {
+        let p = Palette::of(cx);
+        let source_view = this.clone();
+        let homepage_view = this.clone();
+        let copy_view = this.clone();
+        let queue_view = this.clone();
+        let queue_id = queue_id.clone();
+        let accent = Palette::from_hex(&app.accent);
+        let (method_label, _) = official_method_labels(&variant.method);
+        let payload = match &variant.method {
+            crate::official::OfficialMethod::Script { command, .. } => command.clone(),
+            crate::official::OfficialMethod::Artifact { url, .. }
+            | crate::official::OfficialMethod::OfficialPage { url } => url.clone(),
+        };
+        let payload_label = if matches!(
+            variant.method,
+            crate::official::OfficialMethod::Script { .. }
+        ) {
+            tr!("official.detail.command")
+        } else {
+            tr!("official.detail.download_url")
+        };
+        let shell_label = match &variant.method {
+            crate::official::OfficialMethod::Script {
+                shell: crate::official::OfficialShell::Powershell,
+                ..
+            } => "PowerShell".to_owned(),
+            crate::official::OfficialMethod::Script { .. } => "Shell".to_owned(),
+            _ => tr!("official.detail.https_direct"),
+        };
+        let action_semantics = match &variant.method {
+            crate::official::OfficialMethod::Script { .. } if variant.interactive => {
+                tr!("official.detail.semantic_terminal")
+            }
+            crate::official::OfficialMethod::Script { .. } => {
+                tr!("official.detail.semantic_script")
+            }
+            crate::official::OfficialMethod::Artifact {
+                action: crate::official::ArtifactAction::RunInstaller,
+                ..
+            } => tr!("official.detail.semantic_installer"),
+            crate::official::OfficialMethod::Artifact {
+                action: crate::official::ArtifactAction::DownloadPackage,
+                ..
+            } => tr!("official.detail.semantic_package"),
+            crate::official::OfficialMethod::Artifact {
+                action: crate::official::ArtifactAction::DownloadPortable,
+                ..
+            } => tr!("official.detail.semantic_portable"),
+            crate::official::OfficialMethod::OfficialPage { .. } => {
+                tr!("official.detail.semantic_page")
+            }
+        };
+        let no_sha = matches!(
+            &variant.method,
+            crate::official::OfficialMethod::Artifact { sha256: None, .. }
+        );
+
+        dialog
+            .w(px(680.))
+            .title(
+                div()
+                    .flex()
+                    .items_center()
+                    .gap(px(12.))
+                    .child(
+                        div()
+                            .size(px(44.))
+                            .flex_none()
+                            .flex()
+                            .items_center()
+                            .justify_center()
+                            .rounded(px(11.))
+                            .bg(p.tint(accent, 0.12))
+                            .border_1()
+                            .border_color(p.tint(accent, 0.25))
+                            .text_color(accent)
+                            .text_size(px(17.))
+                            .font_semibold()
+                            .child(app.mark.clone()),
+                    )
+                    .child(
+                        div()
+                            .child(
+                                div()
+                                    .text_size(px(16.))
+                                    .font_semibold()
+                                    .child(app.name.clone()),
+                            )
+                            .child(
+                                div()
+                                    .mt(px(3.))
+                                    .text_size(px(11.))
+                                    .text_color(p.muted)
+                                    .child(format!("{} · {}", app.publisher, method_label)),
+                            ),
+                    ),
+            )
+            .child(
+                div()
+                    .flex()
+                    .flex_col()
+                    .gap(px(13.))
+                    .child(
+                        div()
+                            .flex()
+                            .flex_wrap()
+                            .gap(px(7.))
+                            .child(widgets::pill(&p, PillKind::Line, variant.os.label()))
+                            .child(widgets::pill(
+                                &p,
+                                PillKind::Line,
+                                variant
+                                    .architectures
+                                    .iter()
+                                    .map(|arch| arch.label())
+                                    .collect::<Vec<_>>()
+                                    .join(" / "),
+                            ))
+                            .child(widgets::pill(
+                                &p,
+                                if variant.requires_admin {
+                                    PillKind::Warn
+                                } else {
+                                    PillKind::Ok
+                                },
+                                if variant.requires_admin {
+                                    tr!("official.detail.admin")
+                                } else {
+                                    tr!("official.current_user")
+                                },
+                            ))
+                            .child(widgets::pill(
+                                &p,
+                                PillKind::Line,
+                                if variant.interactive {
+                                    tr!("official.detail.interactive")
+                                } else {
+                                    tr!("official.detail.non_interactive")
+                                },
+                            )),
+                    )
+                    .child(official_link_row(
+                        &p,
+                        tr!("official.detail.source"),
+                        variant.source_url.clone(),
+                        source_view,
+                    ))
+                    .child(official_link_row(
+                        &p,
+                        tr!("official.detail.homepage"),
+                        app.homepage.clone(),
+                        homepage_view,
+                    ))
+                    .child(
+                        div()
+                            .flex()
+                            .items_start()
+                            .gap(px(8.))
+                            .p(px(10.))
+                            .rounded(px(9.))
+                            .bg(p.tint(p.accent, 0.08))
+                            .text_size(px(11.5))
+                            .text_color(p.ink2)
+                            .child(icon(IconKey::Info, px(14.), p.accent))
+                            .child(action_semantics),
+                    )
+                    .child(official_payload_block(
+                        &p,
+                        &payload_label,
+                        &shell_label,
+                        &payload,
+                        copy_view,
+                    ))
+                    .when(no_sha, |this| {
+                        this.child(
+                            div()
+                                .flex()
+                                .items_start()
+                                .gap(px(8.))
+                                .p(px(10.))
+                                .rounded(px(9.))
+                                .bg(p.tint(p.warn, 0.10))
+                                .text_size(px(11.5))
+                                .text_color(p.warn)
+                                .child(icon(IconKey::Warning, px(14.), p.warn))
+                                .child(tr!("official.detail.no_sha")),
+                        )
+                    })
+                    .child(
+                        div()
+                            .flex()
+                            .items_start()
+                            .gap(px(8.))
+                            .p(px(10.))
+                            .rounded(px(9.))
+                            .bg(p.tint(p.warn, 0.07))
+                            .text_size(px(11.5))
+                            .text_color(p.ink2)
+                            .child(icon(IconKey::Info, px(14.), p.warn))
+                            .child(variant.note.get(&language).to_owned()),
+                    ),
+            )
+            .footer(
+                div()
+                    .flex()
+                    .items_center()
+                    .justify_end()
+                    .gap(px(8.))
+                    .child(
+                        widgets::btn(
+                            cx,
+                            &p,
+                            "official-detail-cancel",
+                            BtnKind::Outline,
+                            BtnSize::Regular,
+                            tr!("common.cancel"),
+                        )
+                        .on_click(|_, window, cx| window.close_dialog(cx)),
+                    )
+                    .child(
+                        widgets::btn(
+                            cx,
+                            &p,
+                            "official-detail-queue",
+                            BtnKind::Primary,
+                            BtnSize::Regular,
+                            tr!("official.detail.queue"),
+                        )
+                        .on_click(move |_, window, cx| {
+                            let _ = queue_view.update(cx, |this, cx| {
+                                this.enqueue_official(&queue_id, window, cx);
+                            });
+                            window.close_dialog(cx);
+                        }),
+                    ),
+            )
+    });
+}
+
+fn official_method_labels(method: &crate::official::OfficialMethod) -> (String, String) {
+    match method {
+        crate::official::OfficialMethod::Script { .. } => {
+            (tr!("official.method.script"), tr!("official.action.script"))
+        }
+        crate::official::OfficialMethod::Artifact { action, .. } => match action {
+            crate::official::ArtifactAction::RunInstaller => (
+                tr!("official.method.installer"),
+                tr!("official.action.installer"),
+            ),
+            crate::official::ArtifactAction::DownloadPackage => (
+                tr!("official.method.package"),
+                tr!("official.action.package"),
+            ),
+            crate::official::ArtifactAction::DownloadPortable => (
+                tr!("official.method.portable"),
+                tr!("official.action.portable"),
+            ),
+        },
+        crate::official::OfficialMethod::OfficialPage { .. } => (
+            tr!("official.method.official_page"),
+            tr!("official.action.official_page"),
+        ),
+    }
+}
+
+fn official_link_row(
+    p: &Palette,
+    label: String,
+    url: String,
+    view: gpui_kit::WeakEntity<AppView>,
+) -> impl IntoElement {
+    let open_url = url.clone();
+    div()
+        .flex()
+        .items_center()
+        .gap(px(8.))
+        .p(px(10.))
+        .rounded(px(9.))
+        .bg(p.surface2)
+        .border_1()
+        .border_color(p.line)
+        .child(icon(IconKey::Shield, px(14.), p.ok))
+        .child(div().text_size(px(11.)).text_color(p.muted).child(label))
+        .child(
+            div()
+                .id(SharedString::from(format!("official-link-{url}")))
+                .flex_1()
+                .min_w_0()
+                .text_size(px(11.))
+                .text_color(p.accent)
+                .cursor_pointer()
+                .hover(|this| this.underline())
+                .on_click(move |_, window, cx| {
+                    let _ = view.update(cx, |this, cx| {
+                        this.open_official_url(open_url.clone(), window, cx);
+                    });
+                })
+                .child(url),
+        )
+}
+
+fn official_payload_block(
+    p: &Palette,
+    label: &str,
+    kind: &str,
+    payload: &str,
+    view: gpui_kit::WeakEntity<AppView>,
+) -> impl IntoElement {
+    let copied = payload.to_owned();
+    div()
+        .flex()
+        .flex_col()
+        .gap(px(6.))
+        .child(widgets::section_label(p, label))
+        .child(
+            div()
+                .rounded(px(9.))
+                .border_1()
+                .border_color(p.line)
+                .bg(p.bg)
+                .child(
+                    div()
+                        .flex()
+                        .items_center()
+                        .justify_between()
+                        .gap(px(8.))
+                        .px(px(9.))
+                        .py(px(6.))
+                        .border_b_1()
+                        .border_color(p.line)
+                        .text_size(px(10.))
+                        .text_color(p.muted)
+                        .child(kind.to_owned())
+                        .child(
+                            widgets::icon_btn("official-copy", IconKey::Copy, 24., p.muted)
+                                .on_click(move |_, window, cx| {
+                                    let _ = view.update(cx, |this, cx| {
+                                        this.copy(&copied, window, cx);
+                                    });
+                                }),
+                        ),
+                )
+                .child(
+                    div()
+                        .p(px(12.))
+                        .font_family("Cascadia Code")
+                        .text_size(px(11.))
+                        .line_height(relative(1.7))
+                        .text_color(p.ink2)
+                        .child(payload.to_owned()),
+                ),
+        )
+}
+
+/// 提交官网软件 — validate locally, then open the catalog's prefilled GitHub
+/// issue URL. Opening the browser is not reported as a completed submission.
+pub fn official_submission(view: &mut AppView, window: &mut Window, cx: &mut Context<AppView>) {
+    let Some(base) = view
+        .state
+        .official
+        .catalog
+        .as_ref()
+        .map(|catalog| catalog.submission_url.clone())
+    else {
+        window.push_notification(
+            Notification::error(tr!("notification.official_submission_unavailable")),
+            cx,
+        );
+        return;
+    };
+    let name_input =
+        cx.new(|cx| InputState::new(window, cx).placeholder(tr!("placeholder.official_name")));
+    let url_input = cx.new(|cx| InputState::new(window, cx).placeholder("https://…"));
+    let note_input =
+        cx.new(|cx| InputState::new(window, cx).placeholder(tr!("placeholder.official_note")));
+    let this = cx.weak_entity();
+
+    window.open_dialog(cx, move |dialog, _, cx| {
+        let p = Palette::of(cx);
+        let name_input = name_input.clone();
+        let url_input = url_input.clone();
+        let note_input = note_input.clone();
+        let submit_view = this.clone();
+        let base = base.clone();
+        dialog
+            .w(px(580.))
+            .title(
+                div().child(tr!("official.submission.title")).child(
+                    div()
+                        .mt(px(3.))
+                        .text_size(px(11.))
+                        .font_normal()
+                        .text_color(p.muted)
+                        .child(tr!("official.submission.subtitle")),
+                ),
+            )
+            .child(
+                div()
+                    .flex()
+                    .flex_col()
+                    .gap(px(12.))
+                    .child(form_field(
+                        &p,
+                        &tr!("official.submission.name"),
+                        Input::new(&name_input).into_any_element(),
+                    ))
+                    .child(form_field(
+                        &p,
+                        &tr!("official.submission.url"),
+                        Input::new(&url_input).into_any_element(),
+                    ))
+                    .child(form_field(
+                        &p,
+                        &tr!("official.submission.note"),
+                        Input::new(&note_input).into_any_element(),
+                    ))
+                    .child(
+                        div()
+                            .text_size(px(11.5))
+                            .line_height(relative(1.5))
+                            .text_color(p.muted)
+                            .child(tr!("official.submission.hint")),
+                    ),
+            )
+            .footer(
+                div()
+                    .flex()
+                    .justify_end()
+                    .gap(px(8.))
+                    .child(
+                        widgets::btn(
+                            cx,
+                            &p,
+                            "official-submit-cancel",
+                            BtnKind::Outline,
+                            BtnSize::Regular,
+                            tr!("common.cancel"),
+                        )
+                        .on_click(|_, window, cx| window.close_dialog(cx)),
+                    )
+                    .child(
+                        widgets::btn(
+                            cx,
+                            &p,
+                            "official-submit-open",
+                            BtnKind::Primary,
+                            BtnSize::Regular,
+                            tr!("official.submission.open"),
+                        )
+                        .on_click(move |_, window, cx| {
+                            let name = name_input.read(cx).value().trim().to_owned();
+                            let link = url_input.read(cx).value().trim().to_owned();
+                            let note = note_input.read(cx).value().trim().to_owned();
+                            if name.is_empty() {
+                                window.push_notification(
+                                    Notification::error(tr!("notification.official_name_empty")),
+                                    cx,
+                                );
+                                return;
+                            }
+                            let valid_https = url::Url::parse(&link).is_ok_and(|url| {
+                                url.scheme() == "https" && url.host_str().is_some()
+                            });
+                            if !valid_https {
+                                window.push_notification(
+                                    Notification::error(tr!("notification.official_url_invalid")),
+                                    cx,
+                                );
+                                return;
+                            }
+                            match crate::official::submission_url(&base, &name, &link, &note) {
+                                Ok(url) => {
+                                    let _ = submit_view.update(cx, |this, cx| {
+                                        this.open_official_url(url, window, cx);
+                                    });
+                                    window.close_dialog(cx);
+                                }
+                                Err(_) => {
+                                    window.push_notification(
+                                        Notification::error(tr!(
+                                            "notification.official_submission_invalid"
+                                        )),
+                                        cx,
+                                    );
+                                }
+                            }
+                        }),
+                    ),
+            )
+    });
+}
+
 /// 错误详情 — the full failure report behind a queue row's 详情 button.
 ///
 /// The report is snapshotted when the dialog opens: it never changes while

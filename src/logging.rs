@@ -35,19 +35,9 @@ pub fn append(event: &str, message: &str) {
 
 /// Open a log file with the OS default handler.
 pub fn open_with_default_app(path: &Path) {
-    #[cfg(target_os = "linux")]
-    let result = std::process::Command::new("xdg-open").arg(path).spawn();
-    #[cfg(target_os = "macos")]
-    let result = std::process::Command::new("open").arg(path).spawn();
-    #[cfg(target_os = "windows")]
-    let result = std::process::Command::new("cmd")
-        .args(["/C", "start", ""])
-        .arg(path)
-        .spawn();
-    #[cfg(not(any(target_os = "linux", target_os = "macos", target_os = "windows")))]
-    let result: std::io::Result<std::process::Child> =
-        Err(std::io::Error::other("no opener on this platform"));
-    let _ = result;
+    if let Err(error) = crate::official::open_path(path) {
+        append("error", &format!("open {} · {error}", path.display()));
+    }
 }
 
 fn file_name(date: &str) -> String {

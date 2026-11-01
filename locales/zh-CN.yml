@@ -12,6 +12,7 @@ nav:
   sources: "源管理"
   settings: "设置"
   theme: "主题"
+  official: "官网直装"
   queue: "安装队列"
 
 status:
@@ -28,6 +29,7 @@ status:
   sources_count: "源 %{count}"
   queue_count: "队列 %{count}"
   settings: "设置"
+  official_ready: "目录 %{version} · %{count} 款软件"
 
 filter:
   all: "全部"
@@ -95,6 +97,8 @@ queue:
   clear: "清除"
   empty: "队列为空"
   serial_hint: "安装任务串行执行，避免包管理器锁冲突"
+  open_folder: "打开所在目录"
+  folder_opened: "已打开所在目录"
   waiting: "等待中…"
   queued: "队列中"
   reinstall: "重新安装"
@@ -114,6 +118,7 @@ queue:
     install: "安装"
     upgrade: "更新"
     upgrade_all: "全部升级"
+    official_install: "官网直装"
   row:
     pending: "等待中"
     running: "进行中"
@@ -123,6 +128,7 @@ queue:
 pkg:
   installed: "已安装"
   updatable: "可更新"
+  not_installed: "未安装"
   details: "查看详情 ›"
 
 home:
@@ -298,10 +304,17 @@ notification:
   source_added: "源已添加"
   source_updated: "源已更新"
   source_removed: "源已删除"
+  official_variant_missing: "该软件安装方式已变化，请刷新目录后重试"
+  official_submission_unavailable: "目录尚未就绪，暂时无法提交软件"
+  official_name_empty: "软件名称不能为空"
+  official_url_invalid: "请输入有效的 HTTPS 官方链接"
+  official_submission_invalid: "无法生成软件提交链接，请检查目录地址"
 
 placeholder:
   backend_path: "留空则自动检测"
   source_name: "例如 contoso"
+  official_name: "例如：Deno"
+  official_note: "官网、支持平台或其他说明（可选）"
 
 error:
   not_found: "未找到 %{backend}（请确认已安装对应的软件包管理器）"
@@ -339,3 +352,75 @@ exitcode:
   no_downgrade: "不允许降级"
   no_upgrade_support: "该软件包不支持升级"
   unknown: "未知错误"
+
+official:
+  title: "官网直装"
+  subtitle: "从开发者官网获取软件，安装过程清晰可见"
+  refresh: "刷新目录"
+  submit: "提交软件"
+  trust_title: "官方来源，安装透明"
+  trust_copy: "安装前展示完整命令与权限要求；你可以先检查，再决定是否执行。"
+  trust_official: "仅链接官方发布"
+  trust_unhosted: "不托管安装包"
+  loading: "正在加载官网目录…"
+  loading_hint: "仅从远程目录读取软件，不使用内置条目或旧缓存。"
+  load_failed: "官网目录加载失败"
+  retry: "重试"
+  status_ready: "目录 %{version} · %{count} 款软件"
+  status_empty: "目录中没有软件"
+  all: "全部软件"
+  group_count: "%{count} 款"
+  empty: "没有找到相关软件"
+  empty_hint: "试试软件名称，或切换到「全部软件」分类或其他平台。"
+  official: "官网"
+  details: "查看详情 ›"
+  admin_required: "需要授权"
+  current_user: "当前用户"
+  state:
+    checking: "检测中"
+    unknown: "未知"
+  method:
+    script: "官方脚本"
+    installer: "官方安装器"
+    package: "官方安装包"
+    portable: "便携版"
+    official_page: "官方发布页"
+  action:
+    script: "一键安装"
+    installer: "运行安装器"
+    package: "下载安装包"
+    portable: "下载便携版"
+    official_page: "打开官网"
+  detail:
+    source: "官方来源"
+    homepage: "软件官网"
+    admin: "可能需要管理员授权"
+    interactive: "需要交互"
+    non_interactive: "非交互执行"
+    command: "将执行的官方命令"
+    download_url: "官方地址"
+    https_direct: "HTTPS · 不经 Pakkit 服务器"
+    copy: "复制"
+    no_sha: "目录未提供 SHA-256，下载后无法校验文件完整性。"
+    queue: "加入安装队列"
+    semantic_terminal: "将打开可见终端运行此命令；启动终端不表示安装已完成。"
+    semantic_script: "将执行上述官方脚本；脚本成功退出不自动等同于软件已安装。"
+    semantic_installer: "将下载并启动官方安装器；启动安装器不表示安装已完成。"
+    semantic_package: "仅下载并保存官方安装包，不会自动安装。"
+    semantic_portable: "仅下载并保存便携版，不会自动运行或安装。"
+    semantic_page: "将在系统浏览器中打开官方发布页，不会下载或安装软件。"
+  submission:
+    title: "提交官网直装软件"
+    subtitle: "提供开发者自己的下载页或安装文档"
+    name: "软件名称"
+    url: "官方下载页 / 安装文档"
+    note: "补充说明（可选）"
+    hint: "将打开预填的 GitHub 新 Issue。你仍需在 GitHub 上检查并提交；打开页面不代表已提交或审核通过。"
+    open: "打开 GitHub 提交页"
+  success:
+    script: "脚本执行完成"
+    terminal: "已打开终端"
+    installer: "安装器已启动"
+    package: "安装包已下载"
+    portable: "便携版已下载"
+    page: "已打开官网"

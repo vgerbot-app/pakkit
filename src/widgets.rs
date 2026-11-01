@@ -768,6 +768,7 @@ pub fn install_label(pkg: &Package, queued: bool, action: QueueAction) -> (Strin
         QueueAction::UpgradeAll => (tr!("queue.action.upgrade_all"), IconKey::Download),
         QueueAction::Install if pkg.installed => (tr!("queue.reinstall"), IconKey::Refresh),
         QueueAction::Install => (tr!("queue.action.install"), IconKey::Download),
+        QueueAction::OfficialInstall => (tr!("queue.action.official_install"), IconKey::Download),
     }
 }
 
