@@ -1,0 +1,539 @@
+{
+  "schemaVersion": 1,
+  "catalogVersion": "2026.11.01-1",
+  "homepage": "https://github.com/vgerbot-app/winget-gui/tree/official-install",
+  "submissionUrl": "https://github.com/vgerbot-app/winget-gui/issues/new",
+  "categories": [
+    {
+      "id": "dev",
+      "name": {"zh-CN": "开发环境", "zh-TW": "開發環境", "en": "Development", "ja": "開発環境", "ko": "개발 환경"},
+      "description": {"zh-CN": "运行时、工具链与本地 AI", "zh-TW": "執行階段、工具鏈與本機 AI", "en": "Runtimes, toolchains and local AI", "ja": "ランタイム、ツールチェーン、ローカル AI", "ko": "런타임, 툴체인 및 로컬 AI"},
+      "icon": "code",
+      "accent": "#4f8cff"
+    },
+    {
+      "id": "network",
+      "name": {"zh-CN": "组网连接", "zh-TW": "組網連線", "en": "Networking", "ja": "ネットワーク接続", "ko": "네트워크 연결"},
+      "description": {"zh-CN": "虚拟组网与网络访问", "zh-TW": "虛擬組網與網路存取", "en": "Virtual networking and network access", "ja": "仮想ネットワークとネットワークアクセス", "ko": "가상 네트워킹 및 네트워크 액세스"},
+      "icon": "network",
+      "accent": "#0ea5e9"
+    },
+    {
+      "id": "remote",
+      "name": {"zh-CN": "远程协作", "zh-TW": "遠端協作", "en": "Remote collaboration", "ja": "リモートコラボレーション", "ko": "원격 협업"},
+      "description": {"zh-CN": "远程桌面与低延迟连接", "zh-TW": "遠端桌面與低延遲連線", "en": "Remote desktops and low-latency connections", "ja": "リモートデスクトップと低遅延接続", "ko": "원격 데스크톱 및 저지연 연결"},
+      "icon": "package",
+      "accent": "#a06bff"
+    },
+    {
+      "id": "tools",
+      "name": {"zh-CN": "实用工具", "zh-TW": "實用工具", "en": "Utilities", "ja": "ユーティリティ", "ko": "유틸리티"},
+      "description": {"zh-CN": "笔记与局域网文件传输", "zh-TW": "筆記與區域網路檔案傳輸", "en": "Notes and local-network file transfer", "ja": "ノートとローカルネットワークファイル転送", "ko": "노트 및 로컬 네트워크 파일 전송"},
+      "icon": "wrench",
+      "accent": "#f59e0b"
+    }
+  ],
+  "apps": [
+    {
+      "id": "deno",
+      "name": "Deno",
+      "publisher": "Deno Land",
+      "category": "dev",
+      "summary": {"zh-CN": "安全的 JavaScript / TypeScript 运行时，单个可执行文件，无外部依赖。", "zh-TW": "安全的 JavaScript / TypeScript 執行階段，單一可執行檔，無外部依賴。", "en": "A secure JavaScript / TypeScript runtime in a single executable with no external dependencies.", "ja": "単一の実行ファイルで外部依存のない、安全な JavaScript / TypeScript ランタイム。", "ko": "외부 종속성 없이 단일 실행 파일로 제공되는 안전한 JavaScript / TypeScript 런타임."},
+      "homepage": "https://docs.deno.com/runtime/getting_started/installation/",
+      "mark": "D",
+      "accent": "#70d6a2",
+      "variants": [
+        {
+          "id": "deno-linux",
+          "os": "linux",
+          "architectures": ["x86_64", "aarch64"],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {"zh-CN": "默认安装到当前用户目录，并配置 PATH。无需管理员权限。", "zh-TW": "預設安裝到目前使用者目錄，並設定 PATH。無需管理員權限。", "en": "Installs to the current user directory and configures PATH by default. No administrator privileges are required.", "ja": "デフォルトでは現在のユーザーディレクトリにインストールし、PATH を設定します。管理者権限は不要です。", "ko": "기본적으로 현재 사용자 디렉터리에 설치하고 PATH를 구성합니다. 관리자 권한이 필요 없습니다."},
+          "sourceUrl": "https://docs.deno.com/runtime/getting_started/installation/",
+          "method": {"type": "script", "shell": "sh", "command": "curl -fsSL https://deno.land/install.sh | sh"},
+          "detection": {"type": "command", "program": "deno", "args": ["--version"]}
+        },
+        {
+          "id": "deno-windows",
+          "os": "windows",
+          "architectures": ["x86_64", "aarch64"],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {"zh-CN": "默认安装到当前用户目录，并配置 PATH。无需管理员权限。", "zh-TW": "預設安裝到目前使用者目錄，並設定 PATH。無需管理員權限。", "en": "Installs to the current user directory and configures PATH by default. No administrator privileges are required.", "ja": "デフォルトでは現在のユーザーディレクトリにインストールし、PATH を設定します。管理者権限は不要です。", "ko": "기본적으로 현재 사용자 디렉터리에 설치하고 PATH를 구성합니다. 관리자 권한이 필요 없습니다."},
+          "sourceUrl": "https://docs.deno.com/runtime/getting_started/installation/",
+          "method": {"type": "script", "shell": "powershell", "command": "irm https://deno.land/install.ps1 | iex"},
+          "detection": {"type": "command", "program": "deno", "args": ["--version"]}
+        },
+        {
+          "id": "deno-macos",
+          "os": "macos",
+          "architectures": ["x86_64", "aarch64"],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {"zh-CN": "默认安装到当前用户目录，并配置 PATH。无需管理员权限。", "zh-TW": "預設安裝到目前使用者目錄，並設定 PATH。無需管理員權限。", "en": "Installs to the current user directory and configures PATH by default. No administrator privileges are required.", "ja": "デフォルトでは現在のユーザーディレクトリにインストールし、PATH を設定します。管理者権限は不要です。", "ko": "기본적으로 현재 사용자 디렉터리에 설치하고 PATH를 구성합니다. 관리자 권한이 필요 없습니다."},
+          "sourceUrl": "https://docs.deno.com/runtime/getting_started/installation/",
+          "method": {"type": "script", "shell": "sh", "command": "curl -fsSL https://deno.land/install.sh | sh"},
+          "detection": {"type": "command", "program": "deno", "args": ["--version"]}
+        }
+      ]
+    },
+    {
+      "id": "bun",
+      "name": "Bun",
+      "publisher": "Oven",
+      "category": "dev",
+      "summary": {"zh-CN": "集 JavaScript 运行时、打包器、测试工具和包管理器于一体。", "zh-TW": "整合 JavaScript 執行階段、打包器、測試工具與套件管理器。", "en": "An all-in-one JavaScript runtime, bundler, test runner and package manager.", "ja": "JavaScript ランタイム、バンドラー、テストツール、パッケージマネージャーを一体化。", "ko": "JavaScript 런타임, 번들러, 테스트 도구 및 패키지 관리자를 통합한 도구."},
+      "homepage": "https://bun.sh/docs/installation",
+      "mark": "B",
+      "accent": "#f3dfc1",
+      "variants": [
+        {
+          "id": "bun-linux",
+          "os": "linux",
+          "architectures": ["x86_64", "aarch64"],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {"zh-CN": "Linux 需要 unzip。安装后打开新终端，再使用 bun --version 验证。", "zh-TW": "Linux 需要 unzip。安裝後開啟新終端機，再使用 bun --version 驗證。", "en": "Linux requires unzip. After installation, open a new terminal and verify with bun --version.", "ja": "Linux では unzip が必要です。インストール後に新しいターミナルを開き、bun --version で確認してください。", "ko": "Linux에서는 unzip이 필요합니다. 설치 후 새 터미널을 열고 bun --version으로 확인하세요."},
+          "sourceUrl": "https://bun.sh/docs/installation",
+          "method": {"type": "script", "shell": "sh", "command": "curl -fsSL https://bun.com/install | bash"},
+          "detection": {"type": "command", "program": "bun", "args": ["--version"]}
+        },
+        {
+          "id": "bun-windows",
+          "os": "windows",
+          "architectures": ["x86_64", "aarch64"],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {"zh-CN": "Linux 需要 unzip。安装后打开新终端，再使用 bun --version 验证。", "zh-TW": "Linux 需要 unzip。安裝後開啟新終端機，再使用 bun --version 驗證。", "en": "Linux requires unzip. After installation, open a new terminal and verify with bun --version.", "ja": "Linux では unzip が必要です。インストール後に新しいターミナルを開き、bun --version で確認してください。", "ko": "Linux에서는 unzip이 필요합니다. 설치 후 새 터미널을 열고 bun --version으로 확인하세요."},
+          "sourceUrl": "https://bun.sh/docs/installation",
+          "method": {"type": "script", "shell": "powershell", "command": "irm bun.sh/install.ps1 | iex"},
+          "detection": {"type": "command", "program": "bun", "args": ["--version"]}
+        },
+        {
+          "id": "bun-macos",
+          "os": "macos",
+          "architectures": ["x86_64", "aarch64"],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {"zh-CN": "Linux 需要 unzip。安装后打开新终端，再使用 bun --version 验证。", "zh-TW": "Linux 需要 unzip。安裝後開啟新終端機，再使用 bun --version 驗證。", "en": "Linux requires unzip. After installation, open a new terminal and verify with bun --version.", "ja": "Linux では unzip が必要です。インストール後に新しいターミナルを開き、bun --version で確認してください。", "ko": "Linux에서는 unzip이 필요합니다. 설치 후 새 터미널을 열고 bun --version으로 확인하세요."},
+          "sourceUrl": "https://bun.sh/docs/installation",
+          "method": {"type": "script", "shell": "sh", "command": "curl -fsSL https://bun.com/install | bash"},
+          "detection": {"type": "command", "program": "bun", "args": ["--version"]}
+        }
+      ]
+    },
+    {
+      "id": "rustup",
+      "name": "Rustup",
+      "publisher": "The Rust Team",
+      "category": "dev",
+      "summary": {"zh-CN": "Rust 官方工具链管理器，安装 Rust 并管理 stable、beta 与 nightly。", "zh-TW": "Rust 官方工具鏈管理器，安裝 Rust 並管理 stable、beta 與 nightly。", "en": "The official Rust toolchain manager for installing Rust and managing stable, beta and nightly.", "ja": "Rust をインストールし、stable、beta、nightly を管理する公式ツールチェーンマネージャー。", "ko": "Rust를 설치하고 stable, beta, nightly를 관리하는 공식 Rust 툴체인 관리자."},
+      "homepage": "https://www.rust-lang.org/tools/install",
+      "mark": "R",
+      "accent": "#e78a70",
+      "variants": [
+        {
+          "id": "rustup-linux",
+          "os": "linux",
+          "architectures": ["x86_64", "aarch64"],
+          "requiresAdmin": false,
+          "interactive": true,
+          "note": {"zh-CN": "Windows 还需按提示准备 Visual Studio C++ Build Tools。Unix 脚本提供交互选项。", "zh-TW": "Windows 還需依提示準備 Visual Studio C++ Build Tools。Unix 腳本提供互動選項。", "en": "Windows also requires Visual Studio C++ Build Tools as prompted. The Unix script offers interactive options.", "ja": "Windows では案内に従って Visual Studio C++ Build Tools も必要です。Unix スクリプトには対話オプションがあります。", "ko": "Windows에서는 안내에 따라 Visual Studio C++ Build Tools도 준비해야 합니다. Unix 스크립트는 대화형 옵션을 제공합니다."},
+          "sourceUrl": "https://www.rust-lang.org/tools/install",
+          "method": {"type": "script", "shell": "sh", "command": "curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh"},
+          "detection": {"type": "command", "program": "rustup", "args": ["--version"]}
+        },
+        {
+          "id": "rustup-windows-x86-64",
+          "os": "windows",
+          "architectures": ["x86_64"],
+          "requiresAdmin": false,
+          "interactive": true,
+          "note": {"zh-CN": "Windows 还需按提示准备 Visual Studio C++ Build Tools。Unix 脚本提供交互选项。", "zh-TW": "Windows 還需依提示準備 Visual Studio C++ Build Tools。Unix 腳本提供互動選項。", "en": "Windows also requires Visual Studio C++ Build Tools as prompted. The Unix script offers interactive options.", "ja": "Windows では案内に従って Visual Studio C++ Build Tools も必要です。Unix スクリプトには対話オプションがあります。", "ko": "Windows에서는 안내에 따라 Visual Studio C++ Build Tools도 준비해야 합니다. Unix 스크립트는 대화형 옵션을 제공합니다."},
+          "sourceUrl": "https://www.rust-lang.org/tools/install",
+          "method": {"type": "artifact", "url": "https://win.rustup.rs/x86_64", "fileName": "rustup-init.exe", "action": "run_installer"},
+          "detection": {"type": "command", "program": "rustup", "args": ["--version"]}
+        },
+        {
+          "id": "rustup-windows-aarch64",
+          "os": "windows",
+          "architectures": ["aarch64"],
+          "requiresAdmin": false,
+          "interactive": true,
+          "note": {"zh-CN": "Windows 还需按提示准备 Visual Studio C++ Build Tools。Unix 脚本提供交互选项。", "zh-TW": "Windows 還需依提示準備 Visual Studio C++ Build Tools。Unix 腳本提供互動選項。", "en": "Windows also requires Visual Studio C++ Build Tools as prompted. The Unix script offers interactive options.", "ja": "Windows では案内に従って Visual Studio C++ Build Tools も必要です。Unix スクリプトには対話オプションがあります。", "ko": "Windows에서는 안내에 따라 Visual Studio C++ Build Tools도 준비해야 합니다. Unix 스크립트는 대화형 옵션을 제공합니다."},
+          "sourceUrl": "https://www.rust-lang.org/tools/install",
+          "method": {"type": "artifact", "url": "https://win.rustup.rs/aarch64", "fileName": "rustup-init.exe", "action": "run_installer"},
+          "detection": {"type": "command", "program": "rustup", "args": ["--version"]}
+        },
+        {
+          "id": "rustup-macos",
+          "os": "macos",
+          "architectures": ["x86_64", "aarch64"],
+          "requiresAdmin": false,
+          "interactive": true,
+          "note": {"zh-CN": "Windows 还需按提示准备 Visual Studio C++ Build Tools。Unix 脚本提供交互选项。", "zh-TW": "Windows 還需依提示準備 Visual Studio C++ Build Tools。Unix 腳本提供互動選項。", "en": "Windows also requires Visual Studio C++ Build Tools as prompted. The Unix script offers interactive options.", "ja": "Windows では案内に従って Visual Studio C++ Build Tools も必要です。Unix スクリプトには対話オプションがあります。", "ko": "Windows에서는 안내에 따라 Visual Studio C++ Build Tools도 준비해야 합니다. Unix 스크립트는 대화형 옵션을 제공합니다."},
+          "sourceUrl": "https://www.rust-lang.org/tools/install",
+          "method": {"type": "script", "shell": "sh", "command": "curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh"},
+          "detection": {"type": "command", "program": "rustup", "args": ["--version"]}
+        }
+      ]
+    },
+    {
+      "id": "ollama",
+      "name": "Ollama",
+      "publisher": "Ollama",
+      "category": "dev",
+      "summary": {"zh-CN": "在本机运行和管理开放模型，提供命令行工具与本地 API。", "zh-TW": "在本機執行與管理開放模型，提供命令列工具與本機 API。", "en": "Run and manage open models locally, with command-line tools and a local API.", "ja": "オープンモデルをローカルで実行・管理し、コマンドラインツールとローカル API を提供します。", "ko": "로컬에서 오픈 모델을 실행하고 관리하며 명령줄 도구와 로컬 API를 제공합니다."},
+      "homepage": "https://ollama.com/download",
+      "mark": "O",
+      "accent": "#b7bec9",
+      "variants": [
+        {
+          "id": "ollama-linux",
+          "os": "linux",
+          "architectures": ["x86_64", "aarch64"],
+          "requiresAdmin": true,
+          "interactive": true,
+          "note": {"zh-CN": "Linux 安装脚本可能配置系统服务并请求管理员授权。模型需要另行下载。", "zh-TW": "Linux 安裝腳本可能設定系統服務並請求管理員授權。模型需要另行下載。", "en": "The Linux installation script may configure a system service and request administrator authorization. Models must be downloaded separately.", "ja": "Linux インストールスクリプトはシステムサービスを設定し、管理者認証を求める場合があります。モデルは別途ダウンロードが必要です。", "ko": "Linux 설치 스크립트는 시스템 서비스를 구성하고 관리자 권한을 요청할 수 있습니다. 모델은 별도로 다운로드해야 합니다."},
+          "sourceUrl": "https://ollama.com/download",
+          "method": {"type": "script", "shell": "sh", "command": "curl -fsSL https://ollama.com/install.sh | sh"},
+          "detection": {"type": "command", "program": "ollama", "args": ["--version"]}
+        },
+        {
+          "id": "ollama-windows",
+          "os": "windows",
+          "architectures": ["x86_64", "aarch64"],
+          "requiresAdmin": true,
+          "interactive": true,
+          "note": {"zh-CN": "Linux 安装脚本可能配置系统服务并请求管理员授权。模型需要另行下载。", "zh-TW": "Linux 安裝腳本可能設定系統服務並請求管理員授權。模型需要另行下載。", "en": "The Linux installation script may configure a system service and request administrator authorization. Models must be downloaded separately.", "ja": "Linux インストールスクリプトはシステムサービスを設定し、管理者認証を求める場合があります。モデルは別途ダウンロードが必要です。", "ko": "Linux 설치 스크립트는 시스템 서비스를 구성하고 관리자 권한을 요청할 수 있습니다. 모델은 별도로 다운로드해야 합니다."},
+          "sourceUrl": "https://ollama.com/download",
+          "method": {"type": "artifact", "url": "https://ollama.com/download/OllamaSetup.exe", "fileName": "OllamaSetup.exe", "action": "run_installer"},
+          "detection": {"type": "command", "program": "ollama", "args": ["--version"]}
+        },
+        {
+          "id": "ollama-macos",
+          "os": "macos",
+          "architectures": ["x86_64", "aarch64"],
+          "requiresAdmin": true,
+          "interactive": true,
+          "note": {"zh-CN": "Linux 安装脚本可能配置系统服务并请求管理员授权。模型需要另行下载。", "zh-TW": "Linux 安裝腳本可能設定系統服務並請求管理員授權。模型需要另行下載。", "en": "The Linux installation script may configure a system service and request administrator authorization. Models must be downloaded separately.", "ja": "Linux インストールスクリプトはシステムサービスを設定し、管理者認証を求める場合があります。モデルは別途ダウンロードが必要です。", "ko": "Linux 설치 스크립트는 시스템 서비스를 구성하고 관리자 권한을 요청할 수 있습니다. 모델은 별도로 다운로드해야 합니다."},
+          "sourceUrl": "https://ollama.com/download",
+          "method": {"type": "artifact", "url": "https://ollama.com/download/Ollama.dmg", "fileName": "Ollama.dmg", "action": "run_installer"},
+          "detection": {"type": "command", "program": "ollama", "args": ["--version"]}
+        }
+      ]
+    },
+    {
+      "id": "tailscale",
+      "name": "Tailscale",
+      "publisher": "Tailscale Inc.",
+      "category": "network",
+      "summary": {"zh-CN": "基于 WireGuard 的虚拟组网工具，让设备安全地连接到同一网络。", "zh-TW": "基於 WireGuard 的虛擬組網工具，讓裝置安全地連接到同一網路。", "en": "A WireGuard-based virtual networking tool that securely connects devices to the same network.", "ja": "WireGuard ベースの仮想ネットワークツールで、デバイスを同じネットワークへ安全に接続します。", "ko": "WireGuard 기반 가상 네트워킹 도구로 장치를 동일한 네트워크에 안전하게 연결합니다."},
+      "homepage": "https://tailscale.com/docs/install/linux",
+      "mark": "T",
+      "accent": "#63b3ed",
+      "variants": [
+        {
+          "id": "tailscale-linux",
+          "os": "linux",
+          "architectures": ["x86_64", "aarch64"],
+          "requiresAdmin": true,
+          "interactive": true,
+          "note": {"zh-CN": "安装后还需运行 tailscale up 或打开客户端，登录并授权设备加入网络。", "zh-TW": "安裝後還需執行 tailscale up 或開啟用戶端，登入並授權裝置加入網路。", "en": "After installation, run tailscale up or open the client to sign in and authorize the device to join the network.", "ja": "インストール後、tailscale up を実行するかクライアントを開き、ログインしてデバイスのネットワーク参加を承認してください。", "ko": "설치 후 tailscale up을 실행하거나 클라이언트를 열어 로그인하고 장치의 네트워크 참여를 승인하세요."},
+          "sourceUrl": "https://tailscale.com/docs/install/linux",
+          "method": {"type": "script", "shell": "sh", "command": "curl -fsSL https://tailscale.com/install.sh | sh"},
+          "detection": {"type": "command", "program": "tailscale", "args": ["version"]}
+        },
+        {
+          "id": "tailscale-windows",
+          "os": "windows",
+          "architectures": ["x86_64", "aarch64"],
+          "requiresAdmin": true,
+          "interactive": true,
+          "note": {"zh-CN": "安装后还需运行 tailscale up 或打开客户端，登录并授权设备加入网络。", "zh-TW": "安裝後還需執行 tailscale up 或開啟用戶端，登入並授權裝置加入網路。", "en": "After installation, run tailscale up or open the client to sign in and authorize the device to join the network.", "ja": "インストール後、tailscale up を実行するかクライアントを開き、ログインしてデバイスのネットワーク参加を承認してください。", "ko": "설치 후 tailscale up을 실행하거나 클라이언트를 열어 로그인하고 장치의 네트워크 참여를 승인하세요."},
+          "sourceUrl": "https://tailscale.com/docs/install/linux",
+          "method": {"type": "artifact", "url": "https://pkgs.tailscale.com/stable/tailscale-setup-latest.exe", "fileName": "tailscale-setup-latest.exe", "action": "run_installer"},
+          "detection": {"type": "command", "program": "tailscale", "args": ["version"]}
+        },
+        {
+          "id": "tailscale-macos",
+          "os": "macos",
+          "architectures": ["x86_64", "aarch64"],
+          "requiresAdmin": true,
+          "interactive": true,
+          "note": {"zh-CN": "安装后还需运行 tailscale up 或打开客户端，登录并授权设备加入网络。", "zh-TW": "安裝後還需執行 tailscale up 或開啟用戶端，登入並授權裝置加入網路。", "en": "After installation, run tailscale up or open the client to sign in and authorize the device to join the network.", "ja": "インストール後、tailscale up を実行するかクライアントを開き、ログインしてデバイスのネットワーク参加を承認してください。", "ko": "설치 후 tailscale up을 실행하거나 클라이언트를 열어 로그인하고 장치의 네트워크 참여를 승인하세요."},
+          "sourceUrl": "https://tailscale.com/docs/install/linux",
+          "method": {"type": "artifact", "url": "https://pkgs.tailscale.com/stable/Tailscale-latest-macos.pkg", "fileName": "Tailscale-latest-macos.pkg", "action": "run_installer"},
+          "detection": {"type": "command", "program": "tailscale", "args": ["version"]}
+        }
+      ]
+    },
+    {
+      "id": "zerotier",
+      "name": "ZeroTier",
+      "publisher": "ZeroTier, Inc.",
+      "category": "network",
+      "summary": {"zh-CN": "创建覆盖局域网的虚拟网络，连接不同地点的设备与服务器。", "zh-TW": "建立覆蓋區域網路的虛擬網路，連接不同地點的裝置與伺服器。", "en": "Create virtual networks that span local networks and connect devices and servers across locations.", "ja": "ローカルネットワークをまたぐ仮想ネットワークを作成し、離れた場所のデバイスとサーバーを接続します。", "ko": "로컬 네트워크를 아우르는 가상 네트워크를 만들어 서로 다른 위치의 장치와 서버를 연결합니다."},
+      "homepage": "https://www.zerotier.com/download/",
+      "mark": "Z",
+      "accent": "#e5b85c",
+      "variants": [
+        {
+          "id": "zerotier-linux",
+          "os": "linux",
+          "architectures": ["x86_64", "aarch64"],
+          "requiresAdmin": true,
+          "interactive": true,
+          "note": {"zh-CN": "Linux 脚本会添加官方仓库并安装软件包；Windows 安装时需要批准驱动。", "zh-TW": "Linux 腳本會新增官方套件庫並安裝套件；Windows 安裝時需要核准驅動程式。", "en": "The Linux script adds the official repository and installs packages; Windows installation requires approving the driver.", "ja": "Linux スクリプトは公式リポジトリを追加してパッケージをインストールします。Windows ではドライバーの承認が必要です。", "ko": "Linux 스크립트는 공식 저장소를 추가하고 패키지를 설치합니다. Windows 설치 시 드라이버를 승인해야 합니다."},
+          "sourceUrl": "https://www.zerotier.com/download/",
+          "method": {"type": "script", "shell": "sh", "command": "curl -s https://install.zerotier.com | sudo bash"}
+        },
+        {
+          "id": "zerotier-windows",
+          "os": "windows",
+          "architectures": ["x86_64", "aarch64"],
+          "requiresAdmin": true,
+          "interactive": true,
+          "note": {"zh-CN": "Linux 脚本会添加官方仓库并安装软件包；Windows 安装时需要批准驱动。", "zh-TW": "Linux 腳本會新增官方套件庫並安裝套件；Windows 安裝時需要核准驅動程式。", "en": "The Linux script adds the official repository and installs packages; Windows installation requires approving the driver.", "ja": "Linux スクリプトは公式リポジトリを追加してパッケージをインストールします。Windows ではドライバーの承認が必要です。", "ko": "Linux 스크립트는 공식 저장소를 추가하고 패키지를 설치합니다. Windows 설치 시 드라이버를 승인해야 합니다."},
+          "sourceUrl": "https://www.zerotier.com/download/",
+          "method": {"type": "artifact", "url": "https://download.zerotier.com/dist/ZeroTier%20One.msi", "fileName": "ZeroTier One.msi", "action": "run_installer"}
+        },
+        {
+          "id": "zerotier-macos",
+          "os": "macos",
+          "architectures": ["x86_64", "aarch64"],
+          "requiresAdmin": true,
+          "interactive": true,
+          "note": {"zh-CN": "Linux 脚本会添加官方仓库并安装软件包；Windows 安装时需要批准驱动。", "zh-TW": "Linux 腳本會新增官方套件庫並安裝套件；Windows 安裝時需要核准驅動程式。", "en": "The Linux script adds the official repository and installs packages; Windows installation requires approving the driver.", "ja": "Linux スクリプトは公式リポジトリを追加してパッケージをインストールします。Windows ではドライバーの承認が必要です。", "ko": "Linux 스크립트는 공식 저장소를 추가하고 패키지를 설치합니다. Windows 설치 시 드라이버를 승인해야 합니다."},
+          "sourceUrl": "https://www.zerotier.com/download/",
+          "method": {"type": "artifact", "url": "https://download.zerotier.com/dist/ZeroTier%20One.pkg", "fileName": "ZeroTier One.pkg", "action": "run_installer"}
+        }
+      ]
+    },
+    {
+      "id": "cloudflare",
+      "name": "Cloudflare One",
+      "publisher": "Cloudflare",
+      "category": "network",
+      "summary": {"zh-CN": "Cloudflare 设备客户端，原 WARP，提供安全网络访问与连接能力。", "zh-TW": "Cloudflare 裝置用戶端，原 WARP，提供安全網路存取與連線能力。", "en": "The Cloudflare device client, formerly WARP, providing secure network access and connectivity.", "ja": "旧 WARP の Cloudflare デバイスクライアント。安全なネットワークアクセスと接続を提供します。", "ko": "기존 WARP인 Cloudflare 장치 클라이언트로 안전한 네트워크 액세스와 연결 기능을 제공합니다."},
+      "homepage": "https://developers.cloudflare.com/cloudflare-one/team-and-resources/devices/cloudflare-one-client/download/",
+      "mark": "C",
+      "accent": "#f59e52",
+      "variants": [
+        {
+          "id": "cloudflare-linux",
+          "os": "linux",
+          "architectures": ["x86_64", "aarch64"],
+          "requiresAdmin": true,
+          "interactive": false,
+          "note": {"zh-CN": "按系统选择官方 DEB / RPM / MSI / PKG。企业部署可能需要额外配置。", "zh-TW": "依系統選擇官方 DEB / RPM / MSI / PKG。企業部署可能需要額外設定。", "en": "Choose the official DEB / RPM / MSI / PKG for your system. Enterprise deployments may require additional configuration.", "ja": "システムに応じて公式 DEB / RPM / MSI / PKG を選択してください。企業展開では追加設定が必要な場合があります。", "ko": "시스템에 맞는 공식 DEB / RPM / MSI / PKG를 선택하세요. 기업 배포에는 추가 구성이 필요할 수 있습니다."},
+          "sourceUrl": "https://developers.cloudflare.com/cloudflare-one/team-and-resources/devices/cloudflare-one-client/download/",
+          "method": {"type": "official_page", "url": "https://developers.cloudflare.com/cloudflare-one/team-and-resources/devices/cloudflare-one-client/download/"}
+        },
+        {
+          "id": "cloudflare-windows",
+          "os": "windows",
+          "architectures": ["x86_64", "aarch64"],
+          "requiresAdmin": true,
+          "interactive": true,
+          "note": {"zh-CN": "按系统选择官方 DEB / RPM / MSI / PKG。企业部署可能需要额外配置。", "zh-TW": "依系統選擇官方 DEB / RPM / MSI / PKG。企業部署可能需要額外設定。", "en": "Choose the official DEB / RPM / MSI / PKG for your system. Enterprise deployments may require additional configuration.", "ja": "システムに応じて公式 DEB / RPM / MSI / PKG を選択してください。企業展開では追加設定が必要な場合があります。", "ko": "시스템에 맞는 공식 DEB / RPM / MSI / PKG를 선택하세요. 기업 배포에는 추가 구성이 필요할 수 있습니다."},
+          "sourceUrl": "https://developers.cloudflare.com/cloudflare-one/team-and-resources/devices/cloudflare-one-client/download/",
+          "method": {"type": "artifact", "url": "https://downloads.cloudflareclient.com/v1/download/windows/ga", "fileName": "CloudflareOneSetup.exe", "action": "run_installer"}
+        },
+        {
+          "id": "cloudflare-macos",
+          "os": "macos",
+          "architectures": ["x86_64", "aarch64"],
+          "requiresAdmin": true,
+          "interactive": true,
+          "note": {"zh-CN": "按系统选择官方 DEB / RPM / MSI / PKG。企业部署可能需要额外配置。", "zh-TW": "依系統選擇官方 DEB / RPM / MSI / PKG。企業部署可能需要額外設定。", "en": "Choose the official DEB / RPM / MSI / PKG for your system. Enterprise deployments may require additional configuration.", "ja": "システムに応じて公式 DEB / RPM / MSI / PKG を選択してください。企業展開では追加設定が必要な場合があります。", "ko": "시스템에 맞는 공식 DEB / RPM / MSI / PKG를 선택하세요. 기업 배포에는 추가 구성이 필요할 수 있습니다."},
+          "sourceUrl": "https://developers.cloudflare.com/cloudflare-one/team-and-resources/devices/cloudflare-one-client/download/",
+          "method": {"type": "artifact", "url": "https://downloads.cloudflareclient.com/v1/download/macos/ga", "fileName": "CloudflareOne.pkg", "action": "run_installer"}
+        }
+      ]
+    },
+    {
+      "id": "rustdesk",
+      "name": "RustDesk",
+      "publisher": "RustDesk",
+      "category": "remote",
+      "summary": {"zh-CN": "开源远程桌面，支持跨平台访问，并可选择自建中继服务。", "zh-TW": "開源遠端桌面，支援跨平台存取，並可選擇自建中繼服務。", "en": "An open-source remote desktop with cross-platform access and optional self-hosted relay services.", "ja": "クロスプラットフォームアクセスとセルフホスト中継サービスに対応するオープンソースのリモートデスクトップ。", "ko": "크로스 플랫폼 액세스와 자체 호스팅 림레이 서비스를 선택할 수 있는 오픈 소스 원격 데스크톱."},
+      "homepage": "https://github.com/rustdesk/rustdesk/releases/latest",
+      "mark": "R",
+      "accent": "#70a5eb",
+      "variants": [
+        {
+          "id": "rustdesk-linux",
+          "os": "linux",
+          "architectures": ["x86_64", "aarch64"],
+          "requiresAdmin": true,
+          "interactive": false,
+          "note": {"zh-CN": "官方发布页提供 EXE、MSI、DEB、RPM、DMG、AppImage 等多种格式。", "zh-TW": "官方發布頁提供 EXE、MSI、DEB、RPM、DMG、AppImage 等多種格式。", "en": "The official release page offers EXE, MSI, DEB, RPM, DMG, AppImage and other formats.", "ja": "公式リリースページでは EXE、MSI、DEB、RPM、DMG、AppImage などの形式を提供しています。", "ko": "공식 릴리스 페이지에서 EXE, MSI, DEB, RPM, DMG, AppImage 등 다양한 형식을 제공합니다."},
+          "sourceUrl": "https://github.com/rustdesk/rustdesk/releases/latest",
+          "method": {"type": "official_page", "url": "https://github.com/rustdesk/rustdesk/releases/latest"},
+          "detection": {"type": "command", "program": "rustdesk", "args": ["--version"]}
+        },
+        {
+          "id": "rustdesk-windows",
+          "os": "windows",
+          "architectures": ["x86_64", "aarch64"],
+          "requiresAdmin": true,
+          "interactive": false,
+          "note": {"zh-CN": "官方发布页提供 EXE、MSI、DEB、RPM、DMG、AppImage 等多种格式。", "zh-TW": "官方發布頁提供 EXE、MSI、DEB、RPM、DMG、AppImage 等多種格式。", "en": "The official release page offers EXE, MSI, DEB, RPM, DMG, AppImage and other formats.", "ja": "公式リリースページでは EXE、MSI、DEB、RPM、DMG、AppImage などの形式を提供しています。", "ko": "공식 릴리스 페이지에서 EXE, MSI, DEB, RPM, DMG, AppImage 등 다양한 형식을 제공합니다."},
+          "sourceUrl": "https://github.com/rustdesk/rustdesk/releases/latest",
+          "method": {"type": "official_page", "url": "https://github.com/rustdesk/rustdesk/releases/latest"},
+          "detection": {"type": "command", "program": "rustdesk", "args": ["--version"]}
+        },
+        {
+          "id": "rustdesk-macos",
+          "os": "macos",
+          "architectures": ["x86_64", "aarch64"],
+          "requiresAdmin": true,
+          "interactive": false,
+          "note": {"zh-CN": "官方发布页提供 EXE、MSI、DEB、RPM、DMG、AppImage 等多种格式。", "zh-TW": "官方發布頁提供 EXE、MSI、DEB、RPM、DMG、AppImage 等多種格式。", "en": "The official release page offers EXE, MSI, DEB, RPM, DMG, AppImage and other formats.", "ja": "公式リリースページでは EXE、MSI、DEB、RPM、DMG、AppImage などの形式を提供しています。", "ko": "공식 릴리스 페이지에서 EXE, MSI, DEB, RPM, DMG, AppImage 등 다양한 형식을 제공합니다."},
+          "sourceUrl": "https://github.com/rustdesk/rustdesk/releases/latest",
+          "method": {"type": "official_page", "url": "https://github.com/rustdesk/rustdesk/releases/latest"},
+          "detection": {"type": "command", "program": "rustdesk", "args": ["--version"]}
+        }
+      ]
+    },
+    {
+      "id": "parsec",
+      "name": "Parsec",
+      "publisher": "Parsec",
+      "category": "remote",
+      "summary": {"zh-CN": "面向创作、协作与游戏的低延迟远程桌面和屏幕连接工具。", "zh-TW": "面向創作、協作與遊戲的低延遲遠端桌面與螢幕連線工具。", "en": "A low-latency remote desktop and screen-connection tool for creation, collaboration and gaming.", "ja": "制作、コラボレーション、ゲーム向けの低遅延リモートデスクトップ・画面接続ツール。", "ko": "창작, 협업 및 게임을 위한 저지연 원격 데스크톱 및 화면 연결 도구."},
+      "homepage": "https://parsec.app/downloads",
+      "mark": "P",
+      "accent": "#ef6c63",
+      "variants": [
+        {
+          "id": "parsec-linux",
+          "os": "linux",
+          "architectures": ["x86_64", "aarch64"],
+          "requiresAdmin": true,
+          "interactive": false,
+          "note": {"zh-CN": "支持平台与远程主机能力因系统而异；使用前请核对官网硬件要求。", "zh-TW": "支援平台與遠端主機能力因系統而異；使用前請核對官網硬體需求。", "en": "Supported platforms and remote-host capabilities vary by system; check the official hardware requirements before use.", "ja": "対応プラットフォームとリモートホスト機能はシステムによって異なります。使用前に公式のハードウェア要件を確認してください。", "ko": "지원 플랫폼과 원격 호스트 기능은 시스템에 따라 다릅니다. 사용 전에 공식 하드웨어 요구 사항을 확인하세요."},
+          "sourceUrl": "https://parsec.app/downloads",
+          "method": {"type": "artifact", "url": "https://builds.parsec.app/package/parsec-linux.deb", "fileName": "parsec-linux.deb", "action": "download_package"}
+        },
+        {
+          "id": "parsec-windows",
+          "os": "windows",
+          "architectures": ["x86_64", "aarch64"],
+          "requiresAdmin": true,
+          "interactive": true,
+          "note": {"zh-CN": "支持平台与远程主机能力因系统而异；使用前请核对官网硬件要求。", "zh-TW": "支援平台與遠端主機能力因系統而異；使用前請核對官網硬體需求。", "en": "Supported platforms and remote-host capabilities vary by system; check the official hardware requirements before use.", "ja": "対応プラットフォームとリモートホスト機能はシステムによって異なります。使用前に公式のハードウェア要件を確認してください。", "ko": "지원 플랫폼과 원격 호스트 기능은 시스템에 따라 다릅니다. 사용 전에 공식 하드웨어 요구 사항을 확인하세요."},
+          "sourceUrl": "https://parsec.app/downloads",
+          "method": {"type": "artifact", "url": "https://builds.parsec.app/package/parsec-windows.exe", "fileName": "parsec-windows.exe", "action": "run_installer"}
+        },
+        {
+          "id": "parsec-macos",
+          "os": "macos",
+          "architectures": ["x86_64", "aarch64"],
+          "requiresAdmin": true,
+          "interactive": true,
+          "note": {"zh-CN": "支持平台与远程主机能力因系统而异；使用前请核对官网硬件要求。", "zh-TW": "支援平台與遠端主機能力因系統而異；使用前請核對官網硬體需求。", "en": "Supported platforms and remote-host capabilities vary by system; check the official hardware requirements before use.", "ja": "対応プラットフォームとリモートホスト機能はシステムによって異なります。使用前に公式のハードウェア要件を確認してください。", "ko": "지원 플랫폼과 원격 호스트 기능은 시스템에 따라 다릅니다. 사용 전에 공식 하드웨어 요구 사항을 확인하세요."},
+          "sourceUrl": "https://parsec.app/downloads",
+          "method": {"type": "artifact", "url": "https://builds.parsec.app/package/parsec-macos.pkg", "fileName": "parsec-macos.pkg", "action": "run_installer"}
+        }
+      ]
+    },
+    {
+      "id": "obsidian",
+      "name": "Obsidian",
+      "publisher": "Obsidian",
+      "category": "tools",
+      "summary": {"zh-CN": "基于本地 Markdown 文件的知识库与笔记工具，支持插件和双链。", "zh-TW": "基於本機 Markdown 檔案的知識庫與筆記工具，支援外掛與雙向連結。", "en": "A knowledge base and note-taking tool based on local Markdown files, with plugins and backlinks.", "ja": "ローカル Markdown ファイルを使う知識ベース・ノートツール。プラグインとバックリンクに対応します。", "ko": "로컬 Markdown 파일 기반의 지식 베이스 및 노트 도구로 플러그인과 양방향 링크를 지원합니다."},
+      "homepage": "https://obsidian.md/download",
+      "mark": "Ob",
+      "accent": "#a78bfa",
+      "variants": [
+        {
+          "id": "obsidian-linux-x86-64",
+          "os": "linux",
+          "architectures": ["x86_64"],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {"zh-CN": "Linux 推荐 AppImage 便携版；下载后赋予执行权限即可运行。DEB 可在详情来源页选择。", "zh-TW": "Linux 建議使用 AppImage 便攜版；下載後賦予執行權限即可執行。DEB 可在詳情來源頁選擇。", "en": "The AppImage portable edition is recommended on Linux; make it executable after downloading to run it. DEB is available from the source page in details.", "ja": "Linux では AppImage ポータブル版を推奨します。ダウンロード後に実行権限を付与すれば実行できます。DEB は詳細のソースページで選択できます。", "ko": "Linux에서는 AppImage 포터블 버전을 권장합니다. 다운로드 후 실행 권한을 부여하면 실행할 수 있습니다. DEB는 세부 정보의 소스 페이지에서 선택할 수 있습니다."},
+          "sourceUrl": "https://obsidian.md/download",
+          "method": {"type": "artifact", "url": "https://github.com/obsidianmd/obsidian-releases/releases/download/v1.14.5/Obsidian-1.14.5.AppImage", "fileName": "Obsidian-1.14.5.AppImage", "action": "download_portable", "makeExecutable": true}
+        },
+        {
+          "id": "obsidian-linux-aarch64",
+          "os": "linux",
+          "architectures": ["aarch64"],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {"zh-CN": "Linux 推荐 AppImage 便携版；下载后赋予执行权限即可运行。DEB 可在详情来源页选择。", "zh-TW": "Linux 建議使用 AppImage 便攜版；下載後賦予執行權限即可執行。DEB 可在詳情來源頁選擇。", "en": "The AppImage portable edition is recommended on Linux; make it executable after downloading to run it. DEB is available from the source page in details.", "ja": "Linux では AppImage ポータブル版を推奨します。ダウンロード後に実行権限を付与すれば実行できます。DEB は詳細のソースページで選択できます。", "ko": "Linux에서는 AppImage 포터블 버전을 권장합니다. 다운로드 후 실행 권한을 부여하면 실행할 수 있습니다. DEB는 세부 정보의 소스 페이지에서 선택할 수 있습니다."},
+          "sourceUrl": "https://obsidian.md/download",
+          "method": {"type": "artifact", "url": "https://github.com/obsidianmd/obsidian-releases/releases/download/v1.14.5/Obsidian-1.14.5-arm64.AppImage", "fileName": "Obsidian-1.14.5-arm64.AppImage", "action": "download_portable", "makeExecutable": true}
+        },
+        {
+          "id": "obsidian-windows",
+          "os": "windows",
+          "architectures": ["x86_64", "aarch64"],
+          "requiresAdmin": false,
+          "interactive": true,
+          "note": {"zh-CN": "Linux 推荐 AppImage 便携版；下载后赋予执行权限即可运行。DEB 可在详情来源页选择。", "zh-TW": "Linux 建議使用 AppImage 便攜版；下載後賦予執行權限即可執行。DEB 可在詳情來源頁選擇。", "en": "The AppImage portable edition is recommended on Linux; make it executable after downloading to run it. DEB is available from the source page in details.", "ja": "Linux では AppImage ポータブル版を推奨します。ダウンロード後に実行権限を付与すれば実行できます。DEB は詳細のソースページで選択できます。", "ko": "Linux에서는 AppImage 포터블 버전을 권장합니다. 다운로드 후 실행 권한을 부여하면 실행할 수 있습니다. DEB는 세부 정보의 소스 페이지에서 선택할 수 있습니다."},
+          "sourceUrl": "https://obsidian.md/download",
+          "method": {"type": "artifact", "url": "https://github.com/obsidianmd/obsidian-releases/releases/download/v1.14.5/Obsidian-1.14.5.exe", "fileName": "Obsidian-1.14.5.exe", "action": "run_installer"}
+        },
+        {
+          "id": "obsidian-macos",
+          "os": "macos",
+          "architectures": ["x86_64", "aarch64"],
+          "requiresAdmin": false,
+          "interactive": true,
+          "note": {"zh-CN": "Linux 推荐 AppImage 便携版；下载后赋予执行权限即可运行。DEB 可在详情来源页选择。", "zh-TW": "Linux 建議使用 AppImage 便攜版；下載後賦予執行權限即可執行。DEB 可在詳情來源頁選擇。", "en": "The AppImage portable edition is recommended on Linux; make it executable after downloading to run it. DEB is available from the source page in details.", "ja": "Linux では AppImage ポータブル版を推奨します。ダウンロード後に実行権限を付与すれば実行できます。DEB は詳細のソースページで選択できます。", "ko": "Linux에서는 AppImage 포터블 버전을 권장합니다. 다운로드 후 실행 권한을 부여하면 실행할 수 있습니다. DEB는 세부 정보의 소스 페이지에서 선택할 수 있습니다."},
+          "sourceUrl": "https://obsidian.md/download",
+          "method": {"type": "artifact", "url": "https://github.com/obsidianmd/obsidian-releases/releases/download/v1.14.5/Obsidian-1.14.5.dmg", "fileName": "Obsidian-1.14.5.dmg", "action": "run_installer"}
+        }
+      ]
+    },
+    {
+      "id": "localsend",
+      "name": "LocalSend",
+      "publisher": "LocalSend",
+      "category": "tools",
+      "summary": {"zh-CN": "开源局域网文件传输工具，不依赖外部服务器即可跨设备分享文件。", "zh-TW": "開源區域網路檔案傳輸工具，不依賴外部伺服器即可跨裝置分享檔案。", "en": "An open-source local-network file transfer tool for sharing files across devices without external servers.", "ja": "外部サーバーに依存せずデバイス間でファイルを共有できる、オープンソースのローカルネットワーク転送ツール。", "ko": "외부 서버 없이 장치 간 파일을 공유할 수 있는 오픈 소스 로컬 네트워크 파일 전송 도구."},
+      "homepage": "https://localsend.org/download",
+      "mark": "L",
+      "accent": "#5cc9bd",
+      "variants": [
+        {
+          "id": "localsend-linux",
+          "os": "linux",
+          "architectures": ["x86_64", "aarch64"],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {"zh-CN": "Linux 可选择 AppImage 或发行版安装包；使用时设备需处于可互通的网络。", "zh-TW": "Linux 可選擇 AppImage 或發行版安裝套件；使用時裝置需處於可互通的網路。", "en": "On Linux, choose an AppImage or distribution package; devices must be on networks that can communicate with each other.", "ja": "Linux では AppImage またはディストリビューションパッケージを選択できます。使用時はデバイス間で通信できるネットワークが必要です。", "ko": "Linux에서는 AppImage 또는 배포판 패키지를 선택할 수 있습니다. 사용 시 장치가 서로 통신 가능한 네트워크에 있어야 합니다."},
+          "sourceUrl": "https://localsend.org/download",
+          "method": {"type": "official_page", "url": "https://github.com/localsend/localsend/releases/latest"}
+        },
+        {
+          "id": "localsend-windows",
+          "os": "windows",
+          "architectures": ["x86_64", "aarch64"],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {"zh-CN": "Linux 可选择 AppImage 或发行版安装包；使用时设备需处于可互通的网络。", "zh-TW": "Linux 可選擇 AppImage 或發行版安裝套件；使用時裝置需處於可互通的網路。", "en": "On Linux, choose an AppImage or distribution package; devices must be on networks that can communicate with each other.", "ja": "Linux では AppImage またはディストリビューションパッケージを選択できます。使用時はデバイス間で通信できるネットワークが必要です。", "ko": "Linux에서는 AppImage 또는 배포판 패키지를 선택할 수 있습니다. 사용 시 장치가 서로 통신 가능한 네트워크에 있어야 합니다."},
+          "sourceUrl": "https://localsend.org/download",
+          "method": {"type": "official_page", "url": "https://localsend.org/download"}
+        },
+        {
+          "id": "localsend-macos",
+          "os": "macos",
+          "architectures": ["x86_64", "aarch64"],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {"zh-CN": "Linux 可选择 AppImage 或发行版安装包；使用时设备需处于可互通的网络。", "zh-TW": "Linux 可選擇 AppImage 或發行版安裝套件；使用時裝置需處於可互通的網路。", "en": "On Linux, choose an AppImage or distribution package; devices must be on networks that can communicate with each other.", "ja": "Linux では AppImage またはディストリビューションパッケージを選択できます。使用時はデバイス間で通信できるネットワークが必要です。", "ko": "Linux에서는 AppImage 또는 배포판 패키지를 선택할 수 있습니다. 사용 시 장치가 서로 통신 가능한 네트워크에 있어야 합니다."},
+          "sourceUrl": "https://localsend.org/download",
+          "method": {"type": "official_page", "url": "https://localsend.org/download"}
+        }
+      ]
+    }
+  ]
+}
