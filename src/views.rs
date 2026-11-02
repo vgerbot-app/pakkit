@@ -760,7 +760,7 @@ fn category_detail(
                             pages,
                             packages.len(),
                             cx,
-                            |state, next| state.category_page = next,
+                            |this, next, _| this.state.category_page = next,
                         )),
                 )
             });
@@ -788,7 +788,7 @@ fn pager(
     pages: usize,
     count: usize,
     cx: &mut Context<AppView>,
-    set_page: impl Fn(&mut AppState, usize) + Copy + 'static,
+    set_page: impl Fn(&mut AppView, usize, &mut Context<AppView>) + Copy + 'static,
 ) -> AnyElement {
     div()
         .flex()
@@ -808,7 +808,7 @@ fn pager(
             .disabled(page == 0)
             .on_click(cx.listener(move |this, _, _, cx| {
                 if page > 0 {
-                    set_page(&mut this.state, 0);
+                    set_page(this, 0, cx);
                 }
                 cx.notify();
             })),
@@ -825,7 +825,7 @@ fn pager(
             .disabled(page == 0)
             .on_click(cx.listener(move |this, _, _, cx| {
                 if page > 0 {
-                    set_page(&mut this.state, page - 1);
+                    set_page(this, page - 1, cx);
                 }
                 cx.notify();
             })),
@@ -848,7 +848,7 @@ fn pager(
             .disabled(page + 1 >= pages)
             .on_click(cx.listener(move |this, _, _, cx| {
                 if page + 1 < pages {
-                    set_page(&mut this.state, page + 1);
+                    set_page(this, page + 1, cx);
                 }
                 cx.notify();
             })),
@@ -865,7 +865,7 @@ fn pager(
             .disabled(page + 1 >= pages)
             .on_click(cx.listener(move |this, _, _, cx| {
                 if page + 1 < pages {
-                    set_page(&mut this.state, pages - 1);
+                    set_page(this, pages - 1, cx);
                 }
                 cx.notify();
             })),
@@ -1076,7 +1076,7 @@ fn search(state: &AppState, command: &str, p: &Palette, cx: &mut Context<AppView
                             pages,
                             results.len(),
                             cx,
-                            |state, next| state.search_page = next,
+                            |this, next, _| this.state.search_page = next,
                         )),
                 )
             })
@@ -1205,7 +1205,7 @@ fn installed(state: &AppState, p: &Palette, cx: &mut Context<AppView>) -> AnyEle
                         pages,
                         rows.len(),
                         cx,
-                        |state, next| state.installed_page = next,
+                        |this, next, _| this.state.installed_page = next,
                     ))
                 })
                 .child(
@@ -1532,6 +1532,7 @@ fn official_ready(
 ) -> AnyElement {
     let language = state.settings.language.as_str();
     let visible = visible_official_apps_for_language(&state.official, language);
+    let (page_apps, page, pages) = page_slice(&visible, state.official.page);
     let os_items: Vec<(Option<OfficialOs>, String)> = OfficialOs::ALL
         .iter()
         .map(|os| (Some(*os), os.label().to_owned()))
@@ -1540,13 +1541,33 @@ fn official_ready(
         .iter()
         .map(|arch| (Some(*arch), arch.label().to_owned()))
         .collect();
+    let mut category_items = vec![(
+        None,
+        format!(
+            "{} ({})",
+            tr!("official.all"),
+            official_platform_count(state, None)
+        ),
+    )];
+    if let Some(catalog) = &state.official.catalog {
+        for category in &catalog.categories {
+            category_items.push((
+                Some(category.id.clone()),
+                format!(
+                    "{} ({})",
+                    category.name.get(language),
+                    official_platform_count(state, Some(&category.id))
+                ),
+            ));
+        }
+    }
 
     let filters = div()
         .flex()
         .items_center()
         .flex_wrap()
         .gap(px(9.))
-        .mb(px(16.))
+        .mb(px(22.))
         .child(
             div().flex_1().min_w(px(200.)).child(
                 gpui_kit::component::input::Input::new(&inputs.official_search)
@@ -1563,12 +1584,27 @@ fn official_ready(
         .child(widgets::seg_dropdown(
             cx,
             p,
+            "official-category",
+            &category_items,
+            state.official.category.clone(),
+            seg_handler(cx, |this, value, _, cx| {
+                this.state.official.category = value;
+                this.state.official.page = 0;
+                this.detect_visible_official(cx);
+                cx.notify();
+            }),
+        ))
+        .child(widgets::seg_dropdown(
+            cx,
+            p,
             "official-os",
             &os_items,
             state.official.os,
             seg_handler(cx, |this, value, _, cx| {
                 this.state.official.os = value;
+                this.state.official.page = 0;
                 this.state.status = this.state.status_for(this.state.route);
+                this.detect_visible_official(cx);
                 cx.notify();
             }),
         ))
@@ -1580,41 +1616,17 @@ fn official_ready(
             state.official.arch,
             seg_handler(cx, |this, value, _, cx| {
                 this.state.official.arch = value;
+                this.state.official.page = 0;
                 this.state.status = this.state.status_for(this.state.route);
+                this.detect_visible_official(cx);
                 cx.notify();
             }),
         ));
 
-    let mut categories = div().flex().flex_wrap().gap(px(7.)).mb(px(22.));
-    let total = official_platform_count(state, None);
-    categories = categories.child(official_category_button(
-        state,
-        p,
-        None,
-        &tr!("official.all"),
-        IconKey::Grid,
-        total,
-        cx,
-    ));
-    if let Some(catalog) = &state.official.catalog {
-        for category in &catalog.categories {
-            let count = official_platform_count(state, Some(&category.id));
-            categories = categories.child(official_category_button(
-                state,
-                p,
-                Some(&category.id),
-                category.name.get(language),
-                official_category_icon(&category.icon),
-                count,
-                cx,
-            ));
-        }
-    }
-
     let mut groups = Vec::new();
     if let Some(catalog) = &state.official.catalog {
         for category in &catalog.categories {
-            let apps: Vec<_> = visible
+            let apps: Vec<_> = page_apps
                 .iter()
                 .copied()
                 .filter(|app| app.category == category.id)
@@ -1633,7 +1645,12 @@ fn official_ready(
                             .flex_wrap()
                             .gap(px(8.))
                             .mb(px(11.))
-                            .child(icon(official_category_icon(&category.icon), px(17.), color))
+                            .child(icon(
+                                official_category_icon(&category.icon)
+                                    .expect("validated official category icon"),
+                                px(17.),
+                                color,
+                            ))
                             .child(
                                 div()
                                     .text_size(px(14.))
@@ -1677,7 +1694,6 @@ fn official_ready(
 
     div()
         .child(filters)
-        .child(categories)
         .when(groups.is_empty(), |this| {
             this.child(widgets::empty_state(
                 p,
@@ -1688,6 +1704,20 @@ fn official_ready(
             ))
         })
         .children(groups)
+        .when(pages > 1, |this| {
+            this.child(pager(
+                p,
+                "official-pager",
+                page,
+                pages,
+                visible.len(),
+                cx,
+                |this, next, cx| {
+                    this.state.official.page = next;
+                    this.detect_visible_official(cx);
+                },
+            ))
+        })
         .into_any_element()
 }
 
@@ -1707,66 +1737,22 @@ fn official_platform_count(state: &AppState, category: Option<&str>) -> usize {
         .count()
 }
 
-fn official_category_icon(value: &str) -> IconKey {
+fn official_category_icon(value: &str) -> Option<IconKey> {
     match value {
-        "code" => IconKey::Code,
-        "network" => IconKey::Network,
-        "remote" => IconKey::Package,
-        _ => IconKey::Wrench,
+        "code" => Some(IconKey::Code),
+        "cpu" => Some(IconKey::Cpu),
+        "driver" => Some(IconKey::Driver),
+        "file" => Some(IconKey::File),
+        "flask" => Some(IconKey::Flask),
+        "gamepad" => Some(IconKey::Gamepad),
+        "media" => Some(IconKey::Media),
+        "network" => Some(IconKey::Network),
+        "office" => Some(IconKey::Office),
+        "package" => Some(IconKey::Package),
+        "shield" => Some(IconKey::Shield),
+        "wrench" => Some(IconKey::Wrench),
+        _ => None,
     }
-}
-
-fn official_category_button(
-    state: &AppState,
-    p: &Palette,
-    category: Option<&str>,
-    label: &str,
-    glyph: IconKey,
-    count: usize,
-    cx: &mut Context<AppView>,
-) -> AnyElement {
-    let selected = state.official.category.as_deref() == category;
-    let category = category.map(str::to_owned);
-    let id = category.as_deref().unwrap_or("all").to_owned();
-    div()
-        .id(SharedString::from(format!("official-category-{id}")))
-        .flex()
-        .items_center()
-        .gap(px(6.))
-        .h(px(31.))
-        .px(px(11.))
-        .rounded(px(8.))
-        .border_1()
-        .border_color(if selected {
-            p.tint(p.accent, 0.45)
-        } else {
-            p.line
-        })
-        .bg(if selected {
-            p.tint(p.accent, 0.10)
-        } else {
-            p.surface
-        })
-        .text_size(px(11.5))
-        .text_color(if selected { p.accent } else { p.ink2 })
-        .cursor_pointer()
-        .on_click(cx.listener(move |this, _, _, cx| {
-            this.state.official.category = category.clone();
-            cx.notify();
-        }))
-        .child(icon(
-            glyph,
-            px(13.),
-            if selected { p.accent } else { p.muted },
-        ))
-        .child(label.to_owned())
-        .child(
-            div()
-                .text_size(px(10.))
-                .text_color(p.muted)
-                .child(count.to_string()),
-        )
-        .into_any_element()
 }
 
 fn official_method_labels(method: &OfficialMethod) -> (String, String) {

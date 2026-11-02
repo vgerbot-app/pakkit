@@ -18,8 +18,12 @@ use crate::backends::exec;
 
 pub const DEFAULT_CATALOG_URL: &str =
     "https://raw.githubusercontent.com/vgerbot-app/winget-gui/official-install/catalog.json";
-const CATALOG_LIMIT: u64 = 2 * 1024 * 1024;
+const CATALOG_LIMIT: u64 = 4 * 1024 * 1024;
 const DOWNLOAD_LIMIT: u64 = 2 * 1024 * 1024 * 1024;
+const OFFICIAL_CATEGORY_ICONS: &[&str] = &[
+    "code", "cpu", "driver", "file", "flask", "gamepad", "media", "network", "office", "package",
+    "shield", "wrench",
+];
 
 #[derive(Debug, thiserror::Error)]
 pub enum OfficialError {
@@ -256,6 +260,7 @@ pub struct OfficialCatalogState {
     pub category: Option<String>,
     pub os: Option<OfficialOs>,
     pub arch: Option<OfficialArch>,
+    pub page: usize,
     pub installed: std::collections::HashMap<String, OfficialInstallState>,
 }
 
@@ -268,6 +273,7 @@ impl Default for OfficialCatalogState {
             category: None,
             os: OfficialOs::host(),
             arch: OfficialArch::host(),
+            page: 0,
             installed: std::collections::HashMap::new(),
         }
     }
@@ -294,17 +300,11 @@ fn validate_catalog(catalog: &OfficialCatalog) -> Result<(), OfficialError> {
         return invalid("重复分类 ID".to_owned());
     }
     for category in &catalog.categories {
-        if !matches!(category.id.as_str(), "dev" | "network" | "remote" | "tools") {
-            return invalid(format!("未知分类 {}", category.id));
+        if !valid_id(&category.id) {
+            return invalid(format!("无效分类 ID {}", category.id));
         }
-        let expected_icon = match category.id.as_str() {
-            "dev" => "code",
-            "network" => "network",
-            "remote" => "package",
-            _ => "wrench",
-        };
-        if category.icon != expected_icon {
-            return invalid(format!("分类 {} 图标必须为 {expected_icon}", category.id));
+        if !OFFICIAL_CATEGORY_ICONS.contains(&category.icon.as_str()) {
+            return invalid(format!("分类 {} 使用了未知图标", category.id));
         }
         validate_accent(&category.accent)?;
     }
@@ -456,10 +456,12 @@ pub fn visible_official_apps(state: &OfficialCatalogState) -> Vec<&OfficialApp> 
     visible_official_apps_for_language(state, "en")
 }
 
-/// Local-language filtering lives here so it never touches backend search.
+/// Local filtering lives here so it never touches backend search. All
+/// localized summaries participate, allowing regional aliases to work even
+/// when they are not in the active UI language.
 pub fn visible_official_apps_for_language<'a>(
     state: &'a OfficialCatalogState,
-    language: &str,
+    _language: &str,
 ) -> Vec<&'a OfficialApp> {
     let Some(catalog) = &state.catalog else {
         return Vec::new();
@@ -476,12 +478,37 @@ pub fn visible_official_apps_for_language<'a>(
         .filter(|app| {
             query.is_empty()
                 || [
+                    app.id.as_str(),
                     app.name.as_str(),
                     app.publisher.as_str(),
-                    app.summary.get(language),
+                    app.summary.zh_cn.as_str(),
+                    app.summary.zh_tw.as_str(),
+                    app.summary.en.as_str(),
+                    app.summary.ja.as_str(),
+                    app.summary.ko.as_str(),
                 ]
                 .iter()
                 .any(|text| text.to_lowercase().contains(&query))
+        })
+        .collect()
+}
+
+/// Owned detection work for the currently rendered page. Any cached state,
+/// including `Checking`, suppresses duplicate process launches.
+pub fn pending_official_detections(
+    apps: &[&OfficialApp],
+    host_os: OfficialOs,
+    host_arch: OfficialArch,
+    installed: &std::collections::HashMap<String, OfficialInstallState>,
+) -> Vec<(String, OfficialDetection)> {
+    apps.iter()
+        .filter_map(|app| variant_for(app, host_os, host_arch))
+        .filter(|variant| !installed.contains_key(&variant.id))
+        .filter_map(|variant| {
+            variant
+                .detection
+                .clone()
+                .map(|detection| (variant.id.clone(), detection))
         })
         .collect()
 }
@@ -1061,5 +1088,154 @@ mod tests {
         let pairs: std::collections::HashMap<_, _> = parsed.query_pairs().into_owned().collect();
         assert_eq!(pairs["title"], "官网直装软件提交：My App");
         assert!(pairs["body"].contains("https://example.com/get?a=1&b=two"));
+    }
+
+    #[test]
+    fn data_driven_categories_still_validate_ids_and_icons() {
+        let mut doc: serde_json::Value = serde_json::from_str(&fixture()).expect("fixture");
+        doc["categories"][0]["id"] = serde_json::json!("browser");
+        doc["categories"][0]["icon"] = serde_json::json!("network");
+        doc["apps"][0]["category"] = serde_json::json!("browser");
+        assert!(parse_catalog(&doc.to_string()).is_ok());
+
+        doc["categories"][0]["icon"] = serde_json::json!("not-an-icon");
+        assert!(parse_catalog(&doc.to_string()).is_err());
+        doc["categories"][0]["icon"] = serde_json::json!("network");
+        doc["categories"][0]["id"] = serde_json::json!("Browser");
+        assert!(parse_catalog(&doc.to_string()).is_err());
+    }
+
+    #[test]
+    fn search_matches_ids_and_every_localized_summary() {
+        let mut doc: serde_json::Value = serde_json::from_str(&fixture()).expect("fixture");
+        doc["apps"][0]["summary"]["zh-CN"] = serde_json::json!("微信");
+        let catalog = parse_catalog(&doc.to_string()).expect("valid catalog");
+        let mut state = OfficialCatalogState {
+            status: OfficialLoadState::Ready,
+            catalog: Some(catalog),
+            os: Some(OfficialOs::Windows),
+            arch: Some(OfficialArch::X86_64),
+            ..OfficialCatalogState::default()
+        };
+        for query in ["test-app", "微信", "繁體", "日本語", "한국어"] {
+            state.query = query.to_owned();
+            assert_eq!(
+                visible_official_apps_for_language(&state, "en").len(),
+                1,
+                "{query}"
+            );
+        }
+    }
+
+    #[test]
+    fn official_paging_bounds_large_catalogs_and_clamps_after_filtering() {
+        let catalog = parse_catalog(&fixture()).expect("valid catalog");
+        let template = catalog.apps[0].clone();
+        let apps = (0..389)
+            .map(|index| {
+                let mut app = template.clone();
+                app.id = format!("app-{index}");
+                app.name = format!("App {index}");
+                for variant in &mut app.variants {
+                    variant.id = format!("{}-{}", app.id, variant.id);
+                }
+                app
+            })
+            .collect::<Vec<_>>();
+        let catalog = OfficialCatalog { apps, ..catalog };
+        let mut state = OfficialCatalogState {
+            status: OfficialLoadState::Ready,
+            catalog: Some(catalog),
+            os: Some(OfficialOs::Windows),
+            arch: Some(OfficialArch::X86_64),
+            ..OfficialCatalogState::default()
+        };
+        let visible = visible_official_apps(&state);
+        let (page, effective, pages) = crate::state::page_slice(&visible, 3);
+        assert_eq!((page.len(), effective, pages), (89, 3, 4));
+        let (_, effective, _) = crate::state::page_slice(&visible, 99);
+        assert_eq!(effective, 3);
+
+        state.query = "App 388".to_owned();
+        let filtered = visible_official_apps(&state);
+        let (_, effective, pages) = crate::state::page_slice(&filtered, 3);
+        assert_eq!((effective, pages), (0, 1));
+    }
+
+    #[test]
+    fn pending_detection_is_host_only_and_excludes_cached_variants() {
+        let catalog = parse_catalog(&fixture()).expect("valid catalog");
+        let app = &catalog.apps[0];
+        let installed = std::collections::HashMap::new();
+        let pending = pending_official_detections(
+            &[app],
+            OfficialOs::Linux,
+            OfficialArch::X86_64,
+            &installed,
+        );
+        assert_eq!(pending.len(), 1);
+        assert_eq!(pending[0].0, "test-script");
+        assert!(
+            pending_official_detections(
+                &[app],
+                OfficialOs::Windows,
+                OfficialArch::Aarch64,
+                &installed,
+            )
+            .is_empty()
+        );
+
+        for cached in [
+            OfficialInstallState::Checking,
+            OfficialInstallState::Installed,
+            OfficialInstallState::NotInstalled,
+            OfficialInstallState::Unknown,
+        ] {
+            let installed = [("test-script".to_owned(), cached)].into_iter().collect();
+            assert!(
+                pending_official_detections(
+                    &[app],
+                    OfficialOs::Linux,
+                    OfficialArch::X86_64,
+                    &installed,
+                )
+                .is_empty()
+            );
+        }
+
+        let mut without_detection = app.clone();
+        for variant in &mut without_detection.variants {
+            variant.detection = None;
+        }
+        assert!(
+            pending_official_detections(
+                &[&without_detection],
+                OfficialOs::Linux,
+                OfficialArch::X86_64,
+                &std::collections::HashMap::new(),
+            )
+            .is_empty()
+        );
+    }
+
+    #[test]
+    #[ignore = "set PAKKIT_OFFICIAL_CATALOG_PATH to a local official-install catalog"]
+    fn real_catalog() {
+        let path = std::env::var("PAKKIT_OFFICIAL_CATALOG_PATH")
+            .expect("PAKKIT_OFFICIAL_CATALOG_PATH is required");
+        let metadata = std::fs::metadata(&path).expect("catalog metadata");
+        assert!(metadata.len() <= CATALOG_LIMIT, "catalog exceeds 4 MiB");
+        let input = std::fs::read_to_string(&path).expect("read catalog");
+        let catalog = parse_catalog(&input).expect("valid real catalog");
+        let variants = catalog
+            .apps
+            .iter()
+            .map(|app| app.variants.len())
+            .sum::<usize>();
+        println!(
+            "validated {} categories, {} apps, {variants} variants",
+            catalog.categories.len(),
+            catalog.apps.len()
+        );
     }
 }

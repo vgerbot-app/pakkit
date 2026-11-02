@@ -169,6 +169,8 @@ impl AppView {
                 if matches!(event, InputEvent::Change) {
                     this.state.official.query =
                         this.official_search_input.read(cx).value().to_string();
+                    this.state.official.page = 0;
+                    this.detect_visible_official(cx);
                     cx.notify();
                 }
             },
@@ -373,6 +375,7 @@ impl AppView {
         match route {
             Route::Updates => self.refresh_updates(cx),
             Route::Sources if self.state.sources.is_empty() => self.refresh_sources(cx),
+            Route::OfficialInstall => self.detect_visible_official(cx),
             _ => cx.notify(),
         }
         cx.notify();
@@ -486,6 +489,7 @@ impl AppView {
         let proxy = self.state.settings.proxy.clone();
         self.state.official.status = crate::official::OfficialLoadState::Loading;
         self.state.official.catalog = None;
+        self.state.official.page = 0;
         self.state.official.installed.clear();
         self.state.status = self.state.status_for(self.state.route);
         cx.notify();
@@ -499,47 +503,11 @@ impl AppView {
                 }
                 match result {
                     Ok(catalog) => {
-                        let detections: Vec<(String, Option<crate::official::OfficialDetection>)> =
-                            catalog
-                                .apps
-                                .iter()
-                                .flat_map(|app| app.variants.iter())
-                                .map(|variant| (variant.id.clone(), variant.detection.clone()))
-                                .collect();
-                        for (id, _) in &detections {
-                            this.state.official.installed.insert(
-                                id.clone(),
-                                crate::official::OfficialInstallState::Checking,
-                            );
-                        }
                         this.state.official.catalog = Some(catalog);
                         this.state.official.status = crate::official::OfficialLoadState::Ready;
                         this.state.status = this.state.status_for(this.state.route);
+                        this.detect_visible_official(cx);
                         cx.notify();
-                        this.spawn_refresh(cx.spawn(async move |this, cx| {
-                            let results = cx
-                                .background_spawn(async move {
-                                    detections
-                                        .into_iter()
-                                        .map(|(id, detection)| {
-                                            let state = crate::official::detect_installation(
-                                                detection.as_ref(),
-                                            );
-                                            (id, state)
-                                        })
-                                        .collect::<Vec<_>>()
-                                })
-                                .await;
-                            let _ = this.update(cx, |this, cx| {
-                                if epoch != this.official_epoch {
-                                    return;
-                                }
-                                for (id, state) in results {
-                                    this.state.official.installed.insert(id, state);
-                                }
-                                cx.notify();
-                            });
-                        }));
                     }
                     Err(error) => {
                         this.state.official.catalog = None;
@@ -554,28 +522,118 @@ impl AppView {
         }));
     }
 
+    /// Detect only the variants represented by the current page on the host.
+    /// Cached values, including `Checking`, suppress duplicate child processes.
+    pub(crate) fn detect_visible_official(&mut self, cx: &mut Context<Self>) {
+        if self.state.route != Route::OfficialInstall
+            || !matches!(
+                &self.state.official.status,
+                crate::official::OfficialLoadState::Ready
+            )
+        {
+            return;
+        }
+        let (Some(host_os), Some(host_arch)) = (
+            crate::official::OfficialOs::host(),
+            crate::official::OfficialArch::host(),
+        ) else {
+            return;
+        };
+        let (detections, effective_page) = {
+            let official = &self.state.official;
+            let visible = crate::official::visible_official_apps_for_language(
+                official,
+                self.state.settings.language.as_str(),
+            );
+            let (page_apps, page, _) = crate::state::page_slice(&visible, official.page);
+            (
+                crate::official::pending_official_detections(
+                    page_apps,
+                    host_os,
+                    host_arch,
+                    &official.installed,
+                ),
+                page,
+            )
+        };
+        self.state.official.page = effective_page;
+        if detections.is_empty() {
+            return;
+        }
+        for (id, _) in &detections {
+            self.state
+                .official
+                .installed
+                .insert(id.clone(), crate::official::OfficialInstallState::Checking);
+        }
+        let epoch = self.official_epoch;
+        self.spawn_refresh(cx.spawn(async move |this, cx| {
+            let results = cx
+                .background_spawn(async move {
+                    detections
+                        .into_iter()
+                        .map(|(id, detection)| {
+                            let state = crate::official::detect_installation(Some(&detection));
+                            (id, state)
+                        })
+                        .collect::<Vec<_>>()
+                })
+                .await;
+            let _ = this.update(cx, |this, cx| {
+                if epoch != this.official_epoch {
+                    return;
+                }
+                for (id, state) in results {
+                    this.state.official.installed.insert(id, state);
+                }
+                cx.notify();
+            });
+        }));
+    }
+
     fn detect_official_variant(&mut self, variant_id: String, cx: &mut Context<Self>) {
         let detection = self.state.official.catalog.as_ref().and_then(|catalog| {
+            let host = (
+                crate::official::OfficialOs::host(),
+                crate::official::OfficialArch::host(),
+            );
             catalog
                 .apps
                 .iter()
                 .flat_map(|app| app.variants.iter())
                 .find(|variant| variant.id == variant_id)
+                .filter(|variant| {
+                    Some(variant.os) == host.0
+                        && host
+                            .1
+                            .is_some_and(|arch| variant.architectures.contains(&arch))
+                })
                 .and_then(|variant| variant.detection.clone())
         });
+        let Some(detection) = detection else {
+            self.state
+                .official
+                .installed
+                .insert(variant_id, crate::official::OfficialInstallState::Unknown);
+            cx.notify();
+            return;
+        };
         self.state.official.installed.insert(
             variant_id.clone(),
             crate::official::OfficialInstallState::Checking,
         );
+        let epoch = self.official_epoch;
         self.spawn_refresh(cx.spawn(async move |this, cx| {
             let state = cx
-                .background_spawn(async move {
-                    crate::official::detect_installation(detection.as_ref())
-                })
+                .background_spawn(
+                    async move { crate::official::detect_installation(Some(&detection)) },
+                )
                 .await;
             let _ = this.update(cx, |this, cx| {
-                this.state.official.installed.insert(variant_id, state);
-                cx.notify();
+                if epoch == this.official_epoch {
+                    this.state.official.installed.insert(variant_id, state);
+                    cx.notify();
+                }
             });
         }));
     }

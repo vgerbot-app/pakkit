@@ -1,0 +1,48 @@
+name: Official catalog
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "17 3 * * 1"
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    name: Validate published catalog with the client parser
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out client
+        uses: actions/checkout@v4
+        with:
+          ref: master
+          path: client
+
+      - name: Check out catalog
+        uses: actions/checkout@v4
+        with:
+          ref: official-install
+          path: catalog
+
+      - uses: dtolnay/rust-toolchain@stable
+
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: client
+
+      - name: Install system dependencies
+        run: >
+          sudo apt-get update && sudo apt-get install -y
+          pkg-config libfontconfig-dev
+          libxcb1-dev libxkbcommon-dev libxkbcommon-x11-dev
+          libwayland-dev
+
+      - name: Check JSON syntax
+        run: jq empty catalog/catalog.json
+
+      - name: Validate the complete client contract
+        working-directory: client
+        env:
+          PAKKIT_OFFICIAL_CATALOG_PATH: ${{ github.workspace }}/catalog/catalog.json
+        run: cargo test --locked real_catalog -- --ignored --nocapture
