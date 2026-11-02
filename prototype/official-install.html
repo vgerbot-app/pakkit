@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="dark">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Pakkit — 官网直装原型</title>
+<style>
+:root {
+  --bg:#f4f5f7; --surface:#fff; --surface-2:#f7f8fa; --surface-3:#eceef2;
+  --line:#e3e6eb; --line-strong:#cfd4dc; --ink:#14171c; --ink-2:#40474f;
+  --muted:#7b8490; --accent:#2563eb; --on-accent:#fff; --ok:#15803d;
+  --warn:#b45309; --danger:#dc2626; --scrollbar:#c8ccd3;
+}
+.dark {
+  --bg:#0e1014; --surface:#16191f; --surface-2:#1c2028; --surface-3:#252a34;
+  --line:#272c36; --line-strong:#3a4150; --ink:#eef1f6; --ink-2:#b7bec9;
+  --muted:#828b99; --accent:#4f8cff; --on-accent:#08111f; --ok:#34d399;
+  --warn:#fbbf24; --danger:#f87171; --scrollbar:#333a46;
+}
+* { box-sizing:border-box; }
+html,body { height:100%; margin:0; }
+body { background:var(--bg); color:var(--ink); font:13px/1.5 "Segoe UI Variable Text","Segoe UI",system-ui,"Microsoft YaHei UI",sans-serif; overflow:hidden; }
+button,input,select,textarea { font:inherit; }
+button,a,input,select,textarea { -webkit-tap-highlight-color:transparent; }
+button { cursor:pointer; }
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible { outline:2px solid var(--accent); outline-offset:2px; }
+a { color:inherit; text-decoration:none; }
+svg { width:18px; height:18px; fill:none; stroke:currentColor; stroke-width:1.85; stroke-linecap:round; stroke-linejoin:round; flex-shrink:0; }
+.hidden { display:none!important; }
+.app { height:100vh; display:flex; flex-direction:column; }
+.titlebar { height:52px; flex-shrink:0; display:flex; align-items:center; gap:20px; padding-left:14px; border-bottom:1px solid var(--line); background:color-mix(in srgb,var(--surface) 82%,transparent); }
+.brand { display:flex; align-items:center; gap:10px; min-width:194px; }
+.brand-mark { width:28px; height:28px; display:grid; place-items:center; border-radius:8px; color:var(--on-accent); background:linear-gradient(135deg,var(--accent),#a06bff); }
+.brand-mark svg { width:15px; }
+.brand-name { font-size:13px; font-weight:650; }
+.prototype-badge { padding:1px 6px; border:1px solid var(--line); border-radius:5px; color:var(--muted); background:var(--surface-3); font-size:10px; }
+.global-search { height:34px; width:min(480px,45vw); margin:auto; display:flex; align-items:center; gap:8px; padding:0 11px; border:1px solid var(--line); border-radius:9px; background:var(--surface-2); color:var(--muted); }
+.global-search svg { width:15px; }
+.global-search input { width:100%; border:0; outline:0; background:transparent; color:var(--ink); font-size:12px; }
+.key { border:1px solid var(--line); background:var(--surface-3); border-radius:5px; padding:0 5px; font-size:10px; white-space:nowrap; }
+.window-controls { height:100%; display:flex; }
+.window-controls span { width:44px; display:grid; place-items:center; color:var(--ink-2); }
+.window-controls svg { width:13px; height:13px; }
+.workspace { flex:1; min-height:0; display:flex; }
+.sidebar { width:224px; flex-shrink:0; display:flex; flex-direction:column; padding:12px 8px 8px; border-right:1px solid var(--line); background:color-mix(in srgb,var(--surface) 62%,transparent); }
+.nav { display:flex; flex-direction:column; gap:2px; }
+.nav-item { height:38px; display:flex; align-items:center; gap:11px; position:relative; padding:0 10px; border:0; border-radius:9px; color:var(--ink-2); background:transparent; text-align:left; white-space:nowrap; }
+.nav-item:hover { background:var(--surface-3); color:var(--ink); }
+.nav-item.active { color:var(--accent); background:color-mix(in srgb,var(--accent) 14%,transparent); font-weight:600; }
+.nav-item.active::before { content:""; position:absolute; left:-8px; top:9px; bottom:9px; width:3px; border-radius:0 3px 3px 0; background:var(--accent); }
+.nav-item svg { width:17px; height:17px; }
+.sidebar-footer { margin-top:auto; padding-top:8px; border-top:1px solid var(--line); }
+.queue-count { margin-left:auto; min-width:19px; height:19px; display:grid; place-items:center; border-radius:10px; background:var(--accent); color:var(--on-accent); font-size:10px; }
+.main { min-width:0; flex:1; display:flex; flex-direction:column; }
+.content { flex:1; overflow-y:auto; padding:24px 26px 36px; scroll-behavior:smooth; }
+.page-head { display:flex; align-items:center; gap:16px; margin-bottom:18px; }
+.page-title { margin:0; font-size:23px; line-height:1.25; letter-spacing:-.4px; }
+.page-subtitle { margin:5px 0 0; color:var(--muted); font-size:12px; }
+.head-actions { margin-left:auto; display:flex; gap:8px; }
+.btn { height:34px; display:inline-flex; align-items:center; justify-content:center; gap:7px; padding:0 13px; border-radius:9px; border:1px solid transparent; font-size:12px; font-weight:550; white-space:nowrap; transition:.15s; }
+.btn svg { width:14px; height:14px; }
+.btn-primary { color:var(--on-accent); background:var(--accent); }
+.btn-primary:hover { filter:brightness(1.08); }
+.btn-soft { color:var(--ink); background:var(--surface-3); border-color:var(--line); }
+.btn-soft:hover,.btn-outline:hover { border-color:var(--line-strong); background:var(--surface-3); }
+.btn-outline { color:var(--ink-2); background:transparent; border-color:var(--line-strong); }
+.btn-sm { height:29px; padding:0 10px; border-radius:8px; font-size:11px; }
+.trust-banner { display:flex; align-items:center; gap:15px; padding:16px 18px; margin-bottom:16px; border:1px solid color-mix(in srgb,var(--accent) 22%,var(--line)); border-radius:13px; background:linear-gradient(105deg,color-mix(in srgb,var(--accent) 10%,var(--surface)),var(--surface) 58%); }
+.trust-icon { width:40px; height:40px; flex-shrink:0; display:grid; place-items:center; border-radius:11px; color:var(--accent); background:color-mix(in srgb,var(--accent) 13%,transparent); }
+.trust-icon svg { width:21px; height:21px; }
+.trust-title { margin:0 0 3px; font-size:13px; font-weight:650; }
+.trust-copy { margin:0; color:var(--ink-2); font-size:11.5px; }
+.trust-points { margin-left:auto; display:flex; gap:18px; color:var(--muted); font-size:11px; white-space:nowrap; }
+.trust-points span { display:flex; align-items:center; gap:5px; }
+.trust-points svg { width:13px; height:13px; color:var(--ok); }
+.filters { display:flex; align-items:center; gap:9px; margin-bottom:16px; }
+.search-box { height:38px; min-width:200px; flex:1; display:flex; align-items:center; gap:9px; padding:0 12px; border:1px solid var(--line); border-radius:9px; background:var(--surface); color:var(--muted); }
+.search-box:focus-within { border-color:var(--accent); box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 12%,transparent); }
+.search-box svg { width:16px; }
+.search-box input { min-width:0; width:100%; border:0; outline:0; color:var(--ink); background:transparent; font-size:12px; }
+.search-box input::placeholder { color:var(--muted); }
+.select-wrap { height:38px; display:flex; align-items:center; gap:7px; padding:0 10px; border:1px solid var(--line); border-radius:9px; background:var(--surface); color:var(--muted); }
+.select-wrap svg { width:15px; }
+select { border:0; outline:0; color:var(--ink-2); background:transparent; font-size:12px; cursor:pointer; }
+select option { background:var(--surface); color:var(--ink); }
+.categories { display:flex; flex-wrap:wrap; gap:7px; margin-bottom:23px; }
+.category { height:31px; display:flex; align-items:center; gap:6px; padding:0 11px; border:1px solid var(--line); border-radius:8px; color:var(--ink-2); background:var(--surface); font-size:11.5px; }
+.category:hover { border-color:var(--line-strong); }
+.category.active { color:var(--accent); border-color:color-mix(in srgb,var(--accent) 38%,var(--line)); background:color-mix(in srgb,var(--accent) 10%,var(--surface)); font-weight:600; }
+.category .count { color:var(--muted); font-size:10px; }
+.section { margin-bottom:24px; scroll-margin-top:12px; }
+.section-head { display:flex; align-items:center; gap:8px; margin-bottom:11px; }
+.section-icon { color:var(--section-color,var(--accent)); display:grid; place-items:center; }
+.section-icon svg { width:17px; height:17px; }
+.section-title { margin:0; font-size:14px; font-weight:650; }
+.section-count { color:var(--muted); font-size:11px; }
+.section-desc { margin-left:4px; color:var(--muted); font-size:11px; }
+.grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:11px; }
+.card { min-width:0; display:flex; flex-direction:column; padding:15px; border:1px solid var(--line); border-radius:13px; background:var(--surface); transition:border-color .16s,transform .16s,box-shadow .16s; }
+.card:hover { transform:translateY(-1px); border-color:color-mix(in srgb,var(--accent) 38%,var(--line)); box-shadow:0 10px 24px -20px color-mix(in srgb,var(--accent) 65%,transparent); }
+.card-head { display:flex; align-items:center; gap:10px; }
+.app-logo { width:42px; height:42px; flex-shrink:0; display:grid; place-items:center; border:1px solid color-mix(in srgb,var(--logo) 22%,var(--line)); border-radius:11px; color:var(--logo); background:color-mix(in srgb,var(--logo) 12%,var(--surface)); font-size:17px; font-weight:750; letter-spacing:-.5px; }
+.app-logo svg { width:22px; height:22px; }
+.app-name { min-width:0; flex:1; }
+.app-title { display:flex; align-items:center; gap:7px; }
+.app-title h3 { overflow:hidden; margin:0; font-size:13.5px; font-weight:650; text-overflow:ellipsis; white-space:nowrap; }
+.publisher { margin-top:2px; color:var(--muted); font-size:10.5px; }
+.official { margin-left:auto; align-self:flex-start; display:flex; align-items:center; gap:3px; padding:3px 5px; border-radius:5px; color:var(--ok); background:color-mix(in srgb,var(--ok) 10%,transparent); font-size:9.5px; white-space:nowrap; }
+.official svg { width:10px; height:10px; }
+.app-desc { min-height:36px; margin:12px 0 11px; color:var(--ink-2); font-size:11.5px; line-height:1.6; }
+.method { display:flex; align-items:center; gap:6px; padding:8px 9px; border:1px solid var(--line); border-radius:8px; background:var(--surface-2); color:var(--ink-2); font-size:10.5px; }
+.method svg { width:13px; height:13px; color:var(--muted); }
+.method .meta { margin-left:auto; color:var(--muted); }
+.method .admin { color:var(--warn); }
+.install-status { flex-shrink:0; display:inline-flex; align-items:center; gap:3px; color:var(--muted); font-size:9.5px; }
+.install-status::before { content:""; width:5px; height:5px; flex-shrink:0; border-radius:50%; background:var(--muted); }
+.install-status.installed { color:var(--ok); }
+.install-status.installed::before { background:var(--ok); }
+.install-status svg { width:12px; height:12px; }
+.card-foot { display:flex; align-items:center; margin-top:12px; }
+.detail-link { display:inline-flex; align-items:center; gap:4px; padding:3px 0; border:0; color:var(--muted); background:transparent; font-size:11px; }
+.detail-link:hover { color:var(--accent); }
+.detail-link svg { width:12px; height:12px; }
+.card-foot .btn { margin-left:auto; }
+.statusbar { height:28px; flex-shrink:0; display:flex; align-items:center; gap:15px; padding:0 12px; border-top:1px solid var(--line); color:var(--muted); background:var(--surface); font-size:10.5px; }
+.statusbar .ready { display:flex; align-items:center; gap:6px; }
+.statusbar .dot { width:6px; height:6px; border-radius:50%; background:var(--ok); }
+.statusbar .arch { margin-left:auto; padding:0 6px; border:1px solid var(--line); border-radius:4px; background:var(--surface-3); }
+.empty { padding:60px 20px; text-align:center; color:var(--muted); }
+.empty svg { width:28px; height:28px; margin-bottom:10px; }
+.empty h3 { margin:0 0 5px; color:var(--ink); font-size:15px; }
+.backdrop { position:fixed; inset:0; z-index:60; background:rgba(3,5,9,.58); backdrop-filter:blur(3px); }
+.modal { position:fixed; z-index:70; top:50%; left:50%; width:min(650px,calc(100vw - 40px)); max-height:calc(100vh - 48px); transform:translate(-50%,-50%); display:flex; flex-direction:column; overflow:hidden; border:1px solid var(--line); border-radius:16px; background:var(--surface); box-shadow:0 24px 60px -20px rgba(0,0,0,.6); }
+.modal-head { display:flex; align-items:center; gap:12px; padding:18px 20px; border-bottom:1px solid var(--line); }
+.modal-head h2 { margin:0; font-size:16px; }
+.modal-head p { margin:3px 0 0; color:var(--muted); font-size:11px; }
+.icon-btn { width:29px; height:29px; display:grid; place-items:center; border:0; border-radius:8px; color:var(--muted); background:transparent; }
+.icon-btn:hover { color:var(--ink); background:var(--surface-3); }
+.modal-head .icon-btn { margin-left:auto; }
+.modal-body { overflow-y:auto; padding:18px 20px; }
+.detail-meta { display:flex; flex-wrap:wrap; gap:7px; margin-bottom:15px; }
+.badge { display:inline-flex; align-items:center; gap:4px; padding:4px 7px; border:1px solid var(--line); border-radius:6px; color:var(--ink-2); background:var(--surface-2); font-size:10px; }
+.badge svg { width:11px; height:11px; }
+.source-row { display:flex; align-items:center; gap:8px; padding:10px 12px; margin-bottom:15px; border:1px solid var(--line); border-radius:9px; background:var(--surface-2); }
+.source-row svg { width:15px; color:var(--ok); }
+.source-row span { color:var(--muted); font-size:11px; }
+.source-row a { overflow:hidden; color:var(--accent); font-size:11px; text-overflow:ellipsis; white-space:nowrap; }
+.source-row .open { margin-left:auto; color:var(--muted); }
+.field-label { display:block; margin:13px 0 6px; color:var(--ink-2); font-size:11px; font-weight:600; }
+.detail-select { width:100%; height:36px; padding:0 10px; border:1px solid var(--line); border-radius:8px; background:var(--surface-2); }
+.command-box { overflow:hidden; border:1px solid var(--line); border-radius:9px; background:var(--bg); }
+.command-top { display:flex; align-items:center; padding:6px 9px; border-bottom:1px solid var(--line); color:var(--muted); font-size:10px; }
+.copy-btn { margin-left:auto; display:flex; align-items:center; gap:4px; padding:2px 4px; border:0; color:var(--muted); background:transparent; font-size:10px; }
+.copy-btn:hover { color:var(--accent); }
+.copy-btn svg { width:11px; height:11px; }
+.command { overflow-x:auto; margin:0; padding:12px; color:var(--ink-2); font:11px/1.7 "Cascadia Code",Consolas,monospace; white-space:pre-wrap; overflow-wrap:anywhere; user-select:text; }
+.note { display:flex; align-items:flex-start; gap:8px; margin-top:13px; padding:10px 11px; border-radius:8px; color:var(--ink-2); background:color-mix(in srgb,var(--warn) 8%,var(--surface)); font-size:11px; }
+.note svg { width:14px; height:14px; margin-top:1px; color:var(--warn); }
+.modal-foot { display:flex; align-items:center; gap:8px; padding:13px 20px; border-top:1px solid var(--line); background:var(--surface-2); }
+.modal-foot .footnote { margin-right:auto; color:var(--muted); font-size:10px; }
+.form-input { width:100%; height:38px; padding:0 11px; border:1px solid var(--line); border-radius:8px; outline:0; color:var(--ink); background:var(--surface-2); }
+textarea.form-input { height:80px; padding:9px 11px; resize:vertical; }
+.form-input:focus { border-color:var(--accent); }
+.drawer { position:fixed; z-index:50; top:52px; right:0; bottom:28px; width:340px; display:flex; flex-direction:column; border-left:1px solid var(--line); background:var(--surface); box-shadow:-18px 0 50px -30px rgba(0,0,0,.5); }
+.drawer-head { display:flex; align-items:center; gap:8px; padding:14px; border-bottom:1px solid var(--line); }
+.drawer-head h2 { margin:0; font-size:14px; }
+.drawer-head .icon-btn { margin-left:auto; }
+.queue-list { padding:12px; overflow-y:auto; }
+.queue-empty { padding:55px 15px; text-align:center; color:var(--muted); font-size:12px; }
+.queue-empty svg { width:28px; height:28px; margin-bottom:9px; }
+.queue-item { margin-bottom:9px; padding:12px; border:1px solid var(--line); border-radius:10px; background:var(--surface-2); }
+.queue-item-head { display:flex; align-items:center; gap:8px; }
+.queue-item-head strong { font-size:12px; }
+.queue-item-head span { margin-left:auto; color:var(--muted); font-size:10px; }
+.queue-command { overflow:hidden; margin:9px 0; color:var(--muted); font:10px Consolas,monospace; text-overflow:ellipsis; white-space:nowrap; }
+.pending-bar { height:5px; border-radius:5px; background:repeating-linear-gradient(90deg,var(--surface-3) 0,var(--surface-3) 14px,color-mix(in srgb,var(--accent) 22%,var(--surface-3)) 14px,color-mix(in srgb,var(--accent) 22%,var(--surface-3)) 20px); }
+@keyframes progress { from{transform:translateX(-100%)} to{transform:translateX(350%)} }
+.toast-root { position:fixed; z-index:100; right:18px; bottom:42px; display:flex; flex-direction:column; gap:8px; }
+.toast { max-width:360px; display:flex; align-items:center; gap:8px; padding:11px 13px; border:1px solid var(--line); border-radius:10px; color:var(--ink-2); background:var(--surface); box-shadow:0 15px 40px -18px rgba(0,0,0,.6); font-size:12px; animation:toast-in .2s ease-out; }
+.toast svg { width:15px; color:var(--ok); }
+@keyframes toast-in { from{opacity:0;transform:translateY(5px)} }
+::-webkit-scrollbar { width:10px; height:10px; }
+::-webkit-scrollbar-thumb { border:3px solid transparent; border-radius:10px; background:var(--scrollbar); background-clip:content-box; }
+@media (min-width:1500px) { .grid { grid-template-columns:repeat(4,minmax(0,1fr)); } }
+@media (max-width:1180px) {
+  .sidebar { width:64px; } .nav-item { justify-content:center; padding:0; } .nav-item span:not(.queue-count) { display:none; }
+  .nav-item.active::before { display:none; } .queue-count { position:absolute; top:1px; right:3px; min-width:15px; height:15px; font-size:8px; }
+  .brand { min-width:150px; } .grid { grid-template-columns:repeat(2,minmax(0,1fr)); } .trust-points { display:none; }
+}
+@media (max-width:760px) {
+  .global-search,.window-controls,.prototype-badge { display:none; } .titlebar { padding-left:12px; } .brand { min-width:0; }
+  .content { padding:18px 15px 30px; } .page-head { align-items:flex-start; } .head-actions .btn-soft { display:none; }
+  .trust-banner { padding:12px; } .trust-copy { font-size:10.5px; } .grid { grid-template-columns:1fr; }
+  .filters { flex-wrap:wrap; } .search-box { flex-basis:100%; } .section-desc { display:none; }
+  .modal-foot .footnote { display:none; } .modal-foot { justify-content:flex-end; }
+}
+@media (prefers-reduced-motion:reduce) { * { scroll-behavior:auto!important; animation:none!important; transition:none!important; } }
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 3v12m-5-5 5 5 5-5M5 20h14"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></symbol>
+    <symbol id="i-home" viewBox="0 0 24 24"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></symbol>
+    <symbol id="i-grid" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="m4 12 5 5L20 6"/></symbol>
+    <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-3-6.7L21 8M21 3v5h-5"/></symbol>
+    <symbol id="i-source" viewBox="0 0 24 24"><ellipse cx="12" cy="6" rx="8" ry="3"/><path d="M4 6v12c0 1.7 3.6 3 8 3s8-1.3 8-3V6M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/></symbol>
+    <symbol id="i-settings" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19 12a7 7 0 0 0-.1-1l2-1.5-2-3.4-2.4 1a8 8 0 0 0-1.8-1L14.4 3h-4l-.4 3a8 8 0 0 0-1.8 1l-2.4-1-2 3.4L6 11a7 7 0 0 0 0 2l-2 1.5 2 3.4 2.4-1a8 8 0 0 0 1.8 1l.3 3h4l.4-3a8 8 0 0 0 1.8-1l2.4 1 2-3.4-2-1.5a7 7 0 0 0 .1-1Z"/></symbol>
+    <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a15 15 0 0 1 0 18 15 15 0 0 1 0-18"/></symbol>
+    <symbol id="i-theme" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.5 1.5m11 11L19 19M5 19l1.5-1.5m11-11L19 5"/></symbol>
+    <symbol id="i-queue" viewBox="0 0 24 24"><path d="M3 6h18M3 12h18M3 18h12"/></symbol>
+    <symbol id="i-terminal" viewBox="0 0 24 24"><path d="m5 7 5 5-5 5m8 0h6"/></symbol>
+    <symbol id="i-code" viewBox="0 0 24 24"><path d="m8 6-6 6 6 6m8-12 6 6-6 6"/></symbol>
+    <symbol id="i-network" viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="5" rx="1"/><rect x="3" y="16" width="6" height="5" rx="1"/><rect x="15" y="16" width="6" height="5" rx="1"/><path d="M12 8v4M6 16v-2h12v2"/></symbol>
+    <symbol id="i-remote" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8m-4-4v4m-5-11 3-3m0 0v3m0-3h-3m8 4-3 3m0 0v-3m0 3h3"/></symbol>
+    <symbol id="i-tools" viewBox="0 0 24 24"><path d="M14.7 6.3a4 4 0 0 0 5 5l-9 9a2.8 2.8 0 0 1-4-4zM16 4l4 4"/></symbol>
+    <symbol id="i-shield" viewBox="0 0 24 24"><path d="m12 3 8 3v6c0 5-3.5 8.4-8 9-4.5-.6-8-4-8-9V6z"/><path d="m8.5 12 2.2 2.2 4.8-5"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+    <symbol id="i-chevron" viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></symbol>
+    <symbol id="i-x" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></symbol>
+    <symbol id="i-copy" viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3"/></symbol>
+    <symbol id="i-external" viewBox="0 0 24 24"><path d="M14 4h6v6m0-6-9 9m7-3v9a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></symbol>
+    <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5m0-8h.01"/></symbol>
+    <symbol id="i-monitor" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8m-4-4v4"/></symbol>
+    <symbol id="i-cpu" viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="2"/><path d="M10 2v3m4-3v3m-4 13v3m4-3v3M2 10h3m-3 4h3m14-4h3m-3 4h3"/></symbol>
+    <symbol id="i-box" viewBox="0 0 24 24"><path d="m12 3 9 5-9 5-9-5zM3 8v9l9 5 9-5V8M12 13v9"/></symbol>
+  </defs>
+</svg>
+<div class="app">
+  <header class="titlebar">
+    <div class="brand">
+      <div class="brand-mark"><svg><use href="#i-download"/></svg></div>
+      <span class="brand-name">Pakkit</span><span class="prototype-badge">界面原型</span>
+    </div>
+    <label class="global-search"><svg><use href="#i-search"/></svg><input id="globalSearch" placeholder="搜索软件包…"/><span class="key">Ctrl K</span></label>
+    <div class="window-controls" aria-hidden="true"><span><svg viewBox="0 0 24 24"><path d="M5 12h14"/></svg></span><span><svg viewBox="0 0 24 24"><rect x="5.5" y="5.5" width="13" height="13" rx="1.5"/></svg></span><span><svg><use href="#i-x"/></svg></span></div>
+  </header>
+  <div class="workspace">
+    <nav class="sidebar" aria-label="主导航">
+      <div class="nav">
+        <button class="nav-item" data-demo="发现"><svg><use href="#i-home"/></svg><span>发现</span></button>
+        <button class="nav-item" data-demo="分类"><svg><use href="#i-grid"/></svg><span>分类</span></button>
+        <button class="nav-item" data-demo="全部包"><svg><use href="#i-search"/></svg><span>全部包</span></button>
+        <button class="nav-item active" aria-current="page"><svg><use href="#i-globe"/></svg><span>官网直装</span></button>
+        <button class="nav-item" data-demo="已安装"><svg><use href="#i-check"/></svg><span>已安装</span></button>
+        <button class="nav-item" data-demo="更新"><svg><use href="#i-refresh"/></svg><span>更新</span></button>
+        <button class="nav-item" data-demo="源管理"><svg><use href="#i-source"/></svg><span>源管理</span></button>
+        <button class="nav-item" data-demo="设置"><svg><use href="#i-settings"/></svg><span>设置</span></button>
+      </div>
+      <div class="sidebar-footer">
+        <button class="nav-item" id="themeBtn" title="切换明暗主题"><svg><use href="#i-theme"/></svg><span id="themeLabel">深色主题</span></button>
+        <button class="nav-item" id="queueBtn"><svg><use href="#i-queue"/></svg><span>安装队列</span><span class="queue-count hidden" id="queueCount">0</span></button>
+      </div>
+    </nav>
+    <main class="main">
+      <div class="content" id="content">
+        <div class="page-head">
+          <div><h1 class="page-title">官网直装</h1><p class="page-subtitle">从开发者官网获取软件，安装过程清晰可见</p></div>
+          <div class="head-actions"><button class="btn btn-soft" id="refreshBtn"><svg><use href="#i-refresh"/></svg>刷新目录</button><button class="btn btn-primary" id="submitBtn"><svg><use href="#i-plus"/></svg>提交软件</button></div>
+        </div>
+        <section class="trust-banner" aria-label="来源说明">
+          <div class="trust-icon"><svg><use href="#i-shield"/></svg></div>
+          <div><h2 class="trust-title">官方来源，安装透明</h2><p class="trust-copy">安装前展示完整命令与权限要求；你可以先检查，再决定是否执行。</p></div>
+          <div class="trust-points"><span><svg><use href="#i-check"/></svg>仅链接官方发布</span><span><svg><use href="#i-check"/></svg>不托管安装包</span></div>
+        </section>
+        <div class="filters">
+          <label class="search-box"><svg><use href="#i-search"/></svg><input id="catalogSearch" placeholder="搜索名称、开发者或用途…" autocomplete="off"/></label>
+          <label class="select-wrap" title="选择操作系统"><svg><use href="#i-monitor"/></svg><select id="platformSelect" aria-label="操作系统"><option value="linux">Linux</option><option value="windows">Windows</option><option value="macos">macOS</option></select></label>
+          <label class="select-wrap" title="选择处理器架构"><svg><use href="#i-cpu"/></svg><select id="archSelect" aria-label="处理器架构"><option value="x86_64">x86_64</option><option value="aarch64">ARM64</option></select></label>
+        </div>
+        <div class="categories" id="categories" aria-label="软件分类"></div>
+        <div id="catalog"></div>
+      </div>
+      <footer class="statusbar"><span class="ready"><i class="dot"></i>目录就绪 · 11 款软件</span><span>官方发布来源</span><span id="queueStatus">队列 0</span><span class="arch" id="archStatus">Linux · x86_64</span></footer>
+    </main>
+  </div>
+</div>
+<div id="modalRoot"></div>
+<aside class="drawer hidden" id="queueDrawer" aria-label="安装队列">
+  <div class="drawer-head"><svg><use href="#i-queue"/></svg><h2>安装队列</h2><button class="icon-btn" id="closeQueue" aria-label="关闭队列"><svg><use href="#i-x"/></svg></button></div>
+  <div class="queue-list" id="queueList"></div>
+</aside>
+<div class="toast-root" id="toastRoot" aria-live="polite"></div>
+<script>
+const CATEGORIES = [
+  {id:'all',name:'全部软件',icon:'grid',color:'#4f8cff'},
+  {id:'dev',name:'开发环境',icon:'code',color:'#4f8cff',desc:'运行时、工具链与本地 AI'},
+  {id:'network',name:'组网连接',icon:'network',color:'#0ea5e9',desc:'虚拟组网与网络访问'},
+  {id:'remote',name:'远程协作',icon:'remote',color:'#a06bff',desc:'远程桌面与低延迟连接'},
+  {id:'tools',name:'实用工具',icon:'tools',color:'#f59e0b',desc:'笔记与局域网文件传输'},
+];
+const APPS = [
+  {id:'deno',name:'Deno',publisher:'Deno Land',category:'dev',mark:'D',color:'#70d6a2',installed:true,desc:'安全的 JavaScript / TypeScript 运行时，单个可执行文件，无外部依赖。',official:'https://docs.deno.com/runtime/getting_started/installation/',kind:'script',admin:false,methods:{linux:'curl -fsSL https://deno.land/install.sh | sh',macos:'curl -fsSL https://deno.land/install.sh | sh',windows:'irm https://deno.land/install.ps1 | iex'},note:'默认安装到当前用户目录，并配置 PATH。无需管理员权限。'},
+  {id:'bun',name:'Bun',publisher:'Oven',category:'dev',mark:'B',color:'#f3dfc1',desc:'集 JavaScript 运行时、打包器、测试工具和包管理器于一体。',official:'https://bun.sh/docs/installation',kind:'script',admin:false,methods:{linux:'curl -fsSL https://bun.com/install | bash',macos:'curl -fsSL https://bun.com/install | bash',windows:'powershell -c "irm bun.sh/install.ps1 | iex"'},note:'Linux 需要 unzip。安装后打开新终端，再使用 bun --version 验证。'},
+  {id:'rustup',name:'Rustup',publisher:'The Rust Team',category:'dev',mark:'R',color:'#e78a70',installed:true,desc:'Rust 官方工具链管理器，安装 Rust 并管理 stable、beta 与 nightly。',official:'https://www.rust-lang.org/tools/install',kind:'script',admin:false,windowsKind:'installer',methods:{linux:"curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh",macos:"curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh",windows:'https://win.rustup.rs/x86_64'},note:'Windows 还需按提示准备 Visual Studio C++ Build Tools。Unix 脚本提供交互选项。'},
+  {id:'ollama',name:'Ollama',publisher:'Ollama',category:'dev',mark:'O',color:'#b7bec9',desc:'在本机运行和管理开放模型，提供命令行工具与本地 API。',official:'https://ollama.com/download',kind:'script',admin:true,windowsKind:'installer',macosKind:'installer',methods:{linux:'curl -fsSL https://ollama.com/install.sh | sh',macos:'https://ollama.com/download/Ollama.dmg',windows:'https://ollama.com/download/OllamaSetup.exe'},note:'Linux 安装脚本可能配置系统服务并请求管理员授权。模型需要另行下载。'},
+  {id:'tailscale',name:'Tailscale',publisher:'Tailscale Inc.',category:'network',mark:'T',color:'#63b3ed',installed:true,desc:'基于 WireGuard 的虚拟组网工具，让设备安全地连接到同一网络。',official:'https://tailscale.com/docs/install/linux',kind:'script',admin:true,windowsKind:'installer',macosKind:'installer',methods:{linux:'curl -fsSL https://tailscale.com/install.sh | sh',macos:'https://pkgs.tailscale.com/stable/Tailscale-latest-macos.pkg',windows:'https://pkgs.tailscale.com/stable/tailscale-setup-latest.exe'},note:'安装后还需运行 tailscale up 或打开客户端，登录并授权设备加入网络。'},
+  {id:'zerotier',name:'ZeroTier',publisher:'ZeroTier, Inc.',category:'network',mark:'Z',color:'#e5b85c',desc:'创建覆盖局域网的虚拟网络，连接不同地点的设备与服务器。',official:'https://www.zerotier.com/download/',kind:'script',admin:true,windowsKind:'installer',macosKind:'installer',methods:{linux:'curl -s https://install.zerotier.com | sudo bash',macos:'https://download.zerotier.com/dist/ZeroTier%20One.pkg',windows:'https://download.zerotier.com/dist/ZeroTier%20One.msi'},note:'Linux 脚本会添加官方仓库并安装软件包；Windows 安装时需要批准驱动。'},
+  {id:'cloudflare',name:'Cloudflare One',publisher:'Cloudflare',category:'network',mark:'C',color:'#f59e52',desc:'Cloudflare 设备客户端，原 WARP，提供安全网络访问与连接能力。',official:'https://developers.cloudflare.com/cloudflare-one/team-and-resources/devices/cloudflare-one-client/download/',kind:'package',admin:true,methods:{linux:'https://developers.cloudflare.com/cloudflare-one/team-and-resources/devices/cloudflare-one-client/download/',macos:'https://downloads.cloudflareclient.com/v1/download/macos/ga',windows:'https://downloads.cloudflareclient.com/v1/download/windows/ga'},note:'按系统选择官方 DEB / RPM / MSI / PKG。企业部署可能需要额外配置。'},
+  {id:'rustdesk',name:'RustDesk',publisher:'RustDesk',category:'remote',mark:'R',color:'#70a5eb',desc:'开源远程桌面，支持跨平台访问，并可选择自建中继服务。',official:'https://github.com/rustdesk/rustdesk/releases/latest',kind:'package',admin:true,methods:{linux:'https://github.com/rustdesk/rustdesk/releases/latest',macos:'https://github.com/rustdesk/rustdesk/releases/latest',windows:'https://github.com/rustdesk/rustdesk/releases/latest'},note:'官方发布页提供 EXE、MSI、DEB、RPM、DMG、AppImage 等多种格式。'},
+  {id:'parsec',name:'Parsec',publisher:'Parsec',category:'remote',mark:'P',color:'#ef6c63',desc:'面向创作、协作与游戏的低延迟远程桌面和屏幕连接工具。',official:'https://parsec.app/downloads',kind:'package',admin:true,methods:{linux:'https://builds.parsec.app/package/parsec-linux.deb',macos:'https://builds.parsec.app/package/parsec-macos.pkg',windows:'https://builds.parsec.app/package/parsec-windows.exe'},note:'支持平台与远程主机能力因系统而异；使用前请核对官网硬件要求。'},
+  {id:'obsidian',name:'Obsidian',publisher:'Obsidian',category:'tools',mark:'Ob',color:'#a78bfa',installed:true,desc:'基于本地 Markdown 文件的知识库与笔记工具，支持插件和双链。',official:'https://obsidian.md/download',kind:'portable',admin:false,windowsKind:'installer',macosKind:'installer',methods:{linux:'https://obsidian.md/download',macos:'https://obsidian.md/download',windows:'https://obsidian.md/download'},note:'Linux 推荐 AppImage 便携版；下载后赋予执行权限即可运行。DEB 可在详情来源页选择。'},
+  {id:'localsend',name:'LocalSend',publisher:'LocalSend',category:'tools',mark:'L',color:'#5cc9bd',desc:'开源局域网文件传输工具，不依赖外部服务器即可跨设备分享文件。',official:'https://localsend.org/download',kind:'portable',admin:false,windowsKind:'installer',macosKind:'installer',methods:{linux:'https://github.com/localsend/localsend/releases/latest',macos:'https://localsend.org/download',windows:'https://localsend.org/download'},note:'Linux 可选择 AppImage 或发行版安装包；使用时设备需处于可互通的网络。'},
+];
+const PLATFORM = {linux:'Linux',windows:'Windows',macos:'macOS'};
+const state = {category:'all',query:'',platform:'linux',arch:'x86_64',queue:[],detailId:null};
+const $ = (selector,root=document) => root.querySelector(selector);
+const $$ = (selector,root=document) => [...root.querySelectorAll(selector)];
+const ico = (name,cls='') => `<svg class="${cls}" aria-hidden="true"><use href="#i-${name}"/></svg>`;
+function kindFor(app) { return app[`${state.platform}Kind`] || app.kind; }
+function kindLabel(kind) { return {script:'官方脚本',installer:'官方安装器',package:'官方安装包',portable:'便携版'}[kind]; }
+function actionLabel(kind) { return {script:'一键安装',installer:'运行安装器',package:'下载安装包',portable:'下载便携版'}[kind]; }
+function actionIcon(kind) { return kind === 'script' ? 'terminal' : 'download'; }
+function displayCommand(app) {
+  let command = app.methods[state.platform];
+  if (app.id === 'rustup' && state.platform === 'windows') command = command.replace('x86_64',state.arch);
+  return command;
+}
+function toast(message) {
+  const el = document.createElement('div'); el.className = 'toast'; el.innerHTML = `${ico('check')}<span></span>`;
+  $('span',el).textContent = message; $('#toastRoot').append(el); setTimeout(() => el.remove(),2800);
+}
+function renderCategories() {
+  $('#categories').innerHTML = CATEGORIES.map(c => {
+    const count = c.id === 'all' ? APPS.length : APPS.filter(a => a.category === c.id).length;
+    return `<button class="category ${state.category === c.id ? 'active' : ''}" data-category="${c.id}">${c.id === 'all' ? '' : ico(c.icon)}${c.name}<span class="count">${count}</span></button>`;
+  }).join('');
+  $$('[data-category]').forEach(btn => btn.addEventListener('click',() => { state.category = btn.dataset.category; renderCategories(); renderCatalog(); }));
+}
+function card(app) {
+  const kind = kindFor(app);
+  return `<article class="card" data-installed="${app.installed ? 'true' : 'false'}">
+    <div class="card-head"><div class="app-logo" style="--logo:${app.color}">${app.mark}</div><div class="app-name"><div class="app-title"><h3>${app.name}</h3><span class="install-status ${app.installed ? 'installed' : 'not-installed'}">${app.installed ? `${ico('check')}已安装` : '未安装'}</span></div><div class="publisher">${app.publisher}</div></div><span class="official">${ico('shield')}官网</span></div>
+    <p class="app-desc">${app.desc}</p>
+    <div class="method">${ico(actionIcon(kind))}<span>${kindLabel(kind)}</span><span class="meta ${app.admin ? 'admin' : ''}">${app.admin ? '需要授权' : '当前用户'}</span></div>
+    <div class="card-foot"><button class="detail-link" data-detail="${app.id}">查看详情${ico('chevron')}</button><button class="btn btn-primary btn-sm" data-install="${app.id}">${ico(actionIcon(kind))}${actionLabel(kind)}</button></div>
+  </article>`;
+}
+function renderCatalog() {
+  const query = state.query.trim().toLowerCase();
+  const groups = CATEGORIES.filter(c => c.id !== 'all' && (state.category === 'all' || state.category === c.id));
+  let visible = 0;
+  $('#catalog').innerHTML = groups.map(group => {
+    const apps = APPS.filter(a => a.category === group.id && (!query || `${a.name} ${a.publisher} ${a.desc}`.toLowerCase().includes(query)));
+    visible += apps.length;
+    if (!apps.length) return '';
+    return `<section class="section" id="group-${group.id}" style="--section-color:${group.color}"><div class="section-head"><span class="section-icon">${ico(group.icon)}</span><h2 class="section-title">${group.name}</h2><span class="section-count">${apps.length} 款</span><span class="section-desc">${group.desc}</span></div><div class="grid">${apps.map(card).join('')}</div></section>`;
+  }).join('') || `<div class="empty">${ico('search')}<h3>没有找到相关软件</h3><div>试试软件名称，或切换到「全部软件」分类。</div></div>`;
+  $$('[data-detail],[data-install]').forEach(btn => btn.addEventListener('click',() => openDetail(btn.dataset.detail || btn.dataset.install)));
+  $('#content').dataset.visible = visible;
+}
+function openDetail(id) {
+  state.detailId = id; const app = APPS.find(a => a.id === id); const kind = kindFor(app);
+  const isScript = kind === 'script';
+  $('#modalRoot').innerHTML = `<div class="backdrop" data-close></div><section class="modal" role="dialog" aria-modal="true" aria-labelledby="detailTitle">
+    <div class="modal-head"><div class="app-logo" style="--logo:${app.color}">${app.mark}</div><div><h2 id="detailTitle">${app.name}</h2><p>${app.publisher} · ${kindLabel(kind)}</p></div><button class="icon-btn" data-close aria-label="关闭">${ico('x')}</button></div>
+    <div class="modal-body">
+      <div class="detail-meta"><span class="badge">${ico('monitor')}${PLATFORM[state.platform]}</span><span class="badge">${ico('cpu')}${state.arch === 'x86_64' ? 'x86_64' : 'ARM64'}</span><span class="badge">${ico(app.admin ? 'shield' : 'check')}${app.admin ? '可能需要管理员授权' : '安装到当前用户'}</span></div>
+      <div class="source-row">${ico('shield')}<span>官方来源</span><a href="${app.official}" target="_blank" rel="noopener noreferrer">${new URL(app.official).hostname}</a><a class="open" href="${app.official}" target="_blank" rel="noopener noreferrer" aria-label="打开官方来源">${ico('external')}</a></div>
+      ${kind !== 'script' && app.id !== 'rustup' ? `<div class="note" style="margin:0 0 13px">${ico('info')}<span>当前选择 ${state.arch === 'x86_64' ? 'x86_64' : 'ARM64'}；请在官方发布页确认对应的安装包架构。</span></div>` : ''}
+      <label class="field-label" for="detailPlatform">安装平台</label><select class="detail-select" id="detailPlatform"><option value="linux" ${state.platform === 'linux' ? 'selected' : ''}>Linux · 官方推荐方式</option><option value="windows" ${state.platform === 'windows' ? 'selected' : ''}>Windows · 官方推荐方式</option><option value="macos" ${state.platform === 'macos' ? 'selected' : ''}>macOS · 官方推荐方式</option></select>
+      <label class="field-label">${isScript ? '将执行的官方命令' : '官方下载地址'}</label>
+      <div class="command-box"><div class="command-top">${isScript ? (state.platform === 'windows' ? 'PowerShell' : 'Shell') : 'HTTPS · 不从 Pakkit 服务器下载'}<button class="copy-btn" id="copyCommand">${ico('copy')}复制</button></div><pre class="command" id="commandText">${displayCommand(app)}</pre></div>
+      <div class="note">${ico('info')}<span>${app.note}</span></div>
+    </div>
+    <div class="modal-foot"><span class="footnote">原型仅演示交互，不会实际执行安装</span><button class="btn btn-outline" data-close>取消</button><button class="btn btn-primary" id="confirmInstall">${ico('queue')}加入安装队列</button></div>
+  </section>`;
+  $$('[data-close]').forEach(el => el.addEventListener('click',closeModal));
+  $('#detailPlatform').addEventListener('change',e => { state.platform = e.target.value; $('#platformSelect').value = state.platform; closeModal(); renderCatalog(); updateArchStatus(); openDetail(id); });
+  $('#copyCommand').addEventListener('click',async () => { const text = displayCommand(app); try { await navigator.clipboard.writeText(text); toast('已复制到剪贴板'); } catch { toast('请选中命令后手动复制'); } });
+  $('#confirmInstall').addEventListener('click',() => { addToQueue(app); closeModal(); });
+  document.addEventListener('keydown',escClose);
+  $('[data-close].icon-btn').focus();
+}
+function closeModal() { $('#modalRoot').innerHTML = ''; state.detailId = null; document.removeEventListener('keydown',escClose); }
+function escClose(e) { if (e.key === 'Escape') closeModal(); }
+function addToQueue(app) {
+  if (state.queue.some(item => item.id === app.id)) { toast(`${app.name} 已在安装队列中`); openQueue(); return; }
+  state.queue.push({id:app.id,name:app.name,command:displayCommand(app),kind:kindFor(app)});
+  renderQueue(); toast(`${app.name} 已加入安装队列`);
+}
+function renderQueue() {
+  $('#queueCount').textContent = state.queue.length; $('#queueCount').classList.toggle('hidden',!state.queue.length);
+  $('#queueStatus').textContent = `队列 ${state.queue.length}`;
+  $('#queueList').innerHTML = state.queue.length ? state.queue.map(item => `<div class="queue-item"><div class="queue-item-head"><strong>${item.name}</strong><span>等待执行 · 原型</span></div><div class="queue-command">${item.command}</div><div class="pending-bar" aria-hidden="true"></div></div>`).join('') : `<div class="queue-empty">${ico('queue')}<div>安装队列为空</div><p>确认官方命令后，可将软件加入这里。</p></div>`;
+}
+function openQueue() { $('#queueDrawer').classList.remove('hidden'); renderQueue(); }
+function updateArchStatus() { $('#archStatus').textContent = `${PLATFORM[state.platform]} · ${state.arch === 'x86_64' ? 'x86_64' : 'ARM64'}`; }
+function openSubmit() {
+  $('#modalRoot').innerHTML = `<div class="backdrop" data-close></div><section class="modal" role="dialog" aria-modal="true" aria-labelledby="submitTitle"><div class="modal-head"><div><h2 id="submitTitle">提交官网直装软件</h2><p>提供开发者自己的下载页或安装文档</p></div><button class="icon-btn" data-close aria-label="关闭">${ico('x')}</button></div><form id="submitForm"><div class="modal-body"><label class="field-label" for="softwareName">软件名称</label><input class="form-input" id="softwareName" required placeholder="例如：Deno"/><label class="field-label" for="softwareUrl">官方下载页 / 安装文档</label><input class="form-input" id="softwareUrl" type="url" required placeholder="https://…"/><label class="field-label" for="softwareNote">补充说明（可选）</label><textarea class="form-input" id="softwareNote" placeholder="支持的平台、安装方式或收录理由"></textarea><div class="note">${ico('info')}<span>收录时核对域名归属、支持平台、权限需求及安装命令；「官方发布」不等同于 Pakkit 安全背书。</span></div></div><div class="modal-foot"><button class="btn btn-outline" type="button" data-close>取消</button><button class="btn btn-primary" type="submit">预览提交内容</button></div></form></section>`;
+  $$('[data-close]').forEach(el => el.addEventListener('click',closeModal));
+  $('#submitForm').addEventListener('submit',e => { e.preventDefault(); closeModal(); toast('提交内容已通过格式检查；原型不会实际发送'); });
+  document.addEventListener('keydown',escClose); $('#softwareName').focus();
+}
+$('#catalogSearch').addEventListener('input',e => { state.query = e.target.value; renderCatalog(); });
+$('#globalSearch').addEventListener('input',e => { state.query = e.target.value; $('#catalogSearch').value = state.query; renderCatalog(); });
+$('#platformSelect').addEventListener('change',e => { state.platform = e.target.value; updateArchStatus(); renderCatalog(); });
+$('#archSelect').addEventListener('change',e => { state.arch = e.target.value; updateArchStatus(); });
+$('#refreshBtn').addEventListener('click',() => toast('原型目录已是最新 · 11 款软件'));
+$('#submitBtn').addEventListener('click',openSubmit);
+$('#queueBtn').addEventListener('click',openQueue);
+$('#closeQueue').addEventListener('click',() => $('#queueDrawer').classList.add('hidden'));
+$('#themeBtn').addEventListener('click',() => { const dark = document.documentElement.classList.toggle('dark'); $('#themeLabel').textContent = dark ? '深色主题' : '浅色主题'; });
+$$('[data-demo]').forEach(btn => btn.addEventListener('click',() => toast(`${btn.dataset.demo}页面不在本次原型范围内`)));
+document.addEventListener('keydown',e => { if (e.ctrlKey && e.key.toLowerCase() === 'k') { e.preventDefault(); $('#globalSearch').focus(); } });
+renderCategories(); renderCatalog(); renderQueue(); updateArchStatus();
+</script>
+</body>
+</html>
