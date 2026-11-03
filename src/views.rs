@@ -1437,38 +1437,48 @@ fn official_install(
             ),
     );
 
-    let body = match &state.official.status {
-        OfficialLoadState::Loading => widgets::empty_state(
-            p,
-            IconKey::Refresh,
-            tr!("official.loading"),
-            tr!("official.loading_hint"),
-            Vec::new(),
-        )
-        .into_any_element(),
-        OfficialLoadState::Failed(error) => widgets::empty_state(
-            p,
-            IconKey::Warning,
-            tr!("official.load_failed"),
-            error.clone(),
-            vec![
-                widgets::btn(
-                    cx,
-                    p,
-                    "official-retry",
-                    BtnKind::Primary,
-                    BtnSize::Regular,
-                    tr!("official.retry"),
-                )
-                .on_click(cx.listener(|this, _, _, cx| {
-                    this.refresh_official_catalog(cx);
-                }))
-                .into_any_element(),
-            ],
-        )
-        .into_any_element(),
-        OfficialLoadState::Ready => official_ready(state, inputs, p, cx),
+    let (filters, body) = match &state.official.status {
+        OfficialLoadState::Loading => (
+            None,
+            widgets::empty_state(
+                p,
+                IconKey::Refresh,
+                tr!("official.loading"),
+                tr!("official.loading_hint"),
+                Vec::new(),
+            )
+            .into_any_element(),
+        ),
+        OfficialLoadState::Failed(error) => (
+            None,
+            widgets::empty_state(
+                p,
+                IconKey::Warning,
+                tr!("official.load_failed"),
+                error.clone(),
+                vec![
+                    widgets::btn(
+                        cx,
+                        p,
+                        "official-retry",
+                        BtnKind::Primary,
+                        BtnSize::Regular,
+                        tr!("official.retry"),
+                    )
+                    .on_click(cx.listener(|this, _, _, cx| {
+                        this.refresh_official_catalog(cx);
+                    }))
+                    .into_any_element(),
+                ],
+            )
+            .into_any_element(),
+        ),
+        OfficialLoadState::Ready => {
+            let (filters, body) = official_ready(state, inputs, p, cx);
+            (Some(filters), body)
+        }
     };
+    let has_filters = filters.is_some();
 
     let status = match &state.official.status {
         OfficialLoadState::Ready => state.official.catalog.as_ref().map_or_else(
@@ -1495,14 +1505,19 @@ fn official_install(
         .flex_col()
         .h_full()
         .child(head)
+        .child(trust)
+        .children(filters.map(|filters| div().flex_none().px(px(24.)).pt(px(16.)).child(filters)))
         .child(
             div()
                 .id("official-content")
                 .flex_1()
                 .min_h_0()
                 .overflow_y_scroll()
-                .child(trust)
-                .child(widgets::page_body().pt(px(16.)).child(body)),
+                .child(
+                    widgets::page_body()
+                        .when(!has_filters, |this| this.pt(px(16.)))
+                        .child(body),
+                ),
         )
         .child(
             div()
@@ -1529,7 +1544,7 @@ fn official_ready(
     inputs: &ShellInputs,
     p: &Palette,
     cx: &mut Context<AppView>,
-) -> AnyElement {
+) -> (AnyElement, AnyElement) {
     let language = state.settings.language.as_str();
     let visible = visible_official_apps_for_language(&state.official, language);
     let (page_apps, page, pages) = page_slice(&visible, state.official.page);
@@ -1692,8 +1707,7 @@ fn official_ready(
         }
     }
 
-    div()
-        .child(filters)
+    let results = div()
         .when(groups.is_empty(), |this| {
             this.child(widgets::empty_state(
                 p,
@@ -1718,7 +1732,9 @@ fn official_ready(
                 },
             ))
         })
-        .into_any_element()
+        .into_any_element();
+
+    (filters.into_any_element(), results)
 }
 
 fn official_platform_count(state: &AppState, category: Option<&str>) -> usize {
