@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "catalogVersion": "2026.11.01-2",
+  "catalogVersion": "2026.11.04-1",
   "homepage": "https://github.com/vgerbot-app/winget-gui/tree/official-install",
   "submissionUrl": "https://github.com/vgerbot-app/winget-gui/issues/new",
   "categories": [
@@ -3253,6 +3253,90 @@
             "args": [
               "--version"
             ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "openidea",
+      "name": "OpenIDEA",
+      "publisher": "l0ng-ai",
+      "category": "dev",
+      "summary": {
+        "zh-CN": "开源 Rust 原生 IDE，提供 IntelliJ 风格操作、代码洞察、调试、Git 与数据库工具。",
+        "zh-TW": "開源 Rust 原生 IDE，提供 IntelliJ 風格操作、程式碼洞察、偵錯、Git 與資料庫工具。",
+        "en": "An open-source Rust-native IDE with IntelliJ-style workflows, code insight, debugging, Git and database tools.",
+        "ja": "IntelliJ スタイルの操作、コードインサイト、デバッグ、Git、データベースツールを備えるオープンソースの Rust ネイティブ IDE。",
+        "ko": "IntelliJ 스타일 작업 흐름, 코드 인사이트, 디버깅, Git 및 데이터베이스 도구를 제공하는 오픈 소스 Rust 네이티브 IDE."
+      },
+      "homepage": "https://github.com/l0ng-ai/openidea",
+      "mark": "OI",
+      "accent": "#6c7cff",
+      "variants": [
+        {
+          "id": "openidea-linux",
+          "os": "linux",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "Apache-2.0 开源软件。仅打开官方稳定版发布页；请选择匹配架构的 AppImage、DEB 或 RPM，打开页面不代表已安装。",
+            "zh-TW": "Apache-2.0 開源軟體。僅開啟官方穩定版發布頁；請選擇符合架構的 AppImage、DEB 或 RPM，開啟頁面不代表已安裝。",
+            "en": "Apache-2.0 open-source software. Opens the official stable release page only; choose an AppImage, DEB or RPM matching your architecture. Opening a page does not mean installation.",
+            "ja": "Apache-2.0 のオープンソースソフトウェアです。公式の安定版リリースページのみを開きます。アーキテクチャに合う AppImage、DEB、RPM を選択してください。ページを開いてもインストール完了ではありません。",
+            "ko": "Apache-2.0 오픈 소스 소프트웨어입니다. 공식 안정 릴리스 페이지만 열리며 아키텍처에 맞는 AppImage, DEB 또는 RPM을 선택하세요. 페이지를 열었다고 설치된 것은 아닙니다."
+          },
+          "sourceUrl": "https://github.com/l0ng-ai/openidea/releases/latest",
+          "method": {
+            "type": "official_page",
+            "url": "https://github.com/l0ng-ai/openidea/releases/latest"
+          }
+        },
+        {
+          "id": "openidea-windows",
+          "os": "windows",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "Apache-2.0 开源软件。仅打开官方稳定版发布页；请选择匹配架构的 EXE 或 MSI，并核对发布说明和系统要求，打开页面不代表已安装。",
+            "zh-TW": "Apache-2.0 開源軟體。僅開啟官方穩定版發布頁；請選擇符合架構的 EXE 或 MSI，並核對發布說明與系統需求，開啟頁面不代表已安裝。",
+            "en": "Apache-2.0 open-source software. Opens the official stable release page only; choose an EXE or MSI matching your architecture and check the release notes and system requirements. Opening a page does not mean installation.",
+            "ja": "Apache-2.0 のオープンソースソフトウェアです。公式の安定版リリースページのみを開きます。アーキテクチャに合う EXE、MSI を選択し、リリースノートとシステム要件を確認してください。ページを開いてもインストール完了ではありません。",
+            "ko": "Apache-2.0 오픈 소스 소프트웨어입니다. 공식 안정 릴리스 페이지만 열리며 아키텍처에 맞는 EXE 또는 MSI를 선택하고 릴리스 노트와 시스템 요구 사항을 확인하세요. 페이지를 열었다고 설치된 것은 아닙니다."
+          },
+          "sourceUrl": "https://github.com/l0ng-ai/openidea/releases/latest",
+          "method": {
+            "type": "official_page",
+            "url": "https://github.com/l0ng-ai/openidea/releases/latest"
+          }
+        },
+        {
+          "id": "openidea-macos",
+          "os": "macos",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "Apache-2.0 开源软件。仅打开官方稳定版发布页；请选择匹配 Intel 或 Apple Silicon 的 DMG，打开页面不代表已安装。",
+            "zh-TW": "Apache-2.0 開源軟體。僅開啟官方穩定版發布頁；請選擇符合 Intel 或 Apple Silicon 的 DMG，開啟頁面不代表已安裝。",
+            "en": "Apache-2.0 open-source software. Opens the official stable release page only; choose the DMG matching Intel or Apple Silicon. Opening a page does not mean installation.",
+            "ja": "Apache-2.0 のオープンソースソフトウェアです。公式の安定版リリースページのみを開きます。Intel、Apple Silicon のいずれかに合う DMG を選択してください。ページを開いてもインストール完了ではありません。",
+            "ko": "Apache-2.0 오픈 소스 소프트웨어입니다. 공식 안정 릴리스 페이지만 열리며 Intel 또는 Apple Silicon에 맞는 DMG를 선택하세요. 페이지를 열었다고 설치된 것은 아닙니다."
+          },
+          "sourceUrl": "https://github.com/l0ng-ai/openidea/releases/latest",
+          "method": {
+            "type": "official_page",
+            "url": "https://github.com/l0ng-ai/openidea/releases/latest"
           }
         }
       ]
