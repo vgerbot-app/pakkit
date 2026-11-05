@@ -56,6 +56,9 @@ pub enum PkOp {
     /// `install -y <name>` (apt) / `-S --noconfirm <name>` (pacman; pacman's
     /// single-package upgrade is also `-S`, so it maps here too).
     Install { name: String },
+    /// An absolute local DEB/RPM path. Unlike repository installs, this must
+    /// call InstallFiles rather than trying to resolve the path as a name.
+    InstallFile { path: String },
     /// `install --only-upgrade -y <name>` (apt) / `upgrade -y <name>` (dnf) /
     /// `--non-interactive update <name>` (zypper) — a single-package upgrade.
     UpgradeOne { name: String },
@@ -70,6 +73,18 @@ pub enum PkOp {
     RefreshCache,
 }
 
+fn plan_install(name: &str) -> PkOp {
+    if std::path::Path::new(name).is_absolute() {
+        PkOp::InstallFile {
+            path: name.to_owned(),
+        }
+    } else {
+        PkOp::Install {
+            name: name.to_owned(),
+        }
+    }
+}
+
 /// Map backend mutation arguments to a PackageKit operation.
 ///
 /// The apt, dnf, pacman and zypper shapes are disjoint, so one planner
@@ -77,9 +92,7 @@ pub enum PkOp {
 /// recognize; the caller falls back to the pkexec pipeline for those.
 pub fn plan(args: &[&str]) -> Option<PkOp> {
     match args {
-        ["install", "-y", name] => Some(PkOp::Install {
-            name: (*name).to_owned(),
-        }),
+        ["install", "-y", name] => Some(plan_install(name)),
         ["install", "--only-upgrade", "-y", name] => Some(PkOp::UpgradeOne {
             name: (*name).to_owned(),
         }),
@@ -93,18 +106,14 @@ pub fn plan(args: &[&str]) -> Option<PkOp> {
             name: (*name).to_owned(),
         }),
         ["makecache", "--refresh"] => Some(PkOp::RefreshCache),
-        ["-S", "--noconfirm", name] => Some(PkOp::Install {
-            name: (*name).to_owned(),
-        }),
+        ["-S", "--noconfirm", name] => Some(plan_install(name)),
         ["-R", "--noconfirm", name] => Some(PkOp::Remove {
             name: (*name).to_owned(),
         }),
         ["-Syu", "--noconfirm"] => Some(PkOp::UpgradeAll),
         ["-Sy"] => Some(PkOp::RefreshCache),
         // zypper's mutations all carry the global `--non-interactive` flag.
-        ["--non-interactive", "install", name] => Some(PkOp::Install {
-            name: (*name).to_owned(),
-        }),
+        ["--non-interactive", "install", name] => Some(plan_install(name)),
         ["--non-interactive", "remove", name] => Some(PkOp::Remove {
             name: (*name).to_owned(),
         }),
@@ -414,6 +423,10 @@ where
 pub fn run(op: &PkOp) -> Result<Output, RunError> {
     let conn = blocking::Connection::system().map_err(RunError::Transport)?;
     match op {
+        PkOp::InstallFile { path } => {
+            let files = vec![path.clone()];
+            act(&conn, |txn| txn.call("InstallFiles", &(0_u64, files)))
+        }
         PkOp::Install { name } => {
             let ids = resolve_ids(&conn, name, PK_INFO_AVAILABLE)?;
             act(&conn, |txn| txn.call("InstallPackages", &(0_u64, ids)))

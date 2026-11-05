@@ -16,6 +16,12 @@ use sha2::{Digest as _, Sha256};
 
 use crate::backends::exec;
 
+mod github;
+pub mod install;
+pub mod resolver;
+
+pub use resolver::{OfficialResolutionState, ResolvedOfficialInstall};
+
 pub const DEFAULT_CATALOG_URL: &str =
     "https://raw.githubusercontent.com/vgerbot-app/winget-gui/official-install/catalog.json";
 const CATALOG_LIMIT: u64 = 4 * 1024 * 1024;
@@ -33,6 +39,10 @@ pub enum OfficialError {
     Validation(String),
     #[error("目录请求失败：{0}")]
     CatalogRequest(String),
+    #[error("最新版请求失败：{0}")]
+    ResolveRequest(String),
+    #[error("最新版解析失败：{0}")]
+    Resolve(String),
     #[error("下载失败：{0}")]
     Download(String),
     #[error("文件操作失败：{0}")]
@@ -153,7 +163,7 @@ impl std::fmt::Display for OfficialOs {
     }
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum OfficialArch {
     X86_64,
@@ -202,6 +212,10 @@ pub enum OfficialMethod {
     },
     OfficialPage {
         url: String,
+        /// Optional for old catalogs. Old clients ignore it and retain the
+        /// browser fallback; new clients resolve only after an explicit click.
+        #[serde(default)]
+        release: Option<resolver::OfficialReleaseSource>,
     },
 }
 
@@ -262,6 +276,7 @@ pub struct OfficialCatalogState {
     pub arch: Option<OfficialArch>,
     pub page: usize,
     pub installed: std::collections::HashMap<String, OfficialInstallState>,
+    pub resolutions: std::collections::HashMap<String, OfficialResolutionState>,
 }
 
 impl Default for OfficialCatalogState {
@@ -275,6 +290,7 @@ impl Default for OfficialCatalogState {
             arch: OfficialArch::host(),
             page: 0,
             installed: std::collections::HashMap::new(),
+            resolutions: std::collections::HashMap::new(),
         }
     }
 }
@@ -395,7 +411,18 @@ fn validate_catalog(catalog: &OfficialCatalog) -> Result<(), OfficialError> {
                         }
                     }
                 }
-                OfficialMethod::OfficialPage { url } => validate_https(url)?,
+                OfficialMethod::OfficialPage { url, release } => {
+                    validate_https(url)?;
+                    if let Some(source) = release {
+                        resolver::validate_release(source, variant)?;
+                        if let resolver::OfficialReleaseSource::GithubRelease {
+                            repository, ..
+                        } = source
+                        {
+                            resolver::validate_fallback_page(url, repository)?;
+                        }
+                    }
+                }
             }
         }
     }
@@ -520,14 +547,48 @@ pub fn catalog_url() -> String {
         .unwrap_or_else(|| DEFAULT_CATALOG_URL.to_owned())
 }
 
-fn agent(timeout: Duration, proxy: &str) -> Result<ureq::Agent, OfficialError> {
-    let mut config = ureq::Agent::config_builder().timeout_global(Some(timeout));
+fn agent(timeout: Duration, proxy: &str, allow_http: bool) -> Result<ureq::Agent, OfficialError> {
+    let mut config = ureq::Agent::config_builder()
+        .timeout_global(Some(timeout))
+        .https_only(!allow_http)
+        // Redirects are followed below so every target receives the same
+        // HTTPS / explicit-loopback validation as the initial URL.
+        .max_redirects(0);
     if !proxy.trim().is_empty() {
         let parsed = ureq::Proxy::new(proxy)
             .map_err(|error| OfficialError::CatalogRequest(error.to_string()))?;
         config = config.proxy(Some(parsed));
     }
     Ok(config.build().into())
+}
+
+fn get_following(
+    agent: &ureq::Agent,
+    url: &str,
+    headers: &[(&str, &str)],
+    allow_http: bool,
+) -> Result<ureq::http::Response<ureq::Body>, String> {
+    let mut current = url::Url::parse(url).map_err(|error| error.to_string())?;
+    for _ in 0..=5 {
+        if !valid_catalog_scheme(&current, allow_http) {
+            return Err("请求或重定向目标不是 HTTPS（或显式允许的本机开发地址）".to_owned());
+        }
+        let mut request = agent.get(current.as_str());
+        for (name, value) in headers {
+            request = request.header(*name, *value);
+        }
+        let response = request.call().map_err(|error| error.to_string())?;
+        if !matches!(response.status().as_u16(), 301 | 302 | 303 | 307 | 308) {
+            return Ok(response);
+        }
+        let location = response
+            .headers()
+            .get("location")
+            .and_then(|value| value.to_str().ok())
+            .ok_or_else(|| "重定向缺少 Location".to_owned())?;
+        current = current.join(location).map_err(|error| error.to_string())?;
+    }
+    Err("重定向超过 5 次".to_owned())
 }
 
 fn valid_catalog_scheme(url: &url::Url, development: bool) -> bool {
@@ -547,19 +608,15 @@ fn valid_catalog_scheme(url: &url::Url, development: bool) -> bool {
 pub fn fetch_catalog(url: &str, proxy: &str) -> Result<OfficialCatalog, OfficialError> {
     let parsed =
         url::Url::parse(url).map_err(|error| OfficialError::CatalogRequest(error.to_string()))?;
-    if !valid_catalog_scheme(
-        &parsed,
-        std::env::var_os("PAKKIT_OFFICIAL_CATALOG_URL").is_some(),
-    ) {
+    let development = std::env::var_os("PAKKIT_OFFICIAL_CATALOG_URL").is_some();
+    if !valid_catalog_scheme(&parsed, development) {
         return Err(OfficialError::CatalogRequest(
             "目录只接受 HTTPS；开发 HTTP 必须使用显式本机覆盖地址".to_owned(),
         ));
     }
-    let agent = agent(Duration::from_secs(15), proxy)?;
-    let mut response = agent
-        .get(url)
-        .call()
-        .map_err(|error| OfficialError::CatalogRequest(error.to_string()))?;
+    let agent = agent(Duration::from_secs(15), proxy, development)?;
+    let mut response =
+        get_following(&agent, url, &[], development).map_err(OfficialError::CatalogRequest)?;
     if !response.status().is_success() {
         return Err(OfficialError::CatalogRequest(format!(
             "HTTP {}",
@@ -594,6 +651,8 @@ pub enum OfficialOutcome {
     ScriptCompleted { log: String },
     TerminalOpened,
     InstallerStarted { path: PathBuf },
+    PackageInstalled { path: PathBuf, log: String },
+    InstallerRebootRequired { path: PathBuf },
     PackageDownloaded { path: PathBuf },
     PortableDownloaded { path: PathBuf },
     OfficialPageOpened,
@@ -603,10 +662,21 @@ impl OfficialOutcome {
     pub fn downloaded_path(&self) -> Option<&Path> {
         match self {
             Self::InstallerStarted { path }
+            | Self::PackageInstalled { path, .. }
+            | Self::InstallerRebootRequired { path }
             | Self::PackageDownloaded { path }
             | Self::PortableDownloaded { path } => Some(path),
             _ => None,
         }
+    }
+
+    pub fn should_detect(&self) -> bool {
+        matches!(
+            self,
+            Self::ScriptCompleted { .. }
+                | Self::PackageInstalled { .. }
+                | Self::InstallerRebootRequired { .. }
+        )
     }
 }
 
@@ -657,7 +727,8 @@ pub fn run_method(
             sha256,
             make_executable: executable,
         } => {
-            let path = download_artifact(url, file_name, sha256.as_deref(), proxy, allow_http)?;
+            let path =
+                download_artifact(url, file_name, sha256.as_deref(), None, proxy, allow_http)?;
             if *executable == Some(true) {
                 make_executable(&path)?;
             }
@@ -672,7 +743,7 @@ pub fn run_method(
                 }
             }
         }
-        OfficialMethod::OfficialPage { url } => {
+        OfficialMethod::OfficialPage { url, .. } => {
             open_path(Path::new(url))?;
             Ok(OfficialOutcome::OfficialPageOpened)
         }
@@ -741,6 +812,7 @@ pub fn download_artifact(
     url: &str,
     file_name: &str,
     expected_sha256: Option<&str>,
+    expected_size: Option<u64>,
     proxy: &str,
     allow_http: bool,
 ) -> Result<PathBuf, OfficialError> {
@@ -766,11 +838,9 @@ pub fn download_artifact(
         validate_https(url)?;
     }
     validate_file_name(file_name)?;
-    let agent = agent(Duration::from_secs(60), proxy)?;
-    let mut response = agent
-        .get(url)
-        .call()
-        .map_err(|error| OfficialError::Download(error.to_string()))?;
+    let agent = agent(Duration::from_secs(30 * 60), proxy, allow_http)?;
+    let mut response =
+        get_following(&agent, url, &[], allow_http).map_err(OfficialError::Download)?;
     if !response.status().is_success() {
         return Err(OfficialError::Download(format!(
             "HTTP {}",
@@ -789,14 +859,29 @@ pub fn download_artifact(
             .and_then(|s| s.to_str())
             .unwrap_or_default()
     ));
-    let result = write_download(&mut response, &temp_path, expected_sha256);
-    match result {
+    persist_download(
+        &mut response,
+        &temp_path,
+        &final_path,
+        expected_sha256,
+        expected_size,
+    )
+}
+
+fn persist_download(
+    response: &mut ureq::http::Response<ureq::Body>,
+    temp_path: &Path,
+    final_path: &Path,
+    expected_sha256: Option<&str>,
+    expected_size: Option<u64>,
+) -> Result<PathBuf, OfficialError> {
+    match write_download(response, temp_path, expected_sha256, expected_size) {
         Ok(()) => {
-            std::fs::rename(&temp_path, &final_path)?;
-            Ok(final_path)
+            std::fs::rename(temp_path, final_path)?;
+            Ok(final_path.to_owned())
         }
         Err(error) => {
-            let _ = std::fs::remove_file(&temp_path);
+            let _ = std::fs::remove_file(temp_path);
             Err(error)
         }
     }
@@ -806,6 +891,7 @@ fn write_download(
     response: &mut ureq::http::Response<ureq::Body>,
     path: &Path,
     expected_sha256: Option<&str>,
+    expected_size: Option<u64>,
 ) -> Result<(), OfficialError> {
     let mut reader = response.body_mut().as_reader();
     let mut file = std::fs::File::create(path)?;
@@ -825,6 +911,13 @@ fn write_download(
         hasher.update(&buffer[..count]);
     }
     file.sync_all()?;
+    if let Some(expected) = expected_size
+        && total != expected
+    {
+        return Err(OfficialError::Download(format!(
+            "文件大小不匹配：期望 {expected} 字节，实际 {total} 字节"
+        )));
+    }
     if let Some(expected) = expected_sha256 {
         let actual = hasher.finalize();
         let mut actual_hex = String::with_capacity(64);
@@ -966,6 +1059,95 @@ mod tests {
         }).to_string()
     }
 
+    fn github_doc() -> serde_json::Value {
+        let mut doc: serde_json::Value = serde_json::from_str(&fixture()).expect("fixture");
+        doc["apps"][0]["variants"][0]["method"] = serde_json::json!({
+            "type": "official_page",
+            "url": "https://github.com/owner/repo/releases/latest",
+            "release": {
+                "type": "github_release",
+                "repository": "owner/repo",
+                "packages": [{
+                    "format": "deb",
+                    "assets": {
+                        "x86_64": "App-*-amd64.deb",
+                        "aarch64": "App-*-arm64.deb"
+                    }
+                }]
+            }
+        });
+        doc
+    }
+
+    #[test]
+    fn legacy_parser_ignores_release_and_keeps_browser_fallback() {
+        #[derive(serde::Deserialize)]
+        #[serde(tag = "type", rename_all = "snake_case")]
+        enum LegacyMethod {
+            OfficialPage { url: String },
+        }
+
+        let method = github_doc()["apps"][0]["variants"][0]["method"].clone();
+        let LegacyMethod::OfficialPage { url } =
+            serde_json::from_value(method).expect("old clients ignore the new field");
+        assert_eq!(url, "https://github.com/owner/repo/releases/latest");
+    }
+
+    #[test]
+    fn unknown_provider_degrades_only_dynamic_install() {
+        let mut doc = github_doc();
+        doc["apps"][0]["variants"][0]["method"]["release"] = serde_json::json!({
+            "type": "vendor_json_feed",
+            "url": "https://example.com/releases.json"
+        });
+        let catalog = parse_catalog(&doc.to_string()).expect("unknown provider remains a page");
+        assert!(matches!(
+            &catalog.apps[0].variants[0].method,
+            OfficialMethod::OfficialPage {
+                release: Some(resolver::OfficialReleaseSource::Unsupported),
+                ..
+            }
+        ));
+    }
+
+    #[test]
+    fn known_provider_configuration_is_strictly_validated() {
+        assert!(parse_catalog(&github_doc().to_string()).is_ok());
+        for (pointer, value) in [
+            (
+                "/apps/0/variants/0/method/release/repository",
+                serde_json::json!("owner/repo/extra"),
+            ),
+            (
+                "/apps/0/variants/0/method/release/packages",
+                serde_json::json!([]),
+            ),
+            (
+                "/apps/0/variants/0/method/url",
+                serde_json::json!("https://github.com/owner/repo/releases-evil"),
+            ),
+        ] {
+            let mut doc = github_doc();
+            *doc.pointer_mut(pointer).expect("field") = value;
+            assert!(parse_catalog(&doc.to_string()).is_err(), "{pointer}");
+        }
+
+        let mut windows = github_doc();
+        windows["apps"][0]["variants"][1]["method"] = serde_json::json!({
+            "type": "official_page",
+            "url": "https://github.com/owner/repo/releases/latest",
+            "release": {
+                "type": "github_release",
+                "repository": "owner/repo",
+                "packages": [{"format": "exe", "assets": {"x86_64": "App-*.exe"}}]
+            }
+        });
+        assert!(parse_catalog(&windows.to_string()).is_err());
+        windows["apps"][0]["variants"][1]["method"]["release"]["packages"][0]["expectedSigner"] =
+            serde_json::json!("CN=Publisher");
+        assert!(parse_catalog(&windows.to_string()).is_ok());
+    }
+
     #[test]
     fn valid_catalog_supports_all_methods_and_architectures() {
         let catalog = parse_catalog(&fixture()).expect("valid fixture");
@@ -1001,6 +1183,115 @@ mod tests {
         assert!(!valid_catalog_scheme(&remote, true));
         assert!(valid_catalog_scheme(&local, true));
         assert!(valid_catalog_scheme(&secure, false));
+    }
+
+    fn response(data: &[u8]) -> ureq::http::Response<ureq::Body> {
+        ureq::http::Response::builder()
+            .status(200)
+            .body(ureq::Body::builder().data(data))
+            .expect("test response")
+    }
+
+    fn test_path(label: &str) -> PathBuf {
+        use std::sync::atomic::{AtomicU64, Ordering};
+        static NEXT: AtomicU64 = AtomicU64::new(0);
+        std::env::temp_dir().join(format!(
+            "pakkit-{label}-{}-{}",
+            std::process::id(),
+            NEXT.fetch_add(1, Ordering::Relaxed)
+        ))
+    }
+
+    #[test]
+    fn verified_download_checks_size_and_hash_and_removes_partial_files() {
+        let payload = b"verified package";
+        let hash = format!("{:x}", Sha256::digest(payload));
+        let temp = test_path("download").with_extension("deb.part");
+        let final_path = temp.with_extension("deb");
+        persist_download(
+            &mut response(payload),
+            &temp,
+            &final_path,
+            Some(&hash),
+            Some(payload.len() as u64 + 1),
+        )
+        .expect_err("wrong size must fail");
+        assert!(!temp.exists());
+        assert!(!final_path.exists());
+
+        persist_download(
+            &mut response(payload),
+            &temp,
+            &final_path,
+            Some(&"0".repeat(64)),
+            Some(payload.len() as u64),
+        )
+        .expect_err("wrong hash must fail");
+        assert!(!temp.exists());
+        assert!(!final_path.exists());
+
+        let saved = persist_download(
+            &mut response(payload),
+            &temp,
+            &final_path,
+            Some(&hash),
+            Some(payload.len() as u64),
+        )
+        .expect("valid package");
+        assert_eq!(std::fs::read(&saved).expect("saved package"), payload);
+        std::fs::remove_file(saved).expect("remove test package");
+    }
+
+    #[test]
+    fn redirects_cannot_expand_loopback_http_permission() {
+        use std::io::{Read as _, Write as _};
+
+        let listener = std::net::TcpListener::bind("127.0.0.1:0").expect("local listener");
+        let address = listener.local_addr().expect("local address");
+        let server = std::thread::spawn(move || {
+            let (mut stream, _) = listener.accept().expect("local request");
+            let mut request = [0_u8; 1024];
+            let _ = stream.read(&mut request).expect("read request");
+            stream
+                .write_all(
+                    b"HTTP/1.1 302 Found\r\nLocation: http://example.com/package.deb\r\nContent-Length: 0\r\nConnection: close\r\n\r\n",
+                )
+                .expect("write redirect");
+        });
+        let agent = agent(Duration::from_secs(2), "", true).expect("agent");
+        let result = get_following(&agent, &format!("http://{address}/package.deb"), &[], true);
+        server.join().expect("server thread");
+        assert!(result.is_err());
+    }
+
+    #[test]
+    fn only_completed_installations_trigger_detection() {
+        assert!(
+            OfficialOutcome::PackageInstalled {
+                path: PathBuf::from("a.deb"),
+                log: String::new(),
+            }
+            .should_detect()
+        );
+        assert!(
+            OfficialOutcome::InstallerRebootRequired {
+                path: PathBuf::from("a.msi"),
+            }
+            .should_detect()
+        );
+        assert!(
+            !OfficialOutcome::InstallerStarted {
+                path: PathBuf::from("a.exe"),
+            }
+            .should_detect()
+        );
+        assert!(
+            !OfficialOutcome::PortableDownloaded {
+                path: PathBuf::from("a.AppImage"),
+            }
+            .should_detect()
+        );
+        assert!(!OfficialOutcome::OfficialPageOpened.should_detect());
     }
 
     #[test]

@@ -67,6 +67,8 @@ pub struct AppView {
     /// completions cannot overwrite a newer query's list.
     search_epoch: u64,
     official_epoch: u64,
+    official_resolution_epoch: u64,
+    official_resolution_requests: std::collections::HashMap<String, u64>,
     /// Cached `winget list` rows and installed ids from the last full refresh.
     /// Keystroke searches merge against these instead of re-running `list`
     /// and `export` on every pause.
@@ -127,6 +129,8 @@ impl AppView {
             search_task: None,
             search_epoch: 0,
             official_epoch: 0,
+            official_resolution_epoch: 0,
+            official_resolution_requests: std::collections::HashMap::new(),
             list_rows: Vec::new(),
             installed_ids: Vec::new(),
             detail_inflight: std::collections::HashSet::new(),
@@ -484,6 +488,8 @@ impl AppView {
 
     pub fn refresh_official_catalog(&mut self, cx: &mut Context<Self>) {
         self.official_epoch += 1;
+        self.official_resolution_epoch += 1;
+        self.official_resolution_requests.clear();
         let epoch = self.official_epoch;
         let url = crate::official::catalog_url();
         let proxy = self.state.settings.proxy.clone();
@@ -491,6 +497,7 @@ impl AppView {
         self.state.official.catalog = None;
         self.state.official.page = 0;
         self.state.official.installed.clear();
+        self.state.official.resolutions.clear();
         self.state.status = self.state.status_for(self.state.route);
         cx.notify();
         self.spawn_refresh(cx.spawn(async move |this, cx| {
@@ -638,6 +645,94 @@ impl AppView {
         }));
     }
 
+    pub fn prepare_official(&mut self, variant_id: &str, cx: &mut Context<Self>) {
+        if matches!(
+            self.state.official.resolutions.get(variant_id),
+            Some(
+                crate::official::OfficialResolutionState::Resolving
+                    | crate::official::OfficialResolutionState::Failed(_)
+            )
+        ) {
+            return;
+        }
+        let source = self.state.official.catalog.as_ref().and_then(|catalog| {
+            catalog
+                .apps
+                .iter()
+                .flat_map(|app| app.variants.iter())
+                .find(|variant| variant.id == variant_id)
+                .and_then(|variant| match &variant.method {
+                    crate::official::OfficialMethod::OfficialPage {
+                        release: Some(source),
+                        ..
+                    } => Some((variant.clone(), source.clone())),
+                    _ => None,
+                })
+        });
+        let Some((variant, source)) = source else {
+            return;
+        };
+        let Some(host) = crate::official::resolver::HostContext::host() else {
+            self.state.official.resolutions.insert(
+                variant_id.to_owned(),
+                crate::official::OfficialResolutionState::Failed(tr!(
+                    "official.resolve.unsupported_host"
+                )),
+            );
+            cx.notify();
+            return;
+        };
+        self.official_resolution_epoch += 1;
+        let request = self.official_resolution_epoch;
+        self.official_resolution_requests
+            .insert(variant_id.to_owned(), request);
+        self.state.official.resolutions.insert(
+            variant_id.to_owned(),
+            crate::official::OfficialResolutionState::Resolving,
+        );
+        let id = variant_id.to_owned();
+        let catalog_epoch = self.official_epoch;
+        let proxy = self.state.settings.proxy.clone();
+        let allow_http = std::env::var_os("PAKKIT_OFFICIAL_CATALOG_URL").is_some();
+        cx.notify();
+        self.spawn_refresh(cx.spawn(async move |this, cx| {
+            let result = cx
+                .background_spawn(async move {
+                    crate::official::resolver::resolve_release(
+                        &source,
+                        &variant,
+                        host,
+                        crate::official::resolver::NetworkOptions {
+                            proxy: &proxy,
+                            allow_http,
+                        },
+                    )
+                })
+                .await;
+            let _ = this.update(cx, |this, cx| {
+                if catalog_epoch != this.official_epoch
+                    || this.official_resolution_requests.get(&id) != Some(&request)
+                {
+                    return;
+                }
+                this.official_resolution_requests.remove(&id);
+                let state = match result {
+                    Ok(resolved) => crate::official::OfficialResolutionState::Resolved(resolved),
+                    Err(error) => {
+                        crate::official::OfficialResolutionState::Failed(error.localized())
+                    }
+                };
+                this.state.official.resolutions.insert(id, state);
+                cx.notify();
+            });
+        }));
+    }
+
+    pub fn retry_official_resolution(&mut self, variant_id: &str, cx: &mut Context<Self>) {
+        self.state.official.resolutions.remove(variant_id);
+        self.prepare_official(variant_id, cx);
+    }
+
     pub fn enqueue_official(
         &mut self,
         variant_id: &str,
@@ -649,11 +744,35 @@ impl AppView {
                 app.variants
                     .iter()
                     .find(|variant| variant.id == variant_id)
-                    .map(|variant| crate::queue::OfficialQueueSpec::new(app, variant))
+                    .and_then(|variant| {
+                        let dynamic = matches!(
+                            &variant.method,
+                            crate::official::OfficialMethod::OfficialPage {
+                                release: Some(_),
+                                ..
+                            }
+                        );
+                        if dynamic {
+                            match self.state.official.resolutions.get(variant_id) {
+                                Some(crate::official::OfficialResolutionState::Resolved(
+                                    resolved,
+                                )) if resolved.variant_id == variant_id => {
+                                    crate::queue::OfficialQueueSpec::resolved(
+                                        app,
+                                        variant,
+                                        resolved.clone(),
+                                    )
+                                }
+                                _ => None,
+                            }
+                        } else {
+                            Some(crate::queue::OfficialQueueSpec::new(app, variant))
+                        }
+                    })
             })
         });
         let Some(spec) = spec else {
-            window.push_notification(Notification::error(tr!("notification.pkg_not_found")), cx);
+            window.push_notification(Notification::warning(tr!("official.resolve.not_ready")), cx);
             return;
         };
         let name = spec.app_id.clone();
@@ -1069,14 +1188,21 @@ impl AppView {
                     let result = cx
                         .background_spawn(async move {
                             let spec = item.official.as_ref().expect("official queue item");
-                            crate::official::run_method(
-                                &spec.variant.method,
-                                spec.variant.interactive,
-                                &proxy,
-                                allow_http,
-                            )
+                            if let Some(resolved) = &spec.resolved {
+                                crate::official::install::run_resolved(resolved, &proxy, allow_http)
+                            } else {
+                                crate::official::run_method(
+                                    &spec.variant.method,
+                                    spec.variant.interactive,
+                                    &proxy,
+                                    allow_http,
+                                )
+                            }
                         })
                         .await;
+                    let should_detect = result
+                        .as_ref()
+                        .is_ok_and(crate::official::OfficialOutcome::should_detect);
                     let _ = this.update(cx, |this, cx| {
                         queue::complete_official(&mut this.state, uid, result);
                         if let Some(item) = this.state.queue.iter().find(|item| item.uid == uid) {
@@ -1089,7 +1215,9 @@ impl AppView {
                                 &format!("{} · {}", item.name, item.log),
                             );
                         }
-                        this.detect_official_variant(official_variant_id, cx);
+                        if should_detect {
+                            this.detect_official_variant(official_variant_id, cx);
+                        }
                         this.pump(cx);
                         cx.notify();
                     });

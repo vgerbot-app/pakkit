@@ -1790,7 +1790,13 @@ fn official_method_labels(method: &OfficialMethod) -> (String, String) {
                 tr!("official.action.portable"),
             ),
         },
-        OfficialMethod::OfficialPage { .. } => (
+        OfficialMethod::OfficialPage {
+            release: Some(_), ..
+        } => (
+            tr!("official.method.release"),
+            tr!("official.action.release"),
+        ),
+        OfficialMethod::OfficialPage { release: None, .. } => (
             tr!("official.method.official_page"),
             tr!("official.action.official_page"),
         ),

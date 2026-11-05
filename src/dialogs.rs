@@ -469,6 +469,7 @@ pub fn official_detail(
     window: &mut Window,
     cx: &mut Context<AppView>,
 ) {
+    view.prepare_official(variant_id, cx);
     let selected = view.state.official.catalog.as_ref().and_then(|catalog| {
         catalog.apps.iter().find_map(|app| {
             app.variants
@@ -485,7 +486,15 @@ pub fn official_detail(
         return;
     };
     let language = view.state.settings.language.clone();
+    let dynamic = matches!(
+        &variant.method,
+        crate::official::OfficialMethod::OfficialPage {
+            release: Some(_),
+            ..
+        }
+    );
     let queue_id = variant.id.clone();
+    let resolution_id = variant.id.clone();
     let this = cx.weak_entity();
 
     window.open_dialog(cx, move |dialog, _, cx| {
@@ -494,15 +503,56 @@ pub fn official_detail(
         let homepage_view = this.clone();
         let copy_view = this.clone();
         let queue_view = this.clone();
+        let retry_view = this.clone();
+        let fallback_view = this.clone();
         let queue_id = queue_id.clone();
+        let resolution = this
+            .read_with(cx, |view, _| {
+                view.state.official.resolutions.get(&resolution_id).cloned()
+            })
+            .ok()
+            .flatten();
+        let resolved = match &resolution {
+            Some(crate::official::OfficialResolutionState::Resolved(resolved)) => Some(resolved),
+            _ => None,
+        };
+        let resolving = dynamic
+            && !matches!(
+                &resolution,
+                Some(crate::official::OfficialResolutionState::Resolved(_))
+            );
+        let failed_message = match &resolution {
+            Some(crate::official::OfficialResolutionState::Failed(message)) => {
+                Some(message.clone())
+            }
+            _ => None,
+        };
+        let resolution_failed = failed_message.is_some();
+        let official_url = match &variant.method {
+            crate::official::OfficialMethod::OfficialPage { url, .. } => Some(url.clone()),
+            _ => None,
+        };
         let accent = Palette::from_hex(&app.accent);
         let (method_label, _) = official_method_labels(&variant.method);
-        let payload = match &variant.method {
-            crate::official::OfficialMethod::Script { command, .. } => command.clone(),
-            crate::official::OfficialMethod::Artifact { url, .. }
-            | crate::official::OfficialMethod::OfficialPage { url } => url.clone(),
+        let method_label = if dynamic {
+            tr!("official.method.release")
+        } else {
+            method_label
         };
-        let payload_label = if matches!(
+        let payload = if let Some(resolved) = resolved {
+            resolved.resolved_url.clone()
+        } else {
+            match &variant.method {
+                crate::official::OfficialMethod::Script { command, .. } => command.clone(),
+                crate::official::OfficialMethod::Artifact { url, .. }
+                | crate::official::OfficialMethod::OfficialPage { url, .. } => url.clone(),
+            }
+        };
+        let payload_label = if dynamic && resolved.is_some() {
+            tr!("official.detail.resolved_url")
+        } else if dynamic {
+            tr!("official.detail.download_url")
+        } else if matches!(
             variant.method,
             crate::official::OfficialMethod::Script { .. }
         ) {
@@ -510,41 +560,88 @@ pub fn official_detail(
         } else {
             tr!("official.detail.download_url")
         };
-        let shell_label = match &variant.method {
-            crate::official::OfficialMethod::Script {
-                shell: crate::official::OfficialShell::Powershell,
-                ..
-            } => "PowerShell".to_owned(),
-            crate::official::OfficialMethod::Script { .. } => "Shell".to_owned(),
-            _ => tr!("official.detail.https_direct"),
+        let shell_label = if dynamic {
+            "GitHub Release".to_owned()
+        } else {
+            match &variant.method {
+                crate::official::OfficialMethod::Script {
+                    shell: crate::official::OfficialShell::Powershell,
+                    ..
+                } => "PowerShell".to_owned(),
+                crate::official::OfficialMethod::Script { .. } => "Shell".to_owned(),
+                _ => tr!("official.detail.https_direct"),
+            }
         };
-        let action_semantics = match &variant.method {
-            crate::official::OfficialMethod::Script { .. } if variant.interactive => {
-                tr!("official.detail.semantic_terminal")
+        let action_semantics = if dynamic {
+            if let Some(resolved) = resolved {
+                match resolved.install_action {
+                    crate::official::resolver::OfficialInstallAction::InstallPackage => {
+                        tr!("official.detail.semantic_package_install")
+                    }
+                    crate::official::resolver::OfficialInstallAction::RunInstaller => {
+                        tr!("official.detail.semantic_installer")
+                    }
+                    crate::official::resolver::OfficialInstallAction::OpenInstaller => {
+                        tr!("official.detail.semantic_open_installer")
+                    }
+                    crate::official::resolver::OfficialInstallAction::DownloadPortable => {
+                        tr!("official.detail.semantic_portable")
+                    }
+                }
+            } else if failed_message.is_some() {
+                tr!("official.resolve.failed_short")
+            } else {
+                tr!("official.resolve.resolving")
             }
-            crate::official::OfficialMethod::Script { .. } => {
-                tr!("official.detail.semantic_script")
-            }
-            crate::official::OfficialMethod::Artifact {
-                action: crate::official::ArtifactAction::RunInstaller,
-                ..
-            } => tr!("official.detail.semantic_installer"),
-            crate::official::OfficialMethod::Artifact {
-                action: crate::official::ArtifactAction::DownloadPackage,
-                ..
-            } => tr!("official.detail.semantic_package"),
-            crate::official::OfficialMethod::Artifact {
-                action: crate::official::ArtifactAction::DownloadPortable,
-                ..
-            } => tr!("official.detail.semantic_portable"),
-            crate::official::OfficialMethod::OfficialPage { .. } => {
-                tr!("official.detail.semantic_page")
+        } else {
+            match &variant.method {
+                crate::official::OfficialMethod::Script { .. } if variant.interactive => {
+                    tr!("official.detail.semantic_terminal")
+                }
+                crate::official::OfficialMethod::Script { .. } => {
+                    tr!("official.detail.semantic_script")
+                }
+                crate::official::OfficialMethod::Artifact {
+                    action: crate::official::ArtifactAction::RunInstaller,
+                    ..
+                } => tr!("official.detail.semantic_installer"),
+                crate::official::OfficialMethod::Artifact {
+                    action: crate::official::ArtifactAction::DownloadPackage,
+                    ..
+                } => tr!("official.detail.semantic_package"),
+                crate::official::OfficialMethod::Artifact {
+                    action: crate::official::ArtifactAction::DownloadPortable,
+                    ..
+                } => tr!("official.detail.semantic_portable"),
+                crate::official::OfficialMethod::OfficialPage { .. } => {
+                    tr!("official.detail.semantic_page")
+                }
             }
         };
         let no_sha = matches!(
             &variant.method,
             crate::official::OfficialMethod::Artifact { sha256: None, .. }
         );
+        let resolved_metadata = resolved.map(|resolved| {
+            let size = resolved.size.map_or_else(
+                || tr!("official.resolve.unknown_size"),
+                |size| format!("{size} bytes / {:.1} MiB", size as f64 / 1024.0 / 1024.0),
+            );
+            format!(
+                "{}\n{}\n{}\nSHA-256: {}\n{}: {}",
+                tr!(
+                    "official.resolve.version",
+                    version = resolved.version.as_deref().unwrap_or("-")
+                ),
+                tr!("official.resolve.file", file = resolved.file_name),
+                tr!("official.resolve.size", size = size),
+                resolved.sha256,
+                tr!("official.resolve.format"),
+                resolved.format.extension().to_ascii_uppercase(),
+            )
+        });
+        let requires_admin =
+            resolved.map_or(variant.requires_admin, |resolved| resolved.requires_admin);
 
         dialog
             .w(px(680.))
@@ -609,12 +706,12 @@ pub fn official_detail(
                             ))
                             .child(widgets::pill(
                                 &p,
-                                if variant.requires_admin {
+                                if requires_admin {
                                     PillKind::Warn
                                 } else {
                                     PillKind::Ok
                                 },
-                                if variant.requires_admin {
+                                if requires_admin {
                                     tr!("official.detail.admin")
                                 } else {
                                     tr!("official.current_user")
@@ -662,6 +759,28 @@ pub fn official_detail(
                         &payload,
                         copy_view,
                     ))
+                    .when_some(resolved_metadata, |this, metadata| {
+                        this.child(
+                            div()
+                                .p(px(10.))
+                                .rounded(px(9.))
+                                .bg(p.tint(p.accent, 0.06))
+                                .text_size(px(11.5))
+                                .text_color(p.ink2)
+                                .child(metadata),
+                        )
+                    })
+                    .when_some(failed_message, |this, message| {
+                        this.child(
+                            div()
+                                .p(px(10.))
+                                .rounded(px(9.))
+                                .bg(p.tint(p.warn, 0.10))
+                                .text_size(px(11.5))
+                                .text_color(p.warn)
+                                .child(message),
+                        )
+                    })
                     .when(no_sha, |this| {
                         this.child(
                             div()
@@ -697,6 +816,41 @@ pub fn official_detail(
                     .items_center()
                     .justify_end()
                     .gap(px(8.))
+                    .when_some(official_url, |this, url| {
+                        this.child(
+                            widgets::btn(
+                                cx,
+                                &p,
+                                "official-detail-fallback",
+                                BtnKind::Outline,
+                                BtnSize::Regular,
+                                tr!("official.detail.open_official"),
+                            )
+                            .on_click(move |_, window, cx| {
+                                let _ = fallback_view.update(cx, |this, cx| {
+                                    this.open_official_url(url.clone(), window, cx);
+                                });
+                            }),
+                        )
+                    })
+                    .when(resolution_failed, |this| {
+                        let retry_id = queue_id.clone();
+                        this.child(
+                            widgets::btn(
+                                cx,
+                                &p,
+                                "official-detail-retry",
+                                BtnKind::Outline,
+                                BtnSize::Regular,
+                                tr!("official.resolve.retry"),
+                            )
+                            .on_click(move |_, _, cx| {
+                                let _ = retry_view.update(cx, |this, cx| {
+                                    this.retry_official_resolution(&retry_id, cx);
+                                });
+                            }),
+                        )
+                    })
                     .child(
                         widgets::btn(
                             cx,
@@ -715,8 +869,20 @@ pub fn official_detail(
                             "official-detail-queue",
                             BtnKind::Primary,
                             BtnSize::Regular,
-                            tr!("official.detail.queue"),
+                            if dynamic
+                                && resolved.is_some_and(|resolved| {
+                                    resolved.install_action
+                                        == crate::official::resolver::OfficialInstallAction::DownloadPortable
+                                })
+                            {
+                                tr!("official.detail.queue")
+                            } else if dynamic {
+                                tr!("official.detail.install")
+                            } else {
+                                tr!("official.detail.queue")
+                            },
                         )
+                        .disabled(resolving)
                         .on_click(move |_, window, cx| {
                             let _ = queue_view.update(cx, |this, cx| {
                                 this.enqueue_official(&queue_id, window, cx);
