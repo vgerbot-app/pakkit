@@ -136,6 +136,9 @@ impl QueueItem {
 pub struct OfficialQueueSpec {
     pub app_id: String,
     pub variant: crate::official::OfficialVariant,
+    /// The exact dynamic artifact confirmed by the user. `None` means a
+    /// legacy static method, which continues through `run_method`.
+    pub resolved: Option<crate::official::ResolvedOfficialInstall>,
     pub display: String,
 }
 
@@ -147,13 +150,31 @@ impl OfficialQueueSpec {
         let display = match &variant.method {
             crate::official::OfficialMethod::Script { command, .. } => command.clone(),
             crate::official::OfficialMethod::Artifact { url, .. }
-            | crate::official::OfficialMethod::OfficialPage { url } => url.clone(),
+            | crate::official::OfficialMethod::OfficialPage { url, .. } => url.clone(),
         };
         Self {
             app_id: app.id.clone(),
             variant: variant.clone(),
+            resolved: None,
             display,
         }
+    }
+
+    pub fn resolved(
+        app: &crate::official::OfficialApp,
+        variant: &crate::official::OfficialVariant,
+        resolved: crate::official::ResolvedOfficialInstall,
+    ) -> Option<Self> {
+        if resolved.variant_id != variant.id {
+            return None;
+        }
+        let display = format!("{}\n{}", resolved.resolved_url, resolved.file_name);
+        Some(Self {
+            app_id: app.id.clone(),
+            variant: variant.clone(),
+            resolved: Some(resolved),
+            display,
+        })
     }
 }
 
@@ -474,6 +495,15 @@ pub fn complete_official(
                 crate::official::OfficialOutcome::InstallerStarted { .. } => {
                     tr!("official.success.installer")
                 }
+                crate::official::OfficialOutcome::PackageInstalled { log, .. } => {
+                    if !log.trim().is_empty() {
+                        item.detail = Some(format!("$ {command}\n{log}"));
+                    }
+                    tr!("official.success.installed")
+                }
+                crate::official::OfficialOutcome::InstallerRebootRequired { .. } => {
+                    tr!("official.success.reboot")
+                }
                 crate::official::OfficialOutcome::PackageDownloaded { .. } => {
                     tr!("official.success.package")
                 }
@@ -568,9 +598,39 @@ mod tests {
             source_url: app.homepage.clone(),
             method: crate::official::OfficialMethod::OfficialPage {
                 url: app.homepage.clone(),
+                release: None,
             },
             detection: None,
         };
+        let resolved = crate::official::ResolvedOfficialInstall {
+            variant_id: variant.id.clone(),
+            version: Some("v1.2.3".to_owned()),
+            file_name: "official.deb".to_owned(),
+            resolved_url: "https://github.com/owner/repo/releases/download/v1.2.3/official.deb"
+                .to_owned(),
+            size: Some(42),
+            sha256: "a".repeat(64),
+            format: crate::official::resolver::OfficialPackageFormat::Deb,
+            install_action: crate::official::resolver::OfficialInstallAction::InstallPackage,
+            fallback_url: app.homepage.clone(),
+            expected_signer: None,
+            requires_admin: true,
+        };
+        let dynamic = OfficialQueueSpec::resolved(&app, &variant, resolved.clone())
+            .expect("matching confirmed snapshot");
+        assert_eq!(dynamic.resolved.as_ref(), Some(&resolved));
+        let mut wrong_variant = resolved;
+        wrong_variant.variant_id = "another-variant".to_owned();
+        assert!(OfficialQueueSpec::resolved(&app, &variant, wrong_variant).is_none());
+
+        let mut dynamic_state = state_with(&["official-app"]);
+        let Enqueued::Added(dynamic_uid) = enqueue_official(&mut dynamic_state, dynamic.clone())
+        else {
+            panic!("enqueue confirmed dynamic snapshot");
+        };
+        assert_eq!(dynamic_state.queue[0].uid, dynamic_uid);
+        assert_eq!(dynamic_state.queue[0].official, Some(dynamic));
+
         let spec = OfficialQueueSpec::new(&app, &variant);
         let Enqueued::Added(uid) = enqueue_official(&mut state, spec.clone()) else {
             panic!("enqueue official");

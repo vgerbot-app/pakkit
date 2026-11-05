@@ -29,7 +29,7 @@ Every operation is a transparent wrapper around the backend CLI: the command lin
 ## Features
 
 - **Eight views**: Discover, Categories, All Packages, Installed, Updates, Sources, Settings, and Official Install
-- **Official Install**: a remote, validated catalog of vendor-provided scripts, installers, and portable downloads. Every command or URL is shown for confirmation; completion distinguishes downloads, opened terminals, and launched installers from verified installation.
+- **Official Install**: a remote, validated catalog of vendor-provided scripts, installers, and portable downloads. Optional GitHub Releases entries resolve a stable, platform-matched asset on demand. Every command or URL is shown for confirmation; completion distinguishes downloads, opened terminals, and launched installers from verified installation.
 - **Queue drawer**: installs / upgrades run serially with configurable concurrency (1–3), showing the command line and progress for each item
 - **Package details**: fetched in the background from the backend's own detail command (`winget show`, `choco info`, `scoop info`, `apt show`, `dnf info`, `pacman -Si`, `zypper info`, `apk info`, `snap info`, `brew info`, …) and cached — multi-line description, release notes, tags, publisher, license, homepage, installer type, release date, and more
 - **Package icons**: favicons fetched automatically and cached to disk
@@ -94,6 +94,31 @@ Or run `target/release/pakkit.exe` directly.
 - Add private sources in "Sources" (requires administrator privileges)
 - Switch theme, accent color, and language in "Settings → Appearance"; settings persist to `settings.json`
 - Open "Official Install" to search the remote catalog and filter by category, operating system, or architecture. Pakkit validates the entire catalog before showing entries; loading failures offer retry and never fall back to stale or built-in entries.
+
+### Dynamic GitHub Releases
+
+An `official_page` method can add an optional `release` configuration. A `github_release` source declares `repository` and `packages`; each package declares a supported `format`, architecture-specific `assets` patterns matched against the complete filename (`*` is the only wildcard), and, for Windows, `expectedSigner`. Entries without `release` retain the official-page behavior, older clients ignore the field, and unsupported future providers retain the official-page fallback. Existing catalogs therefore remain compatible.
+
+- **On-demand resolution**: clicking install calls GitHub's documented `releases/latest` API; catalog loading does not resolve releases. Only a non-draft, non-prerelease stable release is accepted.
+- **Strict selection**: the host OS, x86_64/ARM64 architecture, and Linux package manager select the package format and exactly one uploaded asset. DEB requires apt; RPM requires dnf or zypper. Zero or multiple filename matches, an asset URL outside the selected repository and tag, or a missing/invalid SHA-256 digest stops dynamic installation.
+- **Confirmed snapshot**: confirmation fixes an immutable snapshot of the version, filename, URL, size, SHA-256, and install action. The confirmed download and execution path consumes exactly that snapshot, with no second release lookup or asset selection.
+- **Integrity and transport**: the downloaded byte size and SHA-256 must both match before an installer, package manager, or file opener runs. API and asset URLs, including every redirect target, are validated as HTTPS. HTTP is allowed only for explicitly enabled loopback development/test servers; remote HTTP is rejected.
+
+| Resolved format | Behavior after verification |
+| --- | --- |
+| DEB / RPM | Install through the existing apt/dnf/zypper backends, including their PackageKit/polkit and waitable pkexec authorization paths. |
+| Windows EXE | Require valid Authenticode, the exact `expectedSigner` subject, and matching PE architecture, then launch through the Windows shell. Pakkit reports only that the installer started; Windows handles any requested UAC elevation. |
+| Windows MSI | Require the same Authenticode/signer checks and a matching MSI architecture, then wait for `msiexec /i`. Pakkit distinguishes completion, reboot required, cancellation, and failure. |
+| macOS PKG / DMG | Open the verified file with macOS `open` only; Pakkit does not wait for or confirm installation. |
+| Linux AppImage | Mark the verified download executable and report a portable download; never launch it automatically. |
+
+Release providers use the provider-neutral `ReleaseResolver` extension point and produce the same restricted snapshot for confirmation, queueing, download, and platform handlers. Dynamic releases add no generic HTML scraping or arbitrary command execution; release metadata and notes never become shell commands.
+
+**Current limitations:**
+
+- GitHub is currently the only implemented release provider.
+- The SHA-256 digest and asset metadata come from the same official GitHub source; the digest is not an independent signature or second-source checksum. Windows Authenticode is a separate platform signature check.
+- Real-platform end-to-end validation is still needed on Windows, macOS, and supported Linux systems. Unit tests do not replace validation of platform signatures, elevation, and installer behavior.
 
 ## Localization
 

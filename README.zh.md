@@ -29,7 +29,7 @@
 ## 特性
 
 - **八个视图**：发现、分类、全部包、已安装、更新、源管理、设置、官网直装
-- **官网直装**：从远程目录获取经过完整校验的官方脚本、安装器与便携版下载。命令和 URL 均在确认后执行，并明确区分已下载、已打开终端、已启动安装器与已检测安装。
+- **官网直装**：从远程目录获取经过完整校验的官方脚本、安装器与便携版下载。可选的 GitHub Releases 条目会按需解析匹配当前平台的稳定版资产。命令和 URL 均在确认后执行，并明确区分已下载、已打开终端、已启动安装器与已检测安装。
 - **队列抽屉**：安装 / 升级串行执行，并发可调（1–3），逐项显示命令行与进度
 - **软件包详情**：后台调用后端自身的详情命令（`winget show`、`choco info`、`scoop info`、`apt show`、`dnf info`、`pacman -Si`、`zypper info`、`apk info`、`snap info`、`brew info`……）抓取并缓存，展示多行描述、发布说明、标签、发布者、许可、主页、安装类型、发布日期等
 - **软件包图标**：自动抓取 favicon 并持久化缓存到磁盘
@@ -91,6 +91,31 @@ cargo run --release
 - 在「源管理」中添加私有源（需要管理员权限）
 - 在「设置 → 外观」中切换主题、强调色与语言，设置持久化到 `settings.json`
 - 打开「官网直装」搜索远程目录，按分类、操作系统或架构筛选。Pakkit 完整校验目录后才显示条目；加载失败可重试，不使用过期缓存或内置条目。
+
+### 动态 GitHub Releases
+
+`official_page` 方法可以添加可选的 `release` 配置。`github_release` 来源声明 `repository` 和 `packages`；每个包声明受支持的 `format`、按架构区分的 `assets` 完整文件名匹配模式（仅支持 `*` 通配符），Windows 包还必须声明 `expectedSigner`。未配置 `release` 的条目继续打开官网，旧客户端会忽略此字段；遇到未来未知的 provider 时，新客户端也保留官网回退，因此现有目录保持兼容。
+
+- **按需解析**：点击安装时才调用 GitHub 文档化的 `releases/latest` API，加载目录时不解析 release。只接受非草稿、非预发布的稳定版本。
+- **严格选择**：根据宿主 OS、x86_64/ARM64 架构和 Linux 包管理器选择包格式与唯一一个已上传资产。DEB 要求 apt，RPM 要求 dnf 或 zypper。完整文件名零个或多个匹配、资产 URL 不属于所选仓库和版本，或缺少有效 SHA-256 digest，都会中止动态安装。
+- **确认快照**：确认时固定一份包含版本、文件名、URL、大小、SHA-256 和安装动作的不可变快照。确认后的下载与执行只使用该快照，不再次查询 release 或重新选择资产。
+- **完整性与传输**：下载文件的字节大小和 SHA-256 必须同时匹配，才会执行安装器、调用包管理器或打开文件。API、资产 URL 和每个重定向目标均须通过 HTTPS 校验。只有显式启用的本机开发/测试服务器允许 HTTP，远程 HTTP 一律拒绝。
+
+| 解析格式 | 校验后的行为 |
+| --- | --- |
+| DEB / RPM | 通过现有 apt/dnf/zypper 后端安装，沿用 PackageKit/polkit 与可等待的 pkexec 授权路径。 |
+| Windows EXE | 要求 Authenticode 有效、`expectedSigner` 主体精确匹配且 PE 架构匹配，然后通过 Windows shell 启动。Pakkit 只报告安装器已启动；UAC 提权由 Windows 处理。 |
+| Windows MSI | 要求相同的 Authenticode/签名者检查及匹配的 MSI 架构，然后等待 `msiexec /i` 完成。Pakkit 区分安装完成、需要重启、取消和失败。 |
+| macOS PKG / DMG | 仅通过 macOS `open` 打开已校验文件；Pakkit 不等待也不确认安装完成。 |
+| Linux AppImage | 为已校验下载添加可执行权限并报告便携版已下载；不会自动运行。 |
+
+Release provider 通过 provider 中立的 `ReleaseResolver` 扩展点接入，产出同一种受限快照，供确认、队列、下载和平台处理路径复用。动态 release 不做通用 HTML 抓取，也不提供任意命令执行；release 元数据和说明不会变成 shell 命令。
+
+**当前限制：**
+
+- 目前仅实现 GitHub release provider。
+- SHA-256 digest 与资产元数据来自同一 GitHub 官方来源，不是独立签名或第二来源校验。Windows Authenticode 是额外的平台签名检查。
+- 仍需在真实 Windows、macOS 和受支持的 Linux 系统上进行端到端验证。单元测试不能替代平台签名、提权和安装器行为的真机验证。
 
 ## 多语言
 
