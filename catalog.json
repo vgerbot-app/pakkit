@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "catalogVersion": "2026.11.04-1",
+  "catalogVersion": "2026.11.05-1",
   "homepage": "https://github.com/vgerbot-app/winget-gui/tree/official-install",
   "submissionUrl": "https://github.com/vgerbot-app/winget-gui/issues/new",
   "categories": [
@@ -3149,6 +3149,305 @@
           "method": {
             "type": "official_page",
             "url": "https://code.visualstudio.com/Download"
+          }
+        }
+      ]
+    },
+    {
+      "id": "pi-coding-agent",
+      "name": "Pi Coding Agent",
+      "publisher": "Earendil Inc. & Contributors",
+      "category": "dev",
+      "summary": {
+        "zh-CN": "MIT 开源终端 AI 编程智能体，可通过扩展、技能和提示模板自定义。",
+        "zh-TW": "MIT 開源終端機 AI 程式設計智慧代理，可透過擴充功能、技能和提示範本自訂。",
+        "en": "An MIT-licensed terminal AI coding agent, customizable with extensions, skills and prompt templates.",
+        "ja": "拡張機能、スキル、プロンプトテンプレートでカスタマイズできる、MIT ライセンスのターミナル AI コーディングエージェント。",
+        "ko": "확장 기능, 스킬 및 프롬프트 템플릿으로 사용자 지정할 수 있는 MIT 라이선스 터미널 AI 코딩 에이전트."
+      },
+      "homepage": "https://pi.dev/",
+      "mark": "Pi",
+      "accent": "#f09082",
+      "variants": [
+        {
+          "id": "pi-coding-agent-linux",
+          "os": "linux",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": true,
+          "note": {
+            "zh-CN": "运行官方交互式脚本安装稳定版。需要 Node.js 22.19+ 与 npm，缺失时可提示安装，系统依赖安装可能请求 sudo。AI 使用需订阅、API 密钥、兼容端点或本地模型，服务商可能收费。",
+            "zh-TW": "執行官方互動式指令碼安裝穩定版。需要 Node.js 22.19+ 與 npm，缺少時可提示安裝，系統相依套件安裝可能要求 sudo。AI 使用需訂閱、API 金鑰、相容端點或本機模型，服務商可能收費。",
+            "en": "Runs the official interactive script to install the stable release. Requires Node.js 22.19+ and npm, with offers to install them if missing; system dependency installation may request sudo. AI usage requires a subscription, API key, compatible endpoint or local model; provider charges may apply.",
+            "ja": "公式の対話型スクリプトで安定版をインストールします。Node.js 22.19 以降と npm が必要で、未導入時はインストールを提案します。システム依存関係の導入時に sudo を求める場合があります。AI の利用にはサブスクリプション、API キー、互換エンドポイント、ローカルモデルのいずれかが必要で、プロバイダー料金が発生する場合があります。",
+            "ko": "공식 대화형 스크립트로 안정 버전을 설치합니다. Node.js 22.19 이상과 npm이 필요하며 없으면 설치를 제안합니다. 시스템 종속성 설치 시 sudo를 요청할 수 있습니다. AI 사용에는 구독, API 키, 호환 엔드포인트 또는 로컬 모델이 필요하며 제공업체 요금이 발생할 수 있습니다."
+          },
+          "sourceUrl": "https://pi.dev/docs/latest/quickstart",
+          "method": {
+            "type": "script",
+            "shell": "sh",
+            "command": "curl -fsSL https://pi.dev/install.sh | sh"
+          },
+          "detection": {
+            "type": "command",
+            "program": "pi",
+            "args": [
+              "--version"
+            ]
+          }
+        },
+        {
+          "id": "pi-coding-agent-windows",
+          "os": "windows",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": true,
+          "note": {
+            "zh-CN": "运行官方交互式脚本安装稳定版，可提示安装缺失依赖。原生 Windows 使用内置 Bash 工具还需 Git Bash。AI 使用需订阅、API 密钥、兼容端点或本地模型，服务商可能收费。",
+            "zh-TW": "執行官方互動式指令碼安裝穩定版，可提示安裝缺少的相依套件。原生 Windows 使用內建 Bash 工具還需 Git Bash。AI 使用需訂閱、API 金鑰、相容端點或本機模型，服務商可能收費。",
+            "en": "Runs the official interactive script to install the stable release and offers to install missing dependencies. Native Windows also needs Git Bash for the built-in Bash tool. AI usage requires a subscription, API key, compatible endpoint or local model; provider charges may apply.",
+            "ja": "公式の対話型スクリプトで安定版をインストールし、不足する依存関係の導入を提案します。ネイティブ Windows で内蔵 Bash ツールを使うには Git Bash も必要です。AI の利用にはサブスクリプション、API キー、互換エンドポイント、ローカルモデルのいずれかが必要で、プロバイダー料金が発生する場合があります。",
+            "ko": "공식 대화형 스크립트로 안정 버전을 설치하고 누락된 종속성 설치를 제안합니다. 네이티브 Windows에서 기본 Bash 도구를 사용하려면 Git Bash도 필요합니다. AI 사용에는 구독, API 키, 호환 엔드포인트 또는 로컬 모델이 필요하며 제공업체 요금이 발생할 수 있습니다."
+          },
+          "sourceUrl": "https://pi.dev/docs/latest/quickstart",
+          "method": {
+            "type": "script",
+            "shell": "powershell",
+            "command": "powershell -c \"irm https://pi.dev/install.ps1 | iex\""
+          },
+          "detection": {
+            "type": "command",
+            "program": "pi",
+            "args": [
+              "--version"
+            ]
+          }
+        },
+        {
+          "id": "pi-coding-agent-macos",
+          "os": "macos",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": true,
+          "note": {
+            "zh-CN": "运行官方交互式脚本安装稳定版。需要 Node.js 22.19+ 与 npm，缺失时可提示安装。AI 使用需订阅、API 密钥、兼容端点或本地模型，服务商可能收费。",
+            "zh-TW": "執行官方互動式指令碼安裝穩定版。需要 Node.js 22.19+ 與 npm，缺少時可提示安裝。AI 使用需訂閱、API 金鑰、相容端點或本機模型，服務商可能收費。",
+            "en": "Runs the official interactive script to install the stable release. Requires Node.js 22.19+ and npm, with offers to install them if missing. AI usage requires a subscription, API key, compatible endpoint or local model; provider charges may apply.",
+            "ja": "公式の対話型スクリプトで安定版をインストールします。Node.js 22.19 以降と npm が必要で、未導入時はインストールを提案します。AI の利用にはサブスクリプション、API キー、互換エンドポイント、ローカルモデルのいずれかが必要で、プロバイダー料金が発生する場合があります。",
+            "ko": "공식 대화형 스크립트로 안정 버전을 설치합니다. Node.js 22.19 이상과 npm이 필요하며 없으면 설치를 제안합니다. AI 사용에는 구독, API 키, 호환 엔드포인트 또는 로컬 모델이 필요하며 제공업체 요금이 발생할 수 있습니다."
+          },
+          "sourceUrl": "https://pi.dev/docs/latest/quickstart",
+          "method": {
+            "type": "script",
+            "shell": "sh",
+            "command": "curl -fsSL https://pi.dev/install.sh | sh"
+          },
+          "detection": {
+            "type": "command",
+            "program": "pi",
+            "args": [
+              "--version"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "omp",
+      "name": "omp",
+      "publisher": "Stencil Labs, Inc.",
+      "category": "dev",
+      "summary": {
+        "zh-CN": "MIT 开源终端 AI 编程智能体，内置子智能体、计划模式、LSP、DAP 与会话记忆。",
+        "zh-TW": "MIT 開源終端機 AI 程式設計智慧代理，內建子智慧代理、計畫模式、LSP、DAP 與工作階段記憶。",
+        "en": "An MIT-licensed terminal AI coding agent with built-in subagents, plan mode, LSP, DAP and session memory.",
+        "ja": "サブエージェント、プランモード、LSP、DAP、セッションメモリを内蔵する、MIT ライセンスのターミナル AI コーディングエージェント。",
+        "ko": "하위 에이전트, 계획 모드, LSP, DAP 및 세션 메모리를 기본 제공하는 MIT 라이선스 터미널 AI 코딩 에이전트."
+      },
+      "homepage": "https://omp.sh/",
+      "mark": "om",
+      "accent": "#b46ae0",
+      "variants": [
+        {
+          "id": "omp-linux",
+          "os": "linux",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "运行官方脚本安装稳定版到用户目录，优先使用兼容的 Bun，否则下载并校验预编译二进制。Alpine 需 libstdc++ 和 libgcc。AI 使用可能需模型服务商登录、订阅或 API 密钥，也可使用本地模型；服务商可能收费。",
+            "zh-TW": "執行官方指令碼將穩定版安裝到使用者目錄，優先使用相容的 Bun，否則下載並驗證預編譯二進位檔。Alpine 需 libstdc++ 和 libgcc。AI 使用可能需模型服務商登入、訂閱或 API 金鑰，也可使用本機模型；服務商可能收費。",
+            "en": "Runs the official script to install the stable release in the user directory, using a compatible Bun when available or downloading a checksum-verified prebuilt binary. Alpine requires libstdc++ and libgcc. AI usage may require provider sign-in, a subscription or API key, or can use a local model; provider charges may apply.",
+            "ja": "公式スクリプトで安定版をユーザーディレクトリにインストールします。互換性のある Bun があれば使用し、なければチェックサムを検証したプリビルトバイナリをダウンロードします。Alpine では libstdc++ と libgcc が必要です。AI の利用にはプロバイダーへのログイン、サブスクリプション、API キーが必要な場合がありますが、ローカルモデルも利用でき、プロバイダー料金が発生する場合があります。",
+            "ko": "공식 스크립트로 안정 버전을 사용자 디렉터리에 설치합니다. 호환되는 Bun이 있으면 사용하고, 없으면 체크섬을 검증한 사전 빌드 바이너리를 다운로드합니다. Alpine에는 libstdc++와 libgcc가 필요합니다. AI 사용에는 제공업체 로그인, 구독 또는 API 키가 필요할 수 있으며 로컬 모델도 사용할 수 있습니다. 제공업체 요금이 발생할 수 있습니다."
+          },
+          "sourceUrl": "https://omp.sh/docs/quickstart",
+          "method": {
+            "type": "script",
+            "shell": "sh",
+            "command": "curl -fsSL https://omp.sh/install | sh"
+          },
+          "detection": {
+            "type": "command",
+            "program": "omp",
+            "args": [
+              "--version"
+            ]
+          }
+        },
+        {
+          "id": "omp-windows",
+          "os": "windows",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "在 PowerShell 5.1+ 运行官方脚本安装稳定版到用户目录并配置 PATH。AI 使用可能需模型服务商登录、订阅或 API 密钥，也可使用本地模型；服务商可能收费。",
+            "zh-TW": "在 PowerShell 5.1+ 執行官方指令碼，將穩定版安裝到使用者目錄並設定 PATH。AI 使用可能需模型服務商登入、訂閱或 API 金鑰，也可使用本機模型；服務商可能收費。",
+            "en": "Runs the official script in PowerShell 5.1+ to install the stable release in the user directory and configure PATH. AI usage may require provider sign-in, a subscription or API key, or can use a local model; provider charges may apply.",
+            "ja": "PowerShell 5.1 以降で公式スクリプトを実行し、安定版をユーザーディレクトリにインストールして PATH を設定します。AI の利用にはプロバイダーへのログイン、サブスクリプション、API キーが必要な場合がありますが、ローカルモデルも利用でき、プロバイダー料金が発生する場合があります。",
+            "ko": "PowerShell 5.1 이상에서 공식 스크립트를 실행하여 안정 버전을 사용자 디렉터리에 설치하고 PATH를 구성합니다. AI 사용에는 제공업체 로그인, 구독 또는 API 키가 필요할 수 있으며 로컬 모델도 사용할 수 있습니다. 제공업체 요금이 발생할 수 있습니다."
+          },
+          "sourceUrl": "https://omp.sh/docs/quickstart",
+          "method": {
+            "type": "script",
+            "shell": "powershell",
+            "command": "irm https://omp.sh/install.ps1 | iex"
+          },
+          "detection": {
+            "type": "command",
+            "program": "omp",
+            "args": [
+              "--version"
+            ]
+          }
+        },
+        {
+          "id": "omp-macos",
+          "os": "macos",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "运行官方脚本安装稳定版到用户目录，优先使用兼容的 Bun，否则下载并校验预编译二进制。AI 使用可能需模型服务商登录、订阅或 API 密钥，也可使用本地模型；服务商可能收费。",
+            "zh-TW": "執行官方指令碼將穩定版安裝到使用者目錄，優先使用相容的 Bun，否則下載並驗證預編譯二進位檔。AI 使用可能需模型服務商登入、訂閱或 API 金鑰，也可使用本機模型；服務商可能收費。",
+            "en": "Runs the official script to install the stable release in the user directory, using a compatible Bun when available or downloading a checksum-verified prebuilt binary. AI usage may require provider sign-in, a subscription or API key, or can use a local model; provider charges may apply.",
+            "ja": "公式スクリプトで安定版をユーザーディレクトリにインストールします。互換性のある Bun があれば使用し、なければチェックサムを検証したプリビルトバイナリをダウンロードします。AI の利用にはプロバイダーへのログイン、サブスクリプション、API キーが必要な場合がありますが、ローカルモデルも利用でき、プロバイダー料金が発生する場合があります。",
+            "ko": "공식 스크립트로 안정 버전을 사용자 디렉터리에 설치합니다. 호환되는 Bun이 있으면 사용하고, 없으면 체크섬을 검증한 사전 빌드 바이너리를 다운로드합니다. AI 사용에는 제공업체 로그인, 구독 또는 API 키가 필요할 수 있으며 로컬 모델도 사용할 수 있습니다. 제공업체 요금이 발생할 수 있습니다."
+          },
+          "sourceUrl": "https://omp.sh/docs/quickstart",
+          "method": {
+            "type": "script",
+            "shell": "sh",
+            "command": "curl -fsSL https://omp.sh/install | sh"
+          },
+          "detection": {
+            "type": "command",
+            "program": "omp",
+            "args": [
+              "--version"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "dbx",
+      "name": "DBX",
+      "publisher": "t8y2",
+      "category": "dev",
+      "summary": {
+        "zh-CN": "免费开源桌面数据库客户端，支持 100 多种数据库、SQL 编辑、数据管理及可选 AI 助手。",
+        "zh-TW": "免費開源桌面資料庫用戶端，支援 100 多種資料庫、SQL 編輯、資料管理及可選 AI 助手。",
+        "en": "A free open-source desktop database client with SQL editing, data management and an optional AI assistant for 100+ databases.",
+        "ja": "100 種類以上のデータベースに対応し、SQL 編集、データ管理、オプションの AI アシスタントを備える無料のオープンソースデスクトップクライアント。",
+        "ko": "100개 이상의 데이터베이스를 위한 SQL 편집, 데이터 관리 및 선택적 AI 도우미를 제공하는 물체 오픈 소스 데스크톱 데이터베이스 클라이언트."
+      },
+      "homepage": "https://dbxio.com/en",
+      "mark": "DX",
+      "accent": "#4d9abf",
+      "variants": [
+        {
+          "id": "dbx-linux",
+          "os": "linux",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "仅打开官方下载页，请选择匹配架构的 AppImage、DEB 或 RPM；打开页面不代表已安装。可选 AI 功能需自行配置模型服务或本地 CLI，相关服务可能收费。",
+            "zh-TW": "僅開啟官方下載頁，請選擇符合架構的 AppImage、DEB 或 RPM；開啟頁面不代表已安裝。可選 AI 功能需自行設定模型服務或本機 CLI，相關服務可能收費。",
+            "en": "Opens the official download page only; choose an AppImage, DEB or RPM matching your architecture. Opening a page does not mean installation. Optional AI features require a separately configured model service or local CLI; provider charges may apply.",
+            "ja": "公式ダウンロードページのみを開きます。アーキテクチャに合う AppImage、DEB、RPM を選択してください。ページを開いてもインストール完了ではありません。オプションの AI 機能には別途モデルサービスまたはローカル CLI の設定が必要で、プロバイダー料金が発生する場合があります。",
+            "ko": "공식 다운로드 페이지만 열리며 아키텍처에 맞는 AppImage, DEB 또는 RPM을 선택하세요. 페이지를 열었다고 설치된 것은 아닙니다. 선택적 AI 기능은 모델 서비스 또는 로컬 CLI를 별도로 구성해야 하며 제공업체 요금이 발생할 수 있습니다."
+          },
+          "sourceUrl": "https://dbxio.com/en/docs/getting-started",
+          "method": {
+            "type": "official_page",
+            "url": "https://dbxio.com/en"
+          }
+        },
+        {
+          "id": "dbx-windows",
+          "os": "windows",
+          "architectures": [
+            "x86_64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "仅打开官方下载页，请选择 Windows 10/11 x64 安装器；在线安装器可能下载 WebView2。打开页面不代表已安装。可选 AI 功能需自行配置模型服务或本地 CLI，相关服务可能收费。",
+            "zh-TW": "僅開啟官方下載頁，請選擇 Windows 10/11 x64 安裝程式；線上安裝程式可能下載 WebView2。開啟頁面不代表已安裝。可選 AI 功能需自行設定模型服務或本機 CLI，相關服務可能收費。",
+            "en": "Opens the official download page only; choose the Windows 10/11 x64 installer. The online installer may download WebView2. Opening a page does not mean installation. Optional AI features require a separately configured model service or local CLI; provider charges may apply.",
+            "ja": "公式ダウンロードページのみを開き、Windows 10/11 x64 インストーラーを選択してください。オンラインインストーラーは WebView2 をダウンロードする場合があります。ページを開いてもインストール完了ではありません。オプションの AI 機能には別途モデルサービスまたはローカル CLI の設定が必要で、プロバイダー料金が発生する場合があります。",
+            "ko": "공식 다운로드 페이지만 열리며 Windows 10/11 x64 설치 관리자를 선택하세요. 온라인 설치 관리자는 WebView2를 다운로드할 수 있습니다. 페이지를 열었다고 설치된 것은 아닙니다. 선택적 AI 기능은 모델 서비스 또는 로컬 CLI를 별도로 구성해야 하며 제공업체 요금이 발생할 수 있습니다."
+          },
+          "sourceUrl": "https://dbxio.com/en/docs/getting-started",
+          "method": {
+            "type": "official_page",
+            "url": "https://dbxio.com/en"
+          }
+        },
+        {
+          "id": "dbx-macos",
+          "os": "macos",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "仅打开官方下载页，请选择匹配 Intel 或 Apple Silicon 的 DMG，也可按官方文档使用 Homebrew；打开页面不代表已安装。可选 AI 功能需自行配置模型服务或本地 CLI，相关服务可能收费。",
+            "zh-TW": "僅開啟官方下載頁，請選擇符合 Intel 或 Apple Silicon 的 DMG，也可依官方文件使用 Homebrew；開啟頁面不代表已安裝。可選 AI 功能需自行設定模型服務或本機 CLI，相關服務可能收費。",
+            "en": "Opens the official download page only; choose the DMG matching Intel or Apple Silicon, or use Homebrew as documented. Opening a page does not mean installation. Optional AI features require a separately configured model service or local CLI; provider charges may apply.",
+            "ja": "公式ダウンロードページのみを開き、Intel または Apple Silicon に合う DMG を選択するか、公式ドキュメントに従って Homebrew を使用してください。ページを開いてもインストール完了ではありません。オプションの AI 機能には別途モデルサービスまたはローカル CLI の設定が必要で、プロバイダー料金が発生する場合があります。",
+            "ko": "공식 다운로드 페이지만 열리며 Intel 또는 Apple Silicon에 맞는 DMG를 선택하거나 공식 문서에 따라 Homebrew를 사용하세요. 페이지를 열었다고 설치된 것은 아닙니다. 선택적 AI 기능은 모델 서비스 또는 로컬 CLI를 별도로 구성해야 하며 제공업체 요금이 발생할 수 있습니다."
+          },
+          "sourceUrl": "https://dbxio.com/en/docs/getting-started",
+          "method": {
+            "type": "official_page",
+            "url": "https://dbxio.com/en"
           }
         }
       ]
