@@ -39,10 +39,10 @@ jobs:
           libwayland-dev
 
       - name: Check JSON syntax
-        run: jq empty catalog/catalog.json
+        run: jq empty catalog/catalog/*.json
 
       - name: Validate the complete client contract
         working-directory: client
         env:
-          PAKKIT_OFFICIAL_CATALOG_PATH: ${{ github.workspace }}/catalog/catalog.json
+          PAKKIT_OFFICIAL_CATALOG_PATH: ${{ github.workspace }}/catalog/catalog/index.json
         run: cargo test --locked real_catalog -- --ignored --nocapture

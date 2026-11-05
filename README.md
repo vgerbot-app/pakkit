@@ -93,7 +93,7 @@ Or run `target/release/pakkit.exe` directly.
 - Upgrade individual or all packages in the "Updates" view
 - Add private sources in "Sources" (requires administrator privileges)
 - Switch theme, accent color, and language in "Settings → Appearance"; settings persist to `settings.json`
-- Open "Official Install" to search the remote catalog and filter by category, operating system, or architecture. Pakkit validates the entire catalog before showing entries; loading failures offer retry and never fall back to stale or built-in entries.
+- Open "Official Install" to search the remote catalog and filter by category, operating system, or architecture. Pakkit downloads `catalog/index.json` and every indexed category document, then validates the complete combined catalog before showing entries. Loading failures offer retry and never fall back to stale, partial, or built-in entries.
 
 ### Dynamic GitHub Releases
 

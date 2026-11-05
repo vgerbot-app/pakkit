@@ -5,6 +5,10 @@
 
 ## [未发布]
 
+### 变更
+
+- 官网直装目录改为 `catalog/index.json` 与按分类拆分的 JSON 文件。客户端下载完整索引和全部分类后统一校验、一次性更新界面；任何文件缺失或非法都会拒绝整份目录，不回退到旧的单文件 `catalog.json`。`PAKKIT_OFFICIAL_CATALOG_URL` 和 `PAKKIT_OFFICIAL_CATALOG_PATH` 现在指向索引文件。
+
 ### 新增
 
 - 新增 dnf 后端（Fedora/RHEL，兼容 dnf5）：只读查询直跑 `dnf`，变更

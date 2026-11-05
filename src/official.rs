@@ -1,8 +1,8 @@
 //! Remote, explicitly user-confirmed official software installations.
 //!
 //! This module is deliberately independent of GPUI and package-manager
-//! backends. A catalog is accepted only as a whole; no entry from an invalid
-//! document is executed or displayed.
+//! backends. A complete index/category document set is accepted only as a
+//! whole; no entry from an invalid set is executed or displayed.
 
 use std::collections::HashSet;
 use std::fmt::Write as _;
@@ -23,7 +23,7 @@ pub mod resolver;
 pub use resolver::{OfficialResolutionState, ResolvedOfficialInstall};
 
 pub const DEFAULT_CATALOG_URL: &str =
-    "https://raw.githubusercontent.com/vgerbot-app/winget-gui/official-install/catalog.json";
+    "https://raw.githubusercontent.com/vgerbot-app/winget-gui/official-install/catalog/index.json";
 const CATALOG_LIMIT: u64 = 4 * 1024 * 1024;
 const DOWNLOAD_LIMIT: u64 = 2 * 1024 * 1024 * 1024;
 const OFFICIAL_CATEGORY_ICONS: &[&str] = &[
@@ -68,6 +68,47 @@ pub struct OfficialCatalog {
     pub submission_url: String,
     pub categories: Vec<OfficialCategory>,
     pub apps: Vec<OfficialApp>,
+}
+
+#[derive(Debug, Deserialize)]
+#[serde(rename_all = "camelCase")]
+struct OfficialCatalogIndex {
+    schema_version: u32,
+    catalog_version: String,
+    homepage: String,
+    submission_url: String,
+    categories: Vec<OfficialCategory>,
+}
+
+#[derive(Debug, Deserialize)]
+struct OfficialCategoryCatalog {
+    apps: Vec<OfficialApp>,
+}
+
+impl OfficialCatalogIndex {
+    fn validate_categories(&self) -> Result<(), OfficialError> {
+        if self.schema_version != 1 {
+            return Err(OfficialError::Validation(format!(
+                "不支持的 schemaVersion {}",
+                self.schema_version
+            )));
+        }
+        if self.catalog_version.trim().is_empty() {
+            return Err(OfficialError::Validation(
+                "catalogVersion 不能为空".to_owned(),
+            ));
+        }
+        let mut ids = HashSet::new();
+        for category in &self.categories {
+            if !valid_id(&category.id) || !ids.insert(&category.id) {
+                return Err(OfficialError::Validation(format!(
+                    "无效或重复分类 ID {}",
+                    category.id
+                )));
+            }
+        }
+        Ok(())
+    }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
@@ -295,8 +336,53 @@ impl Default for OfficialCatalogState {
     }
 }
 
-pub fn parse_catalog(input: &str) -> Result<OfficialCatalog, OfficialError> {
-    let catalog: OfficialCatalog = serde_json::from_str(input)?;
+pub fn parse_catalog(
+    index_input: &str,
+    category_inputs: &[(&str, &str)],
+) -> Result<OfficialCatalog, OfficialError> {
+    let index: OfficialCatalogIndex = serde_json::from_str(index_input)?;
+    index.validate_categories()?;
+    if category_inputs.len() != index.categories.len() {
+        return Err(OfficialError::Validation(
+            "分类文件数量与索引不一致".to_owned(),
+        ));
+    }
+    let mut apps = Vec::new();
+    for category in &index.categories {
+        let mut matches = category_inputs.iter().filter(|(id, _)| *id == category.id);
+        let Some((_, input)) = matches.next() else {
+            return Err(OfficialError::Validation(format!(
+                "分类 {} 的文件缺失",
+                category.id
+            )));
+        };
+        if matches.next().is_some() {
+            return Err(OfficialError::Validation(format!(
+                "分类 {} 的文件重复",
+                category.id
+            )));
+        }
+        let category_catalog: OfficialCategoryCatalog = serde_json::from_str(input)?;
+        if let Some(app) = category_catalog
+            .apps
+            .iter()
+            .find(|app| app.category != category.id)
+        {
+            return Err(OfficialError::Validation(format!(
+                "软件 {} 与分类文件 {} 不匹配",
+                app.id, category.id
+            )));
+        }
+        apps.extend(category_catalog.apps);
+    }
+    let catalog = OfficialCatalog {
+        schema_version: index.schema_version,
+        catalog_version: index.catalog_version,
+        homepage: index.homepage,
+        submission_url: index.submission_url,
+        categories: index.categories,
+        apps,
+    };
     validate_catalog(&catalog)?;
     Ok(catalog)
 }
@@ -605,6 +691,32 @@ fn valid_catalog_scheme(url: &url::Url, development: bool) -> bool {
         })
 }
 
+fn fetch_catalog_body(
+    agent: &ureq::Agent,
+    url: &url::Url,
+    development: bool,
+    remaining: &mut u64,
+) -> Result<String, OfficialError> {
+    let mut response = get_following(agent, url.as_str(), &[], development)
+        .map_err(OfficialError::CatalogRequest)?;
+    if !response.status().is_success() {
+        return Err(OfficialError::CatalogRequest(format!(
+            "HTTP {}",
+            response.status()
+        )));
+    }
+    let body = response
+        .body_mut()
+        .with_config()
+        .limit(*remaining)
+        .read_to_string()
+        .map_err(|error| OfficialError::CatalogRequest(error.to_string()))?;
+    *remaining = remaining
+        .checked_sub(body.len() as u64)
+        .ok_or_else(|| OfficialError::CatalogRequest("目录总大小超过 4 MiB".to_owned()))?;
+    Ok(body)
+}
+
 pub fn fetch_catalog(url: &str, proxy: &str) -> Result<OfficialCatalog, OfficialError> {
     let parsed =
         url::Url::parse(url).map_err(|error| OfficialError::CatalogRequest(error.to_string()))?;
@@ -615,21 +727,23 @@ pub fn fetch_catalog(url: &str, proxy: &str) -> Result<OfficialCatalog, Official
         ));
     }
     let agent = agent(Duration::from_secs(15), proxy, development)?;
-    let mut response =
-        get_following(&agent, url, &[], development).map_err(OfficialError::CatalogRequest)?;
-    if !response.status().is_success() {
-        return Err(OfficialError::CatalogRequest(format!(
-            "HTTP {}",
-            response.status()
-        )));
+    let mut remaining = CATALOG_LIMIT;
+    let index_body = fetch_catalog_body(&agent, &parsed, development, &mut remaining)?;
+    let index: OfficialCatalogIndex = serde_json::from_str(&index_body)?;
+    index.validate_categories()?;
+    let mut category_inputs = Vec::with_capacity(index.categories.len());
+    for category in &index.categories {
+        let category_url = parsed
+            .join(&format!("{}.json", category.id))
+            .map_err(|error| OfficialError::CatalogRequest(error.to_string()))?;
+        let body = fetch_catalog_body(&agent, &category_url, development, &mut remaining)?;
+        category_inputs.push((category.id.as_str(), body));
     }
-    let body = response
-        .body_mut()
-        .with_config()
-        .limit(CATALOG_LIMIT)
-        .read_to_string()
-        .map_err(|error| OfficialError::CatalogRequest(error.to_string()))?;
-    parse_catalog(&body)
+    let category_inputs = category_inputs
+        .iter()
+        .map(|(id, body)| (*id, body.as_str()))
+        .collect::<Vec<_>>();
+    parse_catalog(&index_body, &category_inputs)
 }
 
 pub fn detect_installation(detection: Option<&OfficialDetection>) -> OfficialInstallState {
@@ -1059,6 +1173,33 @@ mod tests {
         }).to_string()
     }
 
+    fn parse_fixture(input: &str) -> Result<OfficialCatalog, OfficialError> {
+        let mut doc: serde_json::Value = serde_json::from_str(input)?;
+        let apps = doc["apps"].take();
+        let categories = doc["categories"]
+            .as_array()
+            .into_iter()
+            .flatten()
+            .filter_map(|category| category["id"].as_str())
+            .map(|id| {
+                let category_apps = apps
+                    .as_array()
+                    .into_iter()
+                    .flatten()
+                    .filter(|app| app["category"] == id)
+                    .cloned()
+                    .collect::<Vec<_>>();
+                (id, serde_json::json!({ "apps": category_apps }).to_string())
+            })
+            .collect::<Vec<_>>();
+        let index = doc.to_string();
+        let category_inputs = categories
+            .iter()
+            .map(|(id, body)| (*id, body.as_str()))
+            .collect::<Vec<_>>();
+        parse_catalog(&index, &category_inputs)
+    }
+
     fn github_doc() -> serde_json::Value {
         let mut doc: serde_json::Value = serde_json::from_str(&fixture()).expect("fixture");
         doc["apps"][0]["variants"][0]["method"] = serde_json::json!({
@@ -1100,7 +1241,7 @@ mod tests {
             "type": "vendor_json_feed",
             "url": "https://example.com/releases.json"
         });
-        let catalog = parse_catalog(&doc.to_string()).expect("unknown provider remains a page");
+        let catalog = parse_fixture(&doc.to_string()).expect("unknown provider remains a page");
         assert!(matches!(
             &catalog.apps[0].variants[0].method,
             OfficialMethod::OfficialPage {
@@ -1112,7 +1253,7 @@ mod tests {
 
     #[test]
     fn known_provider_configuration_is_strictly_validated() {
-        assert!(parse_catalog(&github_doc().to_string()).is_ok());
+        assert!(parse_fixture(&github_doc().to_string()).is_ok());
         for (pointer, value) in [
             (
                 "/apps/0/variants/0/method/release/repository",
@@ -1129,7 +1270,7 @@ mod tests {
         ] {
             let mut doc = github_doc();
             *doc.pointer_mut(pointer).expect("field") = value;
-            assert!(parse_catalog(&doc.to_string()).is_err(), "{pointer}");
+            assert!(parse_fixture(&doc.to_string()).is_err(), "{pointer}");
         }
 
         let mut windows = github_doc();
@@ -1142,23 +1283,23 @@ mod tests {
                 "packages": [{"format": "exe", "assets": {"x86_64": "App-*.exe"}}]
             }
         });
-        assert!(parse_catalog(&windows.to_string()).is_err());
+        assert!(parse_fixture(&windows.to_string()).is_err());
         windows["apps"][0]["variants"][1]["method"]["release"]["packages"][0]["expectedSigner"] =
             serde_json::json!("CN=Publisher");
-        assert!(parse_catalog(&windows.to_string()).is_ok());
+        assert!(parse_fixture(&windows.to_string()).is_ok());
     }
 
     #[test]
     fn valid_catalog_supports_all_methods_and_architectures() {
-        let catalog = parse_catalog(&fixture()).expect("valid fixture");
+        let catalog = parse_fixture(&fixture()).expect("valid fixture");
         assert_eq!(catalog.apps.len(), 1);
         assert!(variant_for(&catalog.apps[0], OfficialOs::Linux, OfficialArch::Aarch64).is_some());
         assert_eq!(catalog.apps[0].summary.get("zh-CN"), "中文");
     }
     #[test]
     fn malformed_catalog_and_unmatched_filters_return_no_entries() {
-        assert!(parse_catalog("{").is_err());
-        let catalog = parse_catalog(&fixture()).expect("valid fixture");
+        assert!(parse_fixture("{").is_err());
+        let catalog = parse_fixture(&fixture()).expect("valid fixture");
         let mut state = OfficialCatalogState {
             status: OfficialLoadState::Ready,
             catalog: Some(catalog),
@@ -1300,7 +1441,7 @@ mod tests {
         doc["apps"][0]["variants"][1]["architectures"] = serde_json::json!(["aarch64"]);
         doc["apps"][0]["variants"][1]["method"]["url"] =
             serde_json::json!("https://example.com/arm64.exe");
-        let catalog = parse_catalog(&doc.to_string()).expect("valid catalog");
+        let catalog = parse_fixture(&doc.to_string()).expect("valid catalog");
         let variant = variant_for(&catalog.apps[0], OfficialOs::Windows, OfficialArch::Aarch64)
             .expect("variant");
         assert!(
@@ -1322,7 +1463,7 @@ mod tests {
             let mut value_doc: serde_json::Value =
                 serde_json::from_str(&fixture()).expect("fixture");
             *value_doc.pointer_mut(pointer).expect("field") = value;
-            assert!(parse_catalog(&value_doc.to_string()).is_err(), "{pointer}");
+            assert!(parse_fixture(&value_doc.to_string()).is_err(), "{pointer}");
         }
     }
 
@@ -1334,7 +1475,7 @@ mod tests {
             .as_array_mut()
             .expect("variants")
             .push(variant);
-        assert!(parse_catalog(&doc.to_string()).is_err());
+        assert!(parse_fixture(&doc.to_string()).is_err());
     }
 
     #[test]
@@ -1387,20 +1528,20 @@ mod tests {
         doc["categories"][0]["id"] = serde_json::json!("browser");
         doc["categories"][0]["icon"] = serde_json::json!("network");
         doc["apps"][0]["category"] = serde_json::json!("browser");
-        assert!(parse_catalog(&doc.to_string()).is_ok());
+        assert!(parse_fixture(&doc.to_string()).is_ok());
 
         doc["categories"][0]["icon"] = serde_json::json!("not-an-icon");
-        assert!(parse_catalog(&doc.to_string()).is_err());
+        assert!(parse_fixture(&doc.to_string()).is_err());
         doc["categories"][0]["icon"] = serde_json::json!("network");
         doc["categories"][0]["id"] = serde_json::json!("Browser");
-        assert!(parse_catalog(&doc.to_string()).is_err());
+        assert!(parse_fixture(&doc.to_string()).is_err());
     }
 
     #[test]
     fn search_matches_ids_and_every_localized_summary() {
         let mut doc: serde_json::Value = serde_json::from_str(&fixture()).expect("fixture");
         doc["apps"][0]["summary"]["zh-CN"] = serde_json::json!("微信");
-        let catalog = parse_catalog(&doc.to_string()).expect("valid catalog");
+        let catalog = parse_fixture(&doc.to_string()).expect("valid catalog");
         let mut state = OfficialCatalogState {
             status: OfficialLoadState::Ready,
             catalog: Some(catalog),
@@ -1420,7 +1561,7 @@ mod tests {
 
     #[test]
     fn official_paging_bounds_large_catalogs_and_clamps_after_filtering() {
-        let catalog = parse_catalog(&fixture()).expect("valid catalog");
+        let catalog = parse_fixture(&fixture()).expect("valid fixture");
         let template = catalog.apps[0].clone();
         let apps = (0..389)
             .map(|index| {
@@ -1455,7 +1596,7 @@ mod tests {
 
     #[test]
     fn pending_detection_is_host_only_and_excludes_cached_variants() {
-        let catalog = parse_catalog(&fixture()).expect("valid catalog");
+        let catalog = parse_fixture(&fixture()).expect("valid fixture");
         let app = &catalog.apps[0];
         let installed = std::collections::HashMap::new();
         let pending = pending_official_detections(
@@ -1510,14 +1651,91 @@ mod tests {
     }
 
     #[test]
-    #[ignore = "set PAKKIT_OFFICIAL_CATALOG_PATH to a local official-install catalog"]
+    fn split_catalog_requires_complete_matching_category_documents() {
+        let mut doc: serde_json::Value = serde_json::from_str(&fixture()).expect("fixture");
+        let index = serde_json::json!({
+            "schemaVersion": doc["schemaVersion"].take(),
+            "catalogVersion": doc["catalogVersion"].take(),
+            "homepage": doc["homepage"].take(),
+            "submissionUrl": doc["submissionUrl"].take(),
+            "categories": doc["categories"].take(),
+        })
+        .to_string();
+        let category = serde_json::json!({ "apps": doc["apps"].take() }).to_string();
+        assert!(parse_catalog(&index, &[("dev", &category)]).is_ok());
+        assert!(parse_catalog(&index, &[]).is_err());
+        assert!(parse_catalog(&index, &[("dev", &category), ("dev", &category)]).is_err());
+        assert!(parse_catalog(&index, &[("dev", "{")]).is_err());
+        assert!(parse_catalog(&index, &[("dev", "{}")]).is_err());
+        assert!(
+            parse_catalog(
+                &index,
+                &[("dev", &serde_json::json!({"apps": []}).to_string())]
+            )
+            .is_ok()
+        );
+        assert!(parse_catalog(&index, &[("browser", &category)]).is_err());
+
+        let mismatched = category.replace("\"category\":\"dev\"", "\"category\":\"browser\"");
+        assert!(parse_catalog(&index, &[("dev", &mismatched)]).is_err());
+    }
+
+    #[test]
+    fn split_catalog_rejects_duplicate_ids_across_categories() {
+        let mut doc: serde_json::Value = serde_json::from_str(&fixture()).expect("fixture");
+        doc["categories"]
+            .as_array_mut()
+            .expect("categories")
+            .push(serde_json::json!({
+                "id": "browser", "name": text(), "description": text(),
+                "icon": "network", "accent": "#3b82f6"
+            }));
+        let mut other = doc["apps"][0].clone();
+        other["category"] = serde_json::json!("browser");
+        doc["apps"].as_array_mut().expect("apps").push(other);
+        assert!(parse_fixture(&doc.to_string()).is_err());
+
+        doc["apps"][1]["id"] = serde_json::json!("other-app");
+        assert!(parse_fixture(&doc.to_string()).is_err());
+
+        for (index, variant) in doc["apps"][1]["variants"]
+            .as_array_mut()
+            .expect("variants")
+            .iter_mut()
+            .enumerate()
+        {
+            variant["id"] = serde_json::json!(format!("other-variant-{index}"));
+        }
+        assert!(parse_fixture(&doc.to_string()).is_ok());
+    }
+
+    #[test]
+    #[ignore = "set PAKKIT_OFFICIAL_CATALOG_PATH to a local official-install catalog/index.json"]
     fn real_catalog() {
         let path = std::env::var("PAKKIT_OFFICIAL_CATALOG_PATH")
             .expect("PAKKIT_OFFICIAL_CATALOG_PATH is required");
-        let metadata = std::fs::metadata(&path).expect("catalog metadata");
-        assert!(metadata.len() <= CATALOG_LIMIT, "catalog exceeds 4 MiB");
-        let input = std::fs::read_to_string(&path).expect("read catalog");
-        let catalog = parse_catalog(&input).expect("valid real catalog");
+        let index_input = std::fs::read_to_string(&path).expect("read catalog index");
+        let index: OfficialCatalogIndex =
+            serde_json::from_str(&index_input).expect("valid catalog index");
+        index.validate_categories().expect("valid category IDs");
+        let directory = Path::new(&path).parent().expect("catalog directory");
+        let mut total_size = index_input.len() as u64;
+        let category_inputs = index
+            .categories
+            .iter()
+            .map(|category| {
+                let category_path = directory.join(format!("{}.json", category.id));
+                let input = std::fs::read_to_string(category_path).expect("read category catalog");
+                total_size += input.len() as u64;
+                (category.id.as_str(), input)
+            })
+            .collect::<Vec<_>>();
+        assert!(total_size <= CATALOG_LIMIT, "catalog exceeds 4 MiB");
+        let category_inputs = category_inputs
+            .iter()
+            .map(|(id, input)| (*id, input.as_str()))
+            .collect::<Vec<_>>();
+        let catalog = parse_catalog(&index_input, &category_inputs).expect("valid real catalog");
         let variants = catalog
             .apps
             .iter()
