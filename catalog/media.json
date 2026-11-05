@@ -1,0 +1,725 @@
+{
+  "apps": [
+    {
+      "id": "vlc",
+      "name": "VLC media player",
+      "publisher": "VideoLAN",
+      "category": "media",
+      "summary": {
+        "zh-CN": "自由开源多媒体播放器，支持常见音视频格式、字幕与网络流。",
+        "zh-TW": "自由開源多媒體播放器，支援常見影音格式、字幕與網路串流。",
+        "en": "A free and open-source multimedia player for common audio/video formats, subtitles and network streams.",
+        "ja": "一般的な音声・動画形式、字幕、ネットワークストリームに対応する自由でオープンソースのメディアプレーヤー。",
+        "ko": "일반적인 오디오/비디오 형식, 자막 및 네트워크 스트림을 지원하는 자유 오픈 소스 멀티미디어 플레이어."
+      },
+      "homepage": "https://www.videolan.org/vlc/",
+      "mark": "V",
+      "accent": "#ff8800",
+      "variants": [
+        {
+          "id": "vlc-linux",
+          "os": "linux",
+          "architectures": [
+            "x86_64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "仅打开官方下载页，由你核对系统要求、版本和许可后安装；打开页面不代表已安装。",
+            "zh-TW": "僅開啟官方下載頁，由你核對系統需求、版本與授權後安裝；開啟頁面不代表已安裝。",
+            "en": "Opens the official download page only. Check system requirements, the release and license before installing; opening a page does not mean the app is installed.",
+            "ja": "公式ダウンロードページを開くだけです。システム要件、リリース、ライセンスを確認してインストールしてください。ページを開いてもインストール完了ではありません。",
+            "ko": "공식 다운로드 페이지만 엽니다. 설치 전 시스템 요구 사항, 릴리스 및 라이선스를 확인하세요. 페이지를 열었다고 설치된 것은 아닙니다."
+          },
+          "sourceUrl": "https://www.videolan.org/vlc/",
+          "method": {
+            "type": "official_page",
+            "url": "https://www.videolan.org/vlc/"
+          }
+        },
+        {
+          "id": "vlc-windows",
+          "os": "windows",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "仅打开官方下载页，由你核对系统要求、版本和许可后安装；打开页面不代表已安装。",
+            "zh-TW": "僅開啟官方下載頁，由你核對系統需求、版本與授權後安裝；開啟頁面不代表已安裝。",
+            "en": "Opens the official download page only. Check system requirements, the release and license before installing; opening a page does not mean the app is installed.",
+            "ja": "公式ダウンロードページを開くだけです。システム要件、リリース、ライセンスを確認してインストールしてください。ページを開いてもインストール完了ではありません。",
+            "ko": "공식 다운로드 페이지만 엽니다. 설치 전 시스템 요구 사항, 릴리스 및 라이선스를 확인하세요. 페이지를 열었다고 설치된 것은 아닙니다."
+          },
+          "sourceUrl": "https://www.videolan.org/vlc/",
+          "method": {
+            "type": "official_page",
+            "url": "https://www.videolan.org/vlc/"
+          }
+        },
+        {
+          "id": "vlc-macos",
+          "os": "macos",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "仅打开官方下载页，由你核对系统要求、版本和许可后安装；打开页面不代表已安装。",
+            "zh-TW": "僅開啟官方下載頁，由你核對系統需求、版本與授權後安裝；開啟頁面不代表已安裝。",
+            "en": "Opens the official download page only. Check system requirements, the release and license before installing; opening a page does not mean the app is installed.",
+            "ja": "公式ダウンロードページを開くだけです。システム要件、リリース、ライセンスを確認してインストールしてください。ページを開いてもインストール完了ではありません。",
+            "ko": "공식 다운로드 페이지만 엽니다. 설치 전 시스템 요구 사항, 릴리스 및 라이선스를 확인하세요. 페이지를 열었다고 설치된 것은 아닙니다."
+          },
+          "sourceUrl": "https://www.videolan.org/vlc/",
+          "method": {
+            "type": "official_page",
+            "url": "https://www.videolan.org/vlc/"
+          }
+        }
+      ]
+    },
+    {
+      "id": "obs-studio",
+      "name": "OBS Studio",
+      "publisher": "OBS Project",
+      "category": "media",
+      "summary": {
+        "zh-CN": "自由开源录屏与直播工具，支持场景、来源和音视频混音。",
+        "zh-TW": "自由開源錄影與直播工具，支援場景、來源與影音混音。",
+        "en": "Free and open-source screen recording and live streaming with scenes, sources and audio/video mixing.",
+        "ja": "シーン、ソース、音声・映像ミキシングに対応する自由でオープンソースの画面録画・ライブ配信ツール。",
+        "ko": "장면, 소스 및 오디오/비디오 믹싱을 지원하는 자유 오픈 소스 화면 녹화 및 라이브 스트리밍 도구."
+      },
+      "homepage": "https://obsproject.com/download",
+      "mark": "OB",
+      "accent": "#dce1e8",
+      "variants": [
+        {
+          "id": "obs-studio-linux",
+          "os": "linux",
+          "architectures": [
+            "x86_64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "仅打开官方下载页，由你核对系统要求、版本和许可后安装；打开页面不代表已安装。",
+            "zh-TW": "僅開啟官方下載頁，由你核對系統需求、版本與授權後安裝；開啟頁面不代表已安裝。",
+            "en": "Opens the official download page only. Check system requirements, the release and license before installing; opening a page does not mean the app is installed.",
+            "ja": "公式ダウンロードページを開くだけです。システム要件、リリース、ライセンスを確認してインストールしてください。ページを開いてもインストール完了ではありません。",
+            "ko": "공식 다운로드 페이지만 엽니다. 설치 전 시스템 요구 사항, 릴리스 및 라이선스를 확인하세요. 페이지를 열었다고 설치된 것은 아닙니다."
+          },
+          "sourceUrl": "https://obsproject.com/download",
+          "method": {
+            "type": "official_page",
+            "url": "https://obsproject.com/download"
+          }
+        },
+        {
+          "id": "obs-studio-windows",
+          "os": "windows",
+          "architectures": [
+            "x86_64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "仅打开官方下载页，由你核对系统要求、版本和许可后安装；打开页面不代表已安装。",
+            "zh-TW": "僅開啟官方下載頁，由你核對系統需求、版本與授權後安裝；開啟頁面不代表已安裝。",
+            "en": "Opens the official download page only. Check system requirements, the release and license before installing; opening a page does not mean the app is installed.",
+            "ja": "公式ダウンロードページを開くだけです。システム要件、リリース、ライセンスを確認してインストールしてください。ページを開いてもインストール完了ではありません。",
+            "ko": "공식 다운로드 페이지만 엽니다. 설치 전 시스템 요구 사항, 릴리스 및 라이선스를 확인하세요. 페이지를 열었다고 설치된 것은 아닙니다."
+          },
+          "sourceUrl": "https://obsproject.com/download",
+          "method": {
+            "type": "official_page",
+            "url": "https://obsproject.com/download"
+          }
+        },
+        {
+          "id": "obs-studio-macos",
+          "os": "macos",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "仅打开官方下载页，由你核对系统要求、版本和许可后安装；打开页面不代表已安装。",
+            "zh-TW": "僅開啟官方下載頁，由你核對系統需求、版本與授權後安裝；開啟頁面不代表已安裝。",
+            "en": "Opens the official download page only. Check system requirements, the release and license before installing; opening a page does not mean the app is installed.",
+            "ja": "公式ダウンロードページを開くだけです。システム要件、リリース、ライセンスを確認してインストールしてください。ページを開いてもインストール完了ではありません。",
+            "ko": "공식 다운로드 페이지만 엽니다. 설치 전 시스템 요구 사항, 릴리스 및 라이선스를 확인하세요. 페이지를 열었다고 설치된 것은 아닙니다."
+          },
+          "sourceUrl": "https://obsproject.com/download",
+          "method": {
+            "type": "official_page",
+            "url": "https://obsproject.com/download"
+          }
+        }
+      ]
+    },
+    {
+      "id": "gimp",
+      "name": "GIMP",
+      "publisher": "The GIMP Team",
+      "category": "media",
+      "summary": {
+        "zh-CN": "自由开源图像编辑器，支持图层、蒙版、绘画与插件。",
+        "zh-TW": "自由開源圖像編輯器，支援圖層、遮色片、繪畫與外掛。",
+        "en": "A free and open-source image editor with layers, masks, painting and plugins.",
+        "ja": "レイヤー、マスク、ペイント、プラグインに対応する自由でオープンソースの画像エディター。",
+        "ko": "레이어, 마스크, 페인팅 및 플러그인을 지원하는 자유 오픈 소스 이미지 편집기."
+      },
+      "homepage": "https://www.gimp.org/downloads/",
+      "mark": "G",
+      "accent": "#80755f",
+      "variants": [
+        {
+          "id": "gimp-linux",
+          "os": "linux",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "仅打开官方下载页，由你核对系统要求、版本和许可后安装；打开页面不代表已安装。",
+            "zh-TW": "僅開啟官方下載頁，由你核對系統需求、版本與授權後安裝；開啟頁面不代表已安裝。",
+            "en": "Opens the official download page only. Check system requirements, the release and license before installing; opening a page does not mean the app is installed.",
+            "ja": "公式ダウンロードページを開くだけです。システム要件、リリース、ライセンスを確認してインストールしてください。ページを開いてもインストール完了ではありません。",
+            "ko": "공식 다운로드 페이지만 엽니다. 설치 전 시스템 요구 사항, 릴리스 및 라이선스를 확인하세요. 페이지를 열었다고 설치된 것은 아닙니다."
+          },
+          "sourceUrl": "https://www.gimp.org/downloads/",
+          "method": {
+            "type": "official_page",
+            "url": "https://www.gimp.org/downloads/"
+          }
+        },
+        {
+          "id": "gimp-windows",
+          "os": "windows",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "仅打开官方下载页，由你核对系统要求、版本和许可后安装；打开页面不代表已安装。",
+            "zh-TW": "僅開啟官方下載頁，由你核對系統需求、版本與授權後安裝；開啟頁面不代表已安裝。",
+            "en": "Opens the official download page only. Check system requirements, the release and license before installing; opening a page does not mean the app is installed.",
+            "ja": "公式ダウンロードページを開くだけです。システム要件、リリース、ライセンスを確認してインストールしてください。ページを開いてもインストール完了ではありません。",
+            "ko": "공식 다운로드 페이지만 엽니다. 설치 전 시스템 요구 사항, 릴리스 및 라이선스를 확인하세요. 페이지를 열었다고 설치된 것은 아닙니다."
+          },
+          "sourceUrl": "https://www.gimp.org/downloads/",
+          "method": {
+            "type": "official_page",
+            "url": "https://www.gimp.org/downloads/"
+          }
+        },
+        {
+          "id": "gimp-macos",
+          "os": "macos",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "仅打开官方下载页，由你核对系统要求、版本和许可后安装；打开页面不代表已安装。",
+            "zh-TW": "僅開啟官方下載頁，由你核對系統需求、版本與授權後安裝；開啟頁面不代表已安裝。",
+            "en": "Opens the official download page only. Check system requirements, the release and license before installing; opening a page does not mean the app is installed.",
+            "ja": "公式ダウンロードページを開くだけです。システム要件、リリース、ライセンスを確認してインストールしてください。ページを開いてもインストール完了ではありません。",
+            "ko": "공식 다운로드 페이지만 엽니다. 설치 전 시스템 요구 사항, 릴리스 및 라이선스를 확인하세요. 페이지를 열었다고 설치된 것은 아닙니다."
+          },
+          "sourceUrl": "https://www.gimp.org/downloads/",
+          "method": {
+            "type": "official_page",
+            "url": "https://www.gimp.org/downloads/"
+          }
+        }
+      ]
+    },
+    {
+      "id": "blender",
+      "name": "Blender",
+      "publisher": "Blender Foundation",
+      "category": "media",
+      "summary": {
+        "zh-CN": "自由开源三维创作套件，覆盖建模、雕刻、动画、渲染与视频编辑。",
+        "zh-TW": "自由開源三維創作套件，涵蓋建模、雕刻、動畫、算繪與影片編輯。",
+        "en": "A free and open-source 3D suite for modeling, sculpting, animation, rendering and video editing.",
+        "ja": "モデリング、スカルプト、アニメーション、レンダリング、動画編集を網羅する自由でオープンソースの 3D スイート。",
+        "ko": "모델링, 스컬핑, 애니메이션, 렌더링 및 비디오 편집을 위한 자유 오픈 소스 3D 제품군."
+      },
+      "homepage": "https://www.blender.org/download/",
+      "mark": "B",
+      "accent": "#ea7600",
+      "variants": [
+        {
+          "id": "blender-linux",
+          "os": "linux",
+          "architectures": [
+            "x86_64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "仅打开官方下载页，由你核对系统要求、版本和许可后安装；打开页面不代表已安装。",
+            "zh-TW": "僅開啟官方下載頁，由你核對系統需求、版本與授權後安裝；開啟頁面不代表已安裝。",
+            "en": "Opens the official download page only. Check system requirements, the release and license before installing; opening a page does not mean the app is installed.",
+            "ja": "公式ダウンロードページを開くだけです。システム要件、リリース、ライセンスを確認してインストールしてください。ページを開いてもインストール完了ではありません。",
+            "ko": "공식 다운로드 페이지만 엽니다. 설치 전 시스템 요구 사항, 릴리스 및 라이선스를 확인하세요. 페이지를 열었다고 설치된 것은 아닙니다."
+          },
+          "sourceUrl": "https://www.blender.org/download/",
+          "method": {
+            "type": "official_page",
+            "url": "https://www.blender.org/download/"
+          }
+        },
+        {
+          "id": "blender-windows",
+          "os": "windows",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "仅打开官方下载页，由你核对系统要求、版本和许可后安装；打开页面不代表已安装。",
+            "zh-TW": "僅開啟官方下載頁，由你核對系統需求、版本與授權後安裝；開啟頁面不代表已安裝。",
+            "en": "Opens the official download page only. Check system requirements, the release and license before installing; opening a page does not mean the app is installed.",
+            "ja": "公式ダウンロードページを開くだけです。システム要件、リリース、ライセンスを確認してインストールしてください。ページを開いてもインストール完了ではありません。",
+            "ko": "공식 다운로드 페이지만 엽니다. 설치 전 시스템 요구 사항, 릴리스 및 라이선스를 확인하세요. 페이지를 열었다고 설치된 것은 아닙니다."
+          },
+          "sourceUrl": "https://www.blender.org/download/",
+          "method": {
+            "type": "official_page",
+            "url": "https://www.blender.org/download/"
+          }
+        },
+        {
+          "id": "blender-macos-aarch64",
+          "os": "macos",
+          "architectures": [
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "仅打开官方下载页，由你核对系统要求、版本和许可后安装；打开页面不代表已安装。",
+            "zh-TW": "僅開啟官方下載頁，由你核對系統需求、版本與授權後安裝；開啟頁面不代表已安裝。",
+            "en": "Opens the official download page only. Check system requirements, the release and license before installing; opening a page does not mean the app is installed.",
+            "ja": "公式ダウンロードページを開くだけです。システム要件、リリース、ライセンスを確認してインストールしてください。ページを開いてもインストール完了ではありません。",
+            "ko": "공식 다운로드 페이지만 엽니다. 설치 전 시스템 요구 사항, 릴리스 및 라이선스를 확인하세요. 페이지를 열었다고 설치된 것은 아닙니다."
+          },
+          "sourceUrl": "https://www.blender.org/download/",
+          "method": {
+            "type": "official_page",
+            "url": "https://www.blender.org/download/"
+          }
+        }
+      ]
+    },
+    {
+      "id": "krita",
+      "name": "Krita",
+      "publisher": "KDE",
+      "category": "media",
+      "summary": {
+        "zh-CN": "自由开源数字绘画与插画应用，提供笔刷引擎、图层、动画和色彩管理；采用 GPLv3 许可。",
+        "zh-TW": "自由開源數位繪畫與插畫應用，提供筆刷引擎、圖層、動畫與色彩管理；採用 GPLv3 授權。",
+        "en": "A free and open-source digital painting and illustration app with brush engines, layers, animation and color management, licensed under GPLv3.",
+        "ja": "ブラシエンジン、レイヤー、アニメーション、カラーマネジメントを備える GPLv3 ライセンスの自由でオープンソースなデジタルペイント・イラストアプリ。",
+        "ko": "브러시 엔진, 레이어, 애니메이션 및 색상 관리를 제공하는 GPLv3 라이선스의 자유 오픈 소스 디지털 페인팅·일러스트 앱."
+      },
+      "homepage": "https://krita.org/",
+      "mark": "K",
+      "accent": "#3daee9",
+      "variants": [
+        {
+          "id": "krita-linux",
+          "os": "linux",
+          "architectures": [
+            "x86_64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "仅打开官方下载页，提供 x86_64 AppImage；需赋予执行权限后运行。请核对 GPLv3 许可和系统要求；打开页面不代表已安装。",
+            "zh-TW": "僅開啟官方下載頁，提供 x86_64 AppImage；需賦予執行權限後執行。請核對 GPLv3 授權與系統需求；開啟頁面不代表已安裝。",
+            "en": "Opens the official download page only, with an x86_64 AppImage that must be made executable. Review the GPLv3 license and system requirements; opening a page does not mean the app is installed.",
+            "ja": "公式ダウンロードページを開くだけです。実行可能に設定が必要な x86_64 AppImage を提供します。GPLv3 ライセンスとシステム要件を確認してください。ページを開いてもインストール完了ではありません。",
+            "ko": "공식 다운로드 페이지만 열리며 실행 권한을 부여해야 하는 x86_64 AppImage를 제공합니다. GPLv3 라이선스와 시스템 요구 사항을 확인하세요. 페이지를 열었다고 설치된 것은 아닙니다."
+          },
+          "sourceUrl": "https://krita.org/en/download/",
+          "method": {
+            "type": "official_page",
+            "url": "https://krita.org/en/download/"
+          }
+        },
+        {
+          "id": "krita-windows",
+          "os": "windows",
+          "architectures": [
+            "x86_64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "仅打开官方下载页，提供 x64 安装器或便携 ZIP；安装器包含资源管理器 Shell 扩展。请核对 GPLv3 许可和系统要求；打开页面不代表已安装。",
+            "zh-TW": "僅開啟官方下載頁，提供 x64 安裝器或便攜 ZIP；安裝器包含檔案總管 Shell 擴充功能。請核對 GPLv3 授權與系統需求；開啟頁面不代表已安裝。",
+            "en": "Opens the official download page only, with an x64 installer or portable ZIP; the installer includes a Windows shell extension. Review the GPLv3 license and system requirements; opening a page does not mean the app is installed.",
+            "ja": "公式ダウンロードページを開くだけです。x64 インストーラーまたはポータブル ZIP を提供し、インストーラーには Windows シェル拡張が含まれます。GPLv3 ライセンスとシステム要件を確認してください。ページを開いてもインストール完了ではありません。",
+            "ko": "공식 다운로드 페이지만 열리며 x64 설치 관리자 또는 포터블 ZIP을 제공합니다. 설치 관리자에는 Windows 셸 확장이 포함됩니다. GPLv3 라이선스와 시스템 요구 사항을 확인하세요. 페이지를 열었다고 설치된 것은 아닙니다."
+          },
+          "sourceUrl": "https://krita.org/en/download/",
+          "method": {
+            "type": "official_page",
+            "url": "https://krita.org/en/download/"
+          }
+        }
+      ]
+    },
+    {
+      "id": "kdenlive",
+      "name": "Kdenlive",
+      "publisher": "KDE",
+      "category": "media",
+      "summary": {
+        "zh-CN": "KDE 的自由开源非线性视频编辑器，支持多轨时间线、效果、转场、代理剪辑与字幕；采用 GPLv3 许可。",
+        "zh-TW": "KDE 的自由開源非線性影片編輯器，支援多軌時間軸、效果、轉場、代理剪輯與字幕；採用 GPLv3 授權。",
+        "en": "KDE’s free and open-source non-linear video editor with multi-track timelines, effects, transitions, proxy editing and subtitles, licensed under GPLv3.",
+        "ja": "マルチトラックタイムライン、エフェクト、トランジション、プロキシ編集、字幕に対応する KDE の GPLv3 ライセンスの自由でオープンソースなノンリニア動画エディター。",
+        "ko": "멀티트랙 타임라인, 효과, 전환, 프록시 편집 및 자막을 지원하는 KDE의 GPLv3 라이선스 자유 오픈 소스 비선형 비디오 편집기."
+      },
+      "homepage": "https://kdenlive.org/",
+      "mark": "Kd",
+      "accent": "#5274d8",
+      "variants": [
+        {
+          "id": "kdenlive-linux",
+          "os": "linux",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "仅打开官方下载页；x86_64 可直接下载 AppImage，ARM64 请选择 Flatpak（需 Flatpak/Flathub）。AppImage 需赋予执行权限；打开页面不代表已安装。",
+            "zh-TW": "僅開啟官方下載頁；x86_64 可直接下載 AppImage，ARM64 請選擇 Flatpak（需 Flatpak/Flathub）。AppImage 需賦予執行權限；開啟頁面不代表已安裝。",
+            "en": "Opens the official download page only. x86_64 has a direct AppImage; on ARM64, choose the Flatpak, which requires Flatpak/Flathub. Make AppImages executable; opening a page does not mean the app is installed.",
+            "ja": "公式ダウンロードページを開くだけです。x86_64 は AppImage を直接取得でき、ARM64 では Flatpak（Flatpak/Flathub が必要）を選択してください。AppImage は実行可能に設定が必要です。ページを開いてもインストール完了ではありません。",
+            "ko": "공식 다운로드 페이지만 열립니다. x86_64는 AppImage를 직접 받고, ARM64에서는 Flatpak/Flathub가 필요한 Flatpak을 선택하세요. AppImage에는 실행 권한을 부여해야 합니다. 페이지를 열었다고 설치된 것은 아닙니다."
+          },
+          "sourceUrl": "https://kdenlive.org/download/",
+          "method": {
+            "type": "official_page",
+            "url": "https://kdenlive.org/download/"
+          }
+        },
+        {
+          "id": "kdenlive-windows",
+          "os": "windows",
+          "architectures": [
+            "x86_64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "仅打开官方下载页，适用于 64 位 Windows 10（1809）或更新版本。安装版需要管理员权限；独立版无需安装和管理员权限，但需自行解压并从 bin 文件夹启动；打开页面不代表已安装。",
+            "zh-TW": "僅開啟官方下載頁，適用於 64 位元 Windows 10（1809）或更新版本。安裝版需要管理員權限；獨立版無需安裝與管理員權限，但需自行解壓縮並從 bin 資料夾啟動；開啟頁面不代表已安裝。",
+            "en": "Opens the official download page only, for 64-bit Windows 10 (1809) or newer. The installable build needs administrator rights; the standalone build needs neither installation nor administrator rights, but must be extracted and launched from its bin folder. Opening a page does not mean the app is installed.",
+            "ja": "公式ダウンロードページを開くだけです。64 ビット Windows 10（1809）以降に対応します。インストール版には管理者権限が必要です。スタンドアロン版はインストールと管理者権限が不要ですが、展開して bin フォルダーから起動します。ページを開いてもインストール完了ではありません。",
+            "ko": "공식 다운로드 페이지만 열리며 64비트 Windows 10(1809) 이상이 필요합니다. 설치 빌드에는 관리자 권한이 필요합니다. 독립 실행 빌드는 설치와 관리자 권한이 필요 없지만 압축을 풀고 bin 폴터에서 실행해야 합니다. 페이지를 열었다고 설치된 것은 아닙니다."
+          },
+          "sourceUrl": "https://kdenlive.org/download/",
+          "method": {
+            "type": "official_page",
+            "url": "https://kdenlive.org/download/"
+          }
+        },
+        {
+          "id": "kdenlive-macos",
+          "os": "macos",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "仅打开官方下载页，分别提供 Intel 与 Apple Silicon DMG；当前页面要求 macOS 13 或更新版本。将应用拖入“应用程序”；首次启动可能需要在 Finder 中右键打开并确认；打开页面不代表已安装。",
+            "zh-TW": "僅開啟官方下載頁，分別提供 Intel 與 Apple Silicon DMG；目前頁面要求 macOS 13 或更新版本。將應用程式拖入「應用程式」；首次啟動可能需要在 Finder 中按右鍵開啟並確認；開啟頁面不代表已安裝。",
+            "en": "Opens the official download page only, with separate Intel and Apple Silicon DMGs; the current page requires macOS 13 or newer. Drag the app to Applications. First launch may require right-clicking Open in Finder and confirming; opening a page does not mean the app is installed.",
+            "ja": "公式ダウンロードページを開くだけです。Intel 用と Apple Silicon 用の DMG を別々に提供し、現在のページでは macOS 13 以降が必要です。アプリを「アプリケーション」へドラッグしてください。初回起動時に Finder で右クリックから「開く」を選び、確認が必要な場合があります。ページを開いてもインストール完了ではありません。",
+            "ko": "공식 다운로드 페이지만 열리며 Intel 및 Apple Silicon용 DMG가 각각 제공됩니다. 현재 페이지 기준 macOS 13 이상이 필요합니다. 앱을 응용 프로그램으로 드래그하세요. 첫 실행 시 Finder에서 마우스 오른쪽 버튼으로 열기를 선택하고 확인해야 할 수 있습니다. 페이지를 열었다고 설치된 것은 아닙니다."
+          },
+          "sourceUrl": "https://kdenlive.org/download/",
+          "method": {
+            "type": "official_page",
+            "url": "https://kdenlive.org/download/"
+          }
+        }
+      ]
+    },
+    {
+      "id": "audacity",
+      "name": "Audacity",
+      "publisher": "Muse Group & contributors",
+      "category": "media",
+      "summary": {
+        "zh-CN": "自由开源多轨音频录制与编辑工具，支持波形编辑、效果、音频分析和插件；采用 GPLv3 许可。",
+        "zh-TW": "自由開源多軌音訊錄製與編輯工具，支援波形編輯、效果、音訊分析與外掛；採用 GPLv3 授權。",
+        "en": "A free and open-source multi-track audio recorder and editor with waveform editing, effects, audio analysis and plugins, licensed under GPLv3.",
+        "ja": "波形編集、エフェクト、音声解析、プラグインに対応する GPLv3 ライセンスの自由でオープンソースなマルチトラック音声録音・編集ツール。",
+        "ko": "파형 편집, 효과, 오디오 분석 및 플러그인을 지원하는 GPLv3 라이선스의 자유 오픈 소스 멀티트랙 오디오 녹음·편집 도구."
+      },
+      "homepage": "https://www.audacityteam.org/",
+      "mark": "A",
+      "accent": "#2140d8",
+      "variants": [
+        {
+          "id": "audacity-linux-x86-64",
+          "os": "linux",
+          "architectures": [
+            "x86_64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "仅打开官方下载页，提供 x86_64 AppImage；需 FUSE 2 并赋予执行权限后运行。可核对页面公布的 SHA-256；打开页面不代表已安装。",
+            "zh-TW": "僅開啟官方下載頁，提供 x86_64 AppImage；需 FUSE 2 並賦予執行權限後執行。可核對頁面公布的 SHA-256；開啟頁面不代表已安裝。",
+            "en": "Opens the official download page only, with an x86_64 AppImage requiring FUSE 2 and executable permission. Verify against the published SHA-256; opening a page does not mean the app is installed.",
+            "ja": "公式ダウンロードページを開くだけです。x86_64 AppImage には FUSE 2 と実行権限が必要です。公開されている SHA-256 と照合してください。ページを開いてもインストール完了ではありません。",
+            "ko": "공식 다운로드 페이지만 열리며 FUSE 2와 실행 권한이 필요한 x86_64 AppImage를 제공합니다. 공개된 SHA-256과 대조하세요. 페이지를 열었다고 설치된 것은 아닙니다."
+          },
+          "sourceUrl": "https://www.audacityteam.org/download/linux/",
+          "method": {
+            "type": "official_page",
+            "url": "https://www.audacityteam.org/download/linux/"
+          }
+        },
+        {
+          "id": "audacity-linux-aarch64",
+          "os": "linux",
+          "architectures": [
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "仅打开官方下载页，提供 ARM64 AppImage；需 FUSE 2 并赋予执行权限后运行，且不支持插件。可核对页面公布的 SHA-256；打开页面不代表已安装。",
+            "zh-TW": "僅開啟官方下載頁，提供 ARM64 AppImage；需 FUSE 2 並賦予執行權限後執行，且不支援外掛。可核對頁面公布的 SHA-256；開啟頁面不代表已安裝。",
+            "en": "Opens the official download page only, with an ARM64 AppImage requiring FUSE 2 and executable permission; plugins are not supported. Verify against the published SHA-256; opening a page does not mean the app is installed.",
+            "ja": "公式ダウンロードページを開くだけです。ARM64 AppImage には FUSE 2 と実行権限が必要で、プラグインはサポートされません。公開されている SHA-256 と照合してください。ページを開いてもインストール完了ではありません。",
+            "ko": "공식 다운로드 페이지만 열리며 FUSE 2와 실행 권한이 필요한 ARM64 AppImage를 제공하고 플러그인은 지원되지 않습니다. 공개된 SHA-256과 대조하세요. 페이지를 열었다고 설치된 것은 아닙니다."
+          },
+          "sourceUrl": "https://www.audacityteam.org/download/linux/",
+          "method": {
+            "type": "official_page",
+            "url": "https://www.audacityteam.org/download/linux/"
+          }
+        },
+        {
+          "id": "audacity-windows-x86-64",
+          "os": "windows",
+          "architectures": [
+            "x86_64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "仅打开官方下载页，提供 x86_64 MSI 安装器和便携压缩包；安装器可能请求管理员权限。可核对页面公布的 SHA-256；打开页面不代表已安装。",
+            "zh-TW": "僅開啟官方下載頁，提供 x86_64 MSI 安裝器與便攜壓縮包；安裝器可能要求管理員權限。可核對頁面公布的 SHA-256；開啟頁面不代表已安裝。",
+            "en": "Opens the official download page only, with an x86_64 MSI installer and portable archive; the installer may request administrator rights. Verify against the published SHA-256; opening a page does not mean the app is installed.",
+            "ja": "公式ダウンロードページを開くだけです。x86_64 MSI インストーラーとポータブルアーカイブを提供し、インストーラーは管理者権限を求める場合があります。公開されている SHA-256 と照合してください。ページを開いてもインストール完了ではありません。",
+            "ko": "공식 다운로드 페이지만 열리며 x86_64 MSI 설치 관리자와 포터블 아카이브를 제공합니다. 설치 관리자가 관리자 권한을 요청할 수 있습니다. 공개된 SHA-256과 대조하세요. 페이지를 열었다고 설치된 것은 아닙니다."
+          },
+          "sourceUrl": "https://www.audacityteam.org/download/windows/",
+          "method": {
+            "type": "official_page",
+            "url": "https://www.audacityteam.org/download/windows/"
+          }
+        },
+        {
+          "id": "audacity-windows-aarch64",
+          "os": "windows",
+          "architectures": [
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "仅打开官方下载页；ARM64 版需要 Windows 11 或更新版本，不支持插件，额外格式需 ARM64 专用 FFmpeg。提供 MSI 和便携包，安装器可能请求管理员权限；打开页面不代表已安装。",
+            "zh-TW": "僅開啟官方下載頁；ARM64 版需要 Windows 11 或更新版本，不支援外掛，額外格式需 ARM64 專用 FFmpeg。提供 MSI 與便攜包，安裝器可能要求管理員權限；開啟頁面不代表已安裝。",
+            "en": "Opens the official download page only. The ARM64 build requires Windows 11 or newer, does not support plugins, and needs an ARM64-specific FFmpeg for extra formats. MSI and portable options are available; the installer may request administrator rights. Opening a page does not mean the app is installed.",
+            "ja": "公式ダウンロードページを開くだけです。ARM64 版には Windows 11 以降が必要で、プラグインはサポートされず、追加形式には ARM64 専用 FFmpeg が必要です。MSI とポータブル版があり、インストーラーは管理者権限を求める場合があります。ページを開いてもインストール完了ではありません。",
+            "ko": "공식 다운로드 페이지만 열립니다. ARM64 빌드에는 Windows 11 이상이 필요하며 플러그인을 지원하지 않고 추가 형식에는 ARM64 전용 FFmpeg가 필요합니다. MSI와 포터블 옵션이 있으며 설치 관리자가 관리자 권한을 요청할 수 있습니다. 페이지를 열었다고 설치된 것은 아닙니다."
+          },
+          "sourceUrl": "https://www.audacityteam.org/download/windows/",
+          "method": {
+            "type": "official_page",
+            "url": "https://www.audacityteam.org/download/windows/"
+          }
+        },
+        {
+          "id": "audacity-macos-x86-64",
+          "os": "macos",
+          "architectures": [
+            "x86_64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "仅打开官方下载页，提供 Intel 专用 DMG（适用于不支持 Universal DMG 的旧版 macOS）；拖入“应用程序”完成安装。可核对页面公布的 SHA-256；打开页面不代表已安装。",
+            "zh-TW": "僅開啟官方下載頁，提供 Intel 專用 DMG（適用於不支援 Universal DMG 的舊版 macOS）；拖入「應用程式」完成安裝。可核對頁面公布的 SHA-256；開啟頁面不代表已安裝。",
+            "en": "Opens the official download page only, with an Intel-only DMG for older macOS versions that do not support the Universal DMG; drag the app to Applications. Verify against the published SHA-256; opening a page does not mean the app is installed.",
+            "ja": "公式ダウンロードページを開くだけです。Universal DMG に対応しない古い macOS 向けの Intel 専用 DMG を提供し、アプリを「アプリケーション」へドラッグしてインストールします。公開されている SHA-256 と照合してください。ページを開いてもインストール完了ではありません。",
+            "ko": "공식 다운로드 페이지만 열리며 Universal DMG를 지원하지 않는 이전 macOS용 Intel 전용 DMG를 제공합니다. 앱을 응용 프로그램으로 드래그해 설치하세요. 공개된 SHA-256과 대조하세요. 페이지를 열었다고 설치된 것은 아닙니다."
+          },
+          "sourceUrl": "https://www.audacityteam.org/download/mac/",
+          "method": {
+            "type": "official_page",
+            "url": "https://www.audacityteam.org/download/mac/"
+          }
+        },
+        {
+          "id": "audacity-macos-aarch64",
+          "os": "macos",
+          "architectures": [
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "仅打开官方下载页，提供 Apple Silicon（ARM64）专用 DMG，但不支持插件；拖入“应用程序”完成安装。可核对页面公布的 SHA-256；打开页面不代表已安装。",
+            "zh-TW": "僅開啟官方下載頁，提供 Apple Silicon（ARM64）專用 DMG，但不支援外掛；拖入「應用程式」完成安裝。可核對頁面公布的 SHA-256；開啟頁面不代表已安裝。",
+            "en": "Opens the official download page only, with an Apple Silicon (ARM64) DMG that does not support plugins; drag the app to Applications. Verify against the published SHA-256; opening a page does not mean the app is installed.",
+            "ja": "公式ダウンロードページを開くだけです。Apple Silicon（ARM64）専用 DMG を提供しますが、プラグインはサポートされません。アプリを「アプリケーション」へドラッグしてインストールします。公開されている SHA-256 と照合してください。ページを開いてもインストール完了ではありません。",
+            "ko": "공식 다운로드 페이지만 열리며 플러그인을 지원하지 않는 Apple Silicon(ARM64) 전용 DMG를 제공합니다. 앱을 응용 프로그램으로 드래그해 설치하세요. 공개된 SHA-256과 대조하세요. 페이지를 열었다고 설치된 것은 아닙니다."
+          },
+          "sourceUrl": "https://www.audacityteam.org/download/mac/",
+          "method": {
+            "type": "official_page",
+            "url": "https://www.audacityteam.org/download/mac/"
+          }
+        }
+      ]
+    },
+    {
+      "id": "handbrake",
+      "name": "HandBrake",
+      "publisher": "The HandBrake Team",
+      "category": "media",
+      "summary": {
+        "zh-CN": "自由开源本地视频转码工具，提供设备预设、编码、滤镜、字幕和批量队列；采用 GPLv2 许可。",
+        "zh-TW": "自由開源本機影片轉碼工具，提供裝置預設、編碼、濾鏡、字幕與批次佇列；採用 GPLv2 授權。",
+        "en": "A free and open-source local video transcoder with device presets, encoding, filters, subtitles and batch queues, licensed under GPLv2.",
+        "ja": "デバイスプリセット、エンコード、フィルター、字幕、バッチキューを備える GPLv2 ライセンスの自由でオープンソースなローカル動画トランスコーダー。",
+        "ko": "기기 프리셋, 인코딩, 필터, 자막 및 일괄 대기열을 제공하는 GPLv2 라이선스의 자유 오픈 소스 로컬 비디오 트랜스코더."
+      },
+      "homepage": "https://handbrake.fr/",
+      "mark": "HB",
+      "accent": "#b54a32",
+      "variants": [
+        {
+          "id": "handbrake-linux",
+          "os": "linux",
+          "architectures": [
+            "x86_64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "仅打开官方下载页，提供 x86_64 Flatpak 软件包或 Flathub 安装；需先配置 Flatpak/Flathub。官方文档建议先移除发行版或第三方 HandBrake 软件包；打开页面不代表已安装。",
+            "zh-TW": "僅開啟官方下載頁，提供 x86_64 Flatpak 套件或 Flathub 安裝；需先設定 Flatpak/Flathub。官方文件建議先移除發行版或第三方 HandBrake 套件；開啟頁面不代表已安裝。",
+            "en": "Opens the official download page only, with an x86_64 Flatpak bundle or Flathub installation; Flatpak/Flathub setup is required. The official guide recommends removing distribution or third-party HandBrake packages first. Opening a page does not mean the app is installed.",
+            "ja": "公式ダウンロードページを開くだけです。x86_64 Flatpak バンドルまたは Flathub インストールを提供し、Flatpak/Flathub の設定が必要です。公式ガイドではディストリビューションまたはサードパーティーの HandBrake パッケージを先に削除することが推奨されています。ページを開いてもインストール完了ではありません。",
+            "ko": "공식 다운로드 페이지만 열리며 x86_64 Flatpak 번들 또는 Flathub 설치를 제공하고 Flatpak/Flathub 설정이 필요합니다. 공식 안내에서는 배포판 또는 타사 HandBrake 패키지를 먼저 제거하도록 권장합니다. 페이지를 열었다고 설치된 것은 아닙니다."
+          },
+          "sourceUrl": "https://handbrake.fr/downloads.php",
+          "method": {
+            "type": "official_page",
+            "url": "https://handbrake.fr/downloads.php"
+          }
+        },
+        {
+          "id": "handbrake-windows-x86-64",
+          "os": "windows",
+          "architectures": [
+            "x86_64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "仅打开官方下载页，提供 Windows 10 或更新版本的 x64 安装器和便携 ZIP；需另行安装 Microsoft .NET Desktop Runtime 10（x64）。安装器可提议移除旧版；打开页面不代表已安装。",
+            "zh-TW": "僅開啟官方下載頁，提供 Windows 10 或更新版本的 x64 安裝器與便攜 ZIP；需另行安裝 Microsoft .NET Desktop Runtime 10（x64）。安裝器可提議移除舊版；開啟頁面不代表已安裝。",
+            "en": "Opens the official download page only, with an x64 installer and portable ZIP for Windows 10 or newer; Microsoft .NET Desktop Runtime 10 (x64) must also be installed. The installer may offer to remove an older release. Opening a page does not mean the app is installed.",
+            "ja": "公式ダウンロードページを開くだけです。Windows 10 以降向けの x64 インストーラーとポータブル ZIP を提供し、Microsoft .NET Desktop Runtime 10（x64）の追加インストールが必要です。インストーラーは旧バージョンの削除を提案する場合があります。ページを開いてもインストール完了ではありません。",
+            "ko": "공식 다운로드 페이지만 열리며 Windows 10 이상용 x64 설치 관리자와 포터블 ZIP을 제공합니다. Microsoft .NET Desktop Runtime 10(x64)도 설치해야 합니다. 설치 관리자가 이전 릴리스 제거를 제안할 수 있습니다. 페이지를 열었다고 설치된 것은 아닙니다."
+          },
+          "sourceUrl": "https://handbrake.fr/downloads.php",
+          "method": {
+            "type": "official_page",
+            "url": "https://handbrake.fr/downloads.php"
+          }
+        },
+        {
+          "id": "handbrake-windows-aarch64",
+          "os": "windows",
+          "architectures": [
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "仅打开官方下载页，提供 Windows 10 或更新版本的 ARM64 安装器和便携 ZIP；需另行安装 Microsoft .NET Desktop Runtime 10（ARM64）。安装器可提议移除旧版；打开页面不代表已安装。",
+            "zh-TW": "僅開啟官方下載頁，提供 Windows 10 或更新版本的 ARM64 安裝器與便攜 ZIP；需另行安裝 Microsoft .NET Desktop Runtime 10（ARM64）。安裝器可提議移除舊版；開啟頁面不代表已安裝。",
+            "en": "Opens the official download page only, with an ARM64 installer and portable ZIP for Windows 10 or newer; Microsoft .NET Desktop Runtime 10 (ARM64) must also be installed. The installer may offer to remove an older release. Opening a page does not mean the app is installed.",
+            "ja": "公式ダウンロードページを開くだけです。Windows 10 以降向けの ARM64 インストーラーとポータブル ZIP を提供し、Microsoft .NET Desktop Runtime 10（ARM64）の追加インストールが必要です。インストーラーは旧バージョンの削除を提案する場合があります。ページを開いてもインストール完了ではありません。",
+            "ko": "공식 다운로드 페이지만 열리며 Windows 10 이상용 ARM64 설치 관리자와 포터블 ZIP을 제공합니다. Microsoft .NET Desktop Runtime 10(ARM64)도 설치해야 합니다. 설치 관리자가 이전 릴리스 제거를 제안할 수 있습니다. 페이지를 열었다고 설치된 것은 아닙니다."
+          },
+          "sourceUrl": "https://handbrake.fr/downloads.php",
+          "method": {
+            "type": "official_page",
+            "url": "https://handbrake.fr/downloads.php"
+          }
+        },
+        {
+          "id": "handbrake-macos",
+          "os": "macos",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "仅打开官方下载页，提供适用于 macOS 10.13 或更新版本的 Universal DMG，支持 Intel 与 Apple Silicon；拖入“应用程序”完成安装。可用官方校验和或 OpenPGP 签名验证；打开页面不代表已安装。",
+            "zh-TW": "僅開啟官方下載頁，提供適用於 macOS 10.13 或更新版本的 Universal DMG，支援 Intel 與 Apple Silicon；拖入「應用程式」完成安裝。可用官方校驗和或 OpenPGP 簽章驗證；開啟頁面不代表已安裝。",
+            "en": "Opens the official download page only, with a Universal DMG for Intel and Apple Silicon on macOS 10.13 or newer; drag the app to Applications. Verify with the official checksum or OpenPGP signature. Opening a page does not mean the app is installed.",
+            "ja": "公式ダウンロードページを開くだけです。macOS 10.13 以降の Intel と Apple Silicon に対応する Universal DMG を提供し、アプリを「アプリケーション」へドラッグしてインストールします。公式チェックサムまたは OpenPGP 署名で検証できます。ページを開いてもインストール完了ではありません。",
+            "ko": "공식 다운로드 페이지만 열리며 macOS 10.13 이상의 Intel 및 Apple Silicon용 Universal DMG를 제공합니다. 앱을 응용 프로그램으로 드래그해 설치하세요. 공식 체크섬 또는 OpenPGP 서명으로 검증할 수 있습니다. 페이지를 열었다고 설치된 것은 아닙니다."
+          },
+          "sourceUrl": "https://handbrake.fr/downloads.php",
+          "method": {
+            "type": "official_page",
+            "url": "https://handbrake.fr/downloads.php"
+          }
+        }
+      ]
+    }
+  ]
+}

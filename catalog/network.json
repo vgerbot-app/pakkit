@@ -1,0 +1,291 @@
+{
+  "apps": [
+    {
+      "id": "tailscale",
+      "name": "Tailscale",
+      "publisher": "Tailscale Inc.",
+      "category": "network",
+      "summary": {
+        "zh-CN": "基于 WireGuard 的虚拟组网工具，让设备安全地连接到同一网络。",
+        "zh-TW": "基於 WireGuard 的虛擬組網工具，讓裝置安全地連接到同一網路。",
+        "en": "A WireGuard-based virtual networking tool that securely connects devices to the same network.",
+        "ja": "WireGuard ベースの仮想ネットワークツールで、デバイスを同じネットワークへ安全に接続します。",
+        "ko": "WireGuard 기반 가상 네트워킹 도구로 장치를 동일한 네트워크에 안전하게 연결합니다."
+      },
+      "homepage": "https://tailscale.com/docs/install/linux",
+      "mark": "T",
+      "accent": "#63b3ed",
+      "variants": [
+        {
+          "id": "tailscale-linux",
+          "os": "linux",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": true,
+          "interactive": true,
+          "note": {
+            "zh-CN": "安装后还需运行 tailscale up 或打开客户端，登录并授权设备加入网络。",
+            "zh-TW": "安裝後還需執行 tailscale up 或開啟用戶端，登入並授權裝置加入網路。",
+            "en": "After installation, run tailscale up or open the client to sign in and authorize the device to join the network.",
+            "ja": "インストール後、tailscale up を実行するかクライアントを開き、ログインしてデバイスのネットワーク参加を承認してください。",
+            "ko": "설치 후 tailscale up을 실행하거나 클라이언트를 열어 로그인하고 장치의 네트워크 참여를 승인하세요."
+          },
+          "sourceUrl": "https://tailscale.com/docs/install/linux",
+          "method": {
+            "type": "script",
+            "shell": "sh",
+            "command": "curl -fsSL https://tailscale.com/install.sh | sh"
+          },
+          "detection": {
+            "type": "command",
+            "program": "tailscale",
+            "args": [
+              "version"
+            ]
+          }
+        },
+        {
+          "id": "tailscale-windows",
+          "os": "windows",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": true,
+          "interactive": true,
+          "note": {
+            "zh-CN": "安装后还需运行 tailscale up 或打开客户端，登录并授权设备加入网络。",
+            "zh-TW": "安裝後還需執行 tailscale up 或開啟用戶端，登入並授權裝置加入網路。",
+            "en": "After installation, run tailscale up or open the client to sign in and authorize the device to join the network.",
+            "ja": "インストール後、tailscale up を実行するかクライアントを開き、ログインしてデバイスのネットワーク参加を承認してください。",
+            "ko": "설치 후 tailscale up을 실행하거나 클라이언트를 열어 로그인하고 장치의 네트워크 참여를 승인하세요."
+          },
+          "sourceUrl": "https://tailscale.com/docs/install/linux",
+          "method": {
+            "type": "artifact",
+            "url": "https://pkgs.tailscale.com/stable/tailscale-setup-latest.exe",
+            "fileName": "tailscale-setup-latest.exe",
+            "action": "run_installer"
+          },
+          "detection": {
+            "type": "command",
+            "program": "tailscale",
+            "args": [
+              "version"
+            ]
+          }
+        },
+        {
+          "id": "tailscale-macos",
+          "os": "macos",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": true,
+          "interactive": true,
+          "note": {
+            "zh-CN": "安装后还需运行 tailscale up 或打开客户端，登录并授权设备加入网络。",
+            "zh-TW": "安裝後還需執行 tailscale up 或開啟用戶端，登入並授權裝置加入網路。",
+            "en": "After installation, run tailscale up or open the client to sign in and authorize the device to join the network.",
+            "ja": "インストール後、tailscale up を実行するかクライアントを開き、ログインしてデバイスのネットワーク参加を承認してください。",
+            "ko": "설치 후 tailscale up을 실행하거나 클라이언트를 열어 로그인하고 장치의 네트워크 참여를 승인하세요."
+          },
+          "sourceUrl": "https://tailscale.com/docs/install/linux",
+          "method": {
+            "type": "artifact",
+            "url": "https://pkgs.tailscale.com/stable/Tailscale-latest-macos.pkg",
+            "fileName": "Tailscale-latest-macos.pkg",
+            "action": "run_installer"
+          },
+          "detection": {
+            "type": "command",
+            "program": "tailscale",
+            "args": [
+              "version"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "zerotier",
+      "name": "ZeroTier",
+      "publisher": "ZeroTier, Inc.",
+      "category": "network",
+      "summary": {
+        "zh-CN": "创建覆盖局域网的虚拟网络，连接不同地点的设备与服务器。",
+        "zh-TW": "建立覆蓋區域網路的虛擬網路，連接不同地點的裝置與伺服器。",
+        "en": "Create virtual networks that span local networks and connect devices and servers across locations.",
+        "ja": "ローカルネットワークをまたぐ仮想ネットワークを作成し、離れた場所のデバイスとサーバーを接続します。",
+        "ko": "로컬 네트워크를 아우르는 가상 네트워크를 만들어 서로 다른 위치의 장치와 서버를 연결합니다."
+      },
+      "homepage": "https://www.zerotier.com/download/",
+      "mark": "Z",
+      "accent": "#e5b85c",
+      "variants": [
+        {
+          "id": "zerotier-linux",
+          "os": "linux",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": true,
+          "interactive": true,
+          "note": {
+            "zh-CN": "Linux 脚本会添加官方仓库并安装软件包；Windows 安装时需要批准驱动。",
+            "zh-TW": "Linux 腳本會新增官方套件庫並安裝套件；Windows 安裝時需要核准驅動程式。",
+            "en": "The Linux script adds the official repository and installs packages; Windows installation requires approving the driver.",
+            "ja": "Linux スクリプトは公式リポジトリを追加してパッケージをインストールします。Windows ではドライバーの承認が必要です。",
+            "ko": "Linux 스크립트는 공식 저장소를 추가하고 패키지를 설치합니다. Windows 설치 시 드라이버를 승인해야 합니다."
+          },
+          "sourceUrl": "https://www.zerotier.com/download/",
+          "method": {
+            "type": "script",
+            "shell": "sh",
+            "command": "curl -s https://install.zerotier.com | sudo bash"
+          }
+        },
+        {
+          "id": "zerotier-windows",
+          "os": "windows",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": true,
+          "interactive": true,
+          "note": {
+            "zh-CN": "Linux 脚本会添加官方仓库并安装软件包；Windows 安装时需要批准驱动。",
+            "zh-TW": "Linux 腳本會新增官方套件庫並安裝套件；Windows 安裝時需要核准驅動程式。",
+            "en": "The Linux script adds the official repository and installs packages; Windows installation requires approving the driver.",
+            "ja": "Linux スクリプトは公式リポジトリを追加してパッケージをインストールします。Windows ではドライバーの承認が必要です。",
+            "ko": "Linux 스크립트는 공식 저장소를 추가하고 패키지를 설치합니다. Windows 설치 시 드라이버를 승인해야 합니다."
+          },
+          "sourceUrl": "https://www.zerotier.com/download/",
+          "method": {
+            "type": "artifact",
+            "url": "https://download.zerotier.com/dist/ZeroTier%20One.msi",
+            "fileName": "ZeroTier One.msi",
+            "action": "run_installer"
+          }
+        },
+        {
+          "id": "zerotier-macos",
+          "os": "macos",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": true,
+          "interactive": true,
+          "note": {
+            "zh-CN": "Linux 脚本会添加官方仓库并安装软件包；Windows 安装时需要批准驱动。",
+            "zh-TW": "Linux 腳本會新增官方套件庫並安裝套件；Windows 安裝時需要核准驅動程式。",
+            "en": "The Linux script adds the official repository and installs packages; Windows installation requires approving the driver.",
+            "ja": "Linux スクリプトは公式リポジトリを追加してパッケージをインストールします。Windows ではドライバーの承認が必要です。",
+            "ko": "Linux 스크립트는 공식 저장소를 추가하고 패키지를 설치합니다. Windows 설치 시 드라이버를 승인해야 합니다."
+          },
+          "sourceUrl": "https://www.zerotier.com/download/",
+          "method": {
+            "type": "artifact",
+            "url": "https://download.zerotier.com/dist/ZeroTier%20One.pkg",
+            "fileName": "ZeroTier One.pkg",
+            "action": "run_installer"
+          }
+        }
+      ]
+    },
+    {
+      "id": "cloudflare",
+      "name": "Cloudflare One",
+      "publisher": "Cloudflare",
+      "category": "network",
+      "summary": {
+        "zh-CN": "Cloudflare 设备客户端，原 WARP，提供安全网络访问与连接能力。",
+        "zh-TW": "Cloudflare 裝置用戶端，原 WARP，提供安全網路存取與連線能力。",
+        "en": "The Cloudflare device client, formerly WARP, providing secure network access and connectivity.",
+        "ja": "旧 WARP の Cloudflare デバイスクライアント。安全なネットワークアクセスと接続を提供します。",
+        "ko": "기존 WARP인 Cloudflare 장치 클라이언트로 안전한 네트워크 액세스와 연결 기능을 제공합니다."
+      },
+      "homepage": "https://developers.cloudflare.com/cloudflare-one/team-and-resources/devices/cloudflare-one-client/download/",
+      "mark": "C",
+      "accent": "#f59e52",
+      "variants": [
+        {
+          "id": "cloudflare-linux",
+          "os": "linux",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": true,
+          "interactive": false,
+          "note": {
+            "zh-CN": "按系统选择官方 DEB / RPM / MSI / PKG。企业部署可能需要额外配置。",
+            "zh-TW": "依系統選擇官方 DEB / RPM / MSI / PKG。企業部署可能需要額外設定。",
+            "en": "Choose the official DEB / RPM / MSI / PKG for your system. Enterprise deployments may require additional configuration.",
+            "ja": "システムに応じて公式 DEB / RPM / MSI / PKG を選択してください。企業展開では追加設定が必要な場合があります。",
+            "ko": "시스템에 맞는 공식 DEB / RPM / MSI / PKG를 선택하세요. 기업 배포에는 추가 구성이 필요할 수 있습니다."
+          },
+          "sourceUrl": "https://developers.cloudflare.com/cloudflare-one/team-and-resources/devices/cloudflare-one-client/download/",
+          "method": {
+            "type": "official_page",
+            "url": "https://developers.cloudflare.com/cloudflare-one/team-and-resources/devices/cloudflare-one-client/download/"
+          }
+        },
+        {
+          "id": "cloudflare-windows",
+          "os": "windows",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": true,
+          "interactive": true,
+          "note": {
+            "zh-CN": "按系统选择官方 DEB / RPM / MSI / PKG。企业部署可能需要额外配置。",
+            "zh-TW": "依系統選擇官方 DEB / RPM / MSI / PKG。企業部署可能需要額外設定。",
+            "en": "Choose the official DEB / RPM / MSI / PKG for your system. Enterprise deployments may require additional configuration.",
+            "ja": "システムに応じて公式 DEB / RPM / MSI / PKG を選択してください。企業展開では追加設定が必要な場合があります。",
+            "ko": "시스템에 맞는 공식 DEB / RPM / MSI / PKG를 선택하세요. 기업 배포에는 추가 구성이 필요할 수 있습니다."
+          },
+          "sourceUrl": "https://developers.cloudflare.com/cloudflare-one/team-and-resources/devices/cloudflare-one-client/download/",
+          "method": {
+            "type": "artifact",
+            "url": "https://downloads.cloudflareclient.com/v1/download/windows/ga",
+            "fileName": "CloudflareOneSetup.exe",
+            "action": "run_installer"
+          }
+        },
+        {
+          "id": "cloudflare-macos",
+          "os": "macos",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": true,
+          "interactive": true,
+          "note": {
+            "zh-CN": "按系统选择官方 DEB / RPM / MSI / PKG。企业部署可能需要额外配置。",
+            "zh-TW": "依系統選擇官方 DEB / RPM / MSI / PKG。企業部署可能需要額外設定。",
+            "en": "Choose the official DEB / RPM / MSI / PKG for your system. Enterprise deployments may require additional configuration.",
+            "ja": "システムに応じて公式 DEB / RPM / MSI / PKG を選択してください。企業展開では追加設定が必要な場合があります。",
+            "ko": "시스템에 맞는 공식 DEB / RPM / MSI / PKG를 선택하세요. 기업 배포에는 추가 구성이 필요할 수 있습니다."
+          },
+          "sourceUrl": "https://developers.cloudflare.com/cloudflare-one/team-and-resources/devices/cloudflare-one-client/download/",
+          "method": {
+            "type": "artifact",
+            "url": "https://downloads.cloudflareclient.com/v1/download/macos/ga",
+            "fileName": "CloudflareOne.pkg",
+            "action": "run_installer"
+          }
+        }
+      ]
+    }
+  ]
+}

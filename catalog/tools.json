@@ -1,0 +1,202 @@
+{
+  "apps": [
+    {
+      "id": "obsidian",
+      "name": "Obsidian",
+      "publisher": "Obsidian",
+      "category": "tools",
+      "summary": {
+        "zh-CN": "基于本地 Markdown 文件的知识库与笔记工具，支持插件和双链。",
+        "zh-TW": "基於本機 Markdown 檔案的知識庫與筆記工具，支援外掛與雙向連結。",
+        "en": "A knowledge base and note-taking tool based on local Markdown files, with plugins and backlinks.",
+        "ja": "ローカル Markdown ファイルを使う知識ベース・ノートツール。プラグインとバックリンクに対応します。",
+        "ko": "로컬 Markdown 파일 기반의 지식 베이스 및 노트 도구로 플러그인과 양방향 링크를 지원합니다."
+      },
+      "homepage": "https://obsidian.md/download",
+      "mark": "Ob",
+      "accent": "#a78bfa",
+      "variants": [
+        {
+          "id": "obsidian-linux-x86-64",
+          "os": "linux",
+          "architectures": [
+            "x86_64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "Linux 推荐 AppImage 便携版；下载后赋予执行权限即可运行。DEB 可在详情来源页选择。",
+            "zh-TW": "Linux 建議使用 AppImage 便攜版；下載後賦予執行權限即可執行。DEB 可在詳情來源頁選擇。",
+            "en": "The AppImage portable edition is recommended on Linux; make it executable after downloading to run it. DEB is available from the source page in details.",
+            "ja": "Linux では AppImage ポータブル版を推奨します。ダウンロード後に実行権限を付与すれば実行できます。DEB は詳細のソースページで選択できます。",
+            "ko": "Linux에서는 AppImage 포터블 버전을 권장합니다. 다운로드 후 실행 권한을 부여하면 실행할 수 있습니다. DEB는 세부 정보의 소스 페이지에서 선택할 수 있습니다."
+          },
+          "sourceUrl": "https://obsidian.md/download",
+          "method": {
+            "type": "artifact",
+            "url": "https://github.com/obsidianmd/obsidian-releases/releases/download/v1.14.5/Obsidian-1.14.5.AppImage",
+            "fileName": "Obsidian-1.14.5.AppImage",
+            "action": "download_portable",
+            "makeExecutable": true
+          }
+        },
+        {
+          "id": "obsidian-linux-aarch64",
+          "os": "linux",
+          "architectures": [
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "Linux 推荐 AppImage 便携版；下载后赋予执行权限即可运行。DEB 可在详情来源页选择。",
+            "zh-TW": "Linux 建議使用 AppImage 便攜版；下載後賦予執行權限即可執行。DEB 可在詳情來源頁選擇。",
+            "en": "The AppImage portable edition is recommended on Linux; make it executable after downloading to run it. DEB is available from the source page in details.",
+            "ja": "Linux では AppImage ポータブル版を推奨します。ダウンロード後に実行権限を付与すれば実行できます。DEB は詳細のソースページで選択できます。",
+            "ko": "Linux에서는 AppImage 포터블 버전을 권장합니다. 다운로드 후 실행 권한을 부여하면 실행할 수 있습니다. DEB는 세부 정보의 소스 페이지에서 선택할 수 있습니다."
+          },
+          "sourceUrl": "https://obsidian.md/download",
+          "method": {
+            "type": "artifact",
+            "url": "https://github.com/obsidianmd/obsidian-releases/releases/download/v1.14.5/Obsidian-1.14.5-arm64.AppImage",
+            "fileName": "Obsidian-1.14.5-arm64.AppImage",
+            "action": "download_portable",
+            "makeExecutable": true
+          }
+        },
+        {
+          "id": "obsidian-windows",
+          "os": "windows",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": true,
+          "note": {
+            "zh-CN": "Linux 推荐 AppImage 便携版；下载后赋予执行权限即可运行。DEB 可在详情来源页选择。",
+            "zh-TW": "Linux 建議使用 AppImage 便攜版；下載後賦予執行權限即可執行。DEB 可在詳情來源頁選擇。",
+            "en": "The AppImage portable edition is recommended on Linux; make it executable after downloading to run it. DEB is available from the source page in details.",
+            "ja": "Linux では AppImage ポータブル版を推奨します。ダウンロード後に実行権限を付与すれば実行できます。DEB は詳細のソースページで選択できます。",
+            "ko": "Linux에서는 AppImage 포터블 버전을 권장합니다. 다운로드 후 실행 권한을 부여하면 실행할 수 있습니다. DEB는 세부 정보의 소스 페이지에서 선택할 수 있습니다."
+          },
+          "sourceUrl": "https://obsidian.md/download",
+          "method": {
+            "type": "artifact",
+            "url": "https://github.com/obsidianmd/obsidian-releases/releases/download/v1.14.5/Obsidian-1.14.5.exe",
+            "fileName": "Obsidian-1.14.5.exe",
+            "action": "run_installer"
+          }
+        },
+        {
+          "id": "obsidian-macos",
+          "os": "macos",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": true,
+          "note": {
+            "zh-CN": "Linux 推荐 AppImage 便携版；下载后赋予执行权限即可运行。DEB 可在详情来源页选择。",
+            "zh-TW": "Linux 建議使用 AppImage 便攜版；下載後賦予執行權限即可執行。DEB 可在詳情來源頁選擇。",
+            "en": "The AppImage portable edition is recommended on Linux; make it executable after downloading to run it. DEB is available from the source page in details.",
+            "ja": "Linux では AppImage ポータブル版を推奨します。ダウンロード後に実行権限を付与すれば実行できます。DEB は詳細のソースページで選択できます。",
+            "ko": "Linux에서는 AppImage 포터블 버전을 권장합니다. 다운로드 후 실행 권한을 부여하면 실행할 수 있습니다. DEB는 세부 정보의 소스 페이지에서 선택할 수 있습니다."
+          },
+          "sourceUrl": "https://obsidian.md/download",
+          "method": {
+            "type": "artifact",
+            "url": "https://github.com/obsidianmd/obsidian-releases/releases/download/v1.14.5/Obsidian-1.14.5.dmg",
+            "fileName": "Obsidian-1.14.5.dmg",
+            "action": "run_installer"
+          }
+        }
+      ]
+    },
+    {
+      "id": "localsend",
+      "name": "LocalSend",
+      "publisher": "LocalSend",
+      "category": "tools",
+      "summary": {
+        "zh-CN": "开源局域网文件传输工具，不依赖外部服务器即可跨设备分享文件。",
+        "zh-TW": "開源區域網路檔案傳輸工具，不依賴外部伺服器即可跨裝置分享檔案。",
+        "en": "An open-source local-network file transfer tool for sharing files across devices without external servers.",
+        "ja": "外部サーバーに依存せずデバイス間でファイルを共有できる、オープンソースのローカルネットワーク転送ツール。",
+        "ko": "외부 서버 없이 장치 간 파일을 공유할 수 있는 오픈 소스 로컬 네트워크 파일 전송 도구."
+      },
+      "homepage": "https://localsend.org/download",
+      "mark": "L",
+      "accent": "#5cc9bd",
+      "variants": [
+        {
+          "id": "localsend-linux",
+          "os": "linux",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "Linux 可选择 AppImage 或发行版安装包；使用时设备需处于可互通的网络。",
+            "zh-TW": "Linux 可選擇 AppImage 或發行版安裝套件；使用時裝置需處於可互通的網路。",
+            "en": "On Linux, choose an AppImage or distribution package; devices must be on networks that can communicate with each other.",
+            "ja": "Linux では AppImage またはディストリビューションパッケージを選択できます。使用時はデバイス間で通信できるネットワークが必要です。",
+            "ko": "Linux에서는 AppImage 또는 배포판 패키지를 선택할 수 있습니다. 사용 시 장치가 서로 통신 가능한 네트워크에 있어야 합니다."
+          },
+          "sourceUrl": "https://localsend.org/download",
+          "method": {
+            "type": "official_page",
+            "url": "https://github.com/localsend/localsend/releases/latest"
+          }
+        },
+        {
+          "id": "localsend-windows",
+          "os": "windows",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "Linux 可选择 AppImage 或发行版安装包；使用时设备需处于可互通的网络。",
+            "zh-TW": "Linux 可選擇 AppImage 或發行版安裝套件；使用時裝置需處於可互通的網路。",
+            "en": "On Linux, choose an AppImage or distribution package; devices must be on networks that can communicate with each other.",
+            "ja": "Linux では AppImage またはディストリビューションパッケージを選択できます。使用時はデバイス間で通信できるネットワークが必要です。",
+            "ko": "Linux에서는 AppImage 또는 배포판 패키지를 선택할 수 있습니다. 사용 시 장치가 서로 통신 가능한 네트워크에 있어야 합니다."
+          },
+          "sourceUrl": "https://localsend.org/download",
+          "method": {
+            "type": "official_page",
+            "url": "https://localsend.org/download"
+          }
+        },
+        {
+          "id": "localsend-macos",
+          "os": "macos",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "Linux 可选择 AppImage 或发行版安装包；使用时设备需处于可互通的网络。",
+            "zh-TW": "Linux 可選擇 AppImage 或發行版安裝套件；使用時裝置需處於可互通的網路。",
+            "en": "On Linux, choose an AppImage or distribution package; devices must be on networks that can communicate with each other.",
+            "ja": "Linux では AppImage またはディストリビューションパッケージを選択できます。使用時はデバイス間で通信できるネットワークが必要です。",
+            "ko": "Linux에서는 AppImage 또는 배포판 패키지를 선택할 수 있습니다. 사용 시 장치가 서로 통신 가능한 네트워크에 있어야 합니다."
+          },
+          "sourceUrl": "https://localsend.org/download",
+          "method": {
+            "type": "official_page",
+            "url": "https://localsend.org/download"
+          }
+        }
+      ]
+    }
+  ]
+}

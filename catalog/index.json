@@ -1,0 +1,274 @@
+{
+  "schemaVersion": 1,
+  "catalogVersion": "2026.11.05-2",
+  "homepage": "https://github.com/vgerbot-app/winget-gui/tree/official-install",
+  "submissionUrl": "https://github.com/vgerbot-app/winget-gui/issues/new",
+  "categories": [
+    {
+      "id": "dev",
+      "name": {
+        "zh-CN": "开发环境",
+        "zh-TW": "開發環境",
+        "en": "Development",
+        "ja": "開発環境",
+        "ko": "개발 환경"
+      },
+      "description": {
+        "zh-CN": "运行时与开发工具链",
+        "zh-TW": "執行階段與開發工具鏈",
+        "en": "Runtimes and development toolchains",
+        "ja": "ランタイムと開発ツールチェーン",
+        "ko": "런타임 및 개발 도구 모음"
+      },
+      "icon": "code",
+      "accent": "#4f8cff"
+    },
+    {
+      "id": "network",
+      "name": {
+        "zh-CN": "组网连接",
+        "zh-TW": "組網連線",
+        "en": "Networking",
+        "ja": "ネットワーク接続",
+        "ko": "네트워크 연결"
+      },
+      "description": {
+        "zh-CN": "虚拟组网与网络访问",
+        "zh-TW": "虛擬組網與網路存取",
+        "en": "Virtual networking and network access",
+        "ja": "仮想ネットワークとネットワークアクセス",
+        "ko": "가상 네트워킹 및 네트워크 액세스"
+      },
+      "icon": "network",
+      "accent": "#0ea5e9"
+    },
+    {
+      "id": "remote",
+      "name": {
+        "zh-CN": "远程协作",
+        "zh-TW": "遠端協作",
+        "en": "Remote collaboration",
+        "ja": "リモートコラボレーション",
+        "ko": "원격 협업"
+      },
+      "description": {
+        "zh-CN": "远程桌面与低延迟连接",
+        "zh-TW": "遠端桌面與低延遲連線",
+        "en": "Remote desktops and low-latency connections",
+        "ja": "リモートデスクトップと低遅延接続",
+        "ko": "원격 데스크톱 및 저지연 연결"
+      },
+      "icon": "package",
+      "accent": "#a06bff"
+    },
+    {
+      "id": "tools",
+      "name": {
+        "zh-CN": "实用工具",
+        "zh-TW": "實用工具",
+        "en": "Utilities",
+        "ja": "ユーティリティ",
+        "ko": "유틸리티"
+      },
+      "description": {
+        "zh-CN": "笔记与局域网文件传输",
+        "zh-TW": "筆記與區域網路檔案傳輸",
+        "en": "Notes and local-network file transfer",
+        "ja": "ノートとローカルネットワークファイル転送",
+        "ko": "노트 및 로컬 네트워크 파일 전송"
+      },
+      "icon": "wrench",
+      "accent": "#f59e0b"
+    },
+    {
+      "id": "browser",
+      "name": {
+        "zh-CN": "网页浏览器",
+        "zh-TW": "網頁瀏覽器",
+        "en": "Web browsers",
+        "ja": "ウェブブラウザー",
+        "ko": "웹 브라우저"
+      },
+      "description": {
+        "zh-CN": "访问网页与管理浏览体验",
+        "zh-TW": "瀏覽網頁與管理瀏覽體驗",
+        "en": "Browse the web and manage your browsing experience",
+        "ja": "ウェブの閲覧とブラウジング環境の管理",
+        "ko": "웹 탐색 및 브라우징 환경 관리"
+      },
+      "icon": "network",
+      "accent": "#3b82f6"
+    },
+    {
+      "id": "communication",
+      "name": {
+        "zh-CN": "通信协作",
+        "zh-TW": "通訊協作",
+        "en": "Communication",
+        "ja": "コミュニケーション",
+        "ko": "커뮤니케이션"
+      },
+      "description": {
+        "zh-CN": "即时消息、会议与团队协作",
+        "zh-TW": "即時訊息、會議與團隊協作",
+        "en": "Messaging, meetings and team collaboration",
+        "ja": "メッセージ、会議、チーム共同作業",
+        "ko": "메시징, 회의 및 팀 협업"
+      },
+      "icon": "media",
+      "accent": "#06b6d4"
+    },
+    {
+      "id": "office",
+      "name": {
+        "zh-CN": "办公与阅读",
+        "zh-TW": "辦公與閱讀",
+        "en": "Office & documents",
+        "ja": "オフィスと文書",
+        "ko": "오피스 및 문서"
+      },
+      "description": {
+        "zh-CN": "文档编辑、办公套件与 PDF 阅读",
+        "zh-TW": "文件編輯、辦公套件與 PDF 閱讀",
+        "en": "Documents, office suites and PDF readers",
+        "ja": "文書編集、オフィススイート、PDF リーダー",
+        "ko": "문서 편집, 오피스 제품군 및 PDF 리더"
+      },
+      "icon": "office",
+      "accent": "#f97316"
+    },
+    {
+      "id": "media",
+      "name": {
+        "zh-CN": "媒体与创作",
+        "zh-TW": "媒體與創作",
+        "en": "Media & creation",
+        "ja": "メディアと制作",
+        "ko": "미디어 및 창작"
+      },
+      "description": {
+        "zh-CN": "播放、录制、图像与三维创作",
+        "zh-TW": "播放、錄製、圖像與三維創作",
+        "en": "Playback, recording, images and 3D creation",
+        "ja": "再生、録画、画像、3D 制作",
+        "ko": "재생, 녹화, 이미지 및 3D 창작"
+      },
+      "icon": "media",
+      "accent": "#a855f7"
+    },
+    {
+      "id": "gaming",
+      "name": {
+        "zh-CN": "游戏平台",
+        "zh-TW": "遊戲平台",
+        "en": "Gaming",
+        "ja": "ゲーム",
+        "ko": "게임"
+      },
+      "description": {
+        "zh-CN": "游戏库、购买与启动器",
+        "zh-TW": "遊戲庫、購買與啟動器",
+        "en": "Game libraries, stores and launchers",
+        "ja": "ゲームライブラリ、ストア、ランチャー",
+        "ko": "게임 라이브러리, 스토어 및 런처"
+      },
+      "icon": "gamepad",
+      "accent": "#22c55e"
+    },
+    {
+      "id": "education",
+      "name": {
+        "zh-CN": "教育与科学",
+        "zh-TW": "教育與科學",
+        "en": "Education & science",
+        "ja": "教育と科学",
+        "ko": "교육 및 과학"
+      },
+      "description": {
+        "zh-CN": "学习、观测与科学探索",
+        "zh-TW": "學習、觀測與科學探索",
+        "en": "Learning, observation and scientific exploration",
+        "ja": "学習、観測、科学的な探索",
+        "ko": "학습, 관측 및 과학적 탐구"
+      },
+      "icon": "flask",
+      "accent": "#14b8a6"
+    },
+    {
+      "id": "security",
+      "name": {
+        "zh-CN": "安全与隐私",
+        "zh-TW": "安全與隱私",
+        "en": "Security & privacy",
+        "ja": "セキュリティとプライバシー",
+        "ko": "보안 및 개인 정보"
+      },
+      "description": {
+        "zh-CN": "密码与敏感数据的本地管理",
+        "zh-TW": "密碼與敏感資料的本機管理",
+        "en": "Local management of passwords and sensitive data",
+        "ja": "パスワードと機密データのローカル管理",
+        "ko": "암호 및 민감한 데이터의 로컬 관리"
+      },
+      "icon": "shield",
+      "accent": "#ef4444"
+    },
+    {
+      "id": "files",
+      "name": {
+        "zh-CN": "文件工具",
+        "zh-TW": "檔案工具",
+        "en": "File tools",
+        "ja": "ファイルツール",
+        "ko": "파일 도구"
+      },
+      "description": {
+        "zh-CN": "压缩、查找与管理文件",
+        "zh-TW": "壓縮、尋找與管理檔案",
+        "en": "Compress, find and manage files",
+        "ja": "ファイルの圧縮、検索、管理",
+        "ko": "파일 압축, 검색 및 관리"
+      },
+      "icon": "file",
+      "accent": "#eab308"
+    },
+    {
+      "id": "system",
+      "name": {
+        "zh-CN": "系统工具",
+        "zh-TW": "系統工具",
+        "en": "System tools",
+        "ja": "システムツール",
+        "ko": "시스템 도구"
+      },
+      "description": {
+        "zh-CN": "系统增强、维护与启动介质",
+        "zh-TW": "系統增強、維護與啟動媒體",
+        "en": "System enhancements, maintenance and boot media",
+        "ja": "システム拡張、メンテナンス、起動メディア",
+        "ko": "시스템 확장, 유지 관리 및 부팅 미디어"
+      },
+      "icon": "cpu",
+      "accent": "#64748b"
+    },
+    {
+      "id": "ai",
+      "name": {
+        "zh-CN": "本地人工智能",
+        "zh-TW": "本機人工智慧",
+        "en": "Local AI",
+        "ja": "ローカル AI",
+        "ko": "로컬 AI"
+      },
+      "description": {
+        "zh-CN": "在本机运行模型与 AI 助手",
+        "zh-TW": "在本機執行模型與 AI 助手",
+        "en": "Run models and AI assistants locally",
+        "ja": "モデルと AI アシスタントをローカルで実行",
+        "ko": "로컬에서 모델 및 AI 도우미 실행"
+      },
+      "icon": "cpu",
+      "accent": "#8b5cf6"
+    }
+  ]
+}

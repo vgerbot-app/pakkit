@@ -1,0 +1,86 @@
+{
+  "apps": [
+    {
+      "id": "stellarium",
+      "name": "Stellarium",
+      "publisher": "Stellarium Team",
+      "category": "education",
+      "summary": {
+        "zh-CN": "自由开源天文馆软件，以真实三维天空展示恒星、行星与深空天体。",
+        "zh-TW": "自由開源天文館軟體，以真實三維天空展示恆星、行星與深空天體。",
+        "en": "Free and open-source planetarium software showing stars, planets and deep-sky objects in a realistic 3D sky.",
+        "ja": "恒星、惑星、深宇宙天体をリアルな 3D の空に表示する自由でオープンソースのプラネタリウムソフト。",
+        "ko": "항성, 행성 및 심원 천체를 사실적인 3D 하늘로 보여 주는 자유 오픈 소스 플라네타리움 소프트웨어."
+      },
+      "homepage": "https://stellarium.org/",
+      "mark": "St",
+      "accent": "#4a6da7",
+      "variants": [
+        {
+          "id": "stellarium-linux",
+          "os": "linux",
+          "architectures": [
+            "x86_64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "仅打开官方下载页，由你核对系统要求、版本和许可后安装；打开页面不代表已安装。",
+            "zh-TW": "僅開啟官方下載頁，由你核對系統需求、版本與授權後安裝；開啟頁面不代表已安裝。",
+            "en": "Opens the official download page only. Check system requirements, the release and license before installing; opening a page does not mean the app is installed.",
+            "ja": "公式ダウンロードページを開くだけです。システム要件、リリース、ライセンスを確認してインストールしてください。ページを開いてもインストール完了ではありません。",
+            "ko": "공식 다운로드 페이지만 엽니다. 설치 전 시스템 요구 사항, 릴리스 및 라이선스를 확인하세요. 페이지를 열었다고 설치된 것은 아닙니다."
+          },
+          "sourceUrl": "https://stellarium.org/",
+          "method": {
+            "type": "official_page",
+            "url": "https://stellarium.org/"
+          }
+        },
+        {
+          "id": "stellarium-windows",
+          "os": "windows",
+          "architectures": [
+            "x86_64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "仅打开官方下载页，由你核对系统要求、版本和许可后安装；打开页面不代表已安装。",
+            "zh-TW": "僅開啟官方下載頁，由你核對系統需求、版本與授權後安裝；開啟頁面不代表已安裝。",
+            "en": "Opens the official download page only. Check system requirements, the release and license before installing; opening a page does not mean the app is installed.",
+            "ja": "公式ダウンロードページを開くだけです。システム要件、リリース、ライセンスを確認してインストールしてください。ページを開いてもインストール完了ではありません。",
+            "ko": "공식 다운로드 페이지만 엽니다. 설치 전 시스템 요구 사항, 릴리스 및 라이선스를 확인하세요. 페이지를 열었다고 설치된 것은 아닙니다."
+          },
+          "sourceUrl": "https://stellarium.org/",
+          "method": {
+            "type": "official_page",
+            "url": "https://stellarium.org/"
+          }
+        },
+        {
+          "id": "stellarium-macos",
+          "os": "macos",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "仅打开官方下载页，由你核对系统要求、版本和许可后安装；打开页面不代表已安装。",
+            "zh-TW": "僅開啟官方下載頁，由你核對系統需求、版本與授權後安裝；開啟頁面不代表已安裝。",
+            "en": "Opens the official download page only. Check system requirements, the release and license before installing; opening a page does not mean the app is installed.",
+            "ja": "公式ダウンロードページを開くだけです。システム要件、リリース、ライセンスを確認してインストールしてください。ページを開いてもインストール完了ではありません。",
+            "ko": "공식 다운로드 페이지만 엽니다. 설치 전 시스템 요구 사항, 릴리스 및 라이선스를 확인하세요. 페이지를 열었다고 설치된 것은 아닙니다."
+          },
+          "sourceUrl": "https://stellarium.org/",
+          "method": {
+            "type": "official_page",
+            "url": "https://stellarium.org/"
+          }
+        }
+      ]
+    }
+  ]
+}

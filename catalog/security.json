@@ -1,0 +1,172 @@
+{
+  "apps": [
+    {
+      "id": "keepassxc",
+      "name": "KeePassXC",
+      "publisher": "KeePassXC Team",
+      "category": "security",
+      "summary": {
+        "zh-CN": "自由开源的本地密码管理器，使用加密数据库保存凭据和密钥。",
+        "zh-TW": "自由開源的本機密碼管理器，使用加密資料庫保存憑證與金鑰。",
+        "en": "A free and open-source local password manager storing credentials and keys in an encrypted database.",
+        "ja": "資格情報とキーを暗号化データベースに保存する自由でオープンソースのローカルパスワードマネージャー。",
+        "ko": "자격 증명과 키를 암호화된 데이터베이스에 저장하는 자유 오픈 소스 로컬 암호 관리자."
+      },
+      "homepage": "https://keepassxc.org/download/",
+      "mark": "K",
+      "accent": "#6cac4d",
+      "variants": [
+        {
+          "id": "keepassxc-linux",
+          "os": "linux",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "仅打开官方下载页，由你核对系统要求、版本和许可后安装；打开页面不代表已安装。",
+            "zh-TW": "僅開啟官方下載頁，由你核對系統需求、版本與授權後安裝；開啟頁面不代表已安裝。",
+            "en": "Opens the official download page only. Check system requirements, the release and license before installing; opening a page does not mean the app is installed.",
+            "ja": "公式ダウンロードページを開くだけです。システム要件、リリース、ライセンスを確認してインストールしてください。ページを開いてもインストール完了ではありません。",
+            "ko": "공식 다운로드 페이지만 엽니다. 설치 전 시스템 요구 사항, 릴리스 및 라이선스를 확인하세요. 페이지를 열었다고 설치된 것은 아닙니다."
+          },
+          "sourceUrl": "https://keepassxc.org/download/",
+          "method": {
+            "type": "official_page",
+            "url": "https://keepassxc.org/download/"
+          }
+        },
+        {
+          "id": "keepassxc-windows",
+          "os": "windows",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "仅打开官方下载页，由你核对系统要求、版本和许可后安装；打开页面不代表已安装。",
+            "zh-TW": "僅開啟官方下載頁，由你核對系統需求、版本與授權後安裝；開啟頁面不代表已安裝。",
+            "en": "Opens the official download page only. Check system requirements, the release and license before installing; opening a page does not mean the app is installed.",
+            "ja": "公式ダウンロードページを開くだけです。システム要件、リリース、ライセンスを確認してインストールしてください。ページを開いてもインストール完了ではありません。",
+            "ko": "공식 다운로드 페이지만 엽니다. 설치 전 시스템 요구 사항, 릴리스 및 라이선스를 확인하세요. 페이지를 열었다고 설치된 것은 아닙니다."
+          },
+          "sourceUrl": "https://keepassxc.org/download/",
+          "method": {
+            "type": "official_page",
+            "url": "https://keepassxc.org/download/"
+          }
+        },
+        {
+          "id": "keepassxc-macos",
+          "os": "macos",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "仅打开官方下载页，由你核对系统要求、版本和许可后安装；打开页面不代表已安装。",
+            "zh-TW": "僅開啟官方下載頁，由你核對系統需求、版本與授權後安裝；開啟頁面不代表已安裝。",
+            "en": "Opens the official download page only. Check system requirements, the release and license before installing; opening a page does not mean the app is installed.",
+            "ja": "公式ダウンロードページを開くだけです。システム要件、リリース、ライセンスを確認してインストールしてください。ページを開いてもインストール完了ではありません。",
+            "ko": "공식 다운로드 페이지만 엽니다. 설치 전 시스템 요구 사항, 릴리스 및 라이선스를 확인하세요. 페이지를 열었다고 설치된 것은 아닙니다."
+          },
+          "sourceUrl": "https://keepassxc.org/download/",
+          "method": {
+            "type": "official_page",
+            "url": "https://keepassxc.org/download/"
+          }
+        }
+      ]
+    },
+    {
+      "id": "bitwarden-desktop",
+      "name": "Bitwarden Desktop",
+      "publisher": "Bitwarden",
+      "category": "security",
+      "summary": {
+        "zh-CN": "密码与通行密钥管理桌面客户端；同步和托管服务通常需要 Bitwarden 账号。",
+        "zh-TW": "密碼與通行金鑰管理桌面用戶端；同步與託管服務通常需要 Bitwarden 帳號。",
+        "en": "A desktop client for passwords and passkeys; sync and hosted services generally require a Bitwarden account.",
+        "ja": "パスワードとパスキーのデスクトップクライアント。同期とホストサービスには通常 Bitwarden アカウントが必要です。",
+        "ko": "암호 및 패스키용 데스크톱 클라이언트로 동기화 및 호스팅 서비스에는 일반적으로 Bitwarden 계정이 필요합니다."
+      },
+      "homepage": "https://bitwarden.com/download/",
+      "mark": "B",
+      "accent": "#175ddc",
+      "variants": [
+        {
+          "id": "bitwarden-desktop-linux",
+          "os": "linux",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "仅打开官方下载页。部分功能需要账号、付费订阅或单独许可；打开页面不代表已安装。",
+            "zh-TW": "僅開啟官方下載頁。部分功能需要帳號、付費訂閱或單獨授權；開啟頁面不代表已安裝。",
+            "en": "Opens the official download page only. Some features require an account, paid subscription or separate license; opening a page does not mean the app is installed.",
+            "ja": "公式ダウンロードページを開くだけです。一部機能にはアカウント、有料サブスクリプション、別途ライセンスが必要です。ページを開いてもインストール完了ではありません。",
+            "ko": "공식 다운로드 페이지만 엽니다. 일부 기능에는 계정, 유료 구독 또는 별도 라이선스가 필요합니다. 페이지를 열었다고 설치된 것은 아닙니다."
+          },
+          "sourceUrl": "https://bitwarden.com/download/",
+          "method": {
+            "type": "official_page",
+            "url": "https://bitwarden.com/download/"
+          }
+        },
+        {
+          "id": "bitwarden-desktop-windows",
+          "os": "windows",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "仅打开官方下载页。部分功能需要账号、付费订阅或单独许可；打开页面不代表已安装。",
+            "zh-TW": "僅開啟官方下載頁。部分功能需要帳號、付費訂閱或單獨授權；開啟頁面不代表已安裝。",
+            "en": "Opens the official download page only. Some features require an account, paid subscription or separate license; opening a page does not mean the app is installed.",
+            "ja": "公式ダウンロードページを開くだけです。一部機能にはアカウント、有料サブスクリプション、別途ライセンスが必要です。ページを開いてもインストール完了ではありません。",
+            "ko": "공식 다운로드 페이지만 엽니다. 일부 기능에는 계정, 유료 구독 또는 별도 라이선스가 필요합니다. 페이지를 열었다고 설치된 것은 아닙니다."
+          },
+          "sourceUrl": "https://bitwarden.com/download/",
+          "method": {
+            "type": "official_page",
+            "url": "https://bitwarden.com/download/"
+          }
+        },
+        {
+          "id": "bitwarden-desktop-macos",
+          "os": "macos",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "仅打开官方下载页。部分功能需要账号、付费订阅或单独许可；打开页面不代表已安装。",
+            "zh-TW": "僅開啟官方下載頁。部分功能需要帳號、付費訂閱或單獨授權；開啟頁面不代表已安裝。",
+            "en": "Opens the official download page only. Some features require an account, paid subscription or separate license; opening a page does not mean the app is installed.",
+            "ja": "公式ダウンロードページを開くだけです。一部機能にはアカウント、有料サブスクリプション、別途ライセンスが必要です。ページを開いてもインストール完了ではありません。",
+            "ko": "공식 다운로드 페이지만 엽니다. 일부 기능에는 계정, 유료 구독 또는 별도 라이선스가 필요합니다. 페이지를 열었다고 설치된 것은 아닙니다."
+          },
+          "sourceUrl": "https://bitwarden.com/download/",
+          "method": {
+            "type": "official_page",
+            "url": "https://bitwarden.com/download/"
+          }
+        }
+      ]
+    }
+  ]
+}

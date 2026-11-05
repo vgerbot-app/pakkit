@@ -1,0 +1,1645 @@
+{
+  "apps": [
+    {
+      "id": "deno",
+      "name": "Deno",
+      "publisher": "Deno Land",
+      "category": "dev",
+      "summary": {
+        "zh-CN": "安全的 JavaScript / TypeScript 运行时，单个可执行文件，无外部依赖。",
+        "zh-TW": "安全的 JavaScript / TypeScript 執行階段，單一可執行檔，無外部依賴。",
+        "en": "A secure JavaScript / TypeScript runtime in a single executable with no external dependencies.",
+        "ja": "単一の実行ファイルで外部依存のない、安全な JavaScript / TypeScript ランタイム。",
+        "ko": "외부 종속성 없이 단일 실행 파일로 제공되는 안전한 JavaScript / TypeScript 런타임."
+      },
+      "homepage": "https://docs.deno.com/runtime/getting_started/installation/",
+      "mark": "D",
+      "accent": "#70d6a2",
+      "variants": [
+        {
+          "id": "deno-linux",
+          "os": "linux",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "默认安装到当前用户目录，并配置 PATH。无需管理员权限。",
+            "zh-TW": "預設安裝到目前使用者目錄，並設定 PATH。無需管理員權限。",
+            "en": "Installs to the current user directory and configures PATH by default. No administrator privileges are required.",
+            "ja": "デフォルトでは現在のユーザーディレクトリにインストールし、PATH を設定します。管理者権限は不要です。",
+            "ko": "기본적으로 현재 사용자 디렉터리에 설치하고 PATH를 구성합니다. 관리자 권한이 필요 없습니다."
+          },
+          "sourceUrl": "https://docs.deno.com/runtime/getting_started/installation/",
+          "method": {
+            "type": "script",
+            "shell": "sh",
+            "command": "curl -fsSL https://deno.land/install.sh | sh"
+          },
+          "detection": {
+            "type": "command",
+            "program": "deno",
+            "args": [
+              "--version"
+            ]
+          }
+        },
+        {
+          "id": "deno-windows",
+          "os": "windows",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "默认安装到当前用户目录，并配置 PATH。无需管理员权限。",
+            "zh-TW": "預設安裝到目前使用者目錄，並設定 PATH。無需管理員權限。",
+            "en": "Installs to the current user directory and configures PATH by default. No administrator privileges are required.",
+            "ja": "デフォルトでは現在のユーザーディレクトリにインストールし、PATH を設定します。管理者権限は不要です。",
+            "ko": "기본적으로 현재 사용자 디렉터리에 설치하고 PATH를 구성합니다. 관리자 권한이 필요 없습니다."
+          },
+          "sourceUrl": "https://docs.deno.com/runtime/getting_started/installation/",
+          "method": {
+            "type": "script",
+            "shell": "powershell",
+            "command": "irm https://deno.land/install.ps1 | iex"
+          },
+          "detection": {
+            "type": "command",
+            "program": "deno",
+            "args": [
+              "--version"
+            ]
+          }
+        },
+        {
+          "id": "deno-macos",
+          "os": "macos",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "默认安装到当前用户目录，并配置 PATH。无需管理员权限。",
+            "zh-TW": "預設安裝到目前使用者目錄，並設定 PATH。無需管理員權限。",
+            "en": "Installs to the current user directory and configures PATH by default. No administrator privileges are required.",
+            "ja": "デフォルトでは現在のユーザーディレクトリにインストールし、PATH を設定します。管理者権限は不要です。",
+            "ko": "기본적으로 현재 사용자 디렉터리에 설치하고 PATH를 구성합니다. 관리자 권한이 필요 없습니다."
+          },
+          "sourceUrl": "https://docs.deno.com/runtime/getting_started/installation/",
+          "method": {
+            "type": "script",
+            "shell": "sh",
+            "command": "curl -fsSL https://deno.land/install.sh | sh"
+          },
+          "detection": {
+            "type": "command",
+            "program": "deno",
+            "args": [
+              "--version"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "bun",
+      "name": "Bun",
+      "publisher": "Oven",
+      "category": "dev",
+      "summary": {
+        "zh-CN": "集 JavaScript 运行时、打包器、测试工具和包管理器于一体。",
+        "zh-TW": "整合 JavaScript 執行階段、打包器、測試工具與套件管理器。",
+        "en": "An all-in-one JavaScript runtime, bundler, test runner and package manager.",
+        "ja": "JavaScript ランタイム、バンドラー、テストツール、パッケージマネージャーを一体化。",
+        "ko": "JavaScript 런타임, 번들러, 테스트 도구 및 패키지 관리자를 통합한 도구."
+      },
+      "homepage": "https://bun.sh/docs/installation",
+      "mark": "B",
+      "accent": "#f3dfc1",
+      "variants": [
+        {
+          "id": "bun-linux",
+          "os": "linux",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "Linux 需要 unzip。安装后打开新终端，再使用 bun --version 验证。",
+            "zh-TW": "Linux 需要 unzip。安裝後開啟新終端機，再使用 bun --version 驗證。",
+            "en": "Linux requires unzip. After installation, open a new terminal and verify with bun --version.",
+            "ja": "Linux では unzip が必要です。インストール後に新しいターミナルを開き、bun --version で確認してください。",
+            "ko": "Linux에서는 unzip이 필요합니다. 설치 후 새 터미널을 열고 bun --version으로 확인하세요."
+          },
+          "sourceUrl": "https://bun.sh/docs/installation",
+          "method": {
+            "type": "script",
+            "shell": "sh",
+            "command": "curl -fsSL https://bun.com/install | bash"
+          },
+          "detection": {
+            "type": "command",
+            "program": "bun",
+            "args": [
+              "--version"
+            ]
+          }
+        },
+        {
+          "id": "bun-windows",
+          "os": "windows",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "Linux 需要 unzip。安装后打开新终端，再使用 bun --version 验证。",
+            "zh-TW": "Linux 需要 unzip。安裝後開啟新終端機，再使用 bun --version 驗證。",
+            "en": "Linux requires unzip. After installation, open a new terminal and verify with bun --version.",
+            "ja": "Linux では unzip が必要です。インストール後に新しいターミナルを開き、bun --version で確認してください。",
+            "ko": "Linux에서는 unzip이 필요합니다. 설치 후 새 터미널을 열고 bun --version으로 확인하세요."
+          },
+          "sourceUrl": "https://bun.sh/docs/installation",
+          "method": {
+            "type": "script",
+            "shell": "powershell",
+            "command": "irm bun.sh/install.ps1 | iex"
+          },
+          "detection": {
+            "type": "command",
+            "program": "bun",
+            "args": [
+              "--version"
+            ]
+          }
+        },
+        {
+          "id": "bun-macos",
+          "os": "macos",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "Linux 需要 unzip。安装后打开新终端，再使用 bun --version 验证。",
+            "zh-TW": "Linux 需要 unzip。安裝後開啟新終端機，再使用 bun --version 驗證。",
+            "en": "Linux requires unzip. After installation, open a new terminal and verify with bun --version.",
+            "ja": "Linux では unzip が必要です。インストール後に新しいターミナルを開き、bun --version で確認してください。",
+            "ko": "Linux에서는 unzip이 필요합니다. 설치 후 새 터미널을 열고 bun --version으로 확인하세요."
+          },
+          "sourceUrl": "https://bun.sh/docs/installation",
+          "method": {
+            "type": "script",
+            "shell": "sh",
+            "command": "curl -fsSL https://bun.com/install | bash"
+          },
+          "detection": {
+            "type": "command",
+            "program": "bun",
+            "args": [
+              "--version"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "rustup",
+      "name": "Rustup",
+      "publisher": "The Rust Team",
+      "category": "dev",
+      "summary": {
+        "zh-CN": "Rust 官方工具链管理器，安装 Rust 并管理 stable、beta 与 nightly。",
+        "zh-TW": "Rust 官方工具鏈管理器，安裝 Rust 並管理 stable、beta 與 nightly。",
+        "en": "The official Rust toolchain manager for installing Rust and managing stable, beta and nightly.",
+        "ja": "Rust をインストールし、stable、beta、nightly を管理する公式ツールチェーンマネージャー。",
+        "ko": "Rust를 설치하고 stable, beta, nightly를 관리하는 공식 Rust 툴체인 관리자."
+      },
+      "homepage": "https://www.rust-lang.org/tools/install",
+      "mark": "R",
+      "accent": "#e78a70",
+      "variants": [
+        {
+          "id": "rustup-linux",
+          "os": "linux",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": true,
+          "note": {
+            "zh-CN": "Windows 还需按提示准备 Visual Studio C++ Build Tools。Unix 脚本提供交互选项。",
+            "zh-TW": "Windows 還需依提示準備 Visual Studio C++ Build Tools。Unix 腳本提供互動選項。",
+            "en": "Windows also requires Visual Studio C++ Build Tools as prompted. The Unix script offers interactive options.",
+            "ja": "Windows では案内に従って Visual Studio C++ Build Tools も必要です。Unix スクリプトには対話オプションがあります。",
+            "ko": "Windows에서는 안내에 따라 Visual Studio C++ Build Tools도 준비해야 합니다. Unix 스크립트는 대화형 옵션을 제공합니다."
+          },
+          "sourceUrl": "https://www.rust-lang.org/tools/install",
+          "method": {
+            "type": "script",
+            "shell": "sh",
+            "command": "curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh"
+          },
+          "detection": {
+            "type": "command",
+            "program": "rustup",
+            "args": [
+              "--version"
+            ]
+          }
+        },
+        {
+          "id": "rustup-windows-x86-64",
+          "os": "windows",
+          "architectures": [
+            "x86_64"
+          ],
+          "requiresAdmin": false,
+          "interactive": true,
+          "note": {
+            "zh-CN": "Windows 还需按提示准备 Visual Studio C++ Build Tools。Unix 脚本提供交互选项。",
+            "zh-TW": "Windows 還需依提示準備 Visual Studio C++ Build Tools。Unix 腳本提供互動選項。",
+            "en": "Windows also requires Visual Studio C++ Build Tools as prompted. The Unix script offers interactive options.",
+            "ja": "Windows では案内に従って Visual Studio C++ Build Tools も必要です。Unix スクリプトには対話オプションがあります。",
+            "ko": "Windows에서는 안내에 따라 Visual Studio C++ Build Tools도 준비해야 합니다. Unix 스크립트는 대화형 옵션을 제공합니다."
+          },
+          "sourceUrl": "https://www.rust-lang.org/tools/install",
+          "method": {
+            "type": "artifact",
+            "url": "https://win.rustup.rs/x86_64",
+            "fileName": "rustup-init.exe",
+            "action": "run_installer"
+          },
+          "detection": {
+            "type": "command",
+            "program": "rustup",
+            "args": [
+              "--version"
+            ]
+          }
+        },
+        {
+          "id": "rustup-windows-aarch64",
+          "os": "windows",
+          "architectures": [
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": true,
+          "note": {
+            "zh-CN": "Windows 还需按提示准备 Visual Studio C++ Build Tools。Unix 脚本提供交互选项。",
+            "zh-TW": "Windows 還需依提示準備 Visual Studio C++ Build Tools。Unix 腳本提供互動選項。",
+            "en": "Windows also requires Visual Studio C++ Build Tools as prompted. The Unix script offers interactive options.",
+            "ja": "Windows では案内に従って Visual Studio C++ Build Tools も必要です。Unix スクリプトには対話オプションがあります。",
+            "ko": "Windows에서는 안내에 따라 Visual Studio C++ Build Tools도 준비해야 합니다. Unix 스크립트는 대화형 옵션을 제공합니다."
+          },
+          "sourceUrl": "https://www.rust-lang.org/tools/install",
+          "method": {
+            "type": "artifact",
+            "url": "https://win.rustup.rs/aarch64",
+            "fileName": "rustup-init.exe",
+            "action": "run_installer"
+          },
+          "detection": {
+            "type": "command",
+            "program": "rustup",
+            "args": [
+              "--version"
+            ]
+          }
+        },
+        {
+          "id": "rustup-macos",
+          "os": "macos",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": true,
+          "note": {
+            "zh-CN": "Windows 还需按提示准备 Visual Studio C++ Build Tools。Unix 脚本提供交互选项。",
+            "zh-TW": "Windows 還需依提示準備 Visual Studio C++ Build Tools。Unix 腳本提供互動選項。",
+            "en": "Windows also requires Visual Studio C++ Build Tools as prompted. The Unix script offers interactive options.",
+            "ja": "Windows では案内に従って Visual Studio C++ Build Tools も必要です。Unix スクリプトには対話オプションがあります。",
+            "ko": "Windows에서는 안내에 따라 Visual Studio C++ Build Tools도 준비해야 합니다. Unix 스크립트는 대화형 옵션을 제공합니다."
+          },
+          "sourceUrl": "https://www.rust-lang.org/tools/install",
+          "method": {
+            "type": "script",
+            "shell": "sh",
+            "command": "curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh"
+          },
+          "detection": {
+            "type": "command",
+            "program": "rustup",
+            "args": [
+              "--version"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "visual-studio-code",
+      "name": "Visual Studio Code",
+      "publisher": "Microsoft",
+      "category": "dev",
+      "summary": {
+        "zh-CN": "微软代码编辑器，支持扩展、调试与版本控制；此品牌构建适用专有许可。",
+        "zh-TW": "微軟程式碼編輯器，支援擴充功能、偵錯與版本控制；此品牌建置適用專有授權。",
+        "en": "Microsoft’s code editor with extensions, debugging and version control; this branded build is under a proprietary license.",
+        "ja": "拡張機能、デバッグ、バージョン管理に対応する Microsoft のコードエディター。このブランドビルドはプロプライエタリライセンスです。",
+        "ko": "확장 기능, 디버깅 및 버전 관리를 지원하는 Microsoft 코드 편집기로 이 브랜드 빌드에는 독점 라이선스가 적용됩니다."
+      },
+      "homepage": "https://code.visualstudio.com/Download",
+      "mark": "VS",
+      "accent": "#007acc",
+      "variants": [
+        {
+          "id": "visual-studio-code-linux",
+          "os": "linux",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "这是适用微软专有许可的 Visual Studio Code 品牌构建，不是 VSCodium。仅打开官方下载页；打开页面不代表已安装。",
+            "zh-TW": "這是適用微軟專有授權的 Visual Studio Code 品牌建置，不是 VSCodium。僅開啟官方下載頁；開啟頁面不代表已安裝。",
+            "en": "This is Microsoft’s branded Visual Studio Code build under its proprietary license, not VSCodium. Opens the official download page only; opening it does not mean installation.",
+            "ja": "これは Microsoft のプロプライエタリライセンスが適用される Visual Studio Code ブランドビルドで、VSCodium ではありません。公式ダウンロードページのみを開き、開いてもインストール完了ではありません。",
+            "ko": "VSCodium이 아니라 Microsoft 독점 라이선스가 적용되는 Visual Studio Code 브랜드 빌드입니다. 공식 다운로드 페이지만 열리며 페이지를 열었다고 설치된 것은 아닙니다."
+          },
+          "sourceUrl": "https://code.visualstudio.com/Download",
+          "method": {
+            "type": "official_page",
+            "url": "https://code.visualstudio.com/Download"
+          }
+        },
+        {
+          "id": "visual-studio-code-windows",
+          "os": "windows",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "这是适用微软专有许可的 Visual Studio Code 品牌构建，不是 VSCodium。仅打开官方下载页；打开页面不代表已安装。",
+            "zh-TW": "這是適用微軟專有授權的 Visual Studio Code 品牌建置，不是 VSCodium。僅開啟官方下載頁；開啟頁面不代表已安裝。",
+            "en": "This is Microsoft’s branded Visual Studio Code build under its proprietary license, not VSCodium. Opens the official download page only; opening it does not mean installation.",
+            "ja": "これは Microsoft のプロプライエタリライセンスが適用される Visual Studio Code ブランドビルドで、VSCodium ではありません。公式ダウンロードページのみを開き、開いてもインストール完了ではありません。",
+            "ko": "VSCodium이 아니라 Microsoft 독점 라이선스가 적용되는 Visual Studio Code 브랜드 빌드입니다. 공식 다운로드 페이지만 열리며 페이지를 열었다고 설치된 것은 아닙니다."
+          },
+          "sourceUrl": "https://code.visualstudio.com/Download",
+          "method": {
+            "type": "official_page",
+            "url": "https://code.visualstudio.com/Download"
+          }
+        },
+        {
+          "id": "visual-studio-code-macos",
+          "os": "macos",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "这是适用微软专有许可的 Visual Studio Code 品牌构建，不是 VSCodium。仅打开官方下载页；打开页面不代表已安装。",
+            "zh-TW": "這是適用微軟專有授權的 Visual Studio Code 品牌建置，不是 VSCodium。僅開啟官方下載頁；開啟頁面不代表已安裝。",
+            "en": "This is Microsoft’s branded Visual Studio Code build under its proprietary license, not VSCodium. Opens the official download page only; opening it does not mean installation.",
+            "ja": "これは Microsoft のプロプライエタリライセンスが適用される Visual Studio Code ブランドビルドで、VSCodium ではありません。公式ダウンロードページのみを開き、開いてもインストール完了ではありません。",
+            "ko": "VSCodium이 아니라 Microsoft 독점 라이선스가 적용되는 Visual Studio Code 브랜드 빌드입니다. 공식 다운로드 페이지만 열리며 페이지를 열었다고 설치된 것은 아닙니다."
+          },
+          "sourceUrl": "https://code.visualstudio.com/Download",
+          "method": {
+            "type": "official_page",
+            "url": "https://code.visualstudio.com/Download"
+          }
+        }
+      ]
+    },
+    {
+      "id": "pi-coding-agent",
+      "name": "Pi Coding Agent",
+      "publisher": "Earendil Inc. & Contributors",
+      "category": "dev",
+      "summary": {
+        "zh-CN": "MIT 开源终端 AI 编程智能体，可通过扩展、技能和提示模板自定义。",
+        "zh-TW": "MIT 開源終端機 AI 程式設計智慧代理，可透過擴充功能、技能和提示範本自訂。",
+        "en": "An MIT-licensed terminal AI coding agent, customizable with extensions, skills and prompt templates.",
+        "ja": "拡張機能、スキル、プロンプトテンプレートでカスタマイズできる、MIT ライセンスのターミナル AI コーディングエージェント。",
+        "ko": "확장 기능, 스킬 및 프롬프트 템플릿으로 사용자 지정할 수 있는 MIT 라이선스 터미널 AI 코딩 에이전트."
+      },
+      "homepage": "https://pi.dev/",
+      "mark": "Pi",
+      "accent": "#f09082",
+      "variants": [
+        {
+          "id": "pi-coding-agent-linux",
+          "os": "linux",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": true,
+          "note": {
+            "zh-CN": "运行官方交互式脚本安装稳定版。需要 Node.js 22.19+ 与 npm，缺失时可提示安装，系统依赖安装可能请求 sudo。AI 使用需订阅、API 密钥、兼容端点或本地模型，服务商可能收费。",
+            "zh-TW": "執行官方互動式指令碼安裝穩定版。需要 Node.js 22.19+ 與 npm，缺少時可提示安裝，系統相依套件安裝可能要求 sudo。AI 使用需訂閱、API 金鑰、相容端點或本機模型，服務商可能收費。",
+            "en": "Runs the official interactive script to install the stable release. Requires Node.js 22.19+ and npm, with offers to install them if missing; system dependency installation may request sudo. AI usage requires a subscription, API key, compatible endpoint or local model; provider charges may apply.",
+            "ja": "公式の対話型スクリプトで安定版をインストールします。Node.js 22.19 以降と npm が必要で、未導入時はインストールを提案します。システム依存関係の導入時に sudo を求める場合があります。AI の利用にはサブスクリプション、API キー、互換エンドポイント、ローカルモデルのいずれかが必要で、プロバイダー料金が発生する場合があります。",
+            "ko": "공식 대화형 스크립트로 안정 버전을 설치합니다. Node.js 22.19 이상과 npm이 필요하며 없으면 설치를 제안합니다. 시스템 종속성 설치 시 sudo를 요청할 수 있습니다. AI 사용에는 구독, API 키, 호환 엔드포인트 또는 로컬 모델이 필요하며 제공업체 요금이 발생할 수 있습니다."
+          },
+          "sourceUrl": "https://pi.dev/docs/latest/quickstart",
+          "method": {
+            "type": "script",
+            "shell": "sh",
+            "command": "curl -fsSL https://pi.dev/install.sh | sh"
+          },
+          "detection": {
+            "type": "command",
+            "program": "pi",
+            "args": [
+              "--version"
+            ]
+          }
+        },
+        {
+          "id": "pi-coding-agent-windows",
+          "os": "windows",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": true,
+          "note": {
+            "zh-CN": "运行官方交互式脚本安装稳定版，可提示安装缺失依赖。原生 Windows 使用内置 Bash 工具还需 Git Bash。AI 使用需订阅、API 密钥、兼容端点或本地模型，服务商可能收费。",
+            "zh-TW": "執行官方互動式指令碼安裝穩定版，可提示安裝缺少的相依套件。原生 Windows 使用內建 Bash 工具還需 Git Bash。AI 使用需訂閱、API 金鑰、相容端點或本機模型，服務商可能收費。",
+            "en": "Runs the official interactive script to install the stable release and offers to install missing dependencies. Native Windows also needs Git Bash for the built-in Bash tool. AI usage requires a subscription, API key, compatible endpoint or local model; provider charges may apply.",
+            "ja": "公式の対話型スクリプトで安定版をインストールし、不足する依存関係の導入を提案します。ネイティブ Windows で内蔵 Bash ツールを使うには Git Bash も必要です。AI の利用にはサブスクリプション、API キー、互換エンドポイント、ローカルモデルのいずれかが必要で、プロバイダー料金が発生する場合があります。",
+            "ko": "공식 대화형 스크립트로 안정 버전을 설치하고 누락된 종속성 설치를 제안합니다. 네이티브 Windows에서 기본 Bash 도구를 사용하려면 Git Bash도 필요합니다. AI 사용에는 구독, API 키, 호환 엔드포인트 또는 로컬 모델이 필요하며 제공업체 요금이 발생할 수 있습니다."
+          },
+          "sourceUrl": "https://pi.dev/docs/latest/quickstart",
+          "method": {
+            "type": "script",
+            "shell": "powershell",
+            "command": "powershell -c \"irm https://pi.dev/install.ps1 | iex\""
+          },
+          "detection": {
+            "type": "command",
+            "program": "pi",
+            "args": [
+              "--version"
+            ]
+          }
+        },
+        {
+          "id": "pi-coding-agent-macos",
+          "os": "macos",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": true,
+          "note": {
+            "zh-CN": "运行官方交互式脚本安装稳定版。需要 Node.js 22.19+ 与 npm，缺失时可提示安装。AI 使用需订阅、API 密钥、兼容端点或本地模型，服务商可能收费。",
+            "zh-TW": "執行官方互動式指令碼安裝穩定版。需要 Node.js 22.19+ 與 npm，缺少時可提示安裝。AI 使用需訂閱、API 金鑰、相容端點或本機模型，服務商可能收費。",
+            "en": "Runs the official interactive script to install the stable release. Requires Node.js 22.19+ and npm, with offers to install them if missing. AI usage requires a subscription, API key, compatible endpoint or local model; provider charges may apply.",
+            "ja": "公式の対話型スクリプトで安定版をインストールします。Node.js 22.19 以降と npm が必要で、未導入時はインストールを提案します。AI の利用にはサブスクリプション、API キー、互換エンドポイント、ローカルモデルのいずれかが必要で、プロバイダー料金が発生する場合があります。",
+            "ko": "공식 대화형 스크립트로 안정 버전을 설치합니다. Node.js 22.19 이상과 npm이 필요하며 없으면 설치를 제안합니다. AI 사용에는 구독, API 키, 호환 엔드포인트 또는 로컬 모델이 필요하며 제공업체 요금이 발생할 수 있습니다."
+          },
+          "sourceUrl": "https://pi.dev/docs/latest/quickstart",
+          "method": {
+            "type": "script",
+            "shell": "sh",
+            "command": "curl -fsSL https://pi.dev/install.sh | sh"
+          },
+          "detection": {
+            "type": "command",
+            "program": "pi",
+            "args": [
+              "--version"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "omp",
+      "name": "omp",
+      "publisher": "Stencil Labs, Inc.",
+      "category": "dev",
+      "summary": {
+        "zh-CN": "MIT 开源终端 AI 编程智能体，内置子智能体、计划模式、LSP、DAP 与会话记忆。",
+        "zh-TW": "MIT 開源終端機 AI 程式設計智慧代理，內建子智慧代理、計畫模式、LSP、DAP 與工作階段記憶。",
+        "en": "An MIT-licensed terminal AI coding agent with built-in subagents, plan mode, LSP, DAP and session memory.",
+        "ja": "サブエージェント、プランモード、LSP、DAP、セッションメモリを内蔵する、MIT ライセンスのターミナル AI コーディングエージェント。",
+        "ko": "하위 에이전트, 계획 모드, LSP, DAP 및 세션 메모리를 기본 제공하는 MIT 라이선스 터미널 AI 코딩 에이전트."
+      },
+      "homepage": "https://omp.sh/",
+      "mark": "om",
+      "accent": "#b46ae0",
+      "variants": [
+        {
+          "id": "omp-linux",
+          "os": "linux",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "运行官方脚本安装稳定版到用户目录，优先使用兼容的 Bun，否则下载并校验预编译二进制。Alpine 需 libstdc++ 和 libgcc。AI 使用可能需模型服务商登录、订阅或 API 密钥，也可使用本地模型；服务商可能收费。",
+            "zh-TW": "執行官方指令碼將穩定版安裝到使用者目錄，優先使用相容的 Bun，否則下載並驗證預編譯二進位檔。Alpine 需 libstdc++ 和 libgcc。AI 使用可能需模型服務商登入、訂閱或 API 金鑰，也可使用本機模型；服務商可能收費。",
+            "en": "Runs the official script to install the stable release in the user directory, using a compatible Bun when available or downloading a checksum-verified prebuilt binary. Alpine requires libstdc++ and libgcc. AI usage may require provider sign-in, a subscription or API key, or can use a local model; provider charges may apply.",
+            "ja": "公式スクリプトで安定版をユーザーディレクトリにインストールします。互換性のある Bun があれば使用し、なければチェックサムを検証したプリビルトバイナリをダウンロードします。Alpine では libstdc++ と libgcc が必要です。AI の利用にはプロバイダーへのログイン、サブスクリプション、API キーが必要な場合がありますが、ローカルモデルも利用でき、プロバイダー料金が発生する場合があります。",
+            "ko": "공식 스크립트로 안정 버전을 사용자 디렉터리에 설치합니다. 호환되는 Bun이 있으면 사용하고, 없으면 체크섬을 검증한 사전 빌드 바이너리를 다운로드합니다. Alpine에는 libstdc++와 libgcc가 필요합니다. AI 사용에는 제공업체 로그인, 구독 또는 API 키가 필요할 수 있으며 로컬 모델도 사용할 수 있습니다. 제공업체 요금이 발생할 수 있습니다."
+          },
+          "sourceUrl": "https://omp.sh/docs/quickstart",
+          "method": {
+            "type": "script",
+            "shell": "sh",
+            "command": "curl -fsSL https://omp.sh/install | sh"
+          },
+          "detection": {
+            "type": "command",
+            "program": "omp",
+            "args": [
+              "--version"
+            ]
+          }
+        },
+        {
+          "id": "omp-windows",
+          "os": "windows",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "在 PowerShell 5.1+ 运行官方脚本安装稳定版到用户目录并配置 PATH。AI 使用可能需模型服务商登录、订阅或 API 密钥，也可使用本地模型；服务商可能收费。",
+            "zh-TW": "在 PowerShell 5.1+ 執行官方指令碼，將穩定版安裝到使用者目錄並設定 PATH。AI 使用可能需模型服務商登入、訂閱或 API 金鑰，也可使用本機模型；服務商可能收費。",
+            "en": "Runs the official script in PowerShell 5.1+ to install the stable release in the user directory and configure PATH. AI usage may require provider sign-in, a subscription or API key, or can use a local model; provider charges may apply.",
+            "ja": "PowerShell 5.1 以降で公式スクリプトを実行し、安定版をユーザーディレクトリにインストールして PATH を設定します。AI の利用にはプロバイダーへのログイン、サブスクリプション、API キーが必要な場合がありますが、ローカルモデルも利用でき、プロバイダー料金が発生する場合があります。",
+            "ko": "PowerShell 5.1 이상에서 공식 스크립트를 실행하여 안정 버전을 사용자 디렉터리에 설치하고 PATH를 구성합니다. AI 사용에는 제공업체 로그인, 구독 또는 API 키가 필요할 수 있으며 로컬 모델도 사용할 수 있습니다. 제공업체 요금이 발생할 수 있습니다."
+          },
+          "sourceUrl": "https://omp.sh/docs/quickstart",
+          "method": {
+            "type": "script",
+            "shell": "powershell",
+            "command": "irm https://omp.sh/install.ps1 | iex"
+          },
+          "detection": {
+            "type": "command",
+            "program": "omp",
+            "args": [
+              "--version"
+            ]
+          }
+        },
+        {
+          "id": "omp-macos",
+          "os": "macos",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "运行官方脚本安装稳定版到用户目录，优先使用兼容的 Bun，否则下载并校验预编译二进制。AI 使用可能需模型服务商登录、订阅或 API 密钥，也可使用本地模型；服务商可能收费。",
+            "zh-TW": "執行官方指令碼將穩定版安裝到使用者目錄，優先使用相容的 Bun，否則下載並驗證預編譯二進位檔。AI 使用可能需模型服務商登入、訂閱或 API 金鑰，也可使用本機模型；服務商可能收費。",
+            "en": "Runs the official script to install the stable release in the user directory, using a compatible Bun when available or downloading a checksum-verified prebuilt binary. AI usage may require provider sign-in, a subscription or API key, or can use a local model; provider charges may apply.",
+            "ja": "公式スクリプトで安定版をユーザーディレクトリにインストールします。互換性のある Bun があれば使用し、なければチェックサムを検証したプリビルトバイナリをダウンロードします。AI の利用にはプロバイダーへのログイン、サブスクリプション、API キーが必要な場合がありますが、ローカルモデルも利用でき、プロバイダー料金が発生する場合があります。",
+            "ko": "공식 스크립트로 안정 버전을 사용자 디렉터리에 설치합니다. 호환되는 Bun이 있으면 사용하고, 없으면 체크섬을 검증한 사전 빌드 바이너리를 다운로드합니다. AI 사용에는 제공업체 로그인, 구독 또는 API 키가 필요할 수 있으며 로컬 모델도 사용할 수 있습니다. 제공업체 요금이 발생할 수 있습니다."
+          },
+          "sourceUrl": "https://omp.sh/docs/quickstart",
+          "method": {
+            "type": "script",
+            "shell": "sh",
+            "command": "curl -fsSL https://omp.sh/install | sh"
+          },
+          "detection": {
+            "type": "command",
+            "program": "omp",
+            "args": [
+              "--version"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "dbx",
+      "name": "DBX",
+      "publisher": "t8y2",
+      "category": "dev",
+      "summary": {
+        "zh-CN": "免费开源桌面数据库客户端，支持 100 多种数据库、SQL 编辑、数据管理及可选 AI 助手。",
+        "zh-TW": "免費開源桌面資料庫用戶端，支援 100 多種資料庫、SQL 編輯、資料管理及可選 AI 助手。",
+        "en": "A free open-source desktop database client with SQL editing, data management and an optional AI assistant for 100+ databases.",
+        "ja": "100 種類以上のデータベースに対応し、SQL 編集、データ管理、オプションの AI アシスタントを備える無料のオープンソースデスクトップクライアント。",
+        "ko": "100개 이상의 데이터베이스를 위한 SQL 편집, 데이터 관리 및 선택적 AI 도우미를 제공하는 물체 오픈 소스 데스크톱 데이터베이스 클라이언트."
+      },
+      "homepage": "https://dbxio.com/en",
+      "mark": "DX",
+      "accent": "#4d9abf",
+      "variants": [
+        {
+          "id": "dbx-linux",
+          "os": "linux",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "仅打开官方下载页，请选择匹配架构的 AppImage、DEB 或 RPM；打开页面不代表已安装。可选 AI 功能需自行配置模型服务或本地 CLI，相关服务可能收费。",
+            "zh-TW": "僅開啟官方下載頁，請選擇符合架構的 AppImage、DEB 或 RPM；開啟頁面不代表已安裝。可選 AI 功能需自行設定模型服務或本機 CLI，相關服務可能收費。",
+            "en": "Opens the official download page only; choose an AppImage, DEB or RPM matching your architecture. Opening a page does not mean installation. Optional AI features require a separately configured model service or local CLI; provider charges may apply.",
+            "ja": "公式ダウンロードページのみを開きます。アーキテクチャに合う AppImage、DEB、RPM を選択してください。ページを開いてもインストール完了ではありません。オプションの AI 機能には別途モデルサービスまたはローカル CLI の設定が必要で、プロバイダー料金が発生する場合があります。",
+            "ko": "공식 다운로드 페이지만 열리며 아키텍처에 맞는 AppImage, DEB 또는 RPM을 선택하세요. 페이지를 열었다고 설치된 것은 아닙니다. 선택적 AI 기능은 모델 서비스 또는 로컬 CLI를 별도로 구성해야 하며 제공업체 요금이 발생할 수 있습니다."
+          },
+          "sourceUrl": "https://dbxio.com/en/docs/getting-started",
+          "method": {
+            "type": "official_page",
+            "url": "https://dbxio.com/en"
+          }
+        },
+        {
+          "id": "dbx-windows",
+          "os": "windows",
+          "architectures": [
+            "x86_64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "仅打开官方下载页，请选择 Windows 10/11 x64 安装器；在线安装器可能下载 WebView2。打开页面不代表已安装。可选 AI 功能需自行配置模型服务或本地 CLI，相关服务可能收费。",
+            "zh-TW": "僅開啟官方下載頁，請選擇 Windows 10/11 x64 安裝程式；線上安裝程式可能下載 WebView2。開啟頁面不代表已安裝。可選 AI 功能需自行設定模型服務或本機 CLI，相關服務可能收費。",
+            "en": "Opens the official download page only; choose the Windows 10/11 x64 installer. The online installer may download WebView2. Opening a page does not mean installation. Optional AI features require a separately configured model service or local CLI; provider charges may apply.",
+            "ja": "公式ダウンロードページのみを開き、Windows 10/11 x64 インストーラーを選択してください。オンラインインストーラーは WebView2 をダウンロードする場合があります。ページを開いてもインストール完了ではありません。オプションの AI 機能には別途モデルサービスまたはローカル CLI の設定が必要で、プロバイダー料金が発生する場合があります。",
+            "ko": "공식 다운로드 페이지만 열리며 Windows 10/11 x64 설치 관리자를 선택하세요. 온라인 설치 관리자는 WebView2를 다운로드할 수 있습니다. 페이지를 열었다고 설치된 것은 아닙니다. 선택적 AI 기능은 모델 서비스 또는 로컬 CLI를 별도로 구성해야 하며 제공업체 요금이 발생할 수 있습니다."
+          },
+          "sourceUrl": "https://dbxio.com/en/docs/getting-started",
+          "method": {
+            "type": "official_page",
+            "url": "https://dbxio.com/en"
+          }
+        },
+        {
+          "id": "dbx-macos",
+          "os": "macos",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "仅打开官方下载页，请选择匹配 Intel 或 Apple Silicon 的 DMG，也可按官方文档使用 Homebrew；打开页面不代表已安装。可选 AI 功能需自行配置模型服务或本地 CLI，相关服务可能收费。",
+            "zh-TW": "僅開啟官方下載頁，請選擇符合 Intel 或 Apple Silicon 的 DMG，也可依官方文件使用 Homebrew；開啟頁面不代表已安裝。可選 AI 功能需自行設定模型服務或本機 CLI，相關服務可能收費。",
+            "en": "Opens the official download page only; choose the DMG matching Intel or Apple Silicon, or use Homebrew as documented. Opening a page does not mean installation. Optional AI features require a separately configured model service or local CLI; provider charges may apply.",
+            "ja": "公式ダウンロードページのみを開き、Intel または Apple Silicon に合う DMG を選択するか、公式ドキュメントに従って Homebrew を使用してください。ページを開いてもインストール完了ではありません。オプションの AI 機能には別途モデルサービスまたはローカル CLI の設定が必要で、プロバイダー料金が発生する場合があります。",
+            "ko": "공식 다운로드 페이지만 열리며 Intel 또는 Apple Silicon에 맞는 DMG를 선택하거나 공식 문서에 따라 Homebrew를 사용하세요. 페이지를 열었다고 설치된 것은 아닙니다. 선택적 AI 기능은 모델 서비스 또는 로컬 CLI를 별도로 구성해야 하며 제공업체 요금이 발생할 수 있습니다."
+          },
+          "sourceUrl": "https://dbxio.com/en/docs/getting-started",
+          "method": {
+            "type": "official_page",
+            "url": "https://dbxio.com/en"
+          }
+        }
+      ]
+    },
+    {
+      "id": "opencode",
+      "name": "OpenCode",
+      "publisher": "Anomaly",
+      "category": "dev",
+      "summary": {
+        "zh-CN": "开源终端 AI 编程智能体，支持多种模型提供商。",
+        "zh-TW": "開放原始碼終端機 AI 程式開發代理，支援多種模型供應商。",
+        "en": "An open-source terminal AI coding agent with support for multiple model providers.",
+        "ja": "複数のモデルプロバイダーに対応するオープンソースのターミナル AI コーディングエージェント。",
+        "ko": "여러 모델 제공업체를 지원하는 오픈 소스 터미널 AI 코딩 에이전트."
+      },
+      "homepage": "https://opencode.ai/v2/docs/",
+      "mark": "OC",
+      "accent": "#f97316",
+      "variants": [
+        {
+          "id": "opencode-linux",
+          "os": "linux",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "v2 官方脚本安装到 ~/.opencode/bin，并可能修改 shell 配置以设置用户 PATH；无需管理员权限。需配置模型提供商凭据，部分模型或服务可能收费。",
+            "zh-TW": "v2 官方指令碼安裝至 ~/.opencode/bin，並可能修改 shell 設定以設定使用者 PATH；無需管理員權限。需設定模型供應商憑證，部分模型或服務可能收費。",
+            "en": "The official v2 script installs to ~/.opencode/bin and may edit shell configuration to set the user PATH; no administrator access is needed. Provider credentials are required, and some models or services may charge fees.",
+            "ja": "v2 公式スクリプトは ~/.opencode/bin にインストールし、ユーザー PATH 設定のためシェル設定を変更する場合があります。管理者権限は不要です。プロバイダーの認証情報が必要で、一部のモデルやサービスは有料です。",
+            "ko": "공식 v2 스크립트는 ~/.opencode/bin에 설치하며 사용자 PATH 설정을 위해 셸 구성을 수정할 수 있습니다. 관리자 권한은 필요 없습니다. 제공업체 자격 증명이 필요하며 일부 모델이나 서비스는 유료일 수 있습니다."
+          },
+          "sourceUrl": "https://opencode.ai/v2/docs/",
+          "method": {
+            "type": "script",
+            "shell": "sh",
+            "command": "curl -fsSL https://opencode.ai/v2/install | bash"
+          },
+          "detection": {
+            "type": "command",
+            "program": "opencode",
+            "args": [
+              "--version"
+            ]
+          }
+        },
+        {
+          "id": "opencode-windows",
+          "os": "windows",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "官方 v2 文档提供独立二进制下载，但没有官方 PowerShell 安装脚本；此页面不会自动安装。需配置模型提供商凭据，部分模型或服务可能收费。",
+            "zh-TW": "官方 v2 文件提供獨立二進位檔下載，但沒有官方 PowerShell 安裝指令碼；此頁面不會自動安裝。需設定模型供應商憑證，部分模型或服務可能收費。",
+            "en": "The official v2 documentation offers standalone binary downloads but no official PowerShell installer; opening this page does not install anything. Provider credentials are required, and some models or services may charge fees.",
+            "ja": "v2 公式ドキュメントではスタンドアロンバイナリを配布していますが、公式 PowerShell インストーラーはありません。このページを開いてもインストールは実行されません。プロバイダーの認証情報が必要で、一部のモデルやサービスは有料です。",
+            "ko": "공식 v2 문서는 독립 실행 바이너리를 제공하지만 공식 PowerShell 설치 스크립트는 없습니다. 이 페이지를 열어도 자동으로 설치되지 않습니다. 제공업체 자격 증명이 필요하며 일부 모델이나 서비스는 유료일 수 있습니다."
+          },
+          "sourceUrl": "https://opencode.ai/v2/docs/",
+          "method": {
+            "type": "official_page",
+            "url": "https://opencode.ai/v2/docs/"
+          },
+          "detection": {
+            "type": "command",
+            "program": "opencode",
+            "args": [
+              "--version"
+            ]
+          }
+        },
+        {
+          "id": "opencode-macos",
+          "os": "macos",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "v2 官方脚本安装到 ~/.opencode/bin，并可能修改 shell 配置以设置用户 PATH；无需管理员权限。需配置模型提供商凭据，部分模型或服务可能收费。",
+            "zh-TW": "v2 官方指令碼安裝至 ~/.opencode/bin，並可能修改 shell 設定以設定使用者 PATH；無需管理員權限。需設定模型供應商憑證，部分模型或服務可能收費。",
+            "en": "The official v2 script installs to ~/.opencode/bin and may edit shell configuration to set the user PATH; no administrator access is needed. Provider credentials are required, and some models or services may charge fees.",
+            "ja": "v2 公式スクリプトは ~/.opencode/bin にインストールし、ユーザー PATH 設定のためシェル設定を変更する場合があります。管理者権限は不要です。プロバイダーの認証情報が必要で、一部のモデルやサービスは有料です。",
+            "ko": "공식 v2 스크립트는 ~/.opencode/bin에 설치하며 사용자 PATH 설정을 위해 셸 구성을 수정할 수 있습니다. 관리자 권한은 필요 없습니다. 제공업체 자격 증명이 필요하며 일부 모델이나 서비스는 유료일 수 있습니다."
+          },
+          "sourceUrl": "https://opencode.ai/v2/docs/",
+          "method": {
+            "type": "script",
+            "shell": "sh",
+            "command": "curl -fsSL https://opencode.ai/v2/install | bash"
+          },
+          "detection": {
+            "type": "command",
+            "program": "opencode",
+            "args": [
+              "--version"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "aider",
+      "name": "Aider",
+      "publisher": "Paul Gauthier",
+      "category": "dev",
+      "summary": {
+        "zh-CN": "在终端中与 AI 结对编程，可直接编辑本地 Git 项目。",
+        "zh-TW": "在終端機中與 AI 結對程式開發，可直接編輯本機 Git 專案。",
+        "en": "AI pair programming in the terminal that can directly edit local Git projects.",
+        "ja": "ターミナルで AI とペアプログラミングを行い、ローカルの Git プロジェクトを直接編集できます。",
+        "ko": "터미널에서 AI와 페어 프로그래밍을 하며 로컬 Git 프로젝트를 직접 편집할 수 있습니다."
+      },
+      "homepage": "https://aider.chat/docs/install.html",
+      "mark": "Ai",
+      "accent": "#14b8a6",
+      "variants": [
+        {
+          "id": "aider-linux",
+          "os": "linux",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "官方脚本安装 uv，并在独立 Python 3.12 环境中安装 Aider；会修改 shell 配置中的用户 PATH，无需管理员权限。需配置模型 API 密钥或本地模型，云服务费用由提供商收取。",
+            "zh-TW": "官方指令碼會安裝 uv，並在獨立 Python 3.12 環境中安裝 Aider；會修改 shell 設定中的使用者 PATH，無需管理員權限。需設定模型 API 金鑰或本機模型，雲端服務費用由供應商收取。",
+            "en": "The official script installs uv and Aider in a separate Python 3.12 environment. It edits shell configuration for the user PATH and needs no administrator access. Configure a model API key or a local model; cloud provider charges may apply.",
+            "ja": "公式スクリプトは uv をインストールし、独立した Python 3.12 環境に Aider を導入します。ユーザー PATH のためシェル設定を変更しますが、管理者権限は不要です。モデル API キーまたはローカルモデルの設定が必要で、クラウド利用料が発生する場合があります。",
+            "ko": "공식 스크립트는 uv를 설치하고 별도의 Python 3.12 환경에 Aider를 설치합니다. 사용자 PATH를 위해 셸 구성을 수정하며 관리자 권한은 필요 없습니다. 모델 API 키 또는 로컬 모델을 설정해야 하며 클라우드 제공업체 요금이 발생할 수 있습니다."
+          },
+          "sourceUrl": "https://aider.chat/docs/install.html",
+          "method": {
+            "type": "script",
+            "shell": "sh",
+            "command": "curl -LsSf https://aider.chat/install.sh | sh"
+          },
+          "detection": {
+            "type": "command",
+            "program": "aider",
+            "args": [
+              "--version"
+            ]
+          }
+        },
+        {
+          "id": "aider-windows",
+          "os": "windows",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "官方脚本安装 uv，并在独立 Python 3.12 环境中安装 Aider；会修改当前用户 PATH，无需管理员权限。ARM64 使用 x64 版 uv 仿真运行。需配置模型 API 密钥或本地模型，云服务可能收费。",
+            "zh-TW": "官方指令碼會安裝 uv，並在獨立 Python 3.12 環境中安裝 Aider；會修改目前使用者 PATH，無需管理員權限。ARM64 透過模擬執行 x64 版 uv。需設定模型 API 金鑰或本機模型，雲端服務可能收費。",
+            "en": "The official script installs uv and Aider in a separate Python 3.12 environment. It edits the current user's PATH and needs no administrator access. On ARM64, the x64 uv binary runs under emulation. Configure a model API key or local model; cloud charges may apply.",
+            "ja": "公式スクリプトは uv をインストールし、独立した Python 3.12 環境に Aider を導入します。現在のユーザー PATH を変更しますが、管理者権限は不要です。ARM64 では x64 版 uv がエミュレーションで動作します。モデル API キーまたはローカルモデルの設定が必要で、クラウド利用料が発生する場合があります。",
+            "ko": "공식 스크립트는 uv를 설치하고 별도의 Python 3.12 환경에 Aider를 설치합니다. 현재 사용자 PATH를 수정하며 관리자 권한은 필요 없습니다. ARM64에서는 x64 uv 바이너리가 에뮬레이션으로 실행됩니다. 모델 API 키 또는 로컬 모델을 설정해야 하며 클라우드 요금이 발생할 수 있습니다."
+          },
+          "sourceUrl": "https://aider.chat/docs/install.html",
+          "method": {
+            "type": "script",
+            "shell": "powershell",
+            "command": "powershell -ExecutionPolicy ByPass -c \"irm https://aider.chat/install.ps1 | iex\""
+          },
+          "detection": {
+            "type": "command",
+            "program": "aider",
+            "args": [
+              "--version"
+            ]
+          }
+        },
+        {
+          "id": "aider-macos",
+          "os": "macos",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "官方脚本安装 uv，并在独立 Python 3.12 环境中安装 Aider；会修改 shell 配置中的用户 PATH，无需管理员权限。需配置模型 API 密钥或本地模型，云服务费用由提供商收取。",
+            "zh-TW": "官方指令碼會安裝 uv，並在獨立 Python 3.12 環境中安裝 Aider；會修改 shell 設定中的使用者 PATH，無需管理員權限。需設定模型 API 金鑰或本機模型，雲端服務費用由供應商收取。",
+            "en": "The official script installs uv and Aider in a separate Python 3.12 environment. It edits shell configuration for the user PATH and needs no administrator access. Configure a model API key or a local model; cloud provider charges may apply.",
+            "ja": "公式スクリプトは uv をインストールし、独立した Python 3.12 環境に Aider を導入します。ユーザー PATH のためシェル設定を変更しますが、管理者権限は不要です。モデル API キーまたはローカルモデルの設定が必要で、クラウド利用料が発生する場合があります。",
+            "ko": "공식 스크립트는 uv를 설치하고 별도의 Python 3.12 환경에 Aider를 설치합니다. 사용자 PATH를 위해 셸 구성을 수정하며 관리자 권한은 필요 없습니다. 모델 API 키 또는 로컬 모델을 설정해야 하며 클라우드 제공업체 요금이 발생할 수 있습니다."
+          },
+          "sourceUrl": "https://aider.chat/docs/install.html",
+          "method": {
+            "type": "script",
+            "shell": "sh",
+            "command": "curl -LsSf https://aider.chat/install.sh | sh"
+          },
+          "detection": {
+            "type": "command",
+            "program": "aider",
+            "args": [
+              "--version"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "gemini-cli",
+      "name": "Gemini CLI",
+      "publisher": "Google",
+      "category": "dev",
+      "summary": {
+        "zh-CN": "面向 Gemini Code Assist 企业工作流的开源终端智能体；不支持免费个人版或 Google AI 套餐。",
+        "zh-TW": "適用於 Gemini Code Assist 企業工作流程的開放原始碼終端機代理；不支援免費個人版或 Google AI 方案。",
+        "en": "An open-source terminal agent for enterprise Gemini Code Assist workflows; free individual and Google AI plans are not supported.",
+        "ja": "Gemini Code Assist のエンタープライズワークフロー向けオープンソースのターミナルエージェント。無料個人プランと Google AI プランには対応していません。",
+        "ko": "엔터프라이즈 Gemini Code Assist 워크플로를 위한 오픈 소스 터미널 에이전트로, 묣료 개인 플랜과 Google AI 플랜은 지원하지 않습니다."
+      },
+      "homepage": "https://www.geminicli.com/docs/get-started/installation",
+      "mark": "G",
+      "accent": "#4285f4",
+      "variants": [
+        {
+          "id": "gemini-cli-linux",
+          "os": "linux",
+          "architectures": [
+            "x86_64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "官方文档仅提供 npm、Homebrew 等安装方式，没有独立安装脚本；此页面不会自动安装。当前官方包的 Linux 原生目标仅确认 x64。建议 Ubuntu 20.04+、Node.js 20+。需要 Code Assist Standard/Enterprise、Code Assist for GitHub，或旧版付费 API/Vertex 密钥；个人免费版及 Google AI Pro/Ultra 已迁移至 Antigravity CLI。",
+            "zh-TW": "官方文件僅提供 npm、Homebrew 等安裝方式，沒有獨立安裝指令碼；此頁面不會自動安裝。目前官方套件的 Linux 原生目標僅確認 x64。建議 Ubuntu 20.04+、Node.js 20+。需要 Code Assist Standard/Enterprise、Code Assist for GitHub，或舊版付費 API/Vertex 金鑰；個人免費版及 Google AI Pro/Ultra 已移至 Antigravity CLI。",
+            "en": "The official guide documents npm, Homebrew, and similar methods but no standalone installer script; opening this page does not install anything. The current official package establishes only an x64 native Linux target. Ubuntu 20.04+ and Node.js 20+ are recommended. Requires Code Assist Standard/Enterprise, Code Assist for GitHub, or legacy paid API/Vertex keys; free individual and Google AI Pro/Ultra access moved to Antigravity CLI.",
+            "ja": "公式ガイドには npm や Homebrew などの方法が記載されていますが、独立したインストールスクリプトはありません。このページを開いてもインストールは実行されません。現在の公式パッケージで確認できる Linux ネイティブターゲットは x64 のみです。Ubuntu 20.04+ と Node.js 20+ を推奨。Code Assist Standard/Enterprise、Code Assist for GitHub、または従来の有料 API/Vertex キーが必要です。無料個人版と Google AI Pro/Ultra は Antigravity CLI に移行しました。",
+            "ko": "공식 안내서는 npm, Homebrew 등의 설치 방법만 제공하며 독립 설치 스크립트는 없습니다. 이 페이지를 열어도 자동으로 설치되지 않습니다. 현재 공식 패키지에서 확인된 Linux 네이티브 대상은 x64뿐입니다. Ubuntu 20.04 이상과 Node.js 20 이상을 권장합니다. Code Assist Standard/Enterprise, Code Assist for GitHub 또는 기존 유료 API/Vertex 키가 필요하며 묣료 개인 및 Google AI Pro/Ultra 액세스는 Antigravity CLI로 이전되었습니다."
+          },
+          "sourceUrl": "https://www.geminicli.com/docs/get-started/installation",
+          "method": {
+            "type": "official_page",
+            "url": "https://www.geminicli.com/docs/get-started/installation"
+          },
+          "detection": {
+            "type": "command",
+            "program": "gemini",
+            "args": [
+              "--version"
+            ]
+          }
+        },
+        {
+          "id": "gemini-cli-windows",
+          "os": "windows",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "官方文档仅提供 npm 等安装方式，没有独立安装脚本；此页面不会自动安装。建议 Windows 11 24H2+、PowerShell、Node.js 20+。需要 Code Assist Standard/Enterprise、Code Assist for GitHub，或旧版付费 API/Vertex 密钥；个人免费版及 Google AI Pro/Ultra 已迁移至 Antigravity CLI。",
+            "zh-TW": "官方文件僅提供 npm 等安裝方式，沒有獨立安裝指令碼；此頁面不會自動安裝。建議 Windows 11 24H2+、PowerShell、Node.js 20+。需要 Code Assist Standard/Enterprise、Code Assist for GitHub，或舊版付費 API/Vertex 金鑰；個人免費版及 Google AI Pro/Ultra 已移至 Antigravity CLI。",
+            "en": "The official guide documents npm and similar methods but no standalone installer script; opening this page does not install anything. Windows 11 24H2+, PowerShell, and Node.js 20+ are recommended. Requires Code Assist Standard/Enterprise, Code Assist for GitHub, or legacy paid API/Vertex keys; free individual and Google AI Pro/Ultra access moved to Antigravity CLI.",
+            "ja": "公式ガイドには npm などの方法が記載されていますが、独立したインストールスクリプトはありません。このページを開いてもインストールは実行されません。Windows 11 24H2+、PowerShell、Node.js 20+ を推奨。Code Assist Standard/Enterprise、Code Assist for GitHub、または従来の有料 API/Vertex キーが必要です。無料個人版と Google AI Pro/Ultra は Antigravity CLI に移行しました。",
+            "ko": "공식 안내서는 npm 등의 설치 방법만 제공하며 독립 설치 스크립트는 없습니다. 이 페이지를 열어도 자동으로 설치되지 않습니다. Windows 11 24H2 이상, PowerShell, Node.js 20 이상을 권장합니다. Code Assist Standard/Enterprise, Code Assist for GitHub 또는 기존 유료 API/Vertex 키가 필요하며 묣료 개인 및 Google AI Pro/Ultra 액세스는 Antigravity CLI로 이전되었습니다."
+          },
+          "sourceUrl": "https://www.geminicli.com/docs/get-started/installation",
+          "method": {
+            "type": "official_page",
+            "url": "https://www.geminicli.com/docs/get-started/installation"
+          },
+          "detection": {
+            "type": "command",
+            "program": "gemini",
+            "args": [
+              "--version"
+            ]
+          }
+        },
+        {
+          "id": "gemini-cli-macos",
+          "os": "macos",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "官方文档仅提供 npm、Homebrew、MacPorts 等安装方式，没有独立安装脚本；此页面不会自动安装，部分方式可能需要管理员权限。建议 macOS 15+、Node.js 20+。需要 Code Assist Standard/Enterprise、Code Assist for GitHub，或旧版付费 API/Vertex 密钥；个人免费版及 Google AI Pro/Ultra 已迁移至 Antigravity CLI。",
+            "zh-TW": "官方文件僅提供 npm、Homebrew、MacPorts 等安裝方式，沒有獨立安裝指令碼；此頁面不會自動安裝，部分方式可能需要管理員權限。建議 macOS 15+、Node.js 20+。需要 Code Assist Standard/Enterprise、Code Assist for GitHub，或舊版付費 API/Vertex 金鑰；個人免費版及 Google AI Pro/Ultra 已移至 Antigravity CLI。",
+            "en": "The official guide documents npm, Homebrew, MacPorts, and similar methods but no standalone installer script; opening this page does not install anything, and some methods may require administrator access. macOS 15+ and Node.js 20+ are recommended. Requires Code Assist Standard/Enterprise, Code Assist for GitHub, or legacy paid API/Vertex keys; free individual and Google AI Pro/Ultra access moved to Antigravity CLI.",
+            "ja": "公式ガイドには npm、Homebrew、MacPorts などの方法が記載されていますが、独立したインストールスクリプトはありません。このページを開いてもインストールは実行されず、方法によっては管理者権限が必要です。macOS 15+ と Node.js 20+ を推奨。Code Assist Standard/Enterprise、Code Assist for GitHub、または従来の有料 API/Vertex キーが必要です。無料個人版と Google AI Pro/Ultra は Antigravity CLI に移行しました。",
+            "ko": "공식 안내서는 npm, Homebrew, MacPorts 등의 설치 방법만 제공하며 독립 설치 스크립트는 없습니다. 이 페이지를 열어도 자동으로 설치되지 않으며 일부 방법은 관리자 권한이 필요할 수 있습니다. macOS 15 이상과 Node.js 20 이상을 권장합니다. Code Assist Standard/Enterprise, Code Assist for GitHub 또는 기존 유료 API/Vertex 키가 필요하며 묣료 개인 및 Google AI Pro/Ultra 액세스는 Antigravity CLI로 이전되었습니다."
+          },
+          "sourceUrl": "https://www.geminicli.com/docs/get-started/installation",
+          "method": {
+            "type": "official_page",
+            "url": "https://www.geminicli.com/docs/get-started/installation"
+          },
+          "detection": {
+            "type": "command",
+            "program": "gemini",
+            "args": [
+              "--version"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "codex-cli",
+      "name": "Codex CLI",
+      "publisher": "OpenAI",
+      "category": "dev",
+      "summary": {
+        "zh-CN": "OpenAI 的开源终端编程智能体，可检查、修改并运行代码。",
+        "zh-TW": "OpenAI 的開放原始碼終端機程式開發代理，可檢查、修改並執行程式碼。",
+        "en": "OpenAI's open-source terminal coding agent for inspecting, editing, and running code.",
+        "ja": "コードの確認、編集、実行を行う OpenAI のオープンソースのターミナルコーディングエージェント。",
+        "ko": "코드를 검사, 수정 및 실행하는 OpenAI의 오픈 소스 터미널 코딩 에이전트."
+      },
+      "homepage": "https://developers.openai.com/codex/cli/",
+      "mark": "Cx",
+      "accent": "#10a37f",
+      "variants": [
+        {
+          "id": "codex-cli-linux",
+          "os": "linux",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": true,
+          "note": {
+            "zh-CN": "官方脚本按用户安装，修改 shell 配置中的 PATH，并可能询问是否立即启动或卸载其他包管理器安装的 Codex；默认回答“否”，无需管理员权限。需使用 ChatGPT 账号或 API 密钥登录，套餐或 API 用量可能收费。",
+            "zh-TW": "官方指令碼以使用者身分安裝，修改 shell 設定中的 PATH，並可能詢問是否立即啟動或解除安裝其他套件管理員安裝的 Codex；預設回答「否」，無需管理員權限。需使用 ChatGPT 帳號或 API 金鑰登入，方案或 API 用量可能收費。",
+            "en": "The official per-user script edits shell configuration for PATH and may ask to launch Codex or uninstall an existing package-manager installation; prompts default to No, and no administrator access is needed. Sign in with ChatGPT or an API key; plan or API usage charges may apply.",
+            "ja": "公式スクリプトはユーザー単位でインストールし、PATH のためシェル設定を変更します。Codex の起動やパッケージマネージャー版の削除を確認する場合があり、既定は No で管理者権限は不要です。ChatGPT または API キーでのサインインが必要で、プランや API 利用料が発生する場合があります。",
+            "ko": "공식 사용자별 스크립트는 PATH를 위해 셸 구성을 수정하며 Codex 실행이나 패키지 관리자로 설치된 기존 버전 제거 여부를 물을 수 있습니다. 기본값은 아니요이며 관리자 권한은 필요 없습니다. ChatGPT 또는 API 키로 로그인해야 하며 플랜 또는 API 사용 요금이 발생할 수 있습니다."
+          },
+          "sourceUrl": "https://github.com/openai/codex",
+          "method": {
+            "type": "script",
+            "shell": "sh",
+            "command": "curl -fsSL https://chatgpt.com/codex/install.sh | sh"
+          },
+          "detection": {
+            "type": "command",
+            "program": "codex",
+            "args": [
+              "--version"
+            ]
+          }
+        },
+        {
+          "id": "codex-cli-windows",
+          "os": "windows",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": true,
+          "note": {
+            "zh-CN": "官方 PowerShell 脚本按用户安装到 %LOCALAPPDATA%\\Programs\\OpenAI\\Codex，并修改当前用户 PATH；可能询问是否立即启动或卸载其他包管理器安装的 Codex，默认回答“否”，无需管理员权限。需 ChatGPT 账号或 API 密钥，套餐或 API 用量可能收费。",
+            "zh-TW": "官方 PowerShell 指令碼以使用者身分安裝至 %LOCALAPPDATA%\\Programs\\OpenAI\\Codex，並修改目前使用者 PATH；可能詢問是否立即啟動或解除安裝其他套件管理員安裝的 Codex，預設回答「否」，無需管理員權限。需 ChatGPT 帳號或 API 金鑰，方案或 API 用量可能收費。",
+            "en": "The official PowerShell script installs per user under %LOCALAPPDATA%\\Programs\\OpenAI\\Codex and edits the current user's PATH. It may ask to launch Codex or uninstall an existing package-manager installation; prompts default to No, and no administrator access is needed. ChatGPT or an API key is required, and plan or API usage charges may apply.",
+            "ja": "公式 PowerShell スクリプトは %LOCALAPPDATA%\\Programs\\OpenAI\\Codex にユーザー単位でインストールし、現在のユーザー PATH を変更します。Codex の起動やパッケージマネージャー版の削除を確認する場合があり、既定は No で管理者権限は不要です。ChatGPT または API キーが必要で、プランや API 利用料が発生する場合があります。",
+            "ko": "공식 PowerShell 스크립트는 %LOCALAPPDATA%\\Programs\\OpenAI\\Codex에 사용자별로 설치하고 현재 사용자 PATH를 수정합니다. Codex 실행이나 패키지 관리자로 설치된 기존 버전 제거 여부를 물을 수 있으며 기본값은 아니요이고 관리자 권한은 필요 없습니다. ChatGPT 또는 API 키가 필요하며 플랜 또는 API 사용 요금이 발생할 수 있습니다."
+          },
+          "sourceUrl": "https://github.com/openai/codex",
+          "method": {
+            "type": "script",
+            "shell": "powershell",
+            "command": "powershell -ExecutionPolicy ByPass -c \"irm https://chatgpt.com/codex/install.ps1 | iex\""
+          },
+          "detection": {
+            "type": "command",
+            "program": "codex",
+            "args": [
+              "--version"
+            ]
+          }
+        },
+        {
+          "id": "codex-cli-macos",
+          "os": "macos",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": true,
+          "note": {
+            "zh-CN": "官方脚本按用户安装，修改 shell 配置中的 PATH，并可能询问是否立即启动或卸载其他包管理器安装的 Codex；默认回答“否”，无需管理员权限。需使用 ChatGPT 账号或 API 密钥登录，套餐或 API 用量可能收费。",
+            "zh-TW": "官方指令碼以使用者身分安裝，修改 shell 設定中的 PATH，並可能詢問是否立即啟動或解除安裝其他套件管理員安裝的 Codex；預設回答「否」，無需管理員權限。需使用 ChatGPT 帳號或 API 金鑰登入，方案或 API 用量可能收費。",
+            "en": "The official per-user script edits shell configuration for PATH and may ask to launch Codex or uninstall an existing package-manager installation; prompts default to No, and no administrator access is needed. Sign in with ChatGPT or an API key; plan or API usage charges may apply.",
+            "ja": "公式スクリプトはユーザー単位でインストールし、PATH のためシェル設定を変更します。Codex の起動やパッケージマネージャー版の削除を確認する場合があり、既定は No で管理者権限は不要です。ChatGPT または API キーでのサインインが必要で、プランや API 利用料が発生する場合があります。",
+            "ko": "공식 사용자별 스크립트는 PATH를 위해 셸 구성을 수정하며 Codex 실행이나 패키지 관리자로 설치된 기존 버전 제거 여부를 물을 수 있습니다. 기본값은 아니요이며 관리자 권한은 필요 없습니다. ChatGPT 또는 API 키로 로그인해야 하며 플랜 또는 API 사용 요금이 발생할 수 있습니다."
+          },
+          "sourceUrl": "https://github.com/openai/codex",
+          "method": {
+            "type": "script",
+            "shell": "sh",
+            "command": "curl -fsSL https://chatgpt.com/codex/install.sh | sh"
+          },
+          "detection": {
+            "type": "command",
+            "program": "codex",
+            "args": [
+              "--version"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "zed",
+      "name": "Zed",
+      "publisher": "Zed Industries",
+      "category": "dev",
+      "summary": {
+        "zh-CN": "高性能代码编辑器，支持扩展、协作、调试与 AI 辅助开发。",
+        "zh-TW": "高效能程式碼編輯器，支援擴充功能、協作、偵錯與 AI 輔助開發。",
+        "en": "A high-performance code editor with extensions, collaboration, debugging and AI-assisted development.",
+        "ja": "拡張機能、コラボレーション、デバッグ、AI 支援開発に対応する高性能コードエディター。",
+        "ko": "확장 기능, 협업, 디버깅 및 AI 지원 개발을 제공하는 고성능 코드 편집기."
+      },
+      "homepage": "https://zed.dev/download",
+      "mark": "Z",
+      "accent": "#084ccf",
+      "variants": [
+        {
+          "id": "zed-linux",
+          "os": "linux",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "需要 Vulkan 1.3 驱动和兼容 GPU；x86_64 需 glibc 2.31+，aarch64 需 glibc 2.35+。脚本安装到 ~/.local，若 ~/.local/bin 不在 PATH 中需按输出手动添加。协作和部分 AI 功能可能需要账户并产生服务商费用。",
+            "zh-TW": "需要 Vulkan 1.3 驅動程式與相容 GPU；x86_64 需 glibc 2.31+，aarch64 需 glibc 2.35+。腳本安裝到 ~/.local，若 ~/.local/bin 不在 PATH 中需依輸出手動加入。協作與部分 AI 功能可能需要帳戶並產生服務商費用。",
+            "en": "Requires a Vulkan 1.3 driver and compatible GPU; glibc 2.31+ on x86_64 or 2.35+ on aarch64. The script installs under ~/.local; follow its output to add ~/.local/bin to PATH if needed. Collaboration and some AI features may require accounts and provider fees.",
+            "ja": "Vulkan 1.3 ドライバーと対応 GPU が必要です。x86_64 では glibc 2.31 以降、aarch64 では 2.35 以降が必要です。~/.local にインストールし、必要に応じて出力の案内に従い ~/.local/bin を PATH に追加します。共同作業や一部の AI 機能にはアカウントやプロバイダー料金が必要な場合があります。",
+            "ko": "Vulkan 1.3 드라이버와 호환 GPU가 필요하며 x86_64는 glibc 2.31 이상, aarch64는 2.35 이상이 필요합니다. 스크립트는 ~/.local에 설치하며 필요하면 출력 안내에 따라 ~/.local/bin을 PATH에 추가해야 합니다. 협업 및 일부 AI 기능에는 계정과 제공업체 요금이 필요할 수 있습니다."
+          },
+          "sourceUrl": "https://zed.dev/docs/linux",
+          "method": {
+            "type": "script",
+            "shell": "sh",
+            "command": "curl -f https://zed.dev/install.sh | sh"
+          },
+          "detection": {
+            "type": "command",
+            "program": "zed",
+            "args": [
+              "--version"
+            ]
+          }
+        },
+        {
+          "id": "zed-windows",
+          "os": "windows",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "仅打开官方下载页；打开页面不代表已安装。需要 64 位 Windows 10 1903+ 或 Windows 11 22H2+，以及支持 DirectX 11 的 GPU。安装器可能需要确认系统提示。",
+            "zh-TW": "僅開啟官方下載頁；開啟頁面不代表已安裝。需要 64 位元 Windows 10 1903+ 或 Windows 11 22H2+，以及支援 DirectX 11 的 GPU。安裝程式可能需要確認系統提示。",
+            "en": "Opens the official download page only; opening it does not install Zed. Requires 64-bit Windows 10 1903+ or Windows 11 22H2+ and a DirectX 11-capable GPU. The installer may present system prompts.",
+            "ja": "公式ダウンロードページを開くだけで、インストールは実行されません。64 ビット Windows 10 1903 以降または Windows 11 22H2 以降と、DirectX 11 対応 GPU が必要です。インストーラーでシステムの確認が求められる場合があります。",
+            "ko": "공식 다운로드 페이지만 열리며 Zed가 자동 설치되지는 않습니다. 64비트 Windows 10 1903 이상 또는 Windows 11 22H2 이상과 DirectX 11 지원 GPU가 필요합니다. 설치 프로그램에서 시스템 확인 메시지가 나타날 수 있습니다."
+          },
+          "sourceUrl": "https://zed.dev/docs/installation",
+          "method": {
+            "type": "official_page",
+            "url": "https://zed.dev/download"
+          }
+        },
+        {
+          "id": "zed-macos",
+          "os": "macos",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "需要 macOS 12+。脚本会替换 /Applications 中已有的 Zed，并在 ~/.local/bin 创建 zed 链接；写入 /Applications 可能需要相应权限，PATH 也可能需手动配置。协作和部分 AI 功能可能需要账户并产生服务商费用。",
+            "zh-TW": "需要 macOS 12+。腳本會取代 /Applications 中已有的 Zed，並在 ~/.local/bin 建立 zed 連結；寫入 /Applications 可能需要相應權限，PATH 也可能需手動設定。協作與部分 AI 功能可能需要帳戶並產生服務商費用。",
+            "en": "Requires macOS 12+. The script replaces an existing Zed in /Applications and links zed in ~/.local/bin; writing to /Applications may require privileges, and PATH may need manual configuration. Collaboration and some AI features may require accounts and provider fees.",
+            "ja": "macOS 12 以降が必要です。/Applications の既存の Zed を置き換え、~/.local/bin に zed リンクを作成します。/Applications への書き込みには権限が必要な場合があり、PATH の手動設定も必要な場合があります。共同作業や一部の AI 機能にはアカウントやプロバイダー料金が必要な場合があります。",
+            "ko": "macOS 12 이상이 필요합니다. 스크립트는 /Applications의 기존 Zed를 교체하고 ~/.local/bin에 zed 링크를 만듭니다. /Applications 쓰기에 권한이 필요할 수 있으며 PATH도 수동으로 구성해야 할 수 있습니다. 협업 및 일부 AI 기능에는 계정과 제공업체 요금이 필요할 수 있습니다."
+          },
+          "sourceUrl": "https://zed.dev/install.sh",
+          "method": {
+            "type": "script",
+            "shell": "sh",
+            "command": "curl -f https://zed.dev/install.sh | sh"
+          },
+          "detection": {
+            "type": "command",
+            "program": "zed",
+            "args": [
+              "--version"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "lazygit",
+      "name": "Lazygit",
+      "publisher": "Jesse Duffield",
+      "category": "dev",
+      "summary": {
+        "zh-CN": "在终端中管理 Git 的界面，支持暂存、提交、变基、cherry-pick 与分支操作。",
+        "zh-TW": "在終端機中管理 Git 的介面，支援暫存、提交、重訂基底、cherry-pick 與分支操作。",
+        "en": "A terminal UI for Git with staging, committing, rebasing, cherry-picking and branch operations.",
+        "ja": "ステージ、コミット、リベース、チェリーピック、ブランチ操作を行える Git 用ターミナル UI。",
+        "ko": "스테이징, 커밋, 리베이스, 체리픽 및 브랜치 작업을 지원하는 Git용 터미널 UI."
+      },
+      "homepage": "https://github.com/jesseduffield/lazygit",
+      "mark": "LG",
+      "accent": "#e06c4f",
+      "variants": [
+        {
+          "id": "lazygit-linux",
+          "os": "linux",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "仅打开官方最新发布页，不会自动安装。请按架构选择压缩包，可核对页面提供的 SHA-256；手动解压后将 lazygit 放入 PATH，并确保 Git 可用。安装到系统目录可能需要管理员权限。",
+            "zh-TW": "僅開啟官方最新發布頁，不會自動安裝。請依架構選擇壓縮檔，可核對頁面提供的 SHA-256；手動解壓後將 lazygit 放入 PATH，並確保 Git 可用。安裝到系統目錄可能需要管理員權限。",
+            "en": "Opens the official latest release page only; it does not install Lazygit. Choose the archive for your architecture and optionally verify the published SHA-256. Extract it manually, place lazygit on PATH and ensure Git is available. Installing into a system directory may require administrator privileges.",
+            "ja": "公式の最新リリースページを開くだけで、自動インストールはされません。アーキテクチャに合うアーカイブを選び、公開された SHA-256 で確認できます。手動で展開して lazygit を PATH に配置し、Git が利用可能であることを確認してください。システムディレクトリーへのインストールには管理者権限が必要な場合があります。",
+            "ko": "공식 최신 릴리스 페이지만 열리며 자동 설치되지 않습니다. 아키텍처에 맞는 압축 파일을 선택하고 게시된 SHA-256으로 검증할 수 있습니다. 수동으로 압축을 풀고 lazygit을 PATH에 배치하며 Git을 사용할 수 있는지 확인하세요. 시스템 디렉터리 설치에는 관리자 권한이 필요할 수 있습니다."
+          },
+          "sourceUrl": "https://github.com/jesseduffield/lazygit#binary-releases",
+          "method": {
+            "type": "official_page",
+            "url": "https://github.com/jesseduffield/lazygit/releases/latest"
+          },
+          "detection": {
+            "type": "command",
+            "program": "lazygit",
+            "args": [
+              "--version"
+            ]
+          }
+        },
+        {
+          "id": "lazygit-windows",
+          "os": "windows",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "仅打开官方最新发布页，不会自动安装。请按架构选择 ZIP，可核对页面提供的 SHA-256；手动解压后将 lazygit.exe 放入 PATH，并确保 Git 可用。",
+            "zh-TW": "僅開啟官方最新發布頁，不會自動安裝。請依架構選擇 ZIP，可核對頁面提供的 SHA-256；手動解壓後將 lazygit.exe 放入 PATH，並確保 Git 可用。",
+            "en": "Opens the official latest release page only; it does not install Lazygit. Choose the ZIP for your architecture and optionally verify the published SHA-256. Extract it manually, place lazygit.exe on PATH and ensure Git is available.",
+            "ja": "公式の最新リリースページを開くだけで、自動インストールはされません。アーキテクチャに合う ZIP を選び、公開された SHA-256 で確認できます。手動で展開して lazygit.exe を PATH に配置し、Git が利用可能であることを確認してください。",
+            "ko": "공식 최신 릴리스 페이지만 열리며 자동 설치되지 않습니다. 아키텍처에 맞는 ZIP을 선택하고 게시된 SHA-256으로 검증할 수 있습니다. 수동으로 압축을 풀고 lazygit.exe를 PATH에 배치하며 Git을 사용할 수 있는지 확인하세요."
+          },
+          "sourceUrl": "https://github.com/jesseduffield/lazygit#binary-releases",
+          "method": {
+            "type": "official_page",
+            "url": "https://github.com/jesseduffield/lazygit/releases/latest"
+          },
+          "detection": {
+            "type": "command",
+            "program": "lazygit",
+            "args": [
+              "--version"
+            ]
+          }
+        },
+        {
+          "id": "lazygit-macos",
+          "os": "macos",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "仅打开官方最新发布页，不会自动安装；官方二进制发布说明要求 macOS 10.12+。请按架构选择压缩包并核对 SHA-256，手动解压后将 lazygit 放入 PATH，并确保 Git 可用。",
+            "zh-TW": "僅開啟官方最新發布頁，不會自動安裝；官方二進位發布說明要求 macOS 10.12+。請依架構選擇壓縮檔並核對 SHA-256，手動解壓後將 lazygit 放入 PATH，並確保 Git 可用。",
+            "en": "Opens the official latest release page only; it does not install Lazygit. The official binary release instructions specify macOS 10.12+. Choose the archive for your architecture, verify the published SHA-256 if desired, extract it manually, place lazygit on PATH and ensure Git is available.",
+            "ja": "公式の最新リリースページを開くだけで、自動インストールはされません。公式バイナリーリリースの要件は macOS 10.12 以降です。アーキテクチャに合うアーカイブを選び、必要に応じて SHA-256 を確認後、手動で展開して lazygit を PATH に配置し、Git が利用可能であることを確認してください。",
+            "ko": "공식 최신 릴리스 페이지만 열리며 자동 설치되지 않습니다. 공식 바이너리 릴리스 안내는 macOS 10.12 이상을 요구합니다. 아키텍처에 맞는 압축 파일을 선택하고 SHA-256을 검증한 후 수동으로 압축을 풀어 lazygit을 PATH에 배치하고 Git을 사용할 수 있는지 확인하세요."
+          },
+          "sourceUrl": "https://github.com/jesseduffield/lazygit#binary-releases",
+          "method": {
+            "type": "official_page",
+            "url": "https://github.com/jesseduffield/lazygit/releases/latest"
+          },
+          "detection": {
+            "type": "command",
+            "program": "lazygit",
+            "args": [
+              "--version"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "dbeaver-community",
+      "name": "DBeaver Community",
+      "publisher": "DBeaver Corp",
+      "category": "dev",
+      "summary": {
+        "zh-CN": "免费开源的数据库管理工具，支持 SQL 编辑、数据浏览、ER 图和多种数据库驱动。",
+        "zh-TW": "免費開源的資料庫管理工具，支援 SQL 編輯、資料瀏覽、ER 圖和多種資料庫驅動。",
+        "en": "A free, open-source database tool with SQL editing, data browsing, ER diagrams and drivers for many databases.",
+        "ja": "SQL 編集、データ参照、ER 図、多数のデータベースドライバーに対応する無料のオープンソースデータベースツール。",
+        "ko": "SQL 편집, 데이터 탐색, ER 다이어그램 및 다양한 데이터베이스 드라이버를 지원하는 묣료 오픈 소스 데이터베이스 도구."
+      },
+      "homepage": "https://dbeaver.io/download/",
+      "mark": "DB",
+      "accent": "#a97c50",
+      "variants": [
+        {
+          "id": "dbeaver-community-linux",
+          "os": "linux",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "仅打开 DBeaver Community 官方下载页，不是 PRO，也不会自动安装。请选匹配架构的 DEB、RPM 或 TAR.GZ；DEB/RPM 通常需管理员权限，TAR.GZ 可解压到用户目录。官方发行包内置 OpenJDK 25。",
+            "zh-TW": "僅開啟 DBeaver Community 官方下載頁，不是 PRO，也不會自動安裝。請選擇符合架構的 DEB、RPM 或 TAR.GZ；DEB/RPM 通常需管理員權限，TAR.GZ 可解壓到使用者目錄。官方發行套件內建 OpenJDK 25。",
+            "en": "Opens the DBeaver Community official download page, not PRO; it does not install the app. Choose DEB, RPM or TAR.GZ for your architecture. DEB/RPM usually require administrator privileges, while TAR.GZ can be extracted in a user directory. Official distributions bundle OpenJDK 25.",
+            "ja": "PRO ではなく DBeaver Community の公式ダウンロードページを開くだけで、自動インストールはされません。アーキテクチャに合う DEB、RPM、TAR.GZ を選んでください。DEB/RPM には通常管理者権限が必要ですが、TAR.GZ はユーザーディレクトリーに展開できます。公式ディストリビューションには OpenJDK 25 が同梱されています。",
+            "ko": "PRO가 아닌 DBeaver Community 공식 다운로드 페이지만 열리며 자동 설치되지 않습니다. 아키텍처에 맞는 DEB, RPM 또는 TAR.GZ를 선택하세요. DEB/RPM은 보통 관리자 권한이 필요하지만 TAR.GZ는 사용자 디렉터리에 압축을 풀 수 있습니다. 공식 배포판에는 OpenJDK 25가 포함되어 있습니다."
+          },
+          "sourceUrl": "https://dbeaver.io/download/",
+          "method": {
+            "type": "official_page",
+            "url": "https://dbeaver.io/download/"
+          }
+        },
+        {
+          "id": "dbeaver-community-windows",
+          "os": "windows",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "仅打开 DBeaver Community 官方下载页，不是 PRO，也不会自动安装。需要 Windows 10+ 或 Windows Server 2016+；EXE 安装器可能出现系统提示，ZIP 可手动解压。官方发行包内置 OpenJDK 25。",
+            "zh-TW": "僅開啟 DBeaver Community 官方下載頁，不是 PRO，也不會自動安裝。需要 Windows 10+ 或 Windows Server 2016+；EXE 安裝程式可能出現系統提示，ZIP 可手動解壓。官方發行套件內建 OpenJDK 25。",
+            "en": "Opens the DBeaver Community official download page, not PRO; it does not install the app. Requires Windows 10+ or Windows Server 2016+. The EXE installer may present system prompts; the ZIP can be extracted manually. Official distributions bundle OpenJDK 25.",
+            "ja": "PRO ではなく DBeaver Community の公式ダウンロードページを開くだけで、自動インストールはされません。Windows 10 以降または Windows Server 2016 以降が必要です。EXE インストーラーではシステムの確認が表示される場合がありますが、ZIP は手動で展開できます。公式ディストリビューションには OpenJDK 25 が同梱されています。",
+            "ko": "PRO가 아닌 DBeaver Community 공식 다운로드 페이지만 열리며 자동 설치되지 않습니다. Windows 10 이상 또는 Windows Server 2016 이상이 필요합니다. EXE 설치 프로그램에서 시스템 확인 메시지가 나타날 수 있으며 ZIP은 수동으로 압축을 풀 수 있습니다. 공식 배포판에는 OpenJDK 25가 포함되어 있습니다."
+          },
+          "sourceUrl": "https://dbeaver.io/download/",
+          "method": {
+            "type": "official_page",
+            "url": "https://dbeaver.io/download/"
+          }
+        },
+        {
+          "id": "dbeaver-community-macos",
+          "os": "macos",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "仅打开 DBeaver Community 官方下载页，不是 PRO，也不会自动安装。需要 macOS 11+；请选择 Apple Silicon 或 Intel DMG，拖入 /Applications 可能需要权限或系统确认。官方发行包内置 OpenJDK 25。",
+            "zh-TW": "僅開啟 DBeaver Community 官方下載頁，不是 PRO，也不會自動安裝。需要 macOS 11+；請選擇 Apple Silicon 或 Intel DMG，拖入 /Applications 可能需要權限或系統確認。官方發行套件內建 OpenJDK 25。",
+            "en": "Opens the DBeaver Community official download page, not PRO; it does not install the app. Requires macOS 11+. Choose the Apple Silicon or Intel DMG; moving it into /Applications may require privileges or system confirmation. Official distributions bundle OpenJDK 25.",
+            "ja": "PRO ではなく DBeaver Community の公式ダウンロードページを開くだけで、自動インストールはされません。macOS 11 以降が必要です。Apple Silicon または Intel の DMG を選び、/Applications への移動には権限やシステムの確認が必要な場合があります。公式ディストリビューションには OpenJDK 25 が同梱されています。",
+            "ko": "PRO가 아닌 DBeaver Community 공식 다운로드 페이지만 열리며 자동 설치되지 않습니다. macOS 11 이상이 필요합니다. Apple Silicon 또는 Intel DMG를 선택하며 /Applications로 이동할 때 권한이나 시스템 확인이 필요할 수 있습니다. 공식 배포판에는 OpenJDK 25가 포함되어 있습니다."
+          },
+          "sourceUrl": "https://dbeaver.io/download/",
+          "method": {
+            "type": "official_page",
+            "url": "https://dbeaver.io/download/"
+          }
+        }
+      ]
+    },
+    {
+      "id": "neovim",
+      "name": "Neovim",
+      "publisher": "Neovim Team",
+      "category": "dev",
+      "summary": {
+        "zh-CN": "自由开源终端文本编辑器，兼容 Vim 操作并提供 Lua 插件与 LSP 支持。",
+        "zh-TW": "自由開源終端機文字編輯器，相容 Vim 操作並提供 Lua 外掛與 LSP 支援。",
+        "en": "A free and open-source terminal text editor with Vim-style editing, Lua plugins and LSP support.",
+        "ja": "Vim スタイルの編集、Lua プラグイン、LSP に対応する自由でオープンソースのターミナルエディター。",
+        "ko": "Vim 스타일 편집, Lua 플러그인 및 LSP를 지원하는 자유 오픈 소스 터미널 텍스트 편집기."
+      },
+      "homepage": "https://github.com/neovim/neovim/releases/latest",
+      "mark": "N",
+      "accent": "#57a143",
+      "variants": [
+        {
+          "id": "neovim-linux",
+          "os": "linux",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "自由开源终端编辑器。仅打开稳定版发布页；安装后由 nvim --version 的退出码检测，不启动图形界面。",
+            "zh-TW": "自由開源終端機編輯器。僅開啟穩定版發布頁；安裝後由 nvim --version 的結束碼偵測，不啟動圖形介面。",
+            "en": "A free and open-source terminal editor. Opens the stable release page only; after installation, the nvim --version exit code is checked without launching a GUI.",
+            "ja": "自由でオープンソースのターミナルエディター。安定版リリースページのみを開き、インストール後は GUI を起動せず nvim --version の終了コードで確認します。",
+            "ko": "자유 오픈 소스 터미널 편집기로 안정 릴리스 페이지만 엽니다. 설치 후 GUI를 실행하지 않고 nvim --version 종료 코드로 확인합니다."
+          },
+          "sourceUrl": "https://github.com/neovim/neovim/releases/latest",
+          "method": {
+            "type": "official_page",
+            "url": "https://github.com/neovim/neovim/releases/latest"
+          },
+          "detection": {
+            "type": "command",
+            "program": "nvim",
+            "args": [
+              "--version"
+            ]
+          }
+        },
+        {
+          "id": "neovim-windows-x86-64",
+          "os": "windows",
+          "architectures": [
+            "x86_64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "自由开源终端编辑器。仅打开稳定版发布页；安装后由 nvim --version 的退出码检测，不启动图形界面。",
+            "zh-TW": "自由開源終端機編輯器。僅開啟穩定版發布頁；安裝後由 nvim --version 的結束碼偵測，不啟動圖形介面。",
+            "en": "A free and open-source terminal editor. Opens the stable release page only; after installation, the nvim --version exit code is checked without launching a GUI.",
+            "ja": "自由でオープンソースのターミナルエディター。安定版リリースページのみを開き、インストール後は GUI を起動せず nvim --version の終了コードで確認します。",
+            "ko": "자유 오픈 소스 터미널 편집기로 안정 릴리스 페이지만 엽니다. 설치 후 GUI를 실행하지 않고 nvim --version 종료 코드로 확인합니다."
+          },
+          "sourceUrl": "https://github.com/neovim/neovim/releases/latest",
+          "method": {
+            "type": "official_page",
+            "url": "https://github.com/neovim/neovim/releases/latest"
+          },
+          "detection": {
+            "type": "command",
+            "program": "nvim",
+            "args": [
+              "--version"
+            ]
+          }
+        },
+        {
+          "id": "neovim-macos",
+          "os": "macos",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "自由开源终端编辑器。仅打开稳定版发布页；安装后由 nvim --version 的退出码检测，不启动图形界面。",
+            "zh-TW": "自由開源終端機編輯器。僅開啟穩定版發布頁；安裝後由 nvim --version 的結束碼偵測，不啟動圖形介面。",
+            "en": "A free and open-source terminal editor. Opens the stable release page only; after installation, the nvim --version exit code is checked without launching a GUI.",
+            "ja": "自由でオープンソースのターミナルエディター。安定版リリースページのみを開き、インストール後は GUI を起動せず nvim --version の終了コードで確認します。",
+            "ko": "자유 오픈 소스 터미널 편집기로 안정 릴리스 페이지만 엽니다. 설치 후 GUI를 실행하지 않고 nvim --version 종료 코드로 확인합니다."
+          },
+          "sourceUrl": "https://github.com/neovim/neovim/releases/latest",
+          "method": {
+            "type": "official_page",
+            "url": "https://github.com/neovim/neovim/releases/latest"
+          },
+          "detection": {
+            "type": "command",
+            "program": "nvim",
+            "args": [
+              "--version"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "openidea",
+      "name": "OpenIDEA",
+      "publisher": "l0ng-ai",
+      "category": "dev",
+      "summary": {
+        "zh-CN": "开源 Rust 原生 IDE，提供 IntelliJ 风格操作、代码洞察、调试、Git 与数据库工具。",
+        "zh-TW": "開源 Rust 原生 IDE，提供 IntelliJ 風格操作、程式碼洞察、偵錯、Git 與資料庫工具。",
+        "en": "An open-source Rust-native IDE with IntelliJ-style workflows, code insight, debugging, Git and database tools.",
+        "ja": "IntelliJ スタイルの操作、コードインサイト、デバッグ、Git、データベースツールを備えるオープンソースの Rust ネイティブ IDE。",
+        "ko": "IntelliJ 스타일 작업 흐름, 코드 인사이트, 디버깅, Git 및 데이터베이스 도구를 제공하는 오픈 소스 Rust 네이티브 IDE."
+      },
+      "homepage": "https://github.com/l0ng-ai/openidea",
+      "mark": "OI",
+      "accent": "#6c7cff",
+      "variants": [
+        {
+          "id": "openidea-linux",
+          "os": "linux",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "Apache-2.0 开源软件。仅打开官方稳定版发布页；请选择匹配架构的 AppImage、DEB 或 RPM，打开页面不代表已安装。",
+            "zh-TW": "Apache-2.0 開源軟體。僅開啟官方穩定版發布頁；請選擇符合架構的 AppImage、DEB 或 RPM，開啟頁面不代表已安裝。",
+            "en": "Apache-2.0 open-source software. Opens the official stable release page only; choose an AppImage, DEB or RPM matching your architecture. Opening a page does not mean installation.",
+            "ja": "Apache-2.0 のオープンソースソフトウェアです。公式の安定版リリースページのみを開きます。アーキテクチャに合う AppImage、DEB、RPM を選択してください。ページを開いてもインストール完了ではありません。",
+            "ko": "Apache-2.0 오픈 소스 소프트웨어입니다. 공식 안정 릴리스 페이지만 열리며 아키텍처에 맞는 AppImage, DEB 또는 RPM을 선택하세요. 페이지를 열었다고 설치된 것은 아닙니다."
+          },
+          "sourceUrl": "https://github.com/l0ng-ai/openidea/releases/latest",
+          "method": {
+            "type": "official_page",
+            "url": "https://github.com/l0ng-ai/openidea/releases/latest"
+          }
+        },
+        {
+          "id": "openidea-windows",
+          "os": "windows",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "Apache-2.0 开源软件。仅打开官方稳定版发布页；请选择匹配架构的 EXE 或 MSI，并核对发布说明和系统要求，打开页面不代表已安装。",
+            "zh-TW": "Apache-2.0 開源軟體。僅開啟官方穩定版發布頁；請選擇符合架構的 EXE 或 MSI，並核對發布說明與系統需求，開啟頁面不代表已安裝。",
+            "en": "Apache-2.0 open-source software. Opens the official stable release page only; choose an EXE or MSI matching your architecture and check the release notes and system requirements. Opening a page does not mean installation.",
+            "ja": "Apache-2.0 のオープンソースソフトウェアです。公式の安定版リリースページのみを開きます。アーキテクチャに合う EXE、MSI を選択し、リリースノートとシステム要件を確認してください。ページを開いてもインストール完了ではありません。",
+            "ko": "Apache-2.0 오픈 소스 소프트웨어입니다. 공식 안정 릴리스 페이지만 열리며 아키텍처에 맞는 EXE 또는 MSI를 선택하고 릴리스 노트와 시스템 요구 사항을 확인하세요. 페이지를 열었다고 설치된 것은 아닙니다."
+          },
+          "sourceUrl": "https://github.com/l0ng-ai/openidea/releases/latest",
+          "method": {
+            "type": "official_page",
+            "url": "https://github.com/l0ng-ai/openidea/releases/latest"
+          }
+        },
+        {
+          "id": "openidea-macos",
+          "os": "macos",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "Apache-2.0 开源软件。仅打开官方稳定版发布页；请选择匹配 Intel 或 Apple Silicon 的 DMG，打开页面不代表已安装。",
+            "zh-TW": "Apache-2.0 開源軟體。僅開啟官方穩定版發布頁；請選擇符合 Intel 或 Apple Silicon 的 DMG，開啟頁面不代表已安裝。",
+            "en": "Apache-2.0 open-source software. Opens the official stable release page only; choose the DMG matching Intel or Apple Silicon. Opening a page does not mean installation.",
+            "ja": "Apache-2.0 のオープンソースソフトウェアです。公式の安定版リリースページのみを開きます。Intel、Apple Silicon のいずれかに合う DMG を選択してください。ページを開いてもインストール完了ではありません。",
+            "ko": "Apache-2.0 오픈 소스 소프트웨어입니다. 공식 안정 릴리스 페이지만 열리며 Intel 또는 Apple Silicon에 맞는 DMG를 선택하세요. 페이지를 열었다고 설치된 것은 아닙니다."
+          },
+          "sourceUrl": "https://github.com/l0ng-ai/openidea/releases/latest",
+          "method": {
+            "type": "official_page",
+            "url": "https://github.com/l0ng-ai/openidea/releases/latest"
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,171 @@
+{
+  "apps": [
+    {
+      "id": "firefox",
+      "name": "Mozilla Firefox",
+      "publisher": "Mozilla",
+      "category": "browser",
+      "summary": {
+        "zh-CN": "开源网页浏览器，支持扩展、同步与隐私保护。",
+        "zh-TW": "開源網頁瀏覽器，支援擴充功能、同步與隱私保護。",
+        "en": "An open-source web browser with extensions, sync and privacy protections.",
+        "ja": "拡張機能、同期、プライバシー保護に対応するオープンソースのウェブブラウザー。",
+        "ko": "확장 기능, 동기화 및 개인 정보 보호를 지원하는 오픈 소스 웹 브라우저."
+      },
+      "homepage": "https://www.mozilla.org/firefox/new/",
+      "mark": "F",
+      "accent": "#ff7139",
+      "variants": [
+        {
+          "id": "firefox-linux",
+          "os": "linux",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "仅打开官方下载页，由你核对系统要求、版本和许可后安装；打开页面不代表已安装。",
+            "zh-TW": "僅開啟官方下載頁，由你核對系統需求、版本與授權後安裝；開啟頁面不代表已安裝。",
+            "en": "Opens the official download page only. Check system requirements, the release and license before installing; opening a page does not mean the app is installed.",
+            "ja": "公式ダウンロードページを開くだけです。システム要件、リリース、ライセンスを確認してインストールしてください。ページを開いてもインストール完了ではありません。",
+            "ko": "공식 다운로드 페이지만 엽니다. 설치 전 시스템 요구 사항, 릴리스 및 라이선스를 확인하세요. 페이지를 열었다고 설치된 것은 아닙니다."
+          },
+          "sourceUrl": "https://www.mozilla.org/firefox/new/",
+          "method": {
+            "type": "official_page",
+            "url": "https://www.mozilla.org/firefox/new/"
+          }
+        },
+        {
+          "id": "firefox-windows",
+          "os": "windows",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "仅打开官方下载页，由你核对系统要求、版本和许可后安装；打开页面不代表已安装。",
+            "zh-TW": "僅開啟官方下載頁，由你核對系統需求、版本與授權後安裝；開啟頁面不代表已安裝。",
+            "en": "Opens the official download page only. Check system requirements, the release and license before installing; opening a page does not mean the app is installed.",
+            "ja": "公式ダウンロードページを開くだけです。システム要件、リリース、ライセンスを確認してインストールしてください。ページを開いてもインストール完了ではありません。",
+            "ko": "공식 다운로드 페이지만 엽니다. 설치 전 시스템 요구 사항, 릴리스 및 라이선스를 확인하세요. 페이지를 열었다고 설치된 것은 아닙니다."
+          },
+          "sourceUrl": "https://www.mozilla.org/firefox/new/",
+          "method": {
+            "type": "official_page",
+            "url": "https://www.mozilla.org/firefox/new/"
+          }
+        },
+        {
+          "id": "firefox-macos",
+          "os": "macos",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "仅打开官方下载页，由你核对系统要求、版本和许可后安装；打开页面不代表已安装。",
+            "zh-TW": "僅開啟官方下載頁，由你核對系統需求、版本與授權後安裝；開啟頁面不代表已安裝。",
+            "en": "Opens the official download page only. Check system requirements, the release and license before installing; opening a page does not mean the app is installed.",
+            "ja": "公式ダウンロードページを開くだけです。システム要件、リリース、ライセンスを確認してインストールしてください。ページを開いてもインストール完了ではありません。",
+            "ko": "공식 다운로드 페이지만 엽니다. 설치 전 시스템 요구 사항, 릴리스 및 라이선스를 확인하세요. 페이지를 열었다고 설치된 것은 아닙니다."
+          },
+          "sourceUrl": "https://www.mozilla.org/firefox/new/",
+          "method": {
+            "type": "official_page",
+            "url": "https://www.mozilla.org/firefox/new/"
+          }
+        }
+      ]
+    },
+    {
+      "id": "google-chrome",
+      "name": "Google Chrome",
+      "publisher": "Google",
+      "category": "browser",
+      "summary": {
+        "zh-CN": "Google 的专有网页浏览器，支持账号同步与扩展。",
+        "zh-TW": "Google 的專有網頁瀏覽器，支援帳號同步與擴充功能。",
+        "en": "Google’s proprietary web browser with account sync and extensions.",
+        "ja": "アカウント同期と拡張機能に対応する Google のプロプライエタリブラウザー。",
+        "ko": "계정 동기화 및 확장 기능을 지원하는 Google의 독점 웹 브라우저."
+      },
+      "homepage": "https://www.google.com/chrome/",
+      "mark": "C",
+      "accent": "#4285f4",
+      "variants": [
+        {
+          "id": "google-chrome-linux-x86-64",
+          "os": "linux",
+          "architectures": [
+            "x86_64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "仅打开官方下载页，由你核对系统要求、版本和许可后安装；打开页面不代表已安装。",
+            "zh-TW": "僅開啟官方下載頁，由你核對系統需求、版本與授權後安裝；開啟頁面不代表已安裝。",
+            "en": "Opens the official download page only. Check system requirements, the release and license before installing; opening a page does not mean the app is installed.",
+            "ja": "公式ダウンロードページを開くだけです。システム要件、リリース、ライセンスを確認してインストールしてください。ページを開いてもインストール完了ではありません。",
+            "ko": "공식 다운로드 페이지만 엽니다. 설치 전 시스템 요구 사항, 릴리스 및 라이선스를 확인하세요. 페이지를 열었다고 설치된 것은 아닙니다."
+          },
+          "sourceUrl": "https://www.google.com/chrome/",
+          "method": {
+            "type": "official_page",
+            "url": "https://www.google.com/chrome/"
+          }
+        },
+        {
+          "id": "google-chrome-windows",
+          "os": "windows",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "仅打开官方下载页，由你核对系统要求、版本和许可后安装；打开页面不代表已安装。",
+            "zh-TW": "僅開啟官方下載頁，由你核對系統需求、版本與授權後安裝；開啟頁面不代表已安裝。",
+            "en": "Opens the official download page only. Check system requirements, the release and license before installing; opening a page does not mean the app is installed.",
+            "ja": "公式ダウンロードページを開くだけです。システム要件、リリース、ライセンスを確認してインストールしてください。ページを開いてもインストール完了ではありません。",
+            "ko": "공식 다운로드 페이지만 엽니다. 설치 전 시스템 요구 사항, 릴리스 및 라이선스를 확인하세요. 페이지를 열었다고 설치된 것은 아닙니다."
+          },
+          "sourceUrl": "https://www.google.com/chrome/",
+          "method": {
+            "type": "official_page",
+            "url": "https://www.google.com/chrome/"
+          }
+        },
+        {
+          "id": "google-chrome-macos",
+          "os": "macos",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "仅打开官方下载页，由你核对系统要求、版本和许可后安装；打开页面不代表已安装。",
+            "zh-TW": "僅開啟官方下載頁，由你核對系統需求、版本與授權後安裝；開啟頁面不代表已安裝。",
+            "en": "Opens the official download page only. Check system requirements, the release and license before installing; opening a page does not mean the app is installed.",
+            "ja": "公式ダウンロードページを開くだけです。システム要件、リリース、ライセンスを確認してインストールしてください。ページを開いてもインストール完了ではありません。",
+            "ko": "공식 다운로드 페이지만 엽니다. 설치 전 시스템 요구 사항, 릴리스 및 라이선스를 확인하세요. 페이지를 열었다고 설치된 것은 아닙니다."
+          },
+          "sourceUrl": "https://www.google.com/chrome/",
+          "method": {
+            "type": "official_page",
+            "url": "https://www.google.com/chrome/"
+          }
+        }
+      ]
+    }
+  ]
+}

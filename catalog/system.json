@@ -1,0 +1,478 @@
+{
+  "apps": [
+    {
+      "id": "powertoys",
+      "name": "Microsoft PowerToys",
+      "publisher": "Microsoft",
+      "category": "system",
+      "summary": {
+        "zh-CN": "微软开源 Windows 增强工具集，包含窗口布局、批量重命名与快捷工具。",
+        "zh-TW": "微軟開源 Windows 增強工具集，包含視窗配置、批次重新命名與快捷工具。",
+        "en": "Microsoft’s open-source Windows utilities for window layouts, bulk renaming and quick tools.",
+        "ja": "ウィンドウレイアウト、一括名前変更、クイックツールを含む Microsoft のオープンソース Windows ユーティリティ集。",
+        "ko": "창 레이아웃, 일괄 이름 바꾸기 및 빠른 도구를 포함하는 Microsoft의 오픈 소스 Windows 유틸리티 모음."
+      },
+      "homepage": "https://github.com/microsoft/PowerToys/releases/latest",
+      "mark": "PT",
+      "accent": "#0078d4",
+      "variants": [
+        {
+          "id": "powertoys-windows",
+          "os": "windows",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "仅打开官方下载页，由你核对系统要求、版本和许可后安装；打开页面不代表已安装。",
+            "zh-TW": "僅開啟官方下載頁，由你核對系統需求、版本與授權後安裝；開啟頁面不代表已安裝。",
+            "en": "Opens the official download page only. Check system requirements, the release and license before installing; opening a page does not mean the app is installed.",
+            "ja": "公式ダウンロードページを開くだけです。システム要件、リリース、ライセンスを確認してインストールしてください。ページを開いてもインストール完了ではありません。",
+            "ko": "공식 다운로드 페이지만 엽니다. 설치 전 시스템 요구 사항, 릴리스 및 라이선스를 확인하세요. 페이지를 열었다고 설치된 것은 아닙니다."
+          },
+          "sourceUrl": "https://github.com/microsoft/PowerToys/releases/latest",
+          "method": {
+            "type": "official_page",
+            "url": "https://github.com/microsoft/PowerToys/releases/latest"
+          }
+        }
+      ]
+    },
+    {
+      "id": "rufus",
+      "name": "Rufus",
+      "publisher": "Akeo Consulting",
+      "category": "system",
+      "summary": {
+        "zh-CN": "开源 Windows 启动介质制作工具，可将可启动 ISO 写入 U 盘；本目录仅下载便携版。",
+        "zh-TW": "開源 Windows 啟動媒體製作工具，可將可啟動 ISO 寫入 USB 隨身碟；本目錄僅下載便攜版。",
+        "en": "An open-source Windows utility for writing bootable ISOs to USB drives; this catalog downloads the portable build only.",
+        "ja": "起動可能な ISO を USB ドライブに書き込むオープンソースの Windows ツール。このカタログではポータブル版のダウンロードのみ行います。",
+        "ko": "부팅 가능한 ISO를 USB 드라이브에 쓰는 오픈 소스 Windows 도구로 이 카탈로그는 포터블 빌드만 다운로드합니다."
+      },
+      "homepage": "https://rufus.ie/en/",
+      "mark": "R",
+      "accent": "#e2b93b",
+      "variants": [
+        {
+          "id": "rufus-windows-x86-64",
+          "os": "windows",
+          "architectures": [
+            "x86_64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "固定 4.15 便携版，只下载并校验 SHA-256，不自动运行或写入设备。使用时请谨慎选择目标磁盘。",
+            "zh-TW": "固定 4.15 便攜版，只下載並驗證 SHA-256，不自動執行或寫入裝置。使用時請謹慎選擇目標磁碟。",
+            "en": "Pinned 4.15 portable build. Downloads and verifies SHA-256 only; it is not run and no device is written. Select target disks carefully when using it.",
+            "ja": "4.15 ポータブル版に固定。ダウンロードと SHA-256 検証のみで、自動実行やデバイスへの書き込みは行いません。使用時は書き込み先ディスクを慎重に選択してください。",
+            "ko": "4.15 포터블 빌드로 고정되며 다운로드와 SHA-256 검증만 수행합니다. 자동 실행하거나 장치에 쓰지 않습니다. 사용 시 대상 디스크를 신중하게 선택하세요."
+          },
+          "sourceUrl": "https://rufus.ie/en/",
+          "method": {
+            "type": "artifact",
+            "url": "https://github.com/pbatard/rufus/releases/download/v4.15/rufus-4.15.exe",
+            "fileName": "rufus-4.15.exe",
+            "action": "download_portable",
+            "sha256": "84c8a437f8af89257524478489e5c85f1edf25f761d299e2bcde46ac0afbe106"
+          }
+        },
+        {
+          "id": "rufus-windows-aarch64",
+          "os": "windows",
+          "architectures": [
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "固定 4.15 便携版，只下载并校验 SHA-256，不自动运行或写入设备。使用时请谨慎选择目标磁盘。",
+            "zh-TW": "固定 4.15 便攜版，只下載並驗證 SHA-256，不自動執行或寫入裝置。使用時請謹慎選擇目標磁碟。",
+            "en": "Pinned 4.15 portable build. Downloads and verifies SHA-256 only; it is not run and no device is written. Select target disks carefully when using it.",
+            "ja": "4.15 ポータブル版に固定。ダウンロードと SHA-256 検証のみで、自動実行やデバイスへの書き込みは行いません。使用時は書き込み先ディスクを慎重に選択してください。",
+            "ko": "4.15 포터블 빌드로 고정되며 다운로드와 SHA-256 검증만 수행합니다. 자동 실행하거나 장치에 쓰지 않습니다. 사용 시 대상 디스크를 신중하게 선택하세요."
+          },
+          "sourceUrl": "https://rufus.ie/en/",
+          "method": {
+            "type": "artifact",
+            "url": "https://github.com/pbatard/rufus/releases/download/v4.15/rufus-4.15_arm64.exe",
+            "fileName": "rufus-4.15_arm64.exe",
+            "action": "download_portable",
+            "sha256": "af01a2136db7391eb8a52de7001fd231f0731cd27e042318dc2743d87fa35c1c"
+          }
+        }
+      ]
+    },
+    {
+      "id": "btop",
+      "name": "btop++",
+      "publisher": "Aristocratos",
+      "category": "system",
+      "summary": {
+        "zh-CN": "开源终端资源监视器，展示处理器、内存、磁盘、网络与进程，并支持部分 GPU 监控。",
+        "zh-TW": "開源終端機資源監視器，顯示處理器、記憶體、磁碟、網路與處理程序，並支援部分 GPU 監控。",
+        "en": "An open-source terminal resource monitor for CPU, memory, disks, network and processes, with GPU monitoring on supported systems.",
+        "ja": "CPU、メモリ、ディスク、ネットワーク、プロセスを表示するオープンソースの端末リソースモニター。対応システムでは GPU 監視にも対応します。",
+        "ko": "CPU, 메모리, 디스크, 네트워크 및 프로세스를 표시하는 오픈 소스 터미널 리소스 모니터로 지원되는 시스템에서는 GPU 모니터링도 제공합니다."
+      },
+      "homepage": "https://github.com/aristocratos/btop",
+      "mark": "bt",
+      "accent": "#e54c62",
+      "variants": [
+        {
+          "id": "btop-linux",
+          "os": "linux",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "仅打开官方稳定版发布页，不执行安装。下载匹配的 Linux 架构并按官方说明安装；系统目录安装可能需要管理员权限。官方预编译版本不包含 GPU 监控支持。",
+            "zh-TW": "僅開啟官方穩定版發布頁，不執行安裝。下載符合的 Linux 架構並依官方說明安裝；安裝至系統目錄可能需要管理員權限。官方預編譯版本不包含 GPU 監控支援。",
+            "en": "Opens the official stable release page only; no installation is performed. Download the matching Linux architecture and follow the official instructions. Installing to system directories may require administrator privileges. Official prebuilt binaries do not include GPU monitoring support.",
+            "ja": "公式の安定版リリースページを開くだけで、インストールは実行しません。Linux アーキテクチャに一致するファイルをダウンロードし、公式手順に従ってください。システムディレクトリへのインストールには管理者権限が必要な場合があります。公式のビルド済みバイナリには GPU 監視が含まれません。",
+            "ko": "공식 안정 릴리스 페이지만 열고 설치는 실행하지 않습니다. Linux 아키텍처에 맞는 파일을 받아 공식 안내에 따라 설치하세요. 시스템 디렉터리에 설치하려면 관리자 권한이 필요할 수 있습니다. 공식 사전 빌드 바이너리에는 GPU 모니터링 지원이 포함되지 않습니다."
+          },
+          "sourceUrl": "https://github.com/aristocratos/btop#installation",
+          "method": {
+            "type": "official_page",
+            "url": "https://github.com/aristocratos/btop/releases/latest"
+          },
+          "detection": {
+            "type": "command",
+            "program": "btop",
+            "args": [
+              "--version"
+            ]
+          }
+        },
+        {
+          "id": "btop-macos",
+          "os": "macos",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "仅打开官方仓库，不执行安装。macOS 支持 Intel 与 Apple Silicon；请按官方 Homebrew 或源码说明安装，部分方式可能需要管理员权限。此主项目不是 Windows 版 btop4win。",
+            "zh-TW": "僅開啟官方倉庫，不執行安裝。macOS 支援 Intel 與 Apple Silicon；請依官方 Homebrew 或原始碼說明安裝，部分方式可能需要管理員權限。此主專案不是 Windows 版 btop4win。",
+            "en": "Opens the official repository only; no installation is performed. macOS supports Intel and Apple Silicon. Follow the official Homebrew or source-build instructions; some methods may require administrator privileges. This main project is not the Windows btop4win port.",
+            "ja": "公式リポジトリを開くだけで、インストールは実行しません。macOS は Intel と Apple Silicon に対応します。公式の Homebrew またはソースビルド手順に従ってください。方法によっては管理者権限が必要です。このメインプロジェクトは Windows 向け btop4win ではありません。",
+            "ko": "공식 저장소만 열고 설치는 실행하지 않습니다. macOS는 Intel 및 Apple Silicon을 지원합니다. 공식 Homebrew 또는 소스 빌드 안내를 따르세요. 방법에 따라 관리자 권한이 필요할 수 있습니다. 이 메인 프로젝트는 Windows용 btop4win 포트가 아닙니다."
+          },
+          "sourceUrl": "https://github.com/aristocratos/btop#installation",
+          "method": {
+            "type": "official_page",
+            "url": "https://github.com/aristocratos/btop#installation"
+          },
+          "detection": {
+            "type": "command",
+            "program": "btop",
+            "args": [
+              "--version"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "fastfetch",
+      "name": "Fastfetch",
+      "publisher": "Fastfetch CLI",
+      "category": "system",
+      "summary": {
+        "zh-CN": "开源跨平台系统信息命令行工具，以可自定义格式显示系统、硬件与软件信息。",
+        "zh-TW": "開源跨平台系統資訊命令列工具，以可自訂格式顯示系統、硬體與軟體資訊。",
+        "en": "An open-source cross-platform CLI that displays system, hardware and software information in customizable formats.",
+        "ja": "システム、ハードウェア、ソフトウェアの情報をカスタマイズ可能な形式で表示するオープンソースのクロスプラットフォーム CLI。",
+        "ko": "시스템, 하드웨어 및 소프트웨어 정보를 사용자 지정 형식으로 표시하는 오픈 소스 크로스 플랫폼 CLI."
+      },
+      "homepage": "https://github.com/fastfetch-cli/fastfetch",
+      "mark": "FF",
+      "accent": "#3fa7d6",
+      "variants": [
+        {
+          "id": "fastfetch-linux",
+          "os": "linux",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "仅打开官方 GitHub 稳定版发布页，不执行安装。选择匹配的 amd64 或 aarch64 软件包/归档；也可按仓库说明使用发行版包管理器，系统级安装可能需要管理员权限。",
+            "zh-TW": "僅開啟官方 GitHub 穩定版發布頁，不執行安裝。選擇符合的 amd64 或 aarch64 套件／封存檔；也可依倉庫說明使用發行版套件管理器，系統級安裝可能需要管理員權限。",
+            "en": "Opens the official GitHub stable release page only; no installation is performed. Choose the matching amd64 or aarch64 package/archive, or use a distribution package manager as documented in the repository. System-wide installation may require administrator privileges.",
+            "ja": "公式 GitHub の安定版リリースページを開くだけで、インストールは実行しません。一致する amd64 または aarch64 のパッケージ／アーカイブを選ぶか、リポジトリの説明に従ってディストリビューションのパッケージマネージャーを使用してください。システム全体へのインストールには管理者権限が必要な場合があります。",
+            "ko": "공식 GitHub 안정 릴리스 페이지만 열고 설치는 실행하지 않습니다. 맞는 amd64 또는 aarch64 패키지/아카이브를 선택하거나 저장소 안내에 따라 배포판 패키지 관리자를 사용하세요. 시스템 전체 설치에는 관리자 권한이 필요할 수 있습니다."
+          },
+          "sourceUrl": "https://github.com/fastfetch-cli/fastfetch#installation",
+          "method": {
+            "type": "official_page",
+            "url": "https://github.com/fastfetch-cli/fastfetch/releases/latest"
+          },
+          "detection": {
+            "type": "command",
+            "program": "fastfetch",
+            "args": [
+              "--version"
+            ]
+          }
+        },
+        {
+          "id": "fastfetch-windows",
+          "os": "windows",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "仅打开官方 GitHub 稳定版发布页，不执行安装。选择匹配的 Windows amd64 或 aarch64 归档并手动配置 PATH；也可按仓库说明使用包管理器。需要 Windows 8.1 或更高版本。",
+            "zh-TW": "僅開啟官方 GitHub 穩定版發布頁，不執行安裝。選擇符合的 Windows amd64 或 aarch64 封存檔並手動設定 PATH；也可依倉庫說明使用套件管理器。需要 Windows 8.1 或更新版本。",
+            "en": "Opens the official GitHub stable release page only; no installation is performed. Choose the matching Windows amd64 or aarch64 archive and configure PATH manually, or use a package manager as documented in the repository. Windows 8.1 or later is required.",
+            "ja": "公式 GitHub の安定版リリースページを開くだけで、インストールは実行しません。一致する Windows amd64 または aarch64 アーカイブを選び、PATH を手動で設定するか、リポジトリの説明に従ってパッケージマネージャーを使用してください。Windows 8.1 以降が必要です。",
+            "ko": "공식 GitHub 안정 릴리스 페이지만 열고 설치는 실행하지 않습니다. 맞는 Windows amd64 또는 aarch64 아카이브를 선택하고 PATH를 수동으로 구성하거나 저장소 안내에 따라 패키지 관리자를 사용하세요. Windows 8.1 이상이 필요합니다."
+          },
+          "sourceUrl": "https://github.com/fastfetch-cli/fastfetch#installation",
+          "method": {
+            "type": "official_page",
+            "url": "https://github.com/fastfetch-cli/fastfetch/releases/latest"
+          },
+          "detection": {
+            "type": "command",
+            "program": "fastfetch",
+            "args": [
+              "--version"
+            ]
+          }
+        },
+        {
+          "id": "fastfetch-macos",
+          "os": "macos",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "仅打开官方 GitHub 稳定版发布页，不执行安装。通用归档支持 Intel 与 Apple Silicon，解压后需手动配置 PATH；也可按仓库说明使用 Homebrew 或 MacPorts。",
+            "zh-TW": "僅開啟官方 GitHub 穩定版發布頁，不執行安裝。通用封存檔支援 Intel 與 Apple Silicon，解壓後需手動設定 PATH；也可依倉庫說明使用 Homebrew 或 MacPorts。",
+            "en": "Opens the official GitHub stable release page only; no installation is performed. The universal archive supports Intel and Apple Silicon; configure PATH manually after extraction, or use Homebrew or MacPorts as documented in the repository.",
+            "ja": "公式 GitHub の安定版リリースページを開くだけで、インストールは実行しません。ユニバーサルアーカイブは Intel と Apple Silicon に対応します。展開後に PATH を手動で設定するか、リポジトリの説明に従って Homebrew または MacPorts を使用してください。",
+            "ko": "공식 GitHub 안정 릴리스 페이지만 열고 설치는 실행하지 않습니다. 유니버설 아카이브는 Intel 및 Apple Silicon을 지원합니다. 압축을 푼 후 PATH를 수동으로 구성하거나 저장소 안내에 따라 Homebrew나 MacPorts를 사용하세요."
+          },
+          "sourceUrl": "https://github.com/fastfetch-cli/fastfetch#installation",
+          "method": {
+            "type": "official_page",
+            "url": "https://github.com/fastfetch-cli/fastfetch/releases/latest"
+          },
+          "detection": {
+            "type": "command",
+            "program": "fastfetch",
+            "args": [
+              "--version"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "ventoy",
+      "name": "Ventoy",
+      "publisher": "Ventoy",
+      "category": "system",
+      "summary": {
+        "zh-CN": "开源多系统启动 U 盘制作工具，安装后可直接复制并选择启动 ISO、WIM、IMG 等镜像。",
+        "zh-TW": "開源多系統啟動 USB 隨身碟製作工具，安裝後可直接複製並選擇啟動 ISO、WIM、IMG 等映像。",
+        "en": "An open-source multiboot USB creator that lets you copy and boot ISO, WIM, IMG and other images after preparing the drive.",
+        "ja": "ドライブの準備後に ISO、WIM、IMG などのイメージをコピーして起動できるオープンソースのマルチブート USB 作成ツール。",
+        "ko": "드라이브를 준비한 후 ISO, WIM, IMG 등의 이미지를 복사하여 부팅할 수 있는 오픈 소스 멀티부팅 USB 제작 도구."
+      },
+      "homepage": "https://www.ventoy.net/en/index.html",
+      "mark": "V",
+      "accent": "#287dbd",
+      "variants": [
+        {
+          "id": "ventoy-windows-x86-64",
+          "os": "windows",
+          "architectures": [
+            "x86_64"
+          ],
+          "requiresAdmin": true,
+          "interactive": true,
+          "note": {
+            "zh-CN": "仅打开官方下载页，不执行安装。解压并运行 Ventoy2Disk.exe 时需要管理员权限和设备选择操作。警告：向 U 盘写入 Ventoy 会格式化磁盘并清除全部数据，务必先备份并核对目标设备；官方要求校验 SHA-256。",
+            "zh-TW": "僅開啟官方下載頁，不執行安裝。解壓並執行 Ventoy2Disk.exe 時需要管理員權限與裝置選擇操作。警告：將 Ventoy 寫入 USB 隨身碟會格式化磁碟並清除全部資料，務必先備份並核對目標裝置；官方要求驗證 SHA-256。",
+            "en": "Opens the official download page only; no installation is performed. Extract and run Ventoy2Disk.exe with administrator privileges and select the device yourself. WARNING: writing Ventoy to a USB drive formats the disk and erases all data. Back up first, verify the target device, and check the official SHA-256 hash.",
+            "ja": "公式ダウンロードページを開くだけで、インストールは実行しません。展開して Ventoy2Disk.exe を管理者権限で実行し、デバイスを自分で選択してください。警告：USB ドライブへの Ventoy の書き込みはディスクをフォーマットし、全データを消去します。事前にバックアップし、対象デバイスを確認し、公式の SHA-256 ハッシュを検証してください。",
+            "ko": "공식 다운로드 페이지만 열고 설치는 실행하지 않습니다. 압축을 풀고 Ventoy2Disk.exe를 관리자 권한으로 실행하여 장치를 직접 선택하세요. 경고: USB 드라이브에 Ventoy를 쓰면 디스크가 포맷되어 모든 데이터가 지워집니다. 먼저 백업하고 대상 장치를 확인하며 공식 SHA-256 해시를 검증하세요."
+          },
+          "sourceUrl": "https://www.ventoy.net/en/doc_start.html",
+          "method": {
+            "type": "official_page",
+            "url": "https://www.ventoy.net/en/download.html"
+          }
+        },
+        {
+          "id": "ventoy-windows-aarch64",
+          "os": "windows",
+          "architectures": [
+            "aarch64"
+          ],
+          "requiresAdmin": true,
+          "interactive": true,
+          "note": {
+            "zh-CN": "仅打开官方下载页，不执行安装。Windows ARM64 需将 altexe 目录中的 Ventoy2Disk_ARM64.exe 复制到主程序同级目录后运行，并需要管理员权限。警告：写入 Ventoy 会格式化目标磁盘并清除全部数据，务必先备份、核对设备并校验 SHA-256。",
+            "zh-TW": "僅開啟官方下載頁，不執行安裝。Windows ARM64 需將 altexe 目錄中的 Ventoy2Disk_ARM64.exe 複製到主程式同層目錄後執行，並需要管理員權限。警告：寫入 Ventoy 會格式化目標磁碟並清除全部資料，務必先備份、核對裝置並驗證 SHA-256。",
+            "en": "Opens the official download page only; no installation is performed. On Windows ARM64, copy Ventoy2Disk_ARM64.exe from altexe into the main program directory and run it with administrator privileges. WARNING: writing Ventoy formats the target disk and erases all data. Back up, verify the device, and check SHA-256 first.",
+            "ja": "公式ダウンロードページを開くだけで、インストールは実行しません。Windows ARM64 では altexe の Ventoy2Disk_ARM64.exe をメインプログラムと同じディレクトリにコピーし、管理者権限で実行してください。警告：Ventoy の書き込みは対象ディスクをフォーマットし、全データを消去します。事前にバックアップし、デバイスを確認し、SHA-256 を検証してください。",
+            "ko": "공식 다운로드 페이지만 열고 설치는 실행하지 않습니다. Windows ARM64에서는 altexe의 Ventoy2Disk_ARM64.exe를 기본 프로그램 디렉터리로 복사한 후 관리자 권한으로 실행하세요. 경고: Ventoy를 쓰면 대상 디스크가 포맷되어 모든 데이터가 지워집니다. 먼저 백업하고 장치를 확인하며 SHA-256을 검증하세요."
+          },
+          "sourceUrl": "https://www.ventoy.net/en/doc_start.html",
+          "method": {
+            "type": "official_page",
+            "url": "https://www.ventoy.net/en/download.html"
+          }
+        },
+        {
+          "id": "ventoy-linux",
+          "os": "linux",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": true,
+          "interactive": true,
+          "note": {
+            "zh-CN": "仅打开官方下载页，不执行安装。Linux 提供 x86_64 与 ARM64 GUI，以及需 root 运行的命令行脚本，需自行选择设备。警告：向 U 盘写入 Ventoy 会格式化磁盘并清除全部数据，务必先备份、核对目标设备并校验 SHA-256。",
+            "zh-TW": "僅開啟官方下載頁，不執行安裝。Linux 提供 x86_64 與 ARM64 GUI，以及需 root 執行的命令列腳本，需自行選擇裝置。警告：將 Ventoy 寫入 USB 隨身碟會格式化磁碟並清除全部資料，務必先備份、核對目標裝置並驗證 SHA-256。",
+            "en": "Opens the official download page only; no installation is performed. Linux offers x86_64 and ARM64 GUIs plus a command-line script that must run as root; select the device yourself. WARNING: writing Ventoy to a USB drive formats the disk and erases all data. Back up, verify the device, and check SHA-256 first.",
+            "ja": "公式ダウンロードページを開くだけで、インストールは実行しません。Linux には x86_64 と ARM64 の GUI、root で実行するコマンドラインスクリプトがあります。デバイスは自分で選択してください。警告：USB ドライブへの Ventoy の書き込みはディスクをフォーマットし、全データを消去します。事前にバックアップし、デバイスを確認し、SHA-256 を検証してください。",
+            "ko": "공식 다운로드 페이지만 열고 설치는 실행하지 않습니다. Linux는 x86_64 및 ARM64 GUI와 root로 실행해야 하는 명령줄 스크립트를 제공하며 장치를 직접 선택해야 합니다. 경고: USB 드라이브에 Ventoy를 쓰면 디스크가 포맷되어 모든 데이터가 지워집니다. 먼저 백업하고 장치를 확인하며 SHA-256을 검증하세요."
+          },
+          "sourceUrl": "https://www.ventoy.net/en/doc_start.html",
+          "method": {
+            "type": "official_page",
+            "url": "https://www.ventoy.net/en/download.html"
+          }
+        }
+      ]
+    },
+    {
+      "id": "syncthing",
+      "name": "Syncthing",
+      "publisher": "The Syncthing Foundation",
+      "category": "system",
+      "summary": {
+        "zh-CN": "开源去中心化文件同步工具，通过基础命令行/后台进程与内置 Web 界面在设备间直接同步文件。",
+        "zh-TW": "開源去中心化檔案同步工具，透過基礎命令列／背景處理程序與內建 Web 介面在裝置間直接同步檔案。",
+        "en": "Open-source decentralized file synchronization using the base command-line/background process and its built-in web UI to sync files directly between devices.",
+        "ja": "基本のコマンドライン／バックグラウンドプロセスと内蔵 Web UI を使い、デバイス間でファイルを直接同期するオープンソースの分散型ファイル同期ツール。",
+        "ko": "기본 명령줄/백그라운드 프로세스와 내장 웹 UI를 사용해 장치 간 파일을 직접 동기화하는 오픈 소스 분산형 파일 동기화 도구."
+      },
+      "homepage": "https://syncthing.net/",
+      "mark": "S",
+      "accent": "#129c8c",
+      "variants": [
+        {
+          "id": "syncthing-linux",
+          "os": "linux",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "仅打开官方下载页的 Base Syncthing 部分，不执行安装。下载匹配架构并手动解压、运行和配置 PATH/后台服务；这是命令行/后台程序，通过浏览器 Web 界面管理，不是独立桌面 GUI。同步无需中央云账号，但配置远端设备与端口可能需要网络和防火墙调整。",
+            "zh-TW": "僅開啟官方下載頁的 Base Syncthing 部分，不執行安裝。下載符合架構並手動解壓、執行及設定 PATH／背景服務；這是命令列／背景程式，透過瀏覽器 Web 介面管理，不是獨立桌面 GUI。同步不需要中央雲端帳號，但設定遠端裝置與連接埠可能需要調整網路和防火牆。",
+            "en": "Opens only the Base Syncthing section of the official downloads page; no installation is performed. Download the matching architecture, then extract, run and configure PATH/background service manually. This is a CLI/background daemon managed through a browser web UI, not a standalone desktop GUI. No central cloud account is required, but remote devices and ports may require network/firewall configuration.",
+            "ja": "公式ダウンロードページの Base Syncthing セクションを開くだけで、インストールは実行しません。一致するアーキテクチャをダウンロードし、展開、実行、PATH／バックグラウンドサービスの設定を手動で行ってください。これはブラウザーの Web UI で管理する CLI／バックグラウンドデーモンで、独立したデスクトップ GUI ではありません。中央クラウドアカウントは不要ですが、リモートデバイスとポートにはネットワーク／ファイアウォール設定が必要な場合があります。",
+            "ko": "공식 다운로드 페이지의 Base Syncthing 섹션만 열고 설치는 실행하지 않습니다. 맞는 아키텍처를 받아 압축 해제, 실행 및 PATH/백그라운드 서비스 구성을 수동으로 하세요. 이것은 브라우저 웹 UI로 관리하는 CLI/백그라운드 데몬이며 독립형 데스크톱 GUI가 아닙니다. 중앙 클라우드 계정은 필요 없지만 원격 장치와 포트에는 네트워크/방화벽 구성이 필요할 수 있습니다."
+          },
+          "sourceUrl": "https://syncthing.net/downloads/",
+          "method": {
+            "type": "official_page",
+            "url": "https://syncthing.net/downloads/"
+          },
+          "detection": {
+            "type": "command",
+            "program": "syncthing",
+            "args": [
+              "--version"
+            ]
+          }
+        },
+        {
+          "id": "syncthing-windows",
+          "os": "windows",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "仅打开官方下载页的 Base Syncthing 部分，不执行安装。下载匹配架构并手动解压、运行和配置 PATH/开机启动；这是命令行/后台程序，通过浏览器 Web 界面管理，不是下载页上方的第三方 Windows 安装器或托盘封装。同步无需中央云账号，但可能需要网络/防火墙配置。",
+            "zh-TW": "僅開啟官方下載頁的 Base Syncthing 部分，不執行安裝。下載符合架構並手動解壓、執行及設定 PATH／開機啟動；這是命令列／背景程式，透過瀏覽器 Web 介面管理，不是下載頁上方的第三方 Windows 安裝程式或系統匣封裝。同步不需要中央雲端帳號，但可能需要網路／防火牆設定。",
+            "en": "Opens only the Base Syncthing section of the official downloads page; no installation is performed. Download the matching architecture, then extract, run and configure PATH/startup manually. This is a CLI/background daemon managed through a browser web UI, not the third-party Windows installers or tray wrappers listed above it. No central cloud account is required, but network/firewall configuration may be needed.",
+            "ja": "公式ダウンロードページの Base Syncthing セクションを開くだけで、インストールは実行しません。一致するアーキテクチャをダウンロードし、展開、実行、PATH／スタートアップの設定を手動で行ってください。これはブラウザーの Web UI で管理する CLI／バックグラウンドデーモンで、上部に掲載されているサードパーティ製 Windows インストーラーやトレーラッパーではありません。中央クラウドアカウントは不要ですが、ネットワーク／ファイアウォール設定が必要な場合があります。",
+            "ko": "공식 다운로드 페이지의 Base Syncthing 섹션만 열고 설치는 실행하지 않습니다. 맞는 아키텍처를 받아 압축 해제, 실행 및 PATH/시작 프로그램 구성을 수동으로 하세요. 이것은 브라우저 웹 UI로 관리하는 CLI/백그라운드 데몬이며 위에 나엘된 타사 Windows 설치 프로그램이나 트레이 래퍼가 아닙니다. 중앙 클라우드 계정은 필요 없지만 네트워크/방화벽 구성이 필요할 수 있습니다."
+          },
+          "sourceUrl": "https://syncthing.net/downloads/",
+          "method": {
+            "type": "official_page",
+            "url": "https://syncthing.net/downloads/"
+          },
+          "detection": {
+            "type": "command",
+            "program": "syncthing",
+            "args": [
+              "--version"
+            ]
+          }
+        },
+        {
+          "id": "syncthing-macos",
+          "os": "macos",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "仅打开官方下载页的 Base Syncthing 部分，不执行安装。下载匹配架构或通用归档并手动解压、运行和配置 PATH/后台服务；这是命令行/后台程序，通过浏览器 Web 界面管理，不是下载页上方的 syncthing-macos 桌面封装。同步无需中央云账号，但可能需要网络配置。",
+            "zh-TW": "僅開啟官方下載頁的 Base Syncthing 部分，不執行安裝。下載符合架構或通用封存檔並手動解壓、執行及設定 PATH／背景服務；這是命令列／背景程式，透過瀏覽器 Web 介面管理，不是下載頁上方的 syncthing-macos 桌面封裝。同步不需要中央雲端帳號，但可能需要網路設定。",
+            "en": "Opens only the Base Syncthing section of the official downloads page; no installation is performed. Download the matching or universal archive, then extract, run and configure PATH/background service manually. This is a CLI/background daemon managed through a browser web UI, not the syncthing-macos desktop wrapper listed above it. No central cloud account is required, but network configuration may be needed.",
+            "ja": "公式ダウンロードページの Base Syncthing セクションを開くだけで、インストールは実行しません。一致するアーキテクチャまたはユニバーサルアーカイブをダウンロードし、展開、実行、PATH／バックグラウンドサービスの設定を手動で行ってください。これはブラウザーの Web UI で管理する CLI／バックグラウンドデーモンで、上部の syncthing-macos デスクトップラッパーではありません。中央クラウドアカウントは不要ですが、ネットワーク設定が必要な場合があります。",
+            "ko": "공식 다운로드 페이지의 Base Syncthing 섹션만 열고 설치는 실행하지 않습니다. 맞는 아키텍처 또는 유니버설 아카이브를 받아 압축 해제, 실행 및 PATH/백그라운드 서비스 구성을 수동으로 하세요. 이것은 브라우저 웹 UI로 관리하는 CLI/백그라운드 데몬이며 위의 syncthing-macos 데스크톱 래퍼가 아닙니다. 중앙 클라우드 계정은 필요 없지만 네트워크 구성이 필요할 수 있습니다."
+          },
+          "sourceUrl": "https://syncthing.net/downloads/",
+          "method": {
+            "type": "official_page",
+            "url": "https://syncthing.net/downloads/"
+          },
+          "detection": {
+            "type": "command",
+            "program": "syncthing",
+            "args": [
+              "--version"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

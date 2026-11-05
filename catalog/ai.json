@@ -1,0 +1,197 @@
+{
+  "apps": [
+    {
+      "id": "ollama",
+      "name": "Ollama",
+      "publisher": "Ollama",
+      "category": "ai",
+      "summary": {
+        "zh-CN": "在本机运行和管理开放模型，提供命令行工具与本地 API。",
+        "zh-TW": "在本機執行與管理開放模型，提供命令列工具與本機 API。",
+        "en": "Run and manage open models locally, with command-line tools and a local API.",
+        "ja": "オープンモデルをローカルで実行・管理し、コマンドラインツールとローカル API を提供します。",
+        "ko": "로컬에서 오픈 모델을 실행하고 관리하며 명령줄 도구와 로컬 API를 제공합니다."
+      },
+      "homepage": "https://ollama.com/download",
+      "mark": "O",
+      "accent": "#b7bec9",
+      "variants": [
+        {
+          "id": "ollama-linux",
+          "os": "linux",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": true,
+          "interactive": true,
+          "note": {
+            "zh-CN": "Linux 安装脚本可能配置系统服务并请求管理员授权。模型需要另行下载。",
+            "zh-TW": "Linux 安裝腳本可能設定系統服務並請求管理員授權。模型需要另行下載。",
+            "en": "The Linux installation script may configure a system service and request administrator authorization. Models must be downloaded separately.",
+            "ja": "Linux インストールスクリプトはシステムサービスを設定し、管理者認証を求める場合があります。モデルは別途ダウンロードが必要です。",
+            "ko": "Linux 설치 스크립트는 시스템 서비스를 구성하고 관리자 권한을 요청할 수 있습니다. 모델은 별도로 다운로드해야 합니다."
+          },
+          "sourceUrl": "https://ollama.com/download",
+          "method": {
+            "type": "script",
+            "shell": "sh",
+            "command": "curl -fsSL https://ollama.com/install.sh | sh"
+          },
+          "detection": {
+            "type": "command",
+            "program": "ollama",
+            "args": [
+              "--version"
+            ]
+          }
+        },
+        {
+          "id": "ollama-windows",
+          "os": "windows",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": true,
+          "interactive": true,
+          "note": {
+            "zh-CN": "Linux 安装脚本可能配置系统服务并请求管理员授权。模型需要另行下载。",
+            "zh-TW": "Linux 安裝腳本可能設定系統服務並請求管理員授權。模型需要另行下載。",
+            "en": "The Linux installation script may configure a system service and request administrator authorization. Models must be downloaded separately.",
+            "ja": "Linux インストールスクリプトはシステムサービスを設定し、管理者認証を求める場合があります。モデルは別途ダウンロードが必要です。",
+            "ko": "Linux 설치 스크립트는 시스템 서비스를 구성하고 관리자 권한을 요청할 수 있습니다. 모델은 별도로 다운로드해야 합니다."
+          },
+          "sourceUrl": "https://ollama.com/download",
+          "method": {
+            "type": "artifact",
+            "url": "https://ollama.com/download/OllamaSetup.exe",
+            "fileName": "OllamaSetup.exe",
+            "action": "run_installer"
+          },
+          "detection": {
+            "type": "command",
+            "program": "ollama",
+            "args": [
+              "--version"
+            ]
+          }
+        },
+        {
+          "id": "ollama-macos",
+          "os": "macos",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": true,
+          "interactive": true,
+          "note": {
+            "zh-CN": "Linux 安装脚本可能配置系统服务并请求管理员授权。模型需要另行下载。",
+            "zh-TW": "Linux 安裝腳本可能設定系統服務並請求管理員授權。模型需要另行下載。",
+            "en": "The Linux installation script may configure a system service and request administrator authorization. Models must be downloaded separately.",
+            "ja": "Linux インストールスクリプトはシステムサービスを設定し、管理者認証を求める場合があります。モデルは別途ダウンロードが必要です。",
+            "ko": "Linux 설치 스크립트는 시스템 서비스를 구성하고 관리자 권한을 요청할 수 있습니다. 모델은 별도로 다운로드해야 합니다."
+          },
+          "sourceUrl": "https://ollama.com/download",
+          "method": {
+            "type": "artifact",
+            "url": "https://ollama.com/download/Ollama.dmg",
+            "fileName": "Ollama.dmg",
+            "action": "run_installer"
+          },
+          "detection": {
+            "type": "command",
+            "program": "ollama",
+            "args": [
+              "--version"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "jan",
+      "name": "Jan",
+      "publisher": "Jan",
+      "category": "ai",
+      "summary": {
+        "zh-CN": "开源本地 AI 桌面客户端，可运行开放模型并提供离线对话界面。",
+        "zh-TW": "開源本機 AI 桌面用戶端，可執行開放模型並提供離線對話介面。",
+        "en": "An open-source local AI desktop client for running open models with an offline chat interface.",
+        "ja": "オープンモデルを実行し、オフラインチャット画面を提供するオープンソースのローカル AI クライアント。",
+        "ko": "오픈 모델을 실행하고 오프라인 채팅 인터페이스를 제공하는 오픈 소스 로컬 AI 데스크톱 클라이언트."
+      },
+      "homepage": "https://jan.ai/download",
+      "mark": "J",
+      "accent": "#5b5bd6",
+      "variants": [
+        {
+          "id": "jan-linux-x86-64",
+          "os": "linux",
+          "architectures": [
+            "x86_64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "开源本地 AI 桌面客户端。仅打开官方下载页；模型需另行下载，硬件和磁盘需求取决于模型。",
+            "zh-TW": "開源本機 AI 桌面用戶端。僅開啟官方下載頁；模型需另行下載，硬體與磁碟需求取決於模型。",
+            "en": "An open-source local AI desktop client. Opens the official download page only; models are downloaded separately and hardware/disk needs depend on the model.",
+            "ja": "オープンソースのローカル AI デスクトップクライアント。公式ダウンロードページのみを開きます。モデルは別途ダウンロードし、ハードウェアとディスク要件はモデルによって異なります。",
+            "ko": "오픈 소스 로컬 AI 데스크톱 클라이언트로 공식 다운로드 페이지만 엽니다. 모델은 별도로 다운로드하며 하드웨어 및 디스크 요구 사항은 모델에 따라 다릅니다."
+          },
+          "sourceUrl": "https://jan.ai/download",
+          "method": {
+            "type": "official_page",
+            "url": "https://jan.ai/download"
+          }
+        },
+        {
+          "id": "jan-windows",
+          "os": "windows",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "开源本地 AI 桌面客户端。仅打开官方下载页；模型需另行下载，硬件和磁盘需求取决于模型。",
+            "zh-TW": "開源本機 AI 桌面用戶端。僅開啟官方下載頁；模型需另行下載，硬體與磁碟需求取決於模型。",
+            "en": "An open-source local AI desktop client. Opens the official download page only; models are downloaded separately and hardware/disk needs depend on the model.",
+            "ja": "オープンソースのローカル AI デスクトップクライアント。公式ダウンロードページのみを開きます。モデルは別途ダウンロードし、ハードウェアとディスク要件はモデルによって異なります。",
+            "ko": "오픈 소스 로컬 AI 데스크톱 클라이언트로 공식 다운로드 페이지만 엽니다. 모델은 별도로 다운로드하며 하드웨어 및 디스크 요구 사항은 모델에 따라 다릅니다."
+          },
+          "sourceUrl": "https://jan.ai/download",
+          "method": {
+            "type": "official_page",
+            "url": "https://jan.ai/download"
+          }
+        },
+        {
+          "id": "jan-macos",
+          "os": "macos",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "开源本地 AI 桌面客户端。仅打开官方下载页；模型需另行下载，硬件和磁盘需求取决于模型。",
+            "zh-TW": "開源本機 AI 桌面用戶端。僅開啟官方下載頁；模型需另行下載，硬體與磁碟需求取決於模型。",
+            "en": "An open-source local AI desktop client. Opens the official download page only; models are downloaded separately and hardware/disk needs depend on the model.",
+            "ja": "オープンソースのローカル AI デスクトップクライアント。公式ダウンロードページのみを開きます。モデルは別途ダウンロードし、ハードウェアとディスク要件はモデルによって異なります。",
+            "ko": "오픈 소스 로컬 AI 데스크톱 클라이언트로 공식 다운로드 페이지만 엽니다. 모델은 별도로 다운로드하며 하드웨어 및 디스크 요구 사항은 모델에 따라 다릅니다."
+          },
+          "sourceUrl": "https://jan.ai/download",
+          "method": {
+            "type": "official_page",
+            "url": "https://jan.ai/download"
+          }
+        }
+      ]
+    }
+  ]
+}

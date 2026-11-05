@@ -1,0 +1,124 @@
+{
+  "apps": [
+    {
+      "id": "7zip",
+      "name": "7-Zip",
+      "publisher": "Igor Pavlov",
+      "category": "files",
+      "summary": {
+        "zh-CN": "开源压缩与归档工具，支持 7z、ZIP 等格式并集成 Windows 外壳。",
+        "zh-TW": "開源壓縮與封存工具，支援 7z、ZIP 等格式並整合 Windows 殼層。",
+        "en": "An open-source archiver supporting 7z, ZIP and other formats, with Windows shell integration.",
+        "ja": "7z、ZIP などに対応し、Windows シェルと統合するオープンソースのアーカイバー。",
+        "ko": "7z, ZIP 등의 형식을 지원하고 Windows 셸과 통합되는 오픈 소스 압축 및 아카이브 도구."
+      },
+      "homepage": "https://www.7-zip.org/download.html",
+      "mark": "7z",
+      "accent": "#4d5966",
+      "variants": [
+        {
+          "id": "7zip-windows-x86-64",
+          "os": "windows",
+          "architectures": [
+            "x86_64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "仅打开官方下载页，由你核对系统要求、版本和许可后安装；打开页面不代表已安装。",
+            "zh-TW": "僅開啟官方下載頁，由你核對系統需求、版本與授權後安裝；開啟頁面不代表已安裝。",
+            "en": "Opens the official download page only. Check system requirements, the release and license before installing; opening a page does not mean the app is installed.",
+            "ja": "公式ダウンロードページを開くだけです。システム要件、リリース、ライセンスを確認してインストールしてください。ページを開いてもインストール完了ではありません。",
+            "ko": "공식 다운로드 페이지만 엽니다. 설치 전 시스템 요구 사항, 릴리스 및 라이선스를 확인하세요. 페이지를 열었다고 설치된 것은 아닙니다."
+          },
+          "sourceUrl": "https://www.7-zip.org/download.html",
+          "method": {
+            "type": "official_page",
+            "url": "https://www.7-zip.org/download.html"
+          }
+        },
+        {
+          "id": "7zip-windows-aarch64",
+          "os": "windows",
+          "architectures": [
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "仅打开官方下载页，由你核对系统要求、版本和许可后安装；打开页面不代表已安装。",
+            "zh-TW": "僅開啟官方下載頁，由你核對系統需求、版本與授權後安裝；開啟頁面不代表已安裝。",
+            "en": "Opens the official download page only. Check system requirements, the release and license before installing; opening a page does not mean the app is installed.",
+            "ja": "公式ダウンロードページを開くだけです。システム要件、リリース、ライセンスを確認してインストールしてください。ページを開いてもインストール完了ではありません。",
+            "ko": "공식 다운로드 페이지만 엽니다. 설치 전 시스템 요구 사항, 릴리스 및 라이선스를 확인하세요. 페이지를 열었다고 설치된 것은 아닙니다."
+          },
+          "sourceUrl": "https://www.7-zip.org/download.html",
+          "method": {
+            "type": "official_page",
+            "url": "https://www.7-zip.org/download.html"
+          }
+        }
+      ]
+    },
+    {
+      "id": "everything",
+      "name": "Everything",
+      "publisher": "voidtools",
+      "category": "files",
+      "summary": {
+        "zh-CN": "Windows 文件名即时搜索工具，支持按名称快速定位本机文件；免费专有软件。",
+        "zh-TW": "Windows 檔名即時搜尋工具，支援按名稱快速尋找本機檔案；免費專有軟體。",
+        "en": "Instant Windows file-name search for quickly locating local files; free proprietary software.",
+        "ja": "名前でローカルファイルを高速検索する Windows ツール。無料のプロプライエタリソフトウェアです。",
+        "ko": "이름으로 로컬 파일을 빠르게 찾는 Windows 파일 이름 검색 도구로 물료 독점 소프트웨어입니다."
+      },
+      "homepage": "https://www.voidtools.com/downloads/",
+      "mark": "Ev",
+      "accent": "#e88b24",
+      "variants": [
+        {
+          "id": "everything-windows-x86-64",
+          "os": "windows",
+          "architectures": [
+            "x86_64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "免费专有软件。仅打开官方下载页，安装前请核对许可和系统要求；打开页面不代表已安装。",
+            "zh-TW": "免費專有軟體。僅開啟官方下載頁，安裝前請核對授權與系統需求；開啟頁面不代表已安裝。",
+            "en": "Free proprietary software. Opens the official download page only; check the license and system requirements before installing. Opening a page does not mean installation.",
+            "ja": "無料のプロプライエタリソフトウェアです。公式ダウンロードページのみを開きます。インストール前にライセンスとシステム要件を確認してください。ページを開いてもインストール完了ではありません。",
+            "ko": "묣 독점 소프트웨어입니다. 공식 다운로드 페이지만 열리며, 설치 전 라이선스와 시스템 요구 사항을 확인하세요. 페이지를 열었다고 설치된 것은 아닙니다."
+          },
+          "sourceUrl": "https://www.voidtools.com/downloads/",
+          "method": {
+            "type": "official_page",
+            "url": "https://www.voidtools.com/downloads/"
+          }
+        },
+        {
+          "id": "everything-windows-aarch64",
+          "os": "windows",
+          "architectures": [
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "仅打开官方下载页。稳定版 1.4 的 ARM64 以便携 ZIP 提供，安装器与测试版不要混选；打开页面不代表已安装。",
+            "zh-TW": "僅開啟官方下載頁。穩定版 1.4 的 ARM64 以便攜 ZIP 提供，安裝程式與測試版不要混選；開啟頁面不代表已安裝。",
+            "en": "Opens the official download page only. Stable 1.4 ARM64 is a portable ZIP; do not confuse installers, portable builds and beta releases. Opening a page does not mean installation.",
+            "ja": "公式ダウンロードページを開くだけです。安定版 1.4 の ARM64 はポータブル ZIP です。インストーラー、ポータブル版、ベータ版を混同しないでください。ページを開いてもインストール完了ではありません。",
+            "ko": "공식 다운로드 페이지만 엽니다. 안정版 1.4 ARM64는 포터블 ZIP으로 제공되므로 설치 프로그램, 포터블 빌드 및 베타를 혼동하지 마세요. 페이지를 열었다고 설치된 것은 아닙니다."
+          },
+          "sourceUrl": "https://www.voidtools.com/downloads/",
+          "method": {
+            "type": "official_page",
+            "url": "https://www.voidtools.com/downloads/"
+          }
+        }
+      ]
+    }
+  ]
+}
