@@ -1,0 +1,46 @@
+# UI Design Rules
+
+## Scope
+
+Apply these rules when creating, reviewing, or modifying user interfaces and interface copy. Review the affected screen as a whole instead of applying rules only to newly added elements.
+
+## Interface Copy
+
+- Never use the middle dot `·` as a separator in interface copy. Remove existing middle-dot separators from the affected interface and use layout, spacing, or meaningful punctuation to establish relationships.
+- Do not add redundant explanatory text. Remove descriptions that repeat visible information, state obvious behavior, or do not help the user complete the current task. Use concise labels and clear visual hierarchy rather than explanatory paragraphs.
+- Review all copy affected by the change. Write for the screen's actual audience: easy to understand without being overly colloquial.
+- Match copy length to the functional context. Prefer established domain terminology; avoid redundancy, invented words, vague expressions, and arbitrary abbreviations.
+- Keep labels, actions, states, and results consistent with what the interface actually does.
+
+## Alignment and Geometry
+
+- Optimize alignment across related interface elements. Use optical alignment where mathematical alignment looks visually unbalanced, especially for icons, text, controls, and asymmetric shapes.
+- For nested containers and controls, use concentric corner radii: derive the inner radius from the outer radius and the spacing between their boundaries. Avoid unrelated radii that make nested corners look misaligned.
+
+## Borders and Lines
+
+- When a line or border is necessary, use `0.5px`. Do not introduce decorative lines or borders when spacing, alignment, or grouping can communicate the same relationship.
+
+## Motion
+
+- Minimize animations and transition effects. Remove motion that does not clarify a state change, preserve spatial context, or provide necessary feedback.
+- When motion is necessary, prefer `ease-out` with a baseline duration of `250ms`; adjust only when the interaction requires it.
+- Respect the platform's reduced-motion preference.
+
+## Typography
+
+- Use no more than four font sizes on a page; prefer three.
+- Never use interface text smaller than `12px`.
+- When additional hierarchy is needed, adjust font weight, color, spacing, and grouping before adding another font size.
+
+## Interaction and Information Hierarchy
+
+- Minimize interactions that require users to make additional judgments before proceeding. Do not insert unnecessary decisions, confirmations, or choices into the primary workflow.
+- When a decision is necessary, place it where the user already intends to make a choice, with clear options and consequences.
+- Reassess the functions and elements on the affected screen. Organize them by user goals and information priority: make primary content and actions prominent, group related information, and reduce the visual weight of secondary elements.
+
+## Decorative Styling
+
+- Do not add corner radii or shadows arbitrarily. Avoid decorative treatments that do not communicate grouping, elevation, affordance, or state.
+- Do not use a colored line along a card's left edge as decoration or as the primary way to convey meaning.
+- When corner radii or shadows are necessary, choose restrained values appropriate to the component's size, nesting, platform, and functional context. Keep their use consistent with the existing design system.
