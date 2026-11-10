@@ -28,8 +28,8 @@ Every operation is a transparent wrapper around the backend CLI: the command lin
 
 ## Features
 
-- **Eight views**: Discover, Categories, All Packages, Installed, Updates, Sources, Settings, and Official Install
-- **Official Install**: a remote, validated catalog of vendor-provided scripts, installers, and portable downloads. Optional GitHub Releases entries resolve a stable, platform-matched asset on demand. Every command or URL is shown for confirmation; completion distinguishes downloads, opened terminals, and launched installers from verified installation.
+- **Eight views**: Discover, Categories, All Packages, Installed, Updates, Sources, Settings, and Open Source Software
+- **Open Source Software**: a remote schema 2 catalog restricted to current OSI-approved SPDX licenses, with source repository and license-original links shown for every entry. Official scripts, installers, and portable downloads retain explicit confirmation; optional GitHub Releases entries resolve a stable, platform-matched asset on demand. Completion distinguishes downloads, opened terminals, and launched installers from verified installation.
 - **Queue drawer**: installs / upgrades run serially with configurable concurrency (1–3), showing the command line and progress for each item
 - **Package details**: fetched in the background from the backend's own detail command (`winget show`, `choco info`, `scoop info`, `apt show`, `dnf info`, `pacman -Si`, `zypper info`, `apk info`, `snap info`, `brew info`, …) and cached — multi-line description, release notes, tags, publisher, license, homepage, installer type, release date, and more
 - **Package icons**: favicons fetched automatically and cached to disk
@@ -93,7 +93,7 @@ Or run `target/release/pakkit.exe` directly.
 - Upgrade individual or all packages in the "Updates" view
 - Add private sources in "Sources" (requires administrator privileges)
 - Switch theme, accent color, and language in "Settings → Appearance"; settings persist to `settings.json`
-- Open "Official Install" to search the remote catalog and filter by category, operating system, or architecture. Pakkit downloads `catalog/index.json` and every indexed category document, then validates the complete combined catalog before showing entries. Loading failures offer retry and never fall back to stale, partial, or built-in entries.
+- Open "Open Source Software" to search the remote catalog and filter by category, operating system, or architecture. Pakkit downloads `catalog/index.json` and every indexed category document, then validates the complete combined catalog before showing entries. Every app requires `sourceRepository`, `license`, and `licenseUrl`; missing fields, invalid or deprecated SPDX IDs, `LicenseRef`, and non-OSI licenses reject the whole catalog. Schema 1 catalogs are rejected. Loading failures offer retry and never fall back to stale, partial, or built-in entries.
 
 ### Dynamic GitHub Releases
 

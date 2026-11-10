@@ -10,7 +10,7 @@ nav:
   sources: "Sources"
   settings: "Settings"
   theme: "Theme"
-  official: "Official Install"
+  official: "Open Source Software"
   queue: "Install Queue"
 
 status:
@@ -116,7 +116,7 @@ queue:
   action:
     install: "Install"
     upgrade: "Upgrade"
-    official_install: "Official install"
+    official_install: "Open-source install"
     upgrade_all: "Upgrade all"
   row:
     pending: "Waiting"
@@ -301,13 +301,17 @@ notification:
   official_variant_missing: "This install method changed. Refresh the catalog and try again."
   official_submission_unavailable: "The catalog is not ready, so software cannot be submitted yet."
   official_name_empty: "Software name cannot be empty"
-  official_url_invalid: "Enter a valid HTTPS official link"
+  official_source_url_invalid: "Enter a valid HTTPS source repository link"
+  official_license_url_invalid: "Enter a valid HTTPS link to the original license text"
+  official_install_url_invalid: "Enter a valid HTTPS official installation guide link"
+  official_license_invalid: "Enter a valid SPDX expression using only OSI-approved, non-deprecated licenses"
   official_submission_invalid: "Could not create the submission link; check the catalog address."
 
 placeholder:
   backend_path: "Leave empty to auto-detect"
   source_name: "e.g. contoso"
   official_name: "e.g. Deno"
+  official_license: "MIT OR Apache-2.0"
   official_note: "Homepage, supported platforms, or other notes (optional)"
 
 error:
@@ -348,16 +352,16 @@ exitcode:
   unknown: "Unknown error"
 
 official:
-  title: "Official Install"
-  subtitle: "Get software from developer websites with a transparent install process"
-  search_placeholder: "Search official software"
+  title: "Open Source Software"
+  subtitle: "Discover open-source software with verifiable source and license metadata and a transparent install process"
+  search_placeholder: "Search open-source software"
   refresh: "Refresh catalog"
   submit: "Submit software"
-  trust_title: "Official sources, transparent installs"
-  trust_copy: "Review the complete command and permission requirements before deciding whether to run it."
-  loading: "Loading official catalog…"
+  trust_title: "Open-source proof, transparent installs"
+  trust_copy: "Before installation, review the source repository link, SPDX license expression, and link to the original license text, along with the complete command and permission requirements."
+  loading: "Loading open-source software catalog…"
   loading_hint: "Reading only the remote catalog; no built-in entries or stale cache."
-  load_failed: "Could not load official catalog"
+  load_failed: "Could not load open-source software catalog"
   retry: "Retry"
   status_ready: "Catalog %{version} (%{count} apps)"
   status_empty: "No software in the catalog"
@@ -365,7 +369,7 @@ official:
   group_count: "%{count} apps"
   empty: "No matching software"
   empty_hint: "Try another name, All software, or a different platform."
-  official: "Official"
+  official: "Open Source"
   details: "Details ›"
   admin_required: "Authorization"
   current_user: "Current user"
@@ -389,6 +393,8 @@ official:
   detail:
     source: "Official source"
     homepage: "Software homepage"
+    source_repository: "Source repository"
+    license: "License (SPDX expression)"
     admin: "Administrator authorization may be required"
     interactive: "Interactive"
     non_interactive: "Non-interactive"
@@ -421,10 +427,13 @@ official:
     format: "Package format"
     unknown_size: "Unknown"
   submission:
-    title: "Submit official-install software"
-    subtitle: "Provide the developer's download page or installation guide"
+    title: "Submit open-source software"
+    subtitle: "Provide the source repository, SPDX license expression, original license text, and official installation guide"
     name: "Software name"
-    url: "Official download page / installation guide"
+    source_repository: "Source repository (HTTPS)"
+    license: "SPDX license expression"
+    license_url: "Original license text link (HTTPS)"
+    install_url: "Official installation guide (HTTPS)"
     note: "Additional notes (optional)"
     hint: "This opens a prefilled new GitHub issue. Review and submit it on GitHub; opening the page does not mean it was submitted or approved."
     open: "Open GitHub submission"

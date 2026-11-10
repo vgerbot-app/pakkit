@@ -586,6 +586,10 @@ mod tests {
             homepage: "https://example.com".to_owned(),
             mark: "O".to_owned(),
             accent: "#70d6a2".to_owned(),
+            source_repository: "https://github.com/example/official-app".to_owned(),
+            license: "MIT".to_owned(),
+            license_url: "https://raw.githubusercontent.com/example/official-app/main/LICENSE"
+                .to_owned(),
             variants: Vec::new(),
         };
         let variant = crate::official::OfficialVariant {

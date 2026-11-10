@@ -466,7 +466,7 @@ fn command_block(
         )
 }
 
-/// 官网直装详情 — snapshot the selected catalog variant, show exactly what
+/// 开源软件详情 — snapshot the selected catalog variant, show exactly what
 /// will run or download, and only enqueue after explicit confirmation.
 pub fn official_detail(
     view: &mut AppView,
@@ -506,6 +506,8 @@ pub fn official_detail(
         let p = Palette::of(cx);
         let source_view = this.clone();
         let homepage_view = this.clone();
+        let repository_view = this.clone();
+        let license_view = this.clone();
         let copy_view = this.clone();
         let queue_view = this.clone();
         let retry_view = this.clone();
@@ -746,6 +748,19 @@ pub fn official_detail(
                         app.homepage.clone(),
                         homepage_view,
                     ))
+                    .child(official_link_row(
+                        &p,
+                        tr!("official.detail.source_repository"),
+                        app.source_repository.clone(),
+                        repository_view,
+                    ))
+                    .child(official_license_row(
+                        &p,
+                        tr!("official.detail.license"),
+                        app.license_url.clone(),
+                        license_view,
+                        app.license.clone(),
+                    ))
                     .child(
                         div()
                             .flex()
@@ -971,6 +986,27 @@ fn official_link_row(
         )
 }
 
+fn official_license_row(
+    p: &Palette,
+    label: String,
+    url: String,
+    view: gpui_kit::WeakEntity<AppView>,
+    license: String,
+) -> impl IntoElement {
+    div()
+        .flex()
+        .flex_col()
+        .gap(px(8.))
+        .child(official_link_row(p, label, url, view))
+        .child(
+            div()
+                .px(px(10.))
+                .text_size(px(FONT_META))
+                .text_color(p.muted)
+                .child(license),
+        )
+}
+
 fn official_payload_block(
     p: &Palette,
     label: &str,
@@ -1026,7 +1062,7 @@ fn official_payload_block(
         )
 }
 
-/// 提交官网软件 — validate locally, then open the catalog's prefilled GitHub
+/// 提交开源软件 — validate locally, then open the catalog's prefilled GitHub
 /// issue URL. Opening the browser is not reported as a completed submission.
 pub fn official_submission(view: &mut AppView, window: &mut Window, cx: &mut Context<AppView>) {
     let Some(base) = view
@@ -1044,7 +1080,11 @@ pub fn official_submission(view: &mut AppView, window: &mut Window, cx: &mut Con
     };
     let name_input =
         cx.new(|cx| InputState::new(window, cx).placeholder(tr!("placeholder.official_name")));
-    let url_input = cx.new(|cx| InputState::new(window, cx).placeholder("https://…"));
+    let repository_input = cx.new(|cx| InputState::new(window, cx).placeholder("https://…"));
+    let license_input =
+        cx.new(|cx| InputState::new(window, cx).placeholder(tr!("placeholder.official_license")));
+    let license_url_input = cx.new(|cx| InputState::new(window, cx).placeholder("https://…"));
+    let install_url_input = cx.new(|cx| InputState::new(window, cx).placeholder("https://…"));
     let note_input =
         cx.new(|cx| InputState::new(window, cx).placeholder(tr!("placeholder.official_note")));
     let this = cx.weak_entity();
@@ -1052,12 +1092,15 @@ pub fn official_submission(view: &mut AppView, window: &mut Window, cx: &mut Con
     window.open_dialog(cx, move |dialog, _, cx| {
         let p = Palette::of(cx);
         let name_input = name_input.clone();
-        let url_input = url_input.clone();
+        let repository_input = repository_input.clone();
+        let license_input = license_input.clone();
+        let license_url_input = license_url_input.clone();
+        let install_url_input = install_url_input.clone();
         let note_input = note_input.clone();
         let submit_view = this.clone();
         let base = base.clone();
         dialog
-            .w(px(580.))
+            .w(px(680.))
             .title(
                 div()
                     .text_size(px(FONT_SECTION))
@@ -1083,8 +1126,23 @@ pub fn official_submission(view: &mut AppView, window: &mut Window, cx: &mut Con
                     ))
                     .child(form_field(
                         &p,
-                        &tr!("official.submission.url"),
-                        Input::new(&url_input).into_any_element(),
+                        &tr!("official.submission.source_repository"),
+                        Input::new(&repository_input).into_any_element(),
+                    ))
+                    .child(form_field(
+                        &p,
+                        &tr!("official.submission.license"),
+                        Input::new(&license_input).into_any_element(),
+                    ))
+                    .child(form_field(
+                        &p,
+                        &tr!("official.submission.license_url"),
+                        Input::new(&license_url_input).into_any_element(),
+                    ))
+                    .child(form_field(
+                        &p,
+                        &tr!("official.submission.install_url"),
+                        Input::new(&install_url_input).into_any_element(),
                     ))
                     .child(form_field(
                         &p,
@@ -1126,7 +1184,11 @@ pub fn official_submission(view: &mut AppView, window: &mut Window, cx: &mut Con
                         )
                         .on_click(move |_, window, cx| {
                             let name = name_input.read(cx).value().trim().to_owned();
-                            let link = url_input.read(cx).value().trim().to_owned();
+                            let source_repository =
+                                repository_input.read(cx).value().trim().to_owned();
+                            let license = license_input.read(cx).value().trim().to_owned();
+                            let license_url = license_url_input.read(cx).value().trim().to_owned();
+                            let install_url = install_url_input.read(cx).value().trim().to_owned();
                             let note = note_input.read(cx).value().trim().to_owned();
                             if name.is_empty() {
                                 window.push_notification(
@@ -1135,17 +1197,42 @@ pub fn official_submission(view: &mut AppView, window: &mut Window, cx: &mut Con
                                 );
                                 return;
                             }
-                            let valid_https = url::Url::parse(&link).is_ok_and(|url| {
-                                url.scheme() == "https" && url.host_str().is_some()
-                            });
-                            if !valid_https {
+                            let valid_https = |value: &str| {
+                                url::Url::parse(value).is_ok_and(|url| {
+                                    url.scheme() == "https" && url.host_str().is_some()
+                                })
+                            };
+                            let invalid_url = if !valid_https(&source_repository) {
+                                Some("notification.official_source_url_invalid")
+                            } else if !valid_https(&license_url) {
+                                Some("notification.official_license_url_invalid")
+                            } else if !valid_https(&install_url) {
+                                Some("notification.official_install_url_invalid")
+                            } else {
+                                None
+                            };
+                            if let Some(key) = invalid_url {
+                                window.push_notification(Notification::error(tr!(key)), cx);
+                                return;
+                            }
+                            if crate::official::validate_open_source_license(&license).is_err() {
                                 window.push_notification(
-                                    Notification::error(tr!("notification.official_url_invalid")),
+                                    Notification::error(tr!(
+                                        "notification.official_license_invalid"
+                                    )),
                                     cx,
                                 );
                                 return;
                             }
-                            match crate::official::submission_url(&base, &name, &link, &note) {
+                            match crate::official::submission_url(
+                                &base,
+                                &name,
+                                &source_repository,
+                                &license,
+                                &license_url,
+                                &install_url,
+                                &note,
+                            ) {
                                 Ok(url) => {
                                     let _ = submit_view.update(cx, |this, cx| {
                                         this.open_official_url(url, window, cx);

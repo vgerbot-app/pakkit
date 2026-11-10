@@ -33,6 +33,14 @@ shell   ← icons, model, queue, state, theme, views, widgets, winget
 `winget/*` 29、`theme` 8、`shell` 3、`icons` 2。`views` / `dialogs` / `widgets`
 没有测试，靠实机验证。
 
+## 开源软件目录边界
+
+`src/official.rs` 独立于 GPUI 与包管理后端，是远程目录契约的唯一权威。它按索引顺序读取全部分类，成功组合并校验后才把目录交给 `AppState.official`；缺失分类、非法 JSON 或任一非法软件会拒绝整份目录，不展示部分结果，也不回退旧缓存。安装确认、解析、执行与队列继续复用现有机制。
+
+目录使用 `schemaVersion: 2`。每个 `OfficialApp` 必须包含 `sourceRepository`、SPDX `license` 与 `licenseUrl`；两个 URL 只接受 HTTPS。`spdx::Expression::parse` 负责语法与标识符解析，每个 `AND`／`OR` 候选项都必须有未弃用且经 OSI 批准的 SPDX ID，`LicenseRef` 一律拒绝。详情弹窗展示源码仓库、原始 SPDX 表达式和许可证原文链接；提交入口复用相同校验，预填完整开源证明。运行时不联网核验许可证内容，目录发布前由维护者核对原文。
+
+`official_*` 内部标识、路由与 `official-install` 分支名仅是稳定的协议／持久化名称，不再表示「官网直装」用户界面。发布时先合并客户端 schema 2 支持，再发布已用该客户端解析器通过的分支目录；旧客户端会拒绝 schema 2。
+
 **状态变更只有两条入口**：`AppView` 自己的方法，和 `dialogs` 里通过
 `cx.listener` 拿到的 `&mut AppView`。`views` 与 `widgets` 只拿到 `&AppState`
 或纯数据，无法直接改。

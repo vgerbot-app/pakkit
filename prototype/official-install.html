@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Pakkit — 官网直装原型</title>
+<title>Pakkit — 开源软件原型</title>
 <style>
 :root {
   --bg:#f4f5f7; --surface:#fff; --surface-2:#f7f8fa; --surface-3:#eceef2;
@@ -141,9 +141,9 @@ select option { background:var(--surface); color:var(--ink); }
 .detail-meta { display:flex; flex-wrap:wrap; gap:7px; margin-bottom:15px; }
 .badge { display:inline-flex; align-items:center; gap:4px; padding:4px 7px; border:1px solid var(--line); border-radius:6px; color:var(--ink-2); background:var(--surface-2); font-size:10px; }
 .badge svg { width:11px; height:11px; }
-.source-row { display:flex; align-items:center; gap:8px; padding:10px 12px; margin-bottom:15px; border:1px solid var(--line); border-radius:9px; background:var(--surface-2); }
+.source-row { display:flex; align-items:center; gap:8px; padding:10px 12px; margin-bottom:8px; border:1px solid var(--line); border-radius:9px; background:var(--surface-2); }
 .source-row svg { width:15px; color:var(--ok); }
-.source-row span { color:var(--muted); font-size:11px; }
+.source-row span { flex-shrink:0; min-width:86px; color:var(--muted); font-size:11px; }
 .source-row a { overflow:hidden; color:var(--accent); font-size:11px; text-overflow:ellipsis; white-space:nowrap; }
 .source-row .open { margin-left:auto; color:var(--muted); }
 .field-label { display:block; margin:13px 0 6px; color:var(--ink-2); font-size:11px; font-weight:600; }
@@ -160,6 +160,7 @@ select option { background:var(--surface); color:var(--ink); }
 .modal-foot .footnote { margin-right:auto; color:var(--muted); font-size:10px; }
 .form-input { width:100%; height:38px; padding:0 11px; border:1px solid var(--line); border-radius:8px; outline:0; color:var(--ink); background:var(--surface-2); }
 textarea.form-input { height:80px; padding:9px 11px; resize:vertical; }
+.form-error { margin:12px 0 0; padding:9px 11px; border:1px solid color-mix(in srgb,var(--danger) 35%,var(--line)); border-radius:8px; color:var(--danger); background:color-mix(in srgb,var(--danger) 8%,var(--surface)); font-size:11px; }
 .form-input:focus { border-color:var(--accent); }
 .drawer { position:fixed; z-index:50; top:52px; right:0; bottom:28px; width:340px; display:flex; flex-direction:column; border-left:1px solid var(--line); background:var(--surface); box-shadow:-18px 0 50px -30px rgba(0,0,0,.5); }
 .drawer-head { display:flex; align-items:center; gap:8px; padding:14px; border-bottom:1px solid var(--line); }
@@ -243,7 +244,7 @@ textarea.form-input { height:80px; padding:9px 11px; resize:vertical; }
         <button class="nav-item" data-demo="发现"><svg><use href="#i-home"/></svg><span>发现</span></button>
         <button class="nav-item" data-demo="分类"><svg><use href="#i-grid"/></svg><span>分类</span></button>
         <button class="nav-item" data-demo="全部包"><svg><use href="#i-search"/></svg><span>全部包</span></button>
-        <button class="nav-item active" aria-current="page"><svg><use href="#i-globe"/></svg><span>官网直装</span></button>
+        <button class="nav-item active" aria-current="page"><svg><use href="#i-globe"/></svg><span>开源软件</span></button>
         <button class="nav-item" data-demo="已安装"><svg><use href="#i-check"/></svg><span>已安装</span></button>
         <button class="nav-item" data-demo="更新"><svg><use href="#i-refresh"/></svg><span>更新</span></button>
         <button class="nav-item" data-demo="源管理"><svg><use href="#i-source"/></svg><span>源管理</span></button>
@@ -257,23 +258,23 @@ textarea.form-input { height:80px; padding:9px 11px; resize:vertical; }
     <main class="main">
       <div class="content" id="content">
         <div class="page-head">
-          <div><h1 class="page-title">官网直装</h1><p class="page-subtitle">从开发者官网获取软件，安装过程清晰可见</p></div>
+          <div><h1 class="page-title">开源软件</h1><p class="page-subtitle">仅收录具有规范源码仓库、OSI 批准许可证与许可证原文的开源软件</p></div>
           <div class="head-actions"><button class="btn btn-soft" id="refreshBtn"><svg><use href="#i-refresh"/></svg>刷新目录</button><button class="btn btn-primary" id="submitBtn"><svg><use href="#i-plus"/></svg>提交软件</button></div>
         </div>
-        <section class="trust-banner" aria-label="来源说明">
+        <section class="trust-banner" aria-label="开源证明">
           <div class="trust-icon"><svg><use href="#i-shield"/></svg></div>
-          <div><h2 class="trust-title">官方来源，安装透明</h2><p class="trust-copy">安装前展示完整命令与权限要求；你可以先检查，再决定是否执行。</p></div>
-          <div class="trust-points"><span><svg><use href="#i-check"/></svg>仅链接官方发布</span><span><svg><use href="#i-check"/></svg>不托管安装包</span></div>
+          <div><h2 class="trust-title">开源证明，安装透明</h2><p class="trust-copy">逐项展示源码仓库、SPDX 许可证与许可证原文；安装前仍可检查完整命令与权限要求。</p></div>
+          <div class="trust-points"><span><svg><use href="#i-check"/></svg>SPDX / OSI 许可校验</span><span><svg><use href="#i-check"/></svg>源码与许可证可核验</span></div>
         </section>
         <div class="filters">
-          <label class="search-box"><svg><use href="#i-search"/></svg><input id="catalogSearch" placeholder="搜索名称、开发者或用途…" autocomplete="off"/></label>
+          <label class="search-box"><svg><use href="#i-search"/></svg><input id="catalogSearch" placeholder="搜索开源软件、开发者或用途…" autocomplete="off"/></label>
           <label class="select-wrap" title="选择操作系统"><svg><use href="#i-monitor"/></svg><select id="platformSelect" aria-label="操作系统"><option value="linux">Linux</option><option value="windows">Windows</option><option value="macos">macOS</option></select></label>
           <label class="select-wrap" title="选择处理器架构"><svg><use href="#i-cpu"/></svg><select id="archSelect" aria-label="处理器架构"><option value="x86_64">x86_64</option><option value="aarch64">ARM64</option></select></label>
         </div>
         <div class="categories" id="categories" aria-label="软件分类"></div>
         <div id="catalog"></div>
       </div>
-      <footer class="statusbar"><span class="ready"><i class="dot"></i>目录就绪 · 11 款软件</span><span>官方发布来源</span><span id="queueStatus">队列 0</span><span class="arch" id="archStatus">Linux · x86_64</span></footer>
+      <footer class="statusbar"><span class="ready"><i class="dot"></i>开源目录就绪 · 6 款软件</span><span>源码与许可证已标注</span><span id="queueStatus">队列 0</span><span class="arch" id="archStatus">Linux · x86_64</span></footer>
     </main>
   </div>
 </div>
@@ -286,23 +287,18 @@ textarea.form-input { height:80px; padding:9px 11px; resize:vertical; }
 <script>
 const CATEGORIES = [
   {id:'all',name:'全部软件',icon:'grid',color:'#4f8cff'},
-  {id:'dev',name:'开发环境',icon:'code',color:'#4f8cff',desc:'运行时、工具链与本地 AI'},
-  {id:'network',name:'组网连接',icon:'network',color:'#0ea5e9',desc:'虚拟组网与网络访问'},
-  {id:'remote',name:'远程协作',icon:'remote',color:'#a06bff',desc:'远程桌面与低延迟连接'},
-  {id:'tools',name:'实用工具',icon:'tools',color:'#f59e0b',desc:'笔记与局域网文件传输'},
+  {id:'dev',name:'开发环境',icon:'code',color:'#4f8cff',desc:'运行时与开发工具链'},
+  {id:'remote',name:'远程协作',icon:'remote',color:'#a06bff',desc:'开源远程桌面'},
+  {id:'tools',name:'实用工具',icon:'tools',color:'#f59e0b',desc:'局域网文件传输'},
+  {id:'ai',name:'人工智能',icon:'cpu',color:'#8b5cf6',desc:'本地 AI 运行与模型管理'},
 ];
 const APPS = [
-  {id:'deno',name:'Deno',publisher:'Deno Land',category:'dev',mark:'D',color:'#70d6a2',installed:true,desc:'安全的 JavaScript / TypeScript 运行时，单个可执行文件，无外部依赖。',official:'https://docs.deno.com/runtime/getting_started/installation/',kind:'script',admin:false,methods:{linux:'curl -fsSL https://deno.land/install.sh | sh',macos:'curl -fsSL https://deno.land/install.sh | sh',windows:'irm https://deno.land/install.ps1 | iex'},note:'默认安装到当前用户目录，并配置 PATH。无需管理员权限。'},
-  {id:'bun',name:'Bun',publisher:'Oven',category:'dev',mark:'B',color:'#f3dfc1',desc:'集 JavaScript 运行时、打包器、测试工具和包管理器于一体。',official:'https://bun.sh/docs/installation',kind:'script',admin:false,methods:{linux:'curl -fsSL https://bun.com/install | bash',macos:'curl -fsSL https://bun.com/install | bash',windows:'powershell -c "irm bun.sh/install.ps1 | iex"'},note:'Linux 需要 unzip。安装后打开新终端，再使用 bun --version 验证。'},
-  {id:'rustup',name:'Rustup',publisher:'The Rust Team',category:'dev',mark:'R',color:'#e78a70',installed:true,desc:'Rust 官方工具链管理器，安装 Rust 并管理 stable、beta 与 nightly。',official:'https://www.rust-lang.org/tools/install',kind:'script',admin:false,windowsKind:'installer',methods:{linux:"curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh",macos:"curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh",windows:'https://win.rustup.rs/x86_64'},note:'Windows 还需按提示准备 Visual Studio C++ Build Tools。Unix 脚本提供交互选项。'},
-  {id:'ollama',name:'Ollama',publisher:'Ollama',category:'dev',mark:'O',color:'#b7bec9',desc:'在本机运行和管理开放模型，提供命令行工具与本地 API。',official:'https://ollama.com/download',kind:'script',admin:true,windowsKind:'installer',macosKind:'installer',methods:{linux:'curl -fsSL https://ollama.com/install.sh | sh',macos:'https://ollama.com/download/Ollama.dmg',windows:'https://ollama.com/download/OllamaSetup.exe'},note:'Linux 安装脚本可能配置系统服务并请求管理员授权。模型需要另行下载。'},
-  {id:'tailscale',name:'Tailscale',publisher:'Tailscale Inc.',category:'network',mark:'T',color:'#63b3ed',installed:true,desc:'基于 WireGuard 的虚拟组网工具，让设备安全地连接到同一网络。',official:'https://tailscale.com/docs/install/linux',kind:'script',admin:true,windowsKind:'installer',macosKind:'installer',methods:{linux:'curl -fsSL https://tailscale.com/install.sh | sh',macos:'https://pkgs.tailscale.com/stable/Tailscale-latest-macos.pkg',windows:'https://pkgs.tailscale.com/stable/tailscale-setup-latest.exe'},note:'安装后还需运行 tailscale up 或打开客户端，登录并授权设备加入网络。'},
-  {id:'zerotier',name:'ZeroTier',publisher:'ZeroTier, Inc.',category:'network',mark:'Z',color:'#e5b85c',desc:'创建覆盖局域网的虚拟网络，连接不同地点的设备与服务器。',official:'https://www.zerotier.com/download/',kind:'script',admin:true,windowsKind:'installer',macosKind:'installer',methods:{linux:'curl -s https://install.zerotier.com | sudo bash',macos:'https://download.zerotier.com/dist/ZeroTier%20One.pkg',windows:'https://download.zerotier.com/dist/ZeroTier%20One.msi'},note:'Linux 脚本会添加官方仓库并安装软件包；Windows 安装时需要批准驱动。'},
-  {id:'cloudflare',name:'Cloudflare One',publisher:'Cloudflare',category:'network',mark:'C',color:'#f59e52',desc:'Cloudflare 设备客户端，原 WARP，提供安全网络访问与连接能力。',official:'https://developers.cloudflare.com/cloudflare-one/team-and-resources/devices/cloudflare-one-client/download/',kind:'package',admin:true,methods:{linux:'https://developers.cloudflare.com/cloudflare-one/team-and-resources/devices/cloudflare-one-client/download/',macos:'https://downloads.cloudflareclient.com/v1/download/macos/ga',windows:'https://downloads.cloudflareclient.com/v1/download/windows/ga'},note:'按系统选择官方 DEB / RPM / MSI / PKG。企业部署可能需要额外配置。'},
-  {id:'rustdesk',name:'RustDesk',publisher:'RustDesk',category:'remote',mark:'R',color:'#70a5eb',desc:'开源远程桌面，支持跨平台访问，并可选择自建中继服务。',official:'https://github.com/rustdesk/rustdesk/releases/latest',kind:'package',admin:true,methods:{linux:'https://github.com/rustdesk/rustdesk/releases/latest',macos:'https://github.com/rustdesk/rustdesk/releases/latest',windows:'https://github.com/rustdesk/rustdesk/releases/latest'},note:'官方发布页提供 EXE、MSI、DEB、RPM、DMG、AppImage 等多种格式。'},
-  {id:'parsec',name:'Parsec',publisher:'Parsec',category:'remote',mark:'P',color:'#ef6c63',desc:'面向创作、协作与游戏的低延迟远程桌面和屏幕连接工具。',official:'https://parsec.app/downloads',kind:'package',admin:true,methods:{linux:'https://builds.parsec.app/package/parsec-linux.deb',macos:'https://builds.parsec.app/package/parsec-macos.pkg',windows:'https://builds.parsec.app/package/parsec-windows.exe'},note:'支持平台与远程主机能力因系统而异；使用前请核对官网硬件要求。'},
-  {id:'obsidian',name:'Obsidian',publisher:'Obsidian',category:'tools',mark:'Ob',color:'#a78bfa',installed:true,desc:'基于本地 Markdown 文件的知识库与笔记工具，支持插件和双链。',official:'https://obsidian.md/download',kind:'portable',admin:false,windowsKind:'installer',macosKind:'installer',methods:{linux:'https://obsidian.md/download',macos:'https://obsidian.md/download',windows:'https://obsidian.md/download'},note:'Linux 推荐 AppImage 便携版；下载后赋予执行权限即可运行。DEB 可在详情来源页选择。'},
-  {id:'localsend',name:'LocalSend',publisher:'LocalSend',category:'tools',mark:'L',color:'#5cc9bd',desc:'开源局域网文件传输工具，不依赖外部服务器即可跨设备分享文件。',official:'https://localsend.org/download',kind:'portable',admin:false,windowsKind:'installer',macosKind:'installer',methods:{linux:'https://github.com/localsend/localsend/releases/latest',macos:'https://localsend.org/download',windows:'https://localsend.org/download'},note:'Linux 可选择 AppImage 或发行版安装包；使用时设备需处于可互通的网络。'},
+  {id:'deno',name:'Deno',publisher:'Deno Land',category:'dev',mark:'D',color:'#70d6a2',installed:true,desc:'安全的 JavaScript / TypeScript 运行时，单个可执行文件，无外部依赖。',sourceRepository:'https://github.com/denoland/deno',license:'MIT',licenseUrl:'https://raw.githubusercontent.com/denoland/deno/main/LICENSE.md',official:'https://docs.deno.com/runtime/getting_started/installation/',kind:'script',admin:false,methods:{linux:'curl -fsSL https://deno.land/install.sh | sh',macos:'curl -fsSL https://deno.land/install.sh | sh',windows:'irm https://deno.land/install.ps1 | iex'},note:'默认安装到当前用户目录，并配置 PATH。无需管理员权限。'},
+  {id:'bun',name:'Bun',publisher:'Oven',category:'dev',mark:'B',color:'#f3dfc1',desc:'集 JavaScript 运行时、打包器、测试工具和包管理器于一体。',sourceRepository:'https://github.com/oven-sh/bun',license:'MIT',licenseUrl:'https://raw.githubusercontent.com/oven-sh/bun/main/LICENSE.md',official:'https://bun.sh/docs/installation',kind:'script',admin:false,methods:{linux:'curl -fsSL https://bun.com/install | bash',macos:'curl -fsSL https://bun.com/install | bash',windows:'powershell -c "irm bun.sh/install.ps1 | iex"'},note:'Linux 需要 unzip。安装后打开新终端，再使用 bun --version 验证。'},
+  {id:'rustup',name:'Rustup',publisher:'The Rust Team',category:'dev',mark:'R',color:'#e78a70',installed:true,desc:'Rust 官方工具链管理器，安装 Rust 并管理 stable、beta 与 nightly。',sourceRepository:'https://github.com/rust-lang/rustup',license:'Apache-2.0 OR MIT',licenseUrl:'https://raw.githubusercontent.com/rust-lang/rustup/main/LICENSE-MIT',official:'https://www.rust-lang.org/tools/install',kind:'script',admin:false,windowsKind:'installer',methods:{linux:"curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh",macos:"curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh",windows:'https://win.rustup.rs/x86_64'},note:'Windows 还需按提示准备 Visual Studio C++ Build Tools。Unix 脚本提供交互选项。'},
+  {id:'ollama',name:'Ollama',publisher:'Ollama',category:'ai',mark:'O',color:'#b7bec9',desc:'在本机运行和管理开放模型，提供命令行工具与本地 API。',sourceRepository:'https://github.com/ollama/ollama',license:'MIT',licenseUrl:'https://raw.githubusercontent.com/ollama/ollama/main/LICENSE',official:'https://ollama.com/download',kind:'script',admin:true,windowsKind:'installer',macosKind:'installer',methods:{linux:'curl -fsSL https://ollama.com/install.sh | sh',macos:'https://ollama.com/download/Ollama.dmg',windows:'https://ollama.com/download/OllamaSetup.exe'},note:'Linux 安装脚本可能配置系统服务并请求管理员授权。模型需要另行下载，其许可证单独适用。'},
+  {id:'rustdesk',name:'RustDesk',publisher:'RustDesk',category:'remote',mark:'R',color:'#70a5eb',desc:'开源远程桌面，支持跨平台访问，并可选择自建中继服务。',sourceRepository:'https://github.com/rustdesk/rustdesk',license:'AGPL-3.0-only',licenseUrl:'https://raw.githubusercontent.com/rustdesk/rustdesk/master/LICENCE',official:'https://github.com/rustdesk/rustdesk/releases/latest',kind:'package',admin:true,methods:{linux:'https://github.com/rustdesk/rustdesk/releases/latest',macos:'https://github.com/rustdesk/rustdesk/releases/latest',windows:'https://github.com/rustdesk/rustdesk/releases/latest'},note:'官方发布页提供 EXE、MSI、DEB、RPM、DMG、AppImage 等多种格式。'},
+  {id:'localsend',name:'LocalSend',publisher:'LocalSend',category:'tools',mark:'L',color:'#5cc9bd',desc:'开源局域网文件传输工具，不依赖外部服务器即可跨设备分享文件。',sourceRepository:'https://github.com/localsend/localsend',license:'Apache-2.0',licenseUrl:'https://raw.githubusercontent.com/localsend/localsend/main/LICENSE',official:'https://localsend.org/download',kind:'portable',admin:false,windowsKind:'installer',macosKind:'installer',methods:{linux:'https://github.com/localsend/localsend/releases/latest',macos:'https://localsend.org/download',windows:'https://localsend.org/download'},note:'Linux 可选择 AppImage 或发行版安装包；使用时设备需处于可互通的网络。'},
 ];
 const PLATFORM = {linux:'Linux',windows:'Windows',macos:'macOS'};
 const state = {category:'all',query:'',platform:'linux',arch:'x86_64',queue:[],detailId:null};
@@ -332,7 +328,7 @@ function renderCategories() {
 function card(app) {
   const kind = kindFor(app);
   return `<article class="card" data-installed="${app.installed ? 'true' : 'false'}">
-    <div class="card-head"><div class="app-logo" style="--logo:${app.color}">${app.mark}</div><div class="app-name"><div class="app-title"><h3>${app.name}</h3><span class="install-status ${app.installed ? 'installed' : 'not-installed'}">${app.installed ? `${ico('check')}已安装` : '未安装'}</span></div><div class="publisher">${app.publisher}</div></div><span class="official">${ico('shield')}官网</span></div>
+    <div class="card-head"><div class="app-logo" style="--logo:${app.color}">${app.mark}</div><div class="app-name"><div class="app-title"><h3>${app.name}</h3><span class="install-status ${app.installed ? 'installed' : 'not-installed'}">${app.installed ? `${ico('check')}已安装` : '未安装'}</span></div><div class="publisher">${app.publisher}</div></div><span class="official">${ico('shield')}开源</span></div>
     <p class="app-desc">${app.desc}</p>
     <div class="method">${ico(actionIcon(kind))}<span>${kindLabel(kind)}</span><span class="meta ${app.admin ? 'admin' : ''}">${app.admin ? '需要授权' : '当前用户'}</span></div>
     <div class="card-foot"><button class="detail-link" data-detail="${app.id}">查看详情${ico('chevron')}</button><button class="btn btn-primary btn-sm" data-install="${app.id}">${ico(actionIcon(kind))}${actionLabel(kind)}</button></div>
@@ -358,7 +354,9 @@ function openDetail(id) {
     <div class="modal-head"><div class="app-logo" style="--logo:${app.color}">${app.mark}</div><div><h2 id="detailTitle">${app.name}</h2><p>${app.publisher} · ${kindLabel(kind)}</p></div><button class="icon-btn" data-close aria-label="关闭">${ico('x')}</button></div>
     <div class="modal-body">
       <div class="detail-meta"><span class="badge">${ico('monitor')}${PLATFORM[state.platform]}</span><span class="badge">${ico('cpu')}${state.arch === 'x86_64' ? 'x86_64' : 'ARM64'}</span><span class="badge">${ico(app.admin ? 'shield' : 'check')}${app.admin ? '可能需要管理员授权' : '安装到当前用户'}</span></div>
-      <div class="source-row">${ico('shield')}<span>官方来源</span><a href="${app.official}" target="_blank" rel="noopener noreferrer">${new URL(app.official).hostname}</a><a class="open" href="${app.official}" target="_blank" rel="noopener noreferrer" aria-label="打开官方来源">${ico('external')}</a></div>
+      <div class="source-row">${ico('code')}<span>源码仓库</span><a href="${app.sourceRepository}" target="_blank" rel="noopener noreferrer">${app.sourceRepository}</a><a class="open" href="${app.sourceRepository}" target="_blank" rel="noopener noreferrer" aria-label="打开源码仓库">${ico('external')}</a></div>
+      <div class="source-row">${ico('shield')}<span>许可证（SPDX）</span><a href="${app.licenseUrl}" target="_blank" rel="noopener noreferrer" title="查看许可证原文">${app.license}</a><a class="open" href="${app.licenseUrl}" target="_blank" rel="noopener noreferrer" aria-label="打开许可证原文">${ico('external')}</a></div>
+      <div class="source-row">${ico('globe')}<span>官方安装文档</span><a href="${app.official}" target="_blank" rel="noopener noreferrer">${new URL(app.official).hostname}</a><a class="open" href="${app.official}" target="_blank" rel="noopener noreferrer" aria-label="打开官方安装文档">${ico('external')}</a></div>
       ${kind !== 'script' && app.id !== 'rustup' ? `<div class="note" style="margin:0 0 13px">${ico('info')}<span>当前选择 ${state.arch === 'x86_64' ? 'x86_64' : 'ARM64'}；请在官方发布页确认对应的安装包架构。</span></div>` : ''}
       <label class="field-label" for="detailPlatform">安装平台</label><select class="detail-select" id="detailPlatform"><option value="linux" ${state.platform === 'linux' ? 'selected' : ''}>Linux · 官方推荐方式</option><option value="windows" ${state.platform === 'windows' ? 'selected' : ''}>Windows · 官方推荐方式</option><option value="macos" ${state.platform === 'macos' ? 'selected' : ''}>macOS · 官方推荐方式</option></select>
       <label class="field-label">${isScript ? '将执行的官方命令' : '官方下载地址'}</label>
@@ -388,17 +386,41 @@ function renderQueue() {
 }
 function openQueue() { $('#queueDrawer').classList.remove('hidden'); renderQueue(); }
 function updateArchStatus() { $('#archStatus').textContent = `${PLATFORM[state.platform]} · ${state.arch === 'x86_64' ? 'x86_64' : 'ARM64'}`; }
+const OPEN_SOURCE_LICENSES = new Set(['MIT','Apache-2.0','AGPL-3.0-only','GPL-2.0-only','GPL-2.0-or-later','GPL-3.0-only','GPL-3.0-or-later','MPL-2.0']);
+function validOpenSourceLicense(expression) {
+  const value = expression.trim();
+  if (!/^[A-Za-z0-9.-]+(?:\s+(?:AND|OR)\s+[A-Za-z0-9.-]+)*$/.test(value)) return false;
+  return value.split(/\s+(?:AND|OR)\s+/).every(id => OPEN_SOURCE_LICENSES.has(id));
+}
+function validHttps(value) {
+  try { return new URL(value.trim()).protocol === 'https:'; } catch { return false; }
+}
 function openSubmit() {
-  $('#modalRoot').innerHTML = `<div class="backdrop" data-close></div><section class="modal" role="dialog" aria-modal="true" aria-labelledby="submitTitle"><div class="modal-head"><div><h2 id="submitTitle">提交官网直装软件</h2><p>提供开发者自己的下载页或安装文档</p></div><button class="icon-btn" data-close aria-label="关闭">${ico('x')}</button></div><form id="submitForm"><div class="modal-body"><label class="field-label" for="softwareName">软件名称</label><input class="form-input" id="softwareName" required placeholder="例如：Deno"/><label class="field-label" for="softwareUrl">官方下载页 / 安装文档</label><input class="form-input" id="softwareUrl" type="url" required placeholder="https://…"/><label class="field-label" for="softwareNote">补充说明（可选）</label><textarea class="form-input" id="softwareNote" placeholder="支持的平台、安装方式或收录理由"></textarea><div class="note">${ico('info')}<span>收录时核对域名归属、支持平台、权限需求及安装命令；「官方发布」不等同于 Pakkit 安全背书。</span></div></div><div class="modal-foot"><button class="btn btn-outline" type="button" data-close>取消</button><button class="btn btn-primary" type="submit">预览提交内容</button></div></form></section>`;
+  $('#modalRoot').innerHTML = `<div class="backdrop" data-close></div><section class="modal" role="dialog" aria-modal="true" aria-labelledby="submitTitle"><div class="modal-head"><div><h2 id="submitTitle">开源软件提交</h2><p>提供可核验的源码、OSI 批准许可证与官方安装文档</p></div><button class="icon-btn" data-close aria-label="关闭">${ico('x')}</button></div><form id="submitForm"><div class="modal-body"><label class="field-label" for="softwareName">软件名称（必填）</label><input class="form-input" id="softwareName" required placeholder="例如：Deno"/><label class="field-label" for="sourceRepository">源码仓库（必填，HTTPS）</label><input class="form-input" id="sourceRepository" type="url" required placeholder="https://github.com/denoland/deno"/><label class="field-label" for="softwareLicense">SPDX 许可证（必填）</label><input class="form-input" id="softwareLicense" required placeholder="例如：MIT OR Apache-2.0"/><label class="field-label" for="licenseUrl">许可证原文（必填，HTTPS）</label><input class="form-input" id="licenseUrl" type="url" required placeholder="https://raw.githubusercontent.com/…/LICENSE"/><label class="field-label" for="softwareUrl">官方安装文档（必填，HTTPS）</label><input class="form-input" id="softwareUrl" type="url" required placeholder="https://…"/><label class="field-label" for="softwareNote">补充说明（可选）</label><textarea class="form-input" id="softwareNote" placeholder="支持的平台、安装方式或收录理由"></textarea><p class="form-error hidden" id="submissionError" role="alert"></p><div class="note">${ico('info')}<span>原型使用有限的 OSI 许可证白名单校验简单 SPDX 表达式；拒绝弃用标识、非 OSI 许可证与 LicenseRef。正式目录仍须人工核对原文。</span></div></div><div class="modal-foot"><button class="btn btn-outline" type="button" data-close>取消</button><button class="btn btn-primary" type="submit">预览提交内容</button></div></form></section>`;
   $$('[data-close]').forEach(el => el.addEventListener('click',closeModal));
-  $('#submitForm').addEventListener('submit',e => { e.preventDefault(); closeModal(); toast('提交内容已通过格式检查；原型不会实际发送'); });
+  $('#submitForm').addEventListener('submit',e => {
+    e.preventDefault();
+    const fields = {
+      name:$('#softwareName'),repository:$('#sourceRepository'),license:$('#softwareLicense'),
+      licenseUrl:$('#licenseUrl'),installUrl:$('#softwareUrl'),
+    };
+    const fail = (message,field) => {
+      const error = $('#submissionError'); error.textContent = message; error.classList.remove('hidden'); field.focus();
+    };
+    if (!fields.name.value.trim()) return fail('请填写软件名称。',fields.name);
+    for (const [field,label] of [[fields.repository,'源码仓库'],[fields.licenseUrl,'许可证原文'],[fields.installUrl,'官方安装文档']]) {
+      if (!validHttps(field.value)) return fail(`${label}必须使用有效的 HTTPS 链接。`,field);
+    }
+    if (!validOpenSourceLicense(fields.license.value)) return fail('SPDX 表达式无效，或包含非 OSI、弃用许可证及 LicenseRef。',fields.license);
+    closeModal(); toast('开源证明与 HTTPS 链接已通过本地检查；原型不会实际发送');
+  });
   document.addEventListener('keydown',escClose); $('#softwareName').focus();
 }
 $('#catalogSearch').addEventListener('input',e => { state.query = e.target.value; renderCatalog(); });
 $('#globalSearch').addEventListener('input',e => { state.query = e.target.value; $('#catalogSearch').value = state.query; renderCatalog(); });
 $('#platformSelect').addEventListener('change',e => { state.platform = e.target.value; updateArchStatus(); renderCatalog(); });
 $('#archSelect').addEventListener('change',e => { state.arch = e.target.value; updateArchStatus(); });
-$('#refreshBtn').addEventListener('click',() => toast('原型目录已是最新 · 11 款软件'));
+$('#refreshBtn').addEventListener('click',() => toast('原型目录已是最新 · 6 款软件'));
 $('#submitBtn').addEventListener('click',openSubmit);
 $('#queueBtn').addEventListener('click',openQueue);
 $('#closeQueue').addEventListener('click',() => $('#queueDrawer').classList.add('hidden'));

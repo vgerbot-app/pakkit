@@ -1,6 +1,10 @@
 name: Official catalog
 
 on:
+  push:
+    branches: [official-install]
+  pull_request:
+    branches: [official-install]
   workflow_dispatch:
   schedule:
     - cron: "17 3 * * 1"

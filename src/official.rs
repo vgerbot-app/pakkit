@@ -1,4 +1,4 @@
-//! Remote, explicitly user-confirmed official software installations.
+//! Remote, explicitly user-confirmed open-source software installations.
 //!
 //! This module is deliberately independent of GPUI and package-manager
 //! backends. A complete index/category document set is accepted only as a
@@ -87,7 +87,7 @@ struct OfficialCategoryCatalog {
 
 impl OfficialCatalogIndex {
     fn validate_categories(&self) -> Result<(), OfficialError> {
-        if self.schema_version != 1 {
+        if self.schema_version != 2 {
             return Err(OfficialError::Validation(format!(
                 "不支持的 schemaVersion {}",
                 self.schema_version
@@ -144,6 +144,7 @@ impl LocalizedText {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct OfficialApp {
     pub id: String,
     pub name: String,
@@ -153,6 +154,9 @@ pub struct OfficialApp {
     pub homepage: String,
     pub mark: String,
     pub accent: String,
+    pub source_repository: String,
+    pub license: String,
+    pub license_url: String,
     pub variants: Vec<OfficialVariant>,
 }
 
@@ -389,7 +393,7 @@ pub fn parse_catalog(
 
 fn validate_catalog(catalog: &OfficialCatalog) -> Result<(), OfficialError> {
     let invalid = |message: String| Err(OfficialError::Validation(message));
-    if catalog.schema_version != 1 {
+    if catalog.schema_version != 2 {
         return invalid(format!("不支持的 schemaVersion {}", catalog.schema_version));
     }
     if catalog.catalog_version.trim().is_empty() {
@@ -427,6 +431,21 @@ fn validate_catalog(catalog: &OfficialCatalog) -> Result<(), OfficialError> {
             return invalid(format!("软件 {} 的 mark 无效", app.id));
         }
         validate_https(&app.homepage)?;
+        if app.source_repository.trim().is_empty() {
+            return invalid(format!("软件 {} 的源码仓库不能为空", app.id));
+        }
+        validate_https(&app.source_repository).map_err(|error| {
+            OfficialError::Validation(format!("软件 {} 的源码仓库无效：{error}", app.id))
+        })?;
+        validate_open_source_license(&app.license).map_err(|error| {
+            OfficialError::Validation(format!(
+                "软件 {} 的 SPDX 许可证表达式 {:?} 无效：{error}",
+                app.id, app.license
+            ))
+        })?;
+        validate_https(&app.license_url).map_err(|error| {
+            OfficialError::Validation(format!("软件 {} 的许可证原文链接无效：{error}", app.id))
+        })?;
         validate_accent(&app.accent)?;
         if app.variants.is_empty() {
             return invalid(format!("软件 {} 没有变体", app.id));
@@ -510,6 +529,30 @@ fn validate_catalog(catalog: &OfficialCatalog) -> Result<(), OfficialError> {
                     }
                 }
             }
+        }
+    }
+    Ok(())
+}
+
+/// Every license choice must name a current, OSI-approved SPDX license.
+pub fn validate_open_source_license(expression: &str) -> Result<(), OfficialError> {
+    if expression.trim().is_empty() {
+        return Err(OfficialError::Validation(
+            "SPDX 许可证表达式不能为空".to_owned(),
+        ));
+    }
+    let parsed = spdx::Expression::parse(expression)
+        .map_err(|error| OfficialError::Validation(format!("SPDX 解析失败：{error}")))?;
+    for requirement in parsed.requirements() {
+        if !requirement
+            .req
+            .license
+            .id()
+            .is_some_and(|id| id.is_osi_approved() && !id.is_deprecated())
+        {
+            return Err(OfficialError::Validation(format!(
+                "SPDX 许可证必须未弃用且经 OSI 批准：{expression}"
+            )));
         }
     }
     Ok(())
@@ -1121,21 +1164,29 @@ pub fn open_path(path: &Path) -> Result<(), OfficialError> {
 pub fn submission_url(
     base: &str,
     name: &str,
-    link: &str,
+    source_repository: &str,
+    license: &str,
+    license_url: &str,
+    install_url: &str,
     note: &str,
 ) -> Result<String, OfficialError> {
     if name.trim().is_empty() {
         return Err(OfficialError::Validation("软件名称不能为空".to_owned()));
     }
-    validate_https(link)?;
+    validate_https(source_repository)?;
+    validate_open_source_license(license)?;
+    validate_https(license_url)?;
+    validate_https(install_url)?;
     let mut url =
         url::Url::parse(base).map_err(|error| OfficialError::Validation(error.to_string()))?;
     if url.scheme() != "https" {
         return Err(OfficialError::Validation("提交地址必须为 HTTPS".to_owned()));
     }
-    let body = format!("软件名称：{name}\n官方链接：{link}\n\n补充说明：\n{note}");
+    let body = format!(
+        "软件名称：{name}\n源码仓库：{source_repository}\nSPDX 许可证：{license}\n许可证原文：{license_url}\n官方安装链接：{install_url}\n\n补充说明：\n{note}"
+    );
     url.query_pairs_mut()
-        .append_pair("title", &format!("官网直装软件提交：{name}"))
+        .append_pair("title", &format!("开源软件提交：{name}"))
         .append_pair("body", &body);
     Ok(url.into())
 }
@@ -1156,7 +1207,7 @@ mod tests {
 
     fn fixture() -> String {
         serde_json::json!({
-            "schemaVersion": 1,
+            "schemaVersion": 2,
             "catalogVersion": "test",
             "homepage": "https://example.com/catalog",
             "submissionUrl": "https://example.com/issues/new",
@@ -1164,6 +1215,7 @@ mod tests {
             "apps": [{
                 "id":"test-app", "name":"Test App", "publisher":"Publisher", "category":"dev",
                 "summary":text(), "homepage":"https://example.com", "mark":"T", "accent":"#70d6a2",
+                "sourceRepository":"https://github.com/example/test-app", "license":"MIT", "licenseUrl":"https://raw.githubusercontent.com/example/test-app/main/LICENSE",
                 "variants": [
                     {"id":"test-script","os":"linux","architectures":["x86_64","aarch64"],"requiresAdmin":false,"interactive":false,"note":text(),"sourceUrl":"https://example.com/install","method":{"type":"script","shell":"sh","command":"printf safe"},"detection":{"type":"command","program":"sh","args":["-c","exit 0"]}},
                     {"id":"test-artifact","os":"windows","architectures":["x86_64"],"requiresAdmin":false,"interactive":false,"note":text(),"sourceUrl":"https://example.com/install","method":{"type":"artifact","url":"https://example.com/test.exe","fileName":"test.exe","action":"run_installer","sha256":"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"}},
@@ -1452,7 +1504,7 @@ mod tests {
     #[test]
     fn invalid_catalog_is_rejected_as_a_whole() {
         for (pointer, value) in [
-            ("/schemaVersion", serde_json::json!(2)),
+            ("/schemaVersion", serde_json::json!(1)),
             ("/apps/0/homepage", serde_json::json!("http://example.com")),
             (
                 "/apps/0/variants/1/method/fileName",
@@ -1512,14 +1564,95 @@ mod tests {
         let url = submission_url(
             "https://example.com/issues/new",
             "My App",
+            "https://github.com/example/app",
+            "MIT OR Apache-2.0",
+            "https://raw.githubusercontent.com/example/app/main/LICENSE",
             "https://example.com/get?a=1&b=two",
             "a note",
         )
         .expect("submission");
         let parsed = url::Url::parse(&url).expect("URL");
         let pairs: std::collections::HashMap<_, _> = parsed.query_pairs().into_owned().collect();
-        assert_eq!(pairs["title"], "官网直装软件提交：My App");
+        assert_eq!(pairs["title"], "开源软件提交：My App");
         assert!(pairs["body"].contains("https://example.com/get?a=1&b=two"));
+        for value in [
+            "MIT OR Apache-2.0",
+            "https://raw.githubusercontent.com/example/app/main/LICENSE",
+        ] {
+            assert!(pairs["body"].contains(value));
+        }
+    }
+
+    #[test]
+    fn submission_requires_open_source_license() {
+        assert!(
+            submission_url(
+                "https://example.com/issues/new",
+                "My App",
+                "https://github.com/example/app",
+                "Vim",
+                "https://raw.githubusercontent.com/example/app/main/LICENSE",
+                "https://example.com/install",
+                "a note",
+            )
+            .is_err()
+        );
+    }
+
+    #[test]
+    fn open_source_license_metadata_is_mandatory_and_current() {
+        let doc: serde_json::Value = serde_json::from_str(&fixture()).expect("fixture");
+        for field in ["sourceRepository", "license", "licenseUrl"] {
+            let mut doc = doc.clone();
+            doc["apps"][0].as_object_mut().expect("app").remove(field);
+            assert!(parse_fixture(&doc.to_string()).is_err(), "missing {field}");
+        }
+        for license in [
+            "",
+            "not a license",
+            "LicenseRef-foo",
+            "Vim",
+            "GPL-3.0",
+            "MIT AND Vim",
+        ] {
+            let mut doc = doc.clone();
+            doc["apps"][0]["license"] = serde_json::json!(license);
+            let error = parse_fixture(&doc.to_string()).expect_err(license);
+            let message = error.to_string();
+            assert!(message.contains("test-app"), "{message}");
+            assert!(message.contains(license), "{message}");
+        }
+        for license in ["MIT OR Apache-2.0", "GPL-3.0-or-later"] {
+            let mut doc = doc.clone();
+            doc["apps"][0]["license"] = serde_json::json!(license);
+            assert!(parse_fixture(&doc.to_string()).is_ok(), "{license}");
+        }
+        for field in ["sourceRepository", "licenseUrl"] {
+            let mut doc = doc.clone();
+            doc["apps"][0][field] = serde_json::json!("http://example.com");
+            assert!(parse_fixture(&doc.to_string()).is_err(), "{field}");
+        }
+        let mut doc = doc.clone();
+        doc["apps"][0]["sourceRepository"] = serde_json::json!("   ");
+        assert!(parse_fixture(&doc.to_string()).is_err());
+    }
+
+    #[test]
+    fn legacy_schema_is_rejected_without_fallback() {
+        let mut doc: serde_json::Value = serde_json::from_str(&fixture()).expect("fixture");
+        doc["schemaVersion"] = serde_json::json!(1);
+        assert_eq!(
+            parse_fixture(&doc.to_string())
+                .expect_err("legacy schema")
+                .to_string(),
+            "目录校验失败：不支持的 schemaVersion 1"
+        );
+        let state = OfficialCatalogState {
+            status: OfficialLoadState::Failed("不支持的 schemaVersion 1".to_owned()),
+            ..OfficialCatalogState::default()
+        };
+        assert!(visible_official_apps(&state).is_empty());
+        assert!(state.catalog.is_none());
     }
 
     #[test]
