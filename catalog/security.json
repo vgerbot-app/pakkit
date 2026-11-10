@@ -15,6 +15,9 @@
       "homepage": "https://keepassxc.org/download/",
       "mark": "K",
       "accent": "#6cac4d",
+      "sourceRepository": "https://github.com/keepassxreboot/keepassxc",
+      "license": "GPL-2.0-only OR GPL-3.0-only",
+      "licenseUrl": "https://raw.githubusercontent.com/keepassxreboot/keepassxc/develop/COPYING",
       "variants": [
         {
           "id": "keepassxc-linux",
@@ -99,6 +102,9 @@
       "homepage": "https://bitwarden.com/download/",
       "mark": "B",
       "accent": "#175ddc",
+      "sourceRepository": "https://github.com/bitwarden/clients",
+      "license": "GPL-3.0-only",
+      "licenseUrl": "https://raw.githubusercontent.com/bitwarden/clients/main/LICENSE_GPL.txt",
       "variants": [
         {
           "id": "bitwarden-desktop-linux",

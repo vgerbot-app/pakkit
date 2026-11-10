@@ -15,6 +15,9 @@
       "homepage": "https://stellarium.org/",
       "mark": "St",
       "accent": "#4a6da7",
+      "sourceRepository": "https://github.com/Stellarium/stellarium",
+      "license": "GPL-2.0-or-later",
+      "licenseUrl": "https://raw.githubusercontent.com/Stellarium/stellarium/master/COPYING",
       "variants": [
         {
           "id": "stellarium-linux",

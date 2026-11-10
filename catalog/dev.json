@@ -15,6 +15,9 @@
       "homepage": "https://docs.deno.com/runtime/getting_started/installation/",
       "mark": "D",
       "accent": "#70d6a2",
+      "sourceRepository": "https://github.com/denoland/deno",
+      "license": "MIT",
+      "licenseUrl": "https://raw.githubusercontent.com/denoland/deno/main/LICENSE.md",
       "variants": [
         {
           "id": "deno-linux",
@@ -123,6 +126,9 @@
       "homepage": "https://bun.sh/docs/installation",
       "mark": "B",
       "accent": "#f3dfc1",
+      "sourceRepository": "https://github.com/oven-sh/bun",
+      "license": "MIT",
+      "licenseUrl": "https://raw.githubusercontent.com/oven-sh/bun/main/LICENSE.md",
       "variants": [
         {
           "id": "bun-linux",
@@ -231,6 +237,9 @@
       "homepage": "https://www.rust-lang.org/tools/install",
       "mark": "R",
       "accent": "#e78a70",
+      "sourceRepository": "https://github.com/rust-lang/rustup",
+      "license": "Apache-2.0 OR MIT",
+      "licenseUrl": "https://raw.githubusercontent.com/rust-lang/rustup/main/LICENSE-MIT",
       "variants": [
         {
           "id": "rustup-linux",
@@ -355,90 +364,6 @@
       ]
     },
     {
-      "id": "visual-studio-code",
-      "name": "Visual Studio Code",
-      "publisher": "Microsoft",
-      "category": "dev",
-      "summary": {
-        "zh-CN": "微软代码编辑器，支持扩展、调试与版本控制；此品牌构建适用专有许可。",
-        "zh-TW": "微軟程式碼編輯器，支援擴充功能、偵錯與版本控制；此品牌建置適用專有授權。",
-        "en": "Microsoft’s code editor with extensions, debugging and version control; this branded build is under a proprietary license.",
-        "ja": "拡張機能、デバッグ、バージョン管理に対応する Microsoft のコードエディター。このブランドビルドはプロプライエタリライセンスです。",
-        "ko": "확장 기능, 디버깅 및 버전 관리를 지원하는 Microsoft 코드 편집기로 이 브랜드 빌드에는 독점 라이선스가 적용됩니다."
-      },
-      "homepage": "https://code.visualstudio.com/Download",
-      "mark": "VS",
-      "accent": "#007acc",
-      "variants": [
-        {
-          "id": "visual-studio-code-linux",
-          "os": "linux",
-          "architectures": [
-            "x86_64",
-            "aarch64"
-          ],
-          "requiresAdmin": false,
-          "interactive": false,
-          "note": {
-            "zh-CN": "这是适用微软专有许可的 Visual Studio Code 品牌构建，不是 VSCodium。仅打开官方下载页；打开页面不代表已安装。",
-            "zh-TW": "這是適用微軟專有授權的 Visual Studio Code 品牌建置，不是 VSCodium。僅開啟官方下載頁；開啟頁面不代表已安裝。",
-            "en": "This is Microsoft’s branded Visual Studio Code build under its proprietary license, not VSCodium. Opens the official download page only; opening it does not mean installation.",
-            "ja": "これは Microsoft のプロプライエタリライセンスが適用される Visual Studio Code ブランドビルドで、VSCodium ではありません。公式ダウンロードページのみを開き、開いてもインストール完了ではありません。",
-            "ko": "VSCodium이 아니라 Microsoft 독점 라이선스가 적용되는 Visual Studio Code 브랜드 빌드입니다. 공식 다운로드 페이지만 열리며 페이지를 열었다고 설치된 것은 아닙니다."
-          },
-          "sourceUrl": "https://code.visualstudio.com/Download",
-          "method": {
-            "type": "official_page",
-            "url": "https://code.visualstudio.com/Download"
-          }
-        },
-        {
-          "id": "visual-studio-code-windows",
-          "os": "windows",
-          "architectures": [
-            "x86_64",
-            "aarch64"
-          ],
-          "requiresAdmin": false,
-          "interactive": false,
-          "note": {
-            "zh-CN": "这是适用微软专有许可的 Visual Studio Code 品牌构建，不是 VSCodium。仅打开官方下载页；打开页面不代表已安装。",
-            "zh-TW": "這是適用微軟專有授權的 Visual Studio Code 品牌建置，不是 VSCodium。僅開啟官方下載頁；開啟頁面不代表已安裝。",
-            "en": "This is Microsoft’s branded Visual Studio Code build under its proprietary license, not VSCodium. Opens the official download page only; opening it does not mean installation.",
-            "ja": "これは Microsoft のプロプライエタリライセンスが適用される Visual Studio Code ブランドビルドで、VSCodium ではありません。公式ダウンロードページのみを開き、開いてもインストール完了ではありません。",
-            "ko": "VSCodium이 아니라 Microsoft 독점 라이선스가 적용되는 Visual Studio Code 브랜드 빌드입니다. 공식 다운로드 페이지만 열리며 페이지를 열었다고 설치된 것은 아닙니다."
-          },
-          "sourceUrl": "https://code.visualstudio.com/Download",
-          "method": {
-            "type": "official_page",
-            "url": "https://code.visualstudio.com/Download"
-          }
-        },
-        {
-          "id": "visual-studio-code-macos",
-          "os": "macos",
-          "architectures": [
-            "x86_64",
-            "aarch64"
-          ],
-          "requiresAdmin": false,
-          "interactive": false,
-          "note": {
-            "zh-CN": "这是适用微软专有许可的 Visual Studio Code 品牌构建，不是 VSCodium。仅打开官方下载页；打开页面不代表已安装。",
-            "zh-TW": "這是適用微軟專有授權的 Visual Studio Code 品牌建置，不是 VSCodium。僅開啟官方下載頁；開啟頁面不代表已安裝。",
-            "en": "This is Microsoft’s branded Visual Studio Code build under its proprietary license, not VSCodium. Opens the official download page only; opening it does not mean installation.",
-            "ja": "これは Microsoft のプロプライエタリライセンスが適用される Visual Studio Code ブランドビルドで、VSCodium ではありません。公式ダウンロードページのみを開き、開いてもインストール完了ではありません。",
-            "ko": "VSCodium이 아니라 Microsoft 독점 라이선스가 적용되는 Visual Studio Code 브랜드 빌드입니다. 공식 다운로드 페이지만 열리며 페이지를 열었다고 설치된 것은 아닙니다."
-          },
-          "sourceUrl": "https://code.visualstudio.com/Download",
-          "method": {
-            "type": "official_page",
-            "url": "https://code.visualstudio.com/Download"
-          }
-        }
-      ]
-    },
-    {
       "id": "pi-coding-agent",
       "name": "Pi Coding Agent",
       "publisher": "Earendil Inc. & Contributors",
@@ -453,6 +378,9 @@
       "homepage": "https://pi.dev/",
       "mark": "Pi",
       "accent": "#f09082",
+      "sourceRepository": "https://github.com/earendil-works/pi",
+      "license": "MIT",
+      "licenseUrl": "https://raw.githubusercontent.com/earendil-works/pi/main/LICENSE",
       "variants": [
         {
           "id": "pi-coding-agent-linux",
@@ -561,6 +489,9 @@
       "homepage": "https://omp.sh/",
       "mark": "om",
       "accent": "#b46ae0",
+      "sourceRepository": "https://github.com/can1357/oh-my-pi",
+      "license": "MIT",
+      "licenseUrl": "https://raw.githubusercontent.com/can1357/oh-my-pi/main/LICENSE",
       "variants": [
         {
           "id": "omp-linux",
@@ -669,6 +600,9 @@
       "homepage": "https://dbxio.com/en",
       "mark": "DX",
       "accent": "#4d9abf",
+      "sourceRepository": "https://github.com/t8y2/dbx",
+      "license": "Apache-2.0",
+      "licenseUrl": "https://raw.githubusercontent.com/t8y2/dbx/main/LICENSE",
       "variants": [
         {
           "id": "dbx-linux",
@@ -752,6 +686,9 @@
       "homepage": "https://opencode.ai/v2/docs/",
       "mark": "OC",
       "accent": "#f97316",
+      "sourceRepository": "https://github.com/anomalyco/opencode",
+      "license": "MIT",
+      "licenseUrl": "https://raw.githubusercontent.com/anomalyco/opencode/dev/LICENSE",
       "variants": [
         {
           "id": "opencode-linux",
@@ -859,6 +796,9 @@
       "homepage": "https://aider.chat/docs/install.html",
       "mark": "Ai",
       "accent": "#14b8a6",
+      "sourceRepository": "https://github.com/Aider-AI/aider",
+      "license": "Apache-2.0",
+      "licenseUrl": "https://raw.githubusercontent.com/Aider-AI/aider/main/LICENSE.txt",
       "variants": [
         {
           "id": "aider-linux",
@@ -967,6 +907,9 @@
       "homepage": "https://www.geminicli.com/docs/get-started/installation",
       "mark": "G",
       "accent": "#4285f4",
+      "sourceRepository": "https://github.com/google-gemini/gemini-cli",
+      "license": "Apache-2.0",
+      "licenseUrl": "https://raw.githubusercontent.com/google-gemini/gemini-cli/main/LICENSE",
       "variants": [
         {
           "id": "gemini-cli-linux",
@@ -1071,6 +1014,9 @@
       "homepage": "https://developers.openai.com/codex/cli/",
       "mark": "Cx",
       "accent": "#10a37f",
+      "sourceRepository": "https://github.com/openai/codex",
+      "license": "Apache-2.0",
+      "licenseUrl": "https://raw.githubusercontent.com/openai/codex/main/LICENSE",
       "variants": [
         {
           "id": "codex-cli-linux",
@@ -1179,6 +1125,9 @@
       "homepage": "https://zed.dev/download",
       "mark": "Z",
       "accent": "#084ccf",
+      "sourceRepository": "https://github.com/zed-industries/zed",
+      "license": "GPL-3.0-or-later",
+      "licenseUrl": "https://raw.githubusercontent.com/zed-industries/zed/main/LICENSE-GPL",
       "variants": [
         {
           "id": "zed-linux",
@@ -1279,6 +1228,9 @@
       "homepage": "https://github.com/jesseduffield/lazygit",
       "mark": "LG",
       "accent": "#e06c4f",
+      "sourceRepository": "https://github.com/jesseduffield/lazygit",
+      "license": "MIT",
+      "licenseUrl": "https://raw.githubusercontent.com/jesseduffield/lazygit/master/LICENSE",
       "variants": [
         {
           "id": "lazygit-linux",
@@ -1384,6 +1336,9 @@
       "homepage": "https://dbeaver.io/download/",
       "mark": "DB",
       "accent": "#a97c50",
+      "sourceRepository": "https://github.com/dbeaver/dbeaver",
+      "license": "Apache-2.0",
+      "licenseUrl": "https://raw.githubusercontent.com/dbeaver/dbeaver/devel/LICENSE.md",
       "variants": [
         {
           "id": "dbeaver-community-linux",
@@ -1454,110 +1409,6 @@
       ]
     },
     {
-      "id": "neovim",
-      "name": "Neovim",
-      "publisher": "Neovim Team",
-      "category": "dev",
-      "summary": {
-        "zh-CN": "自由开源终端文本编辑器，兼容 Vim 操作并提供 Lua 插件与 LSP 支持。",
-        "zh-TW": "自由開源終端機文字編輯器，相容 Vim 操作並提供 Lua 外掛與 LSP 支援。",
-        "en": "A free and open-source terminal text editor with Vim-style editing, Lua plugins and LSP support.",
-        "ja": "Vim スタイルの編集、Lua プラグイン、LSP に対応する自由でオープンソースのターミナルエディター。",
-        "ko": "Vim 스타일 편집, Lua 플러그인 및 LSP를 지원하는 자유 오픈 소스 터미널 텍스트 편집기."
-      },
-      "homepage": "https://github.com/neovim/neovim/releases/latest",
-      "mark": "N",
-      "accent": "#57a143",
-      "variants": [
-        {
-          "id": "neovim-linux",
-          "os": "linux",
-          "architectures": [
-            "x86_64",
-            "aarch64"
-          ],
-          "requiresAdmin": false,
-          "interactive": false,
-          "note": {
-            "zh-CN": "自由开源终端编辑器。仅打开稳定版发布页；安装后由 nvim --version 的退出码检测，不启动图形界面。",
-            "zh-TW": "自由開源終端機編輯器。僅開啟穩定版發布頁；安裝後由 nvim --version 的結束碼偵測，不啟動圖形介面。",
-            "en": "A free and open-source terminal editor. Opens the stable release page only; after installation, the nvim --version exit code is checked without launching a GUI.",
-            "ja": "自由でオープンソースのターミナルエディター。安定版リリースページのみを開き、インストール後は GUI を起動せず nvim --version の終了コードで確認します。",
-            "ko": "자유 오픈 소스 터미널 편집기로 안정 릴리스 페이지만 엽니다. 설치 후 GUI를 실행하지 않고 nvim --version 종료 코드로 확인합니다."
-          },
-          "sourceUrl": "https://github.com/neovim/neovim/releases/latest",
-          "method": {
-            "type": "official_page",
-            "url": "https://github.com/neovim/neovim/releases/latest"
-          },
-          "detection": {
-            "type": "command",
-            "program": "nvim",
-            "args": [
-              "--version"
-            ]
-          }
-        },
-        {
-          "id": "neovim-windows-x86-64",
-          "os": "windows",
-          "architectures": [
-            "x86_64"
-          ],
-          "requiresAdmin": false,
-          "interactive": false,
-          "note": {
-            "zh-CN": "自由开源终端编辑器。仅打开稳定版发布页；安装后由 nvim --version 的退出码检测，不启动图形界面。",
-            "zh-TW": "自由開源終端機編輯器。僅開啟穩定版發布頁；安裝後由 nvim --version 的結束碼偵測，不啟動圖形介面。",
-            "en": "A free and open-source terminal editor. Opens the stable release page only; after installation, the nvim --version exit code is checked without launching a GUI.",
-            "ja": "自由でオープンソースのターミナルエディター。安定版リリースページのみを開き、インストール後は GUI を起動せず nvim --version の終了コードで確認します。",
-            "ko": "자유 오픈 소스 터미널 편집기로 안정 릴리스 페이지만 엽니다. 설치 후 GUI를 실행하지 않고 nvim --version 종료 코드로 확인합니다."
-          },
-          "sourceUrl": "https://github.com/neovim/neovim/releases/latest",
-          "method": {
-            "type": "official_page",
-            "url": "https://github.com/neovim/neovim/releases/latest"
-          },
-          "detection": {
-            "type": "command",
-            "program": "nvim",
-            "args": [
-              "--version"
-            ]
-          }
-        },
-        {
-          "id": "neovim-macos",
-          "os": "macos",
-          "architectures": [
-            "x86_64",
-            "aarch64"
-          ],
-          "requiresAdmin": false,
-          "interactive": false,
-          "note": {
-            "zh-CN": "自由开源终端编辑器。仅打开稳定版发布页；安装后由 nvim --version 的退出码检测，不启动图形界面。",
-            "zh-TW": "自由開源終端機編輯器。僅開啟穩定版發布頁；安裝後由 nvim --version 的結束碼偵測，不啟動圖形介面。",
-            "en": "A free and open-source terminal editor. Opens the stable release page only; after installation, the nvim --version exit code is checked without launching a GUI.",
-            "ja": "自由でオープンソースのターミナルエディター。安定版リリースページのみを開き、インストール後は GUI を起動せず nvim --version の終了コードで確認します。",
-            "ko": "자유 오픈 소스 터미널 편집기로 안정 릴리스 페이지만 엽니다. 설치 후 GUI를 실행하지 않고 nvim --version 종료 코드로 확인합니다."
-          },
-          "sourceUrl": "https://github.com/neovim/neovim/releases/latest",
-          "method": {
-            "type": "official_page",
-            "url": "https://github.com/neovim/neovim/releases/latest"
-          },
-          "detection": {
-            "type": "command",
-            "program": "nvim",
-            "args": [
-              "--version"
-            ]
-          }
-        }
-      ]
-    },
-    {
       "id": "openidea",
       "name": "OpenIDEA",
       "publisher": "l0ng-ai",
@@ -1572,6 +1423,9 @@
       "homepage": "https://github.com/l0ng-ai/openidea",
       "mark": "OI",
       "accent": "#6c7cff",
+      "sourceRepository": "https://github.com/l0ng-ai/openidea",
+      "license": "Apache-2.0",
+      "licenseUrl": "https://raw.githubusercontent.com/l0ng-ai/openidea/main/LICENSE",
       "variants": [
         {
           "id": "openidea-linux",

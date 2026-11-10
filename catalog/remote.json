@@ -15,6 +15,9 @@
       "homepage": "https://github.com/rustdesk/rustdesk/releases/latest",
       "mark": "R",
       "accent": "#70a5eb",
+      "sourceRepository": "https://github.com/rustdesk/rustdesk",
+      "license": "AGPL-3.0-only",
+      "licenseUrl": "https://raw.githubusercontent.com/rustdesk/rustdesk/master/LICENCE",
       "variants": [
         {
           "id": "rustdesk-linux",
@@ -101,96 +104,6 @@
             "args": [
               "--version"
             ]
-          }
-        }
-      ]
-    },
-    {
-      "id": "parsec",
-      "name": "Parsec",
-      "publisher": "Parsec",
-      "category": "remote",
-      "summary": {
-        "zh-CN": "面向创作、协作与游戏的低延迟远程桌面和屏幕连接工具。",
-        "zh-TW": "面向創作、協作與遊戲的低延遲遠端桌面與螢幕連線工具。",
-        "en": "A low-latency remote desktop and screen-connection tool for creation, collaboration and gaming.",
-        "ja": "制作、コラボレーション、ゲーム向けの低遅延リモートデスクトップ・画面接続ツール。",
-        "ko": "창작, 협업 및 게임을 위한 저지연 원격 데스크톱 및 화면 연결 도구."
-      },
-      "homepage": "https://parsec.app/downloads",
-      "mark": "P",
-      "accent": "#ef6c63",
-      "variants": [
-        {
-          "id": "parsec-linux",
-          "os": "linux",
-          "architectures": [
-            "x86_64",
-            "aarch64"
-          ],
-          "requiresAdmin": true,
-          "interactive": false,
-          "note": {
-            "zh-CN": "支持平台与远程主机能力因系统而异；使用前请核对官网硬件要求。",
-            "zh-TW": "支援平台與遠端主機能力因系統而異；使用前請核對官網硬體需求。",
-            "en": "Supported platforms and remote-host capabilities vary by system; check the official hardware requirements before use.",
-            "ja": "対応プラットフォームとリモートホスト機能はシステムによって異なります。使用前に公式のハードウェア要件を確認してください。",
-            "ko": "지원 플랫폼과 원격 호스트 기능은 시스템에 따라 다릅니다. 사용 전에 공식 하드웨어 요구 사항을 확인하세요."
-          },
-          "sourceUrl": "https://parsec.app/downloads",
-          "method": {
-            "type": "artifact",
-            "url": "https://builds.parsec.app/package/parsec-linux.deb",
-            "fileName": "parsec-linux.deb",
-            "action": "download_package"
-          }
-        },
-        {
-          "id": "parsec-windows",
-          "os": "windows",
-          "architectures": [
-            "x86_64",
-            "aarch64"
-          ],
-          "requiresAdmin": true,
-          "interactive": true,
-          "note": {
-            "zh-CN": "支持平台与远程主机能力因系统而异；使用前请核对官网硬件要求。",
-            "zh-TW": "支援平台與遠端主機能力因系統而異；使用前請核對官網硬體需求。",
-            "en": "Supported platforms and remote-host capabilities vary by system; check the official hardware requirements before use.",
-            "ja": "対応プラットフォームとリモートホスト機能はシステムによって異なります。使用前に公式のハードウェア要件を確認してください。",
-            "ko": "지원 플랫폼과 원격 호스트 기능은 시스템에 따라 다릅니다. 사용 전에 공식 하드웨어 요구 사항을 확인하세요."
-          },
-          "sourceUrl": "https://parsec.app/downloads",
-          "method": {
-            "type": "artifact",
-            "url": "https://builds.parsec.app/package/parsec-windows.exe",
-            "fileName": "parsec-windows.exe",
-            "action": "run_installer"
-          }
-        },
-        {
-          "id": "parsec-macos",
-          "os": "macos",
-          "architectures": [
-            "x86_64",
-            "aarch64"
-          ],
-          "requiresAdmin": true,
-          "interactive": true,
-          "note": {
-            "zh-CN": "支持平台与远程主机能力因系统而异；使用前请核对官网硬件要求。",
-            "zh-TW": "支援平台與遠端主機能力因系統而異；使用前請核對官網硬體需求。",
-            "en": "Supported platforms and remote-host capabilities vary by system; check the official hardware requirements before use.",
-            "ja": "対応プラットフォームとリモートホスト機能はシステムによって異なります。使用前に公式のハードウェア要件を確認してください。",
-            "ko": "지원 플랫폼과 원격 호스트 기능은 시스템에 따라 다릅니다. 사용 전에 공식 하드웨어 요구 사항을 확인하세요."
-          },
-          "sourceUrl": "https://parsec.app/downloads",
-          "method": {
-            "type": "artifact",
-            "url": "https://builds.parsec.app/package/parsec-macos.pkg",
-            "fileName": "parsec-macos.pkg",
-            "action": "run_installer"
           }
         }
       ]

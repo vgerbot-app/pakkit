@@ -1,6 +1,6 @@
 {
-  "schemaVersion": 1,
-  "catalogVersion": "2026.11.05-2",
+  "schemaVersion": 2,
+  "catalogVersion": "2026.11.10-1",
   "homepage": "https://github.com/vgerbot-app/winget-gui/tree/official-install",
   "submissionUrl": "https://github.com/vgerbot-app/winget-gui/issues/new",
   "categories": [
@@ -22,25 +22,6 @@
       },
       "icon": "code",
       "accent": "#4f8cff"
-    },
-    {
-      "id": "network",
-      "name": {
-        "zh-CN": "组网连接",
-        "zh-TW": "組網連線",
-        "en": "Networking",
-        "ja": "ネットワーク接続",
-        "ko": "네트워크 연결"
-      },
-      "description": {
-        "zh-CN": "虚拟组网与网络访问",
-        "zh-TW": "虛擬組網與網路存取",
-        "en": "Virtual networking and network access",
-        "ja": "仮想ネットワークとネットワークアクセス",
-        "ko": "가상 네트워킹 및 네트워크 액세스"
-      },
-      "icon": "network",
-      "accent": "#0ea5e9"
     },
     {
       "id": "remote",
@@ -100,25 +81,6 @@
       "accent": "#3b82f6"
     },
     {
-      "id": "communication",
-      "name": {
-        "zh-CN": "通信协作",
-        "zh-TW": "通訊協作",
-        "en": "Communication",
-        "ja": "コミュニケーション",
-        "ko": "커뮤니케이션"
-      },
-      "description": {
-        "zh-CN": "即时消息、会议与团队协作",
-        "zh-TW": "即時訊息、會議與團隊協作",
-        "en": "Messaging, meetings and team collaboration",
-        "ja": "メッセージ、会議、チーム共同作業",
-        "ko": "메시징, 회의 및 팀 협업"
-      },
-      "icon": "media",
-      "accent": "#06b6d4"
-    },
-    {
       "id": "office",
       "name": {
         "zh-CN": "办公与阅读",
@@ -157,25 +119,6 @@
       "accent": "#a855f7"
     },
     {
-      "id": "gaming",
-      "name": {
-        "zh-CN": "游戏平台",
-        "zh-TW": "遊戲平台",
-        "en": "Gaming",
-        "ja": "ゲーム",
-        "ko": "게임"
-      },
-      "description": {
-        "zh-CN": "游戏库、购买与启动器",
-        "zh-TW": "遊戲庫、購買與啟動器",
-        "en": "Game libraries, stores and launchers",
-        "ja": "ゲームライブラリ、ストア、ランチャー",
-        "ko": "게임 라이브러리, 스토어 및 런처"
-      },
-      "icon": "gamepad",
-      "accent": "#22c55e"
-    },
-    {
       "id": "education",
       "name": {
         "zh-CN": "教育与科学",
@@ -212,25 +155,6 @@
       },
       "icon": "shield",
       "accent": "#ef4444"
-    },
-    {
-      "id": "files",
-      "name": {
-        "zh-CN": "文件工具",
-        "zh-TW": "檔案工具",
-        "en": "File tools",
-        "ja": "ファイルツール",
-        "ko": "파일 도구"
-      },
-      "description": {
-        "zh-CN": "压缩、查找与管理文件",
-        "zh-TW": "壓縮、尋找與管理檔案",
-        "en": "Compress, find and manage files",
-        "ja": "ファイルの圧縮、検索、管理",
-        "ko": "파일 압축, 검색 및 관리"
-      },
-      "icon": "file",
-      "accent": "#eab308"
     },
     {
       "id": "system",

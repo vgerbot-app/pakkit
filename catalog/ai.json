@@ -15,6 +15,9 @@
       "homepage": "https://ollama.com/download",
       "mark": "O",
       "accent": "#b7bec9",
+      "sourceRepository": "https://github.com/ollama/ollama",
+      "license": "MIT",
+      "licenseUrl": "https://raw.githubusercontent.com/ollama/ollama/main/LICENSE",
       "variants": [
         {
           "id": "ollama-linux",
@@ -125,6 +128,9 @@
       "homepage": "https://jan.ai/download",
       "mark": "J",
       "accent": "#5b5bd6",
+      "sourceRepository": "https://github.com/janhq/jan",
+      "license": "Apache-2.0",
+      "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0.txt",
       "variants": [
         {
           "id": "jan-linux-x86-64",

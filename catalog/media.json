@@ -15,6 +15,9 @@
       "homepage": "https://www.videolan.org/vlc/",
       "mark": "V",
       "accent": "#ff8800",
+      "sourceRepository": "https://code.videolan.org/videolan/vlc",
+      "license": "GPL-2.0-or-later",
+      "licenseUrl": "https://code.videolan.org/videolan/vlc/-/raw/master/COPYING",
       "variants": [
         {
           "id": "vlc-linux",
@@ -98,6 +101,9 @@
       "homepage": "https://obsproject.com/download",
       "mark": "OB",
       "accent": "#dce1e8",
+      "sourceRepository": "https://github.com/obsproject/obs-studio",
+      "license": "GPL-2.0-or-later",
+      "licenseUrl": "https://raw.githubusercontent.com/obsproject/obs-studio/master/COPYING",
       "variants": [
         {
           "id": "obs-studio-linux",
@@ -180,6 +186,9 @@
       "homepage": "https://www.gimp.org/downloads/",
       "mark": "G",
       "accent": "#80755f",
+      "sourceRepository": "https://gitlab.gnome.org/GNOME/gimp",
+      "license": "GPL-3.0-or-later",
+      "licenseUrl": "https://gitlab.gnome.org/GNOME/gimp/-/raw/master/COPYING",
       "variants": [
         {
           "id": "gimp-linux",
@@ -264,6 +273,9 @@
       "homepage": "https://www.blender.org/download/",
       "mark": "B",
       "accent": "#ea7600",
+      "sourceRepository": "https://projects.blender.org/blender/blender",
+      "license": "GPL-2.0-or-later",
+      "licenseUrl": "https://projects.blender.org/blender/blender/raw/branch/main/doc/license/GPL-license.txt",
       "variants": [
         {
           "id": "blender-linux",
@@ -346,6 +358,9 @@
       "homepage": "https://krita.org/",
       "mark": "K",
       "accent": "#3daee9",
+      "sourceRepository": "https://invent.kde.org/graphics/krita",
+      "license": "GPL-3.0-only",
+      "licenseUrl": "https://invent.kde.org/graphics/krita/-/raw/master/COPYING",
       "variants": [
         {
           "id": "krita-linux",
@@ -392,89 +407,6 @@
       ]
     },
     {
-      "id": "kdenlive",
-      "name": "Kdenlive",
-      "publisher": "KDE",
-      "category": "media",
-      "summary": {
-        "zh-CN": "KDE 的自由开源非线性视频编辑器，支持多轨时间线、效果、转场、代理剪辑与字幕；采用 GPLv3 许可。",
-        "zh-TW": "KDE 的自由開源非線性影片編輯器，支援多軌時間軸、效果、轉場、代理剪輯與字幕；採用 GPLv3 授權。",
-        "en": "KDE’s free and open-source non-linear video editor with multi-track timelines, effects, transitions, proxy editing and subtitles, licensed under GPLv3.",
-        "ja": "マルチトラックタイムライン、エフェクト、トランジション、プロキシ編集、字幕に対応する KDE の GPLv3 ライセンスの自由でオープンソースなノンリニア動画エディター。",
-        "ko": "멀티트랙 타임라인, 효과, 전환, 프록시 편집 및 자막을 지원하는 KDE의 GPLv3 라이선스 자유 오픈 소스 비선형 비디오 편집기."
-      },
-      "homepage": "https://kdenlive.org/",
-      "mark": "Kd",
-      "accent": "#5274d8",
-      "variants": [
-        {
-          "id": "kdenlive-linux",
-          "os": "linux",
-          "architectures": [
-            "x86_64",
-            "aarch64"
-          ],
-          "requiresAdmin": false,
-          "interactive": false,
-          "note": {
-            "zh-CN": "仅打开官方下载页；x86_64 可直接下载 AppImage，ARM64 请选择 Flatpak（需 Flatpak/Flathub）。AppImage 需赋予执行权限；打开页面不代表已安装。",
-            "zh-TW": "僅開啟官方下載頁；x86_64 可直接下載 AppImage，ARM64 請選擇 Flatpak（需 Flatpak/Flathub）。AppImage 需賦予執行權限；開啟頁面不代表已安裝。",
-            "en": "Opens the official download page only. x86_64 has a direct AppImage; on ARM64, choose the Flatpak, which requires Flatpak/Flathub. Make AppImages executable; opening a page does not mean the app is installed.",
-            "ja": "公式ダウンロードページを開くだけです。x86_64 は AppImage を直接取得でき、ARM64 では Flatpak（Flatpak/Flathub が必要）を選択してください。AppImage は実行可能に設定が必要です。ページを開いてもインストール完了ではありません。",
-            "ko": "공식 다운로드 페이지만 열립니다. x86_64는 AppImage를 직접 받고, ARM64에서는 Flatpak/Flathub가 필요한 Flatpak을 선택하세요. AppImage에는 실행 권한을 부여해야 합니다. 페이지를 열었다고 설치된 것은 아닙니다."
-          },
-          "sourceUrl": "https://kdenlive.org/download/",
-          "method": {
-            "type": "official_page",
-            "url": "https://kdenlive.org/download/"
-          }
-        },
-        {
-          "id": "kdenlive-windows",
-          "os": "windows",
-          "architectures": [
-            "x86_64"
-          ],
-          "requiresAdmin": false,
-          "interactive": false,
-          "note": {
-            "zh-CN": "仅打开官方下载页，适用于 64 位 Windows 10（1809）或更新版本。安装版需要管理员权限；独立版无需安装和管理员权限，但需自行解压并从 bin 文件夹启动；打开页面不代表已安装。",
-            "zh-TW": "僅開啟官方下載頁，適用於 64 位元 Windows 10（1809）或更新版本。安裝版需要管理員權限；獨立版無需安裝與管理員權限，但需自行解壓縮並從 bin 資料夾啟動；開啟頁面不代表已安裝。",
-            "en": "Opens the official download page only, for 64-bit Windows 10 (1809) or newer. The installable build needs administrator rights; the standalone build needs neither installation nor administrator rights, but must be extracted and launched from its bin folder. Opening a page does not mean the app is installed.",
-            "ja": "公式ダウンロードページを開くだけです。64 ビット Windows 10（1809）以降に対応します。インストール版には管理者権限が必要です。スタンドアロン版はインストールと管理者権限が不要ですが、展開して bin フォルダーから起動します。ページを開いてもインストール完了ではありません。",
-            "ko": "공식 다운로드 페이지만 열리며 64비트 Windows 10(1809) 이상이 필요합니다. 설치 빌드에는 관리자 권한이 필요합니다. 독립 실행 빌드는 설치와 관리자 권한이 필요 없지만 압축을 풀고 bin 폴터에서 실행해야 합니다. 페이지를 열었다고 설치된 것은 아닙니다."
-          },
-          "sourceUrl": "https://kdenlive.org/download/",
-          "method": {
-            "type": "official_page",
-            "url": "https://kdenlive.org/download/"
-          }
-        },
-        {
-          "id": "kdenlive-macos",
-          "os": "macos",
-          "architectures": [
-            "x86_64",
-            "aarch64"
-          ],
-          "requiresAdmin": false,
-          "interactive": false,
-          "note": {
-            "zh-CN": "仅打开官方下载页，分别提供 Intel 与 Apple Silicon DMG；当前页面要求 macOS 13 或更新版本。将应用拖入“应用程序”；首次启动可能需要在 Finder 中右键打开并确认；打开页面不代表已安装。",
-            "zh-TW": "僅開啟官方下載頁，分別提供 Intel 與 Apple Silicon DMG；目前頁面要求 macOS 13 或更新版本。將應用程式拖入「應用程式」；首次啟動可能需要在 Finder 中按右鍵開啟並確認；開啟頁面不代表已安裝。",
-            "en": "Opens the official download page only, with separate Intel and Apple Silicon DMGs; the current page requires macOS 13 or newer. Drag the app to Applications. First launch may require right-clicking Open in Finder and confirming; opening a page does not mean the app is installed.",
-            "ja": "公式ダウンロードページを開くだけです。Intel 用と Apple Silicon 用の DMG を別々に提供し、現在のページでは macOS 13 以降が必要です。アプリを「アプリケーション」へドラッグしてください。初回起動時に Finder で右クリックから「開く」を選び、確認が必要な場合があります。ページを開いてもインストール完了ではありません。",
-            "ko": "공식 다운로드 페이지만 열리며 Intel 및 Apple Silicon용 DMG가 각각 제공됩니다. 현재 페이지 기준 macOS 13 이상이 필요합니다. 앱을 응용 프로그램으로 드래그하세요. 첫 실행 시 Finder에서 마우스 오른쪽 버튼으로 열기를 선택하고 확인해야 할 수 있습니다. 페이지를 열었다고 설치된 것은 아닙니다."
-          },
-          "sourceUrl": "https://kdenlive.org/download/",
-          "method": {
-            "type": "official_page",
-            "url": "https://kdenlive.org/download/"
-          }
-        }
-      ]
-    },
-    {
       "id": "audacity",
       "name": "Audacity",
       "publisher": "Muse Group & contributors",
@@ -489,6 +421,9 @@
       "homepage": "https://www.audacityteam.org/",
       "mark": "A",
       "accent": "#2140d8",
+      "sourceRepository": "https://github.com/audacity/audacity",
+      "license": "GPL-3.0-only",
+      "licenseUrl": "https://raw.githubusercontent.com/audacity/audacity/master/LICENSE.txt",
       "variants": [
         {
           "id": "audacity-linux-x86-64",
@@ -633,6 +568,9 @@
       "homepage": "https://handbrake.fr/",
       "mark": "HB",
       "accent": "#b54a32",
+      "sourceRepository": "https://github.com/HandBrake/HandBrake",
+      "license": "GPL-2.0-only",
+      "licenseUrl": "https://raw.githubusercontent.com/HandBrake/HandBrake/master/COPYING",
       "variants": [
         {
           "id": "handbrake-linux",

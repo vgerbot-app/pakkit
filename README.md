@@ -1,6 +1,8 @@
-# Pakkit 官网直装目录
+# Pakkit 开源软件目录
 
-本分支维护分类目录 `catalog/`、拆分脚本 `scripts/split_catalog.py` 和本说明。Pakkit 启动时从本分支读取远程目录；目录中的脚本和安装包均来自软件官方来源，Pakkit 不托管安装包，也不因为脚本结束、安装器启动、文件下载或官网打开而宣称软件已安装。
+本分支维护开源软件分类目录 `catalog/`、拆分脚本 `scripts/split_catalog.py` 和本说明。每个软件必须具有规范源码仓库、当前有效且经 OSI 批准的 SPDX 许可证表达式，以及经维护者人工核对的许可证原文链接。Pakkit 启动时从本分支读取远程目录；目录中的脚本和安装包均来自软件官方来源，Pakkit 不托管安装包，也不因为脚本结束、安装器启动、文件下载或官网打开而宣称软件已安装。
+
+本批目录按逐条审核表收录 10 个分类、36 款软件、108 个安装变体；数量是本次验收结果，不是长期固定契约。
 
 ## 文件布局
 
@@ -8,13 +10,13 @@
 - `catalog/<category-id>.json`：仅包含 `apps` 数组，存放对应分类的软件条目；条目必须保持所要求的分类内顺序。
 - `scripts/split_catalog.py`：从已验收的单文件目录生成完整索引和分类文件，逐文件原子替换，并校验合并结果与源目录一致。遇到未列入索引的旧 JSON 文件会拒绝运行，不会删除未知文件。
 
-客户端先下载索引，再按索引顺序下载每个分类文件，组合为完整目录后执行同一套全目录校验。分类文件缺失、重复、JSON 非法、软件放在错误分类或跨分类出现重复 ID，都会使整个目录不可用；不会显示部分分类或回退旧单文件。
+客户端先下载索引，再按索引顺序下载每个分类文件，组合为完整目录后执行同一套全目录校验。分类文件缺失、重复、JSON 非法、软件放在错误分类、跨分类出现重复 ID，或任一软件缺少、填错开源许可元数据，都会使整个目录不可用；不会显示部分分类或回退旧单文件。目录运行时不联网验证许可证原文，原文真实性由发布前人工审核保证。
 
 完整索引与所有分类文件的总大小上限为 4 MiB。
 
 ## 顶层字段
 
-- `schemaVersion`：目录结构版本，目前必须为整数 `1`。
+- `schemaVersion`：目录结构版本，目前必须为整数 `2`。旧客户端不兼容此契约，新客户端也不会接受旧版 `schemaVersion: 1` 目录；不提供旧目录兼容或部分回退。
 - `catalogVersion`：本次目录发布版本，用于界面和诊断。每批已验收条目发布时单独更新。
 - `homepage`：目录维护页面的 HTTPS 地址。
 - `submissionUrl`：预填软件提交内容所使用的 GitHub 新 Issue HTTPS 地址。
@@ -35,7 +37,7 @@
 - `icon`：只可使用客户端白名单中的 `code`、`cpu`、`driver`、`file`、`flask`、`gamepad`、`media`、`network`、`office`、`package`、`shield`、`wrench`。未知图标会拒绝整份目录，不会静默回退。
 - `accent`：以 `#` 开头的六位小写十六进制颜色。
 
-新增分类或图标前，必须先发布支持该契约的 Pakkit 客户端，再发布目录，避免旧客户端拒绝整份远程 JSON。
+新增分类、图标或目录契约前，必须先发布支持该契约的 Pakkit 客户端，再发布目录，避免旧客户端拒绝整份远程 JSON。
 
 ## 软件与变体
 
@@ -48,13 +50,16 @@
 - `homepage`：官方 HTTPS 首页、安装文档或规范仓库发布页。
 - `mark`：卡片标识，最多两个字符。
 - `accent`：以 `#` 开头的六位小写十六进制颜色。
+- `sourceRepository`：所分发软件的规范源码仓库 HTTPS 地址，不能只填发布下载页。
+- `license`：SPDX 许可证表达式。客户端严格解析表达式，并要求其中每个许可证 ID 当前有效且经 OSI 批准；拒绝弃用 ID、非 OSI 许可证和 `LicenseRef`。`AND` 与 `OR` 中的每个候选项都执行相同检查。
+- `licenseUrl`：与上述许可证对应的许可证原文 HTTPS 地址。发布前必须人工核对其内容与所分发软件及 SPDX 表达式一致，不能把 GitHub Releases 的 `repository` 字段当作许可证证明。
 - `variants`：非空安装方式数组。
 
 每个变体必须有全局唯一的 `id`、`os`、`architectures`、`requiresAdmin`、`interactive`、五语言 `note`、HTTPS `sourceUrl` 和 `method`。`os` 为 `linux`、`windows` 或 `macos`；`architectures` 只能包含 `x86_64`、`aarch64`，且同一软件在同一 OS 下不得有重复架构覆盖。
 
 不同 OS 或不同架构使用不同变体。不得从 x86_64 支持推断 ARM64 支持，也不得用一个未确认的资产 URL 同时代表两个架构。默认只收录 stable；test、nightly、canary 或滚动最新资产不能冒充稳定版。
 
-摘要和说明应如实标出专有许可、试用或订阅、账号要求、GUI／CLI／便携／服务形态，以及权限、驱动和系统修改风险。共用安装器的多个产品不建立重复入口，区域品牌别名可在摘要中说明。
+摘要和说明应如实标出试用或订阅、账号要求、GUI／CLI／便携／服务形态，以及权限、驱动和系统修改风险。许可元数据只声明所分发软件，不把账号服务、单独模型或第三方内容声称为开源。共用安装器的多个产品不建立重复入口，区域品牌别名可在摘要中说明。
 
 `detection` 可省略；省略表示安装状态未知，不表示未安装。命令检测格式为：
 
@@ -83,11 +88,11 @@
 ## 添加或更新软件
 
 1. 核对规范厂商／项目身份、官方 HTTPS 首页、安装文档或规范仓库 Release，记录准确的名称、开发者、命令、下载地址和注意事项。排除第三方 Windows 构建、非官方重打包、网页／移动／服务器-only 项目、停止维护项目和不明镜像。
-2. 选择现有分类，新增全局唯一软件 ID，并补齐五语言摘要和说明。
-3. 按实际支持的 OS 和架构拆分变体。只有满足上述固定资产门槛才使用 `artifact`；有明确官方命令才使用 `script`；其余使用 `official_page`。
-4. 如实设置权限与交互要求。只添加可靠的快速命令检测；无法可靠判断时省略 `detection`。
-5. 逐项复核许可、账号、稳定通道、资产哈希、Windows 签名者与架构，并在该批发版检查单记录结果。核验失败的条目保留为 held，不为凑数降低标准。
-6. 更新索引中的 `catalogVersion`，执行下方本地校验，并人工复核新增或变更的所有 URL、命令、文件格式和架构。
+2. 核对规范源码仓库与许可证原文，准确填写 `sourceRepository`、`license` 和 `licenseUrl`。许可证表达式中的每个 ID 都必须当前有效且经 OSI 批准，不接受 `LicenseRef`、弃用 ID、非 OSI 许可证或专有许可；无法确认所分发软件的完整许可范围时不收录。
+3. 选择现有分类，新增全局唯一软件 ID，并补齐五语言摘要和说明。
+4. 按实际支持的 OS 和架构拆分变体。只有满足上述固定资产门槛才使用 `artifact`；有明确官方命令才使用 `script`；其余使用 `official_page`。
+5. 如实设置权限与交互要求。只添加可靠的快速命令检测；无法可靠判断时省略 `detection`。
+6. 逐项复核许可原文、账号、稳定通道、资产哈希、Windows 签名者与架构，并在该批发版检查单记录结果。核验失败的条目保留为 held，不为凑数降低标准。
 7. 只提交本分支的 `catalog/`、拆分脚本和 `README.md`。Pakkit 的「提交软件」按钮只打开预填 GitHub Issue，不代表目录维护者已经审核，也不会直接修改本分支。
 
 ## 本地校验与发布顺序
@@ -104,15 +109,15 @@ python3 scripts/split_catalog.py catalog.json catalog
 
 ```sh
 jq empty catalog/*.json
-jq -s '{categories: (.[0].categories | length), apps: ([.[1:][].apps[]] | length), variants: ([.[1:][].apps[].variants[]] | length)}' catalog/index.json catalog/dev.json catalog/network.json catalog/remote.json catalog/tools.json catalog/browser.json catalog/communication.json catalog/office.json catalog/media.json catalog/gaming.json catalog/education.json catalog/security.json catalog/files.json catalog/system.json catalog/ai.json
+jq -s '{categories: (.[0].categories | length), apps: ([.[1:][].apps[]] | length), variants: ([.[1:][].apps[].variants[]] | length)}' catalog/index.json catalog/dev.json catalog/remote.json catalog/tools.json catalog/browser.json catalog/office.json catalog/media.json catalog/education.json catalog/security.json catalog/system.json catalog/ai.json
 ```
 
-Pakkit 的 Rust 解析器是完整契约的唯一权威。不要另维护一套会逐渐偏离客户端的 `jq` 校验器。在包含对应客户端源码的主工作树运行：
+Pakkit 的 Rust 解析器是完整契约的唯一权威，负责逐软件校验三项开源元数据、HTTPS 和严格的 SPDX／OSI 规则。不要另维护一套会逐渐偏离客户端的 `jq` 政策校验器。在包含对应客户端源码的主工作树运行：
 
 ```sh
 PAKKIT_OFFICIAL_CATALOG_PATH=/path/to/catalog/index.json cargo test --locked real_catalog -- --ignored --nocapture
 ```
 
-该测试读取索引及其同目录的全部索引分类文件，检查合计大小，不访问网络；普通测试也不依赖本分支 checkout。独立 GitHub Actions 工作流会定时或手动 checkout `master` 与 `official-install`，用客户端解析器验证已发布目录。
+该测试读取索引及其同目录的全部索引分类文件，检查合计大小，不访问网络；普通测试也不依赖本分支 checkout。独立 GitHub Actions 工作流会在 `official-install` 推送、拉取请求、定时或手动运行时 checkout `master` 与 `official-install`，用客户端解析器验证已发布目录。
 
-发布顺序必须为：先合并并发布客户端支持，再验证并发布目录，最后确认远程索引和全部分类 JSON 与本地已验证内容一致，并用实际客户端刷新。当前候选池不写入已发布目录；后续每批只发布已验收条目。
+发布顺序必须为：先合并并发布支持 `schemaVersion: 2` 的客户端，再用该客户端验证并发布目录，最后确认远程索引和全部分类 JSON 与本地已验证内容一致，并用实际客户端刷新。不得先发布新目录，也不得为兼容旧客户端退回 schema 1。当前候选池不写入已发布目录；后续每批只发布已验收条目。
