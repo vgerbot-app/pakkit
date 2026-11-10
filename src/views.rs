@@ -14,7 +14,7 @@ use crate::official::{
 use crate::queue::QueueAction;
 use crate::shell::AppView;
 use crate::state::{AppState, Language, Route, SearchSource, page_slice};
-use crate::theme::Palette;
+use crate::theme::{FONT_BODY, FONT_META, FONT_PAGE, FONT_SECTION, HAIRLINE, Palette};
 use crate::widgets::{self, BtnKind, BtnSize, PillKind};
 use gpui_kit::component::input::InputState;
 use gpui_kit::component::{Disableable as _, StyledExt as _};
@@ -168,37 +168,10 @@ fn home(state: &AppState, p: &Palette, cx: &mut Context<AppView>) -> AnyElement 
         .into_any_element()
 }
 
-/// The hero panel: glow, chip, headline, copy, buttons, three stat tiles.
+/// The hero panel: chip, headline, copy, buttons, three stat tiles.
 fn hero(state: &AppState, p: &Palette, cx: &mut Context<AppView>) -> AnyElement {
     widgets::card(p)
-        .relative()
-        .overflow_hidden()
-        .rounded(px(18.))
-        .p(px(24.))
-        .child(
-            div()
-                .absolute()
-                .top(px(-80.))
-                .left(px(-40.))
-                .size(px(260.))
-                .rounded(px(9999.))
-                .bg(Hsla {
-                    a: 0.16,
-                    ..p.accent
-                }),
-        )
-        .child(
-            div()
-                .absolute()
-                .bottom(px(-90.))
-                .right(px(-40.))
-                .size(px(240.))
-                .rounded(px(9999.))
-                .bg(Hsla {
-                    a: 0.16,
-                    ..p.accent2
-                }),
-        )
+        .p(px(20.))
         .child(
             div()
                 .relative()
@@ -212,14 +185,14 @@ fn hero(state: &AppState, p: &Palette, cx: &mut Context<AppView>) -> AnyElement 
                         .min_w(px(320.))
                         .child(
                             div()
-                                .text_size(px(24.))
+                                .text_size(px(FONT_PAGE))
                                 .font_semibold()
                                 .mt(px(12.))
                                 .child(tr!("home.hero_title")),
                         )
                         .child(
                             div()
-                                .text_size(px(13.))
+                                .text_size(px(FONT_BODY))
                                 .line_height(relative(1.6))
                                 .text_color(p.ink2)
                                 .mt(px(8.))
@@ -246,12 +219,10 @@ fn hero(state: &AppState, p: &Palette, cx: &mut Context<AppView>) -> AnyElement 
                                     )),
                                 )
                                 .child(
-                                    widgets::btn(
+                                    widgets::btn_ghost(
                                         cx,
                                         p,
                                         "hero-sources",
-                                        BtnKind::Outline,
-                                        BtnSize::Regular,
                                         tr!("home.manage_sources"),
                                     )
                                     .on_click(cx.listener(
@@ -322,10 +293,15 @@ fn category_tile(
                         div()
                             .flex_1()
                             .min_w_0()
-                            .child(div().text_size(px(13.5)).font_semibold().child(id.label()))
                             .child(
                                 div()
-                                    .text_size(px(11.5))
+                                    .text_size(px(FONT_BODY))
+                                    .font_semibold()
+                                    .child(id.label()),
+                            )
+                            .child(
+                                div()
+                                    .text_size(px(FONT_META))
                                     .text_color(p.muted)
                                     .truncate()
                                     .child(id.description()),
@@ -338,13 +314,11 @@ fn category_tile(
                     .items_center()
                     .gap(px(6.))
                     .pt(px(10.))
-                    .border_t_1()
-                    .border_color(p.line)
                     .child(widgets::pill(p, PillKind::Line, tag))
                     .child(
                         div()
                             .ml_auto()
-                            .text_size(px(11.))
+                            .text_size(px(FONT_META))
                             .text_color(p.muted)
                             .child(tr!("category.count", count = count)),
                     ),
@@ -397,14 +371,14 @@ fn package_card(
                             .min_w_0()
                             .child(
                                 div()
-                                    .text_size(px(13.))
+                                    .text_size(px(FONT_BODY))
                                     .font_semibold()
                                     .truncate()
                                     .child(pkg.name.clone()),
                             )
                             .child(
                                 div()
-                                    .text_size(px(11.5))
+                                    .text_size(px(FONT_META))
                                     .text_color(p.muted)
                                     .truncate()
                                     .child(pkg.publisher.clone()),
@@ -428,7 +402,7 @@ fn package_card(
                 div()
                     .flex()
                     .items_center()
-                    .text_size(px(11.))
+                    .text_size(px(FONT_META))
                     .child(widgets::meta_item(
                         p,
                         IconKey::Terminal,
@@ -447,8 +421,6 @@ fn package_card(
                     .items_center()
                     .gap(px(8.))
                     .pt(px(10.))
-                    .border_t_1()
-                    .border_color(p.line)
                     .child(
                         widgets::btn(
                             cx,
@@ -471,7 +443,7 @@ fn package_card(
                         div()
                             .id(SharedString::from(format!("open-{id}")))
                             .ml_auto()
-                            .text_size(px(11.5))
+                            .text_size(px(FONT_META))
                             .text_color(p.accent)
                             .cursor_pointer()
                             .hover(move |this| this.underline())
@@ -502,7 +474,9 @@ fn recent_row(
         .gap(px(10.))
         .px(px(14.))
         .py(px(10.))
-        .when(divided, |this| this.border_t_1().border_color(p.line))
+        .when(divided, |this| {
+            this.border_t(px(HAIRLINE)).border_color(p.line)
+        })
         .cursor_pointer()
         .child(widgets::pkg_icon(
             p,
@@ -515,16 +489,19 @@ fn recent_row(
             div()
                 .flex_1()
                 .min_w_0()
+                .flex()
+                .flex_col()
+                .justify_center()
                 .child(
                     div()
-                        .text_size(px(12.5))
+                        .text_size(px(FONT_META))
                         .font_medium()
                         .truncate()
                         .child(pkg.name.clone()),
                 )
                 .child(
                     div()
-                        .text_size(px(11.5))
+                        .text_size(px(FONT_META))
                         .text_color(p.muted)
                         .truncate()
                         .child(pkg.publisher.clone()),
@@ -538,7 +515,7 @@ fn recent_row(
             div()
                 .w(px(80.))
                 .text_right()
-                .text_size(px(11.))
+                .text_size(px(FONT_META))
                 .text_color(p.muted)
                 .child(pkg.updated.clone().unwrap_or_else(|| "—".to_owned())),
         )
@@ -575,7 +552,6 @@ fn category_detail(
     id: CategoryId,
     cx: &mut Context<AppView>,
 ) -> AnyElement {
-    let color = Palette::from_hex(id.color());
     let packages = state.category_packages(id);
     // `install_all` below keeps the full list; only the grid is paged.
     let (page_rows, page, pages) = page_slice(&packages, state.category_page);
@@ -598,7 +574,7 @@ fn category_detail(
             .flex()
             .items_center()
             .gap(px(4.))
-            .text_size(px(12.5))
+            .text_size(px(FONT_META))
             .text_color(p.muted)
             .cursor_pointer()
             .hover(move |this| this.text_color(p.ink))
@@ -611,77 +587,66 @@ fn category_detail(
 
     // Hero banner tinted by the category colour.
     let hero = div().px(px(24.)).pt(px(12.)).child(
-        widgets::card(p)
-            .relative()
-            .overflow_hidden()
-            .rounded(px(18.))
-            .p(px(20.))
-            .child(
-                div()
-                    .absolute()
-                    .top(px(-70.))
-                    .right(px(-30.))
-                    .size(px(240.))
-                    .rounded(px(9999.))
-                    .bg(Hsla { a: 0.18, ..color }),
-            )
-            .child(
-                div()
-                    .relative()
-                    .flex()
-                    .items_center()
-                    .gap(px(14.))
-                    .child(widgets::tinted_chip(p, id.icon(), id.color(), 52., 26.))
-                    .child(
-                        div()
-                            .flex_1()
-                            .min_w_0()
-                            .child(div().text_size(px(20.)).font_semibold().child(id.label()))
-                            .child(
-                                div()
-                                    .text_size(px(12.5))
-                                    .text_color(p.ink2)
-                                    .child(id.description()),
-                            )
-                            // A horizontal flex hugs its main-axis
-                            // content, so the pill shrinks to the
-                            // label instead of stretching across the
-                            // hero like a block child would.
-                            .child(div().mt(px(6.)).flex().child(widgets::pill(
-                                p,
-                                PillKind::Line,
-                                tr!("category.packages_count", count = packages.len()),
-                            ))),
-                    )
-                    .child(
-                        widgets::btn(
-                            cx,
-                            p,
-                            "cat-install-all",
-                            BtnKind::Primary,
-                            BtnSize::Regular,
-                            tr!("category.install_all"),
+        widgets::card(p).relative().p(px(20.)).child(
+            div()
+                .relative()
+                .flex()
+                .items_center()
+                .gap(px(14.))
+                .child(widgets::tinted_chip(p, id.icon(), id.color(), 52., 26.))
+                .child(
+                    div()
+                        .flex_1()
+                        .min_w_0()
+                        .child(
+                            div()
+                                .text_size(px(FONT_PAGE))
+                                .font_semibold()
+                                .child(id.label()),
                         )
-                        // The disabled style fades the label to 50% of
-                        // the muted colour, so it is swapped for a
-                        // readable one plus a tooltip that says why.
-                        .when(install_all.is_empty(), |button| {
-                            button
-                                .disabled(true)
-                                .text_color(p.muted)
-                                .bg(p.tint(p.accent, 0.15))
-                                .border_color(p.tint(p.accent, 0.25))
-                                .tooltip(tr!("category.all_installed"))
-                        })
-                        .on_click(cx.listener(
-                            move |this, _, window, cx| {
-                                for id in &install_all {
-                                    this.enqueue(id, QueueAction::Install, window, cx);
-                                }
-                            },
-                        )),
-                    ),
-            ),
+                        .child(
+                            div()
+                                .text_size(px(FONT_META))
+                                .text_color(p.ink2)
+                                .child(id.description()),
+                        )
+                        // A horizontal flex hugs its main-axis
+                        // content, so the pill shrinks to the
+                        // label instead of stretching across the
+                        // hero like a block child would.
+                        .child(div().mt(px(6.)).flex().child(widgets::pill(
+                            p,
+                            PillKind::Line,
+                            tr!("category.packages_count", count = packages.len()),
+                        ))),
+                )
+                .child(
+                    widgets::btn(
+                        cx,
+                        p,
+                        "cat-install-all",
+                        BtnKind::Primary,
+                        BtnSize::Regular,
+                        tr!("category.install_all"),
+                    )
+                    // The disabled style fades the label to 50% of
+                    // the muted colour, so it is swapped for a
+                    // readable one plus a tooltip that says why.
+                    .when(install_all.is_empty(), |button| {
+                        button
+                            .disabled(true)
+                            .text_color(p.muted)
+                            .bg(p.tint(p.accent, 0.15))
+                            .border_color(p.tint(p.accent, 0.25))
+                            .tooltip(tr!("category.all_installed"))
+                    })
+                    .on_click(cx.listener(move |this, _, window, cx| {
+                        for id in &install_all {
+                            this.enqueue(id, QueueAction::Install, window, cx);
+                        }
+                    })),
+                ),
+        ),
     );
 
     let sort_bar =
@@ -696,7 +661,13 @@ fn category_detail(
                         .flex()
                         .items_center()
                         .gap(px(8.))
-                        .child(widgets::section_label(p, tr!("category.sort_label")))
+                        .child(
+                            div()
+                                .text_size(px(FONT_META))
+                                .font_semibold()
+                                .text_color(p.muted)
+                                .child(tr!("category.sort_label")),
+                        )
                         .child(widgets::seg_control(
                             p,
                             "cat-sort",
@@ -751,7 +722,7 @@ fn category_detail(
                 this.child(
                     div()
                         .flex_none()
-                        .border_t_1()
+                        .border_t(px(HAIRLINE))
                         .border_color(p.line)
                         .child(pager(
                             p,
@@ -830,12 +801,17 @@ fn pager(
                 cx.notify();
             })),
         )
-        .child(div().text_size(px(11.)).text_color(p.muted).child(tr!(
-            "pager.status",
-            page = page + 1,
-            pages = pages,
-            count = count
-        )))
+        .child(
+            div()
+                .text_size(px(FONT_META))
+                .text_color(p.muted)
+                .child(tr!(
+                    "pager.status",
+                    page = page + 1,
+                    pages = pages,
+                    count = count
+                )),
+        )
         .child(
             widgets::btn(
                 cx,
@@ -915,13 +891,12 @@ fn search(state: &AppState, command: &str, p: &Palette, cx: &mut Context<AppView
     let sorts = widgets::sort_items();
     let command_for_copy = command.to_owned();
 
-    let filter_card = widgets::card(p)
-        .mx(px(24.))
-        .p(px(10.))
+    let filter_card = div()
+        .px(px(24.))
         .flex()
         .items_center()
         .flex_wrap()
-        .gap(px(10.))
+        .gap(px(12.))
         .child(widgets::seg_control(
             p,
             "src-seg",
@@ -931,7 +906,6 @@ fn search(state: &AppState, command: &str, p: &Palette, cx: &mut Context<AppView
                 this.set_search_source(value, window, cx);
             }),
         ))
-        .child(div().w(px(1.)).h(px(20.)).bg(p.line))
         .child(widgets::seg_control(
             p,
             "status-seg",
@@ -968,49 +942,54 @@ fn search(state: &AppState, command: &str, p: &Palette, cx: &mut Context<AppView
                 .into_any_element(),
         )
         .child(
-            widgets::icon_btn("copy-command", IconKey::Copy, 24., p.muted).on_click(cx.listener(
-                move |this, _, window, cx| {
-                    this.copy(&command_for_copy, window, cx);
-                },
-            )),
+            widgets::icon_btn(
+                "copy-command",
+                IconKey::Copy,
+                24.,
+                p.muted,
+                tr!("common.copy"),
+            )
+            .on_click(cx.listener(move |this, _, window, cx| {
+                this.copy(&command_for_copy, window, cx);
+            })),
         );
 
     // The view fills the content pane: head/filters/command stay pinned and
     // only the card grid scrolls, so the pager keeps a fixed slot at the
     // bottom instead of riding along with the cards.
-    let body = if results.is_empty() && state.searching {
-        div()
-            .id("search-body")
-            .flex_1()
-            .min_h_0()
-            .overflow_y_scroll()
-            .child(
-                widgets::page_body().child(
-                    div()
-                        .flex()
-                        .flex_wrap()
-                        .justify_center()
-                        .gap(px(12.))
-                        .children((0..8).map(|_| widgets::skeleton_card(p).into_any_element())),
-                ),
-            )
-            .into_any_element()
-    } else if results.is_empty() {
-        div()
-            .id("search-body")
-            .flex_1()
-            .min_h_0()
-            .overflow_y_scroll()
-            .child(widgets::page_body().child(widgets::empty_state(
-                p,
-                IconKey::Search,
-                if state.query.trim().is_empty() {
-                    tr!("search.empty_none")
-                } else {
-                    tr!("search.empty_no_match")
-                },
-                tr!("search.empty_hint"),
-                vec![
+    let body =
+        if results.is_empty() && state.searching {
+            div()
+                .id("search-body")
+                .flex_1()
+                .min_h_0()
+                .overflow_y_scroll()
+                .child(
+                    widgets::page_body().child(
+                        div()
+                            .flex()
+                            .flex_wrap()
+                            .gap(px(12.))
+                            .children((0..8).map(|_| widgets::skeleton_card(p).into_any_element())),
+                    ),
+                )
+                .into_any_element()
+        } else if results.is_empty() {
+            div()
+                .id("search-body")
+                .flex_1()
+                .min_h_0()
+                .overflow_y_scroll()
+                .child(widgets::page_body().child(widgets::empty_state(
+                    p,
+                    IconKey::Search,
+                    if state.query.trim().is_empty() {
+                        tr!("search.empty_none")
+                    } else {
+                        tr!("search.empty_no_match")
+                    },
+                    tr!("search.empty_hint"),
+                    vec![
                     widgets::btn(
                         cx,
                         p,
@@ -1036,52 +1015,45 @@ fn search(state: &AppState, command: &str, p: &Palette, cx: &mut Context<AppView
                     }))
                     .into_any_element(),
                 ],
-            )))
-            .into_any_element()
-    } else {
-        div()
-            .flex_1()
-            .min_h_0()
-            .flex()
-            .flex_col()
-            .child(
-                div()
-                    .id("search-results")
-                    .flex_1()
-                    .min_h_0()
-                    .overflow_y_scroll()
-                    .child(
-                        widgets::page_body().child(
-                            div()
-                                .flex()
-                                .flex_wrap()
-                                .justify_center()
-                                .gap(px(12.))
-                                .children(
-                                    page_rows.iter().map(|pkg| package_card(state, p, pkg, cx)),
-                                ),
-                        ),
-                    ),
-            )
-            .when(pages > 1, |this| {
-                this.child(
+                )))
+                .into_any_element()
+        } else {
+            div()
+                .flex_1()
+                .min_h_0()
+                .flex()
+                .flex_col()
+                .child(
                     div()
-                        .flex_none()
-                        .border_t_1()
-                        .border_color(p.line)
-                        .child(pager(
-                            p,
-                            "search-pager",
-                            page,
-                            pages,
-                            results.len(),
-                            cx,
-                            |this, next, _| this.state.search_page = next,
+                        .id("search-results")
+                        .flex_1()
+                        .min_h_0()
+                        .overflow_y_scroll()
+                        .child(widgets::page_body().child(
+                            div().flex().flex_wrap().gap(px(12.)).children(
+                                page_rows.iter().map(|pkg| package_card(state, p, pkg, cx)),
+                            ),
                         )),
                 )
-            })
-            .into_any_element()
-    };
+                .when(pages > 1, |this| {
+                    this.child(
+                        div()
+                            .flex_none()
+                            .border_t(px(HAIRLINE))
+                            .border_color(p.line)
+                            .child(pager(
+                                p,
+                                "search-pager",
+                                page,
+                                pages,
+                                results.len(),
+                                cx,
+                                |this, next, _| this.state.search_page = next,
+                            )),
+                    )
+                })
+                .into_any_element()
+        };
 
     div()
         .flex()
@@ -1156,13 +1128,13 @@ fn installed(state: &AppState, p: &Palette, cx: &mut Context<AppView>) -> AnyEle
         .gap(px(12.))
         .px(px(14.))
         .py(px(9.))
-        .text_size(px(11.))
+        .text_size(px(FONT_META))
         .text_color(p.muted)
         .bg(Hsla {
             a: 0.6,
             ..p.surface2
         })
-        .border_b_1()
+        .border_b(px(HAIRLINE))
         .border_color(p.line)
         .child(div().flex_1().child(tr!("installed.col_package")))
         .child(div().w(px(110.)).child(tr!("installed.col_version")))
@@ -1215,9 +1187,9 @@ fn installed(state: &AppState, p: &Palette, cx: &mut Context<AppView>) -> AnyEle
                         .gap(px(6.))
                         .px(px(14.))
                         .py(px(10.))
-                        .border_t_1()
+                        .border_t(px(HAIRLINE))
                         .border_color(p.line)
-                        .text_size(px(11.))
+                        .text_size(px(FONT_META))
                         .text_color(p.muted)
                         .child(icon(IconKey::Shield, px(12.), p.muted))
                         .child(tr!("installed.elevation_note")),
@@ -1249,7 +1221,9 @@ fn installed_row(
         .gap(px(12.))
         .px(px(14.))
         .py(px(10.))
-        .when(divided, |this| this.border_t_1().border_color(p.line))
+        .when(divided, |this| {
+            this.border_t(px(HAIRLINE)).border_color(p.line)
+        })
         .child(widgets::pkg_icon(
             p,
             pkg,
@@ -1263,14 +1237,14 @@ fn installed_row(
                 .min_w_0()
                 .child(
                     div()
-                        .text_size(px(12.5))
+                        .text_size(px(FONT_META))
                         .font_medium()
                         .truncate()
                         .child(pkg.name.clone()),
                 )
                 .child(
                     div()
-                        .text_size(px(11.))
+                        .text_size(px(FONT_META))
                         .font_family("Cascadia Code")
                         .text_color(p.muted)
                         .truncate()
@@ -1280,7 +1254,7 @@ fn installed_row(
         .child(
             div()
                 .w(px(110.))
-                .text_size(px(11.5))
+                .text_size(px(FONT_META))
                 .font_family("Cascadia Code")
                 .text_color(p.ink2)
                 .truncate()
@@ -1290,7 +1264,7 @@ fn installed_row(
             div()
                 .w(px(70.))
                 .text_right()
-                .text_size(px(11.5))
+                .text_size(px(FONT_META))
                 .text_color(p.muted)
                 .child(pkg.size.clone().unwrap_or_else(|| "—".to_owned())),
         )
@@ -1320,6 +1294,7 @@ fn installed_row(
                         IconKey::Trash,
                         28.,
                         p.muted,
+                        tr!("common.uninstall"),
                     )
                     .on_click(cx.listener(move |this, _, window, cx| {
                         dialogs::confirm_uninstall(this, &ter_id, window, cx);
@@ -1341,37 +1316,51 @@ fn official_install(
     let head = widgets::page_head(
         p,
         tr!("official.title"),
-        Some(tr!("official.subtitle").into()),
+        if loading {
+            Some(tr!("official.loading").into())
+        } else {
+            Some(tr!("official.subtitle").into())
+        },
         vec![
-            widgets::button_border(
-                p,
-                BtnKind::Soft,
-                widgets::btn(
-                    cx,
-                    p,
-                    "official-refresh",
-                    BtnKind::Soft,
-                    BtnSize::Regular,
-                    tr!("official.refresh"),
+            div()
+                .h(px(34.))
+                .min_h(px(34.))
+                .flex()
+                .items_center()
+                .child(
+                    widgets::btn(
+                        cx,
+                        p,
+                        "official-refresh",
+                        BtnKind::Soft,
+                        BtnSize::Regular,
+                        tr!("official.refresh"),
+                    )
+                    .disabled(loading)
+                    .on_click(cx.listener(|this, _, _, cx| {
+                        this.refresh_official_catalog(cx);
+                    })),
                 )
-                .disabled(loading)
-                .on_click(cx.listener(|this, _, _, cx| {
-                    this.refresh_official_catalog(cx);
-                })),
-            )
-            .into_any_element(),
-            widgets::btn(
-                cx,
-                p,
-                "official-submit",
-                BtnKind::Primary,
-                BtnSize::Regular,
-                tr!("official.submit"),
-            )
-            .on_click(cx.listener(|this, _, window, cx| {
-                dialogs::official_submission(this, window, cx);
-            }))
-            .into_any_element(),
+                .into_any_element(),
+            div()
+                .h(px(34.))
+                .min_h(px(34.))
+                .flex()
+                .items_center()
+                .child(
+                    widgets::btn(
+                        cx,
+                        p,
+                        "official-submit",
+                        BtnKind::Primary,
+                        BtnSize::Regular,
+                        tr!("official.submit"),
+                    )
+                    .on_click(cx.listener(|this, _, window, cx| {
+                        dialogs::official_submission(this, window, cx);
+                    })),
+                )
+                .into_any_element(),
         ],
     );
 
@@ -1381,11 +1370,9 @@ fn official_install(
             .items_center()
             .flex_wrap()
             .gap(px(14.))
-            .p(px(16.))
-            .rounded(px(13.))
-            .bg(p.tint(p.accent, 0.07))
-            .border_1()
-            .border_color(p.tint(p.accent, 0.25))
+            .p(px(12.))
+            .rounded(px(12.))
+            .bg(p.surface2)
             .child(widgets::tinted_chip(
                 p,
                 IconKey::Shield,
@@ -1399,40 +1386,16 @@ fn official_install(
                     .min_w(px(220.))
                     .child(
                         div()
-                            .text_size(px(13.))
+                            .text_size(px(FONT_BODY))
                             .font_semibold()
                             .child(tr!("official.trust_title")),
                     )
                     .child(
                         div()
                             .mt(px(3.))
-                            .text_size(px(11.5))
+                            .text_size(px(FONT_META))
                             .text_color(p.ink2)
                             .child(tr!("official.trust_copy")),
-                    ),
-            )
-            .child(
-                div()
-                    .flex()
-                    .flex_wrap()
-                    .gap(px(12.))
-                    .text_size(px(11.))
-                    .text_color(p.muted)
-                    .child(
-                        div()
-                            .flex()
-                            .items_center()
-                            .gap(px(5.))
-                            .child(icon(IconKey::Check, px(13.), p.ok))
-                            .child(tr!("official.trust_official")),
-                    )
-                    .child(
-                        div()
-                            .flex()
-                            .items_center()
-                            .gap(px(5.))
-                            .child(icon(IconKey::Check, px(13.), p.ok))
-                            .child(tr!("official.trust_unhosted")),
                     ),
             ),
     );
@@ -1440,14 +1403,12 @@ fn official_install(
     let (filters, body) = match &state.official.status {
         OfficialLoadState::Loading => (
             None,
-            widgets::empty_state(
-                p,
-                IconKey::Refresh,
-                tr!("official.loading"),
-                tr!("official.loading_hint"),
-                Vec::new(),
-            )
-            .into_any_element(),
+            div()
+                .flex()
+                .flex_wrap()
+                .gap(px(12.))
+                .children((0..6).map(|_| widgets::skeleton_card(p).into_any_element()))
+                .into_any_element(),
         ),
         OfficialLoadState::Failed(error) => (
             None,
@@ -1494,11 +1455,12 @@ fn official_install(
         OfficialLoadState::Loading => tr!("official.loading"),
         OfficialLoadState::Failed(_) => tr!("official.load_failed"),
     };
-    let platform = format!(
-        "{} · {}",
-        state.official.os.map_or("—", OfficialOs::label),
-        state.official.arch.map_or("—", OfficialArch::label)
-    );
+    let platform = div()
+        .flex()
+        .items_center()
+        .gap(px(8.))
+        .child(state.official.os.map_or("—", OfficialOs::label))
+        .child(state.official.arch.map_or("—", OfficialArch::label));
 
     div()
         .flex()
@@ -1528,10 +1490,10 @@ fn official_install(
                 .items_center()
                 .justify_between()
                 .gap(px(12.))
-                .border_t_1()
+                .border_t(px(HAIRLINE))
                 .border_color(p.line)
                 .bg(p.surface)
-                .text_size(px(10.5))
+                .text_size(px(FONT_META))
                 .text_color(p.muted)
                 .child(status)
                 .child(platform),
@@ -1585,15 +1547,8 @@ fn official_ready(
         .mb(px(22.))
         .child(
             div().flex_1().min_w(px(200.)).child(
-                gpui_kit::component::input::Input::new(&inputs.official_search)
-                    .prefix(icon(IconKey::Search, px(15.), p.muted).into_any_element())
-                    .h(px(38.))
-                    .appearance(true)
-                    .bordered(true)
-                    .cleanable(true)
-                    .rounded(px(9.))
-                    .bg(p.surface)
-                    .border_color(p.line),
+                widgets::field(p, &inputs.official_search)
+                    .prefix(icon(IconKey::Search, px(15.), p.muted).into_any_element()),
             ),
         )
         .child(widgets::seg_dropdown(
@@ -1655,33 +1610,36 @@ fn official_ready(
                     .mb(px(24.))
                     .child(
                         div()
-                            .flex()
-                            .items_center()
-                            .flex_wrap()
-                            .gap(px(8.))
                             .mb(px(11.))
-                            .child(icon(
-                                official_category_icon(&category.icon)
-                                    .expect("validated official category icon"),
-                                px(17.),
-                                color,
-                            ))
                             .child(
                                 div()
-                                    .text_size(px(14.))
-                                    .font_semibold()
-                                    .child(category.name.get(language).to_owned()),
+                                    .flex()
+                                    .items_center()
+                                    .gap(px(8.))
+                                    .child(icon(
+                                        official_category_icon(&category.icon)
+                                            .expect("validated official category icon"),
+                                        px(17.),
+                                        color,
+                                    ))
+                                    .child(
+                                        div()
+                                            .text_size(px(FONT_SECTION))
+                                            .font_semibold()
+                                            .child(category.name.get(language).to_owned()),
+                                    )
+                                    .child(
+                                        div()
+                                            .text_size(px(FONT_META))
+                                            .text_color(p.muted)
+                                            .child(tr!("official.group_count", count = apps.len())),
+                                    ),
                             )
                             .child(
                                 div()
-                                    .text_size(px(11.))
+                                    .text_size(px(FONT_META))
                                     .text_color(p.muted)
-                                    .child(tr!("official.group_count", count = apps.len())),
-                            )
-                            .child(
-                                div()
-                                    .text_size(px(11.))
-                                    .text_color(p.muted)
+                                    .mt(px(4.))
                                     .child(category.description.get(language).to_owned()),
                             ),
                     )
@@ -1841,17 +1799,15 @@ fn official_card(
                     .gap(px(10.))
                     .child(
                         div()
-                            .size(px(42.))
+                            .size(px(44.))
                             .flex_none()
                             .flex()
                             .items_center()
                             .justify_center()
-                            .rounded(px(11.))
+                            .rounded(px(12.))
                             .bg(p.tint(accent, 0.12))
-                            .border_1()
-                            .border_color(p.tint(accent, 0.25))
                             .text_color(accent)
-                            .text_size(px(17.))
+                            .text_size(px(FONT_SECTION))
                             .font_semibold()
                             .child(app.mark.clone()),
                     )
@@ -1867,7 +1823,7 @@ fn official_card(
                                     .gap(px(6.))
                                     .child(
                                         div()
-                                            .text_size(px(13.5))
+                                            .text_size(px(FONT_BODY))
                                             .font_semibold()
                                             .child(app.name.clone()),
                                     )
@@ -1876,7 +1832,7 @@ fn official_card(
                             .child(
                                 div()
                                     .mt(px(2.))
-                                    .text_size(px(10.5))
+                                    .text_size(px(FONT_META))
                                     .text_color(p.muted)
                                     .child(app.publisher.clone()),
                             ),
@@ -1887,7 +1843,7 @@ fn official_card(
                 div()
                     .my(px(12.))
                     .min_h(px(38.))
-                    .text_size(px(11.5))
+                    .text_size(px(FONT_META))
                     .line_height(relative(1.6))
                     .text_color(p.ink2)
                     .child(app.summary.get(&state.settings.language).to_owned()),
@@ -1899,10 +1855,8 @@ fn official_card(
                     .gap(px(6.))
                     .p(px(8.))
                     .rounded(px(8.))
-                    .border_1()
-                    .border_color(p.line)
                     .bg(p.surface2)
-                    .text_size(px(10.5))
+                    .text_size(px(FONT_META))
                     .child(icon(
                         if matches!(variant.method, OfficialMethod::Script { .. }) {
                             IconKey::Terminal
@@ -1938,7 +1892,7 @@ fn official_card(
                     .child(
                         div()
                             .id(SharedString::from(format!("official-detail-{detail_id}")))
-                            .text_size(px(11.))
+                            .text_size(px(FONT_META))
                             .text_color(p.muted)
                             .cursor_pointer()
                             .hover(|this| this.text_color(p.accent))
@@ -2060,7 +2014,7 @@ fn update_card(
                     .min_w_0()
                     .child(
                         div()
-                            .text_size(px(13.5))
+                            .text_size(px(FONT_BODY))
                             .font_semibold()
                             .truncate()
                             .child(pkg.name.clone()),
@@ -2071,10 +2025,10 @@ fn update_card(
                             .items_center()
                             .gap(px(6.))
                             .mt(px(4.))
-                            .text_size(px(11.5))
+                            .text_size(px(FONT_META))
                             .font_family("Cascadia Code")
                             .text_color(p.muted)
-                            .child(div().text_color(p.muted).child(strike(&pkg.version)))
+                            .child(div().text_color(p.muted).child(pkg.version.clone()))
                             .child(icon(IconKey::Chevron, px(12.), p.muted))
                             .child(div().text_color(p.ok).child(available))
                             .when(!delta.is_empty(), |this| {
@@ -2100,12 +2054,6 @@ fn update_card(
     .into_any_element()
 }
 
-/// The prototype strikes the old version through; gpui has no strikethrough
-/// styling on `Div`, so the version is bracketed instead.
-fn strike(text: &str) -> String {
-    format!("‹{text}›")
-}
-
 // ------------------------------------------------------------------- 源管理
 
 fn sources(state: &AppState, p: &Palette, cx: &mut Context<AppView>) -> AnyElement {
@@ -2116,7 +2064,7 @@ fn sources(state: &AppState, p: &Palette, cx: &mut Context<AppView>) -> AnyEleme
             "sync-all-src",
             BtnKind::Soft,
             BtnSize::Regular,
-            tr!("updates.update_all"),
+            tr!("sources.sync_all"),
         )
         .on_click(cx.listener(|this, _, window, cx| this.sync_sources(None, window, cx)))
         .into_any_element(),
@@ -2201,15 +2149,13 @@ fn sources(state: &AppState, p: &Palette, cx: &mut Context<AppView>) -> AnyEleme
             this.child(
                 div().px(px(24.)).pb(px(32.)).child(
                     div()
-                        .border_1()
-                        .border_dashed()
-                        .border_color(p.line_strong)
-                        .rounded(px(12.))
-                        .p(px(14.))
+                        .bg(p.surface2)
+                        .rounded(px(8.))
+                        .p(px(12.))
                         .flex()
                         .items_center()
                         .gap(px(8.))
-                        .text_size(px(11.5))
+                        .text_size(px(FONT_META))
                         .text_color(p.muted)
                         .child(icon(IconKey::Terminal, px(13.), p.muted))
                         .child(tr!("sources.equivalent_command"))
@@ -2252,7 +2198,12 @@ fn source_card(
                         .flex()
                         .items_center()
                         .gap(px(8.))
-                        .child(div().text_size(px(14.)).font_semibold().child(name.clone()))
+                        .child(
+                            div()
+                                .text_size(px(FONT_BODY))
+                                .font_semibold()
+                                .child(name.clone()),
+                        )
                         .child(if source.trusted {
                             widgets::pill(p, PillKind::Ok, tr!("sources.trusted"))
                         } else {
@@ -2261,7 +2212,7 @@ fn source_card(
                 )
                 .child(
                     div()
-                        .text_size(px(11.5))
+                        .text_size(px(FONT_META))
                         .font_family("Cascadia Code")
                         .text_color(p.muted)
                         .truncate()
@@ -2273,7 +2224,7 @@ fn source_card(
                         .items_center()
                         .gap(px(12.))
                         .mt(px(6.))
-                        .text_size(px(11.))
+                        .text_size(px(FONT_META))
                         .child(widgets::meta_item(
                             p,
                             IconKey::Grid,
@@ -2325,6 +2276,7 @@ fn source_card(
                             IconKey::Edit,
                             28.,
                             p.muted,
+                            tr!("common.edit"),
                         )
                         .on_click(cx.listener(
                             move |this, _, window, cx| {
@@ -2339,6 +2291,7 @@ fn source_card(
                         IconKey::Trash,
                         28.,
                         p.danger,
+                        tr!("common.delete"),
                     )
                     .on_click(cx.listener(move |this, _, window, cx| {
                         dialogs::confirm_remove_source(this, &remove_name, window, cx);
@@ -2356,12 +2309,7 @@ fn settings(
     p: &Palette,
     cx: &mut Context<AppView>,
 ) -> AnyElement {
-    let head = widgets::page_head(
-        p,
-        tr!("nav.settings"),
-        Some(tr!("settings.subtitle").into()),
-        Vec::new(),
-    );
+    let head = widgets::page_head(p, tr!("nav.settings"), None, Vec::new());
 
     // Every install row is a backend-specific flag, gated on the matching
     // capability.
@@ -2404,19 +2352,13 @@ fn settings(
     }
     // A backend with no install flags at all (apt) gets no card rather than
     // a title over an empty body.
-    let install_card = (!install_rows.is_empty()).then(|| {
-        settings_card(
-            p,
-            &tr!("settings.install_defaults"),
-            &tr!("settings.install_defaults_hint"),
-            install_rows,
-        )
-    });
+    let install_card = (!install_rows.is_empty())
+        .then(|| settings_card(p, &tr!("settings.install_defaults"), None, install_rows));
 
     let queue_card = settings_card(
         p,
         &tr!("settings.updates_queue"),
-        &tr!("settings.updates_queue_hint"),
+        None,
         vec![
             switch_field_row(
                 cx,
@@ -2433,7 +2375,7 @@ fn settings(
             seg_row(
                 p,
                 &tr!("settings.concurrency"),
-                &tr!("settings.concurrency_hint"),
+                "",
                 concurrency_segments(state, p, cx),
             ),
         ],
@@ -2442,18 +2384,13 @@ fn settings(
     let appearance_card = settings_card(
         p,
         &tr!("settings.appearance"),
-        &tr!("settings.appearance_hint"),
+        None,
         vec![
-            seg_row(
-                p,
-                &tr!("settings.theme"),
-                &tr!("settings.theme_hint"),
-                theme_segments(state, p, cx),
-            ),
+            seg_row(p, &tr!("settings.theme"), "", theme_segments(state, p, cx)),
             seg_row(
                 p,
                 &tr!("settings.language"),
-                &tr!("settings.language_hint"),
+                "",
                 language_segments(state, p, cx),
             ),
             accent_row(p, state, cx),
@@ -2465,7 +2402,8 @@ fn settings(
                 state.settings.reduce_motion,
                 |this, value, cx| {
                     this.state.settings.reduce_motion = value;
-                    this.persist_settings();
+                    cx.set_reduce_motion(value);
+                    this.start_ticker(cx);
                     cx.notify();
                 },
             ),
@@ -2507,12 +2445,7 @@ fn settings(
             cx.notify();
         },
     ));
-    let advanced_card = settings_card(
-        p,
-        &tr!("settings.advanced"),
-        &tr!("settings.advanced_hint"),
-        advanced_rows,
-    );
+    let advanced_card = settings_card(p, &tr!("settings.advanced"), None, advanced_rows);
 
     let logs_card = logs_card(p, cx);
     let about_card = about(p, state, cx);
@@ -2554,7 +2487,12 @@ fn settings(
         .into_any_element()
 }
 
-fn settings_card(p: &Palette, title: &str, description: &str, rows: Vec<AnyElement>) -> AnyElement {
+fn settings_card(
+    p: &Palette,
+    title: &str,
+    description: Option<&str>,
+    rows: Vec<AnyElement>,
+) -> AnyElement {
     widgets::card(p)
         .flex_1()
         .child(
@@ -2563,17 +2501,19 @@ fn settings_card(p: &Palette, title: &str, description: &str, rows: Vec<AnyEleme
                 .py(px(14.))
                 .child(
                     div()
-                        .text_size(px(14.))
+                        .text_size(px(FONT_SECTION))
                         .font_semibold()
                         .child(title.to_owned()),
                 )
-                .child(
-                    div()
-                        .text_size(px(12.))
-                        .text_color(p.muted)
-                        .mt(px(2.))
-                        .child(description.to_owned()),
-                ),
+                .when_some(description, |this, description| {
+                    this.child(
+                        div()
+                            .text_size(px(FONT_META))
+                            .text_color(p.muted)
+                            .mt(px(2.))
+                            .child(description.to_owned()),
+                    )
+                }),
         )
         .children(rows)
         .into_any_element()
@@ -2587,23 +2527,23 @@ fn row_shell(p: &Palette, label: &str, hint: &str, control: AnyElement) -> AnyEl
         .gap(px(14.))
         .px(px(16.))
         .py(px(11.))
-        .border_t_1()
+        .border_t(px(HAIRLINE))
         .border_color(p.line)
         .child(
             div()
                 .flex_1()
                 .min_w_0()
+                .min_h(px(17.))
                 .child(
                     div()
-                        .text_size(px(13.))
+                        .text_size(px(FONT_BODY))
                         .font_medium()
                         .child(label.to_owned()),
                 )
                 .child(
                     div()
-                        .text_size(px(11.5))
+                        .text_size(px(FONT_META))
                         .text_color(p.muted)
-                        .truncate()
                         .child(hint.to_owned()),
                 ),
         )
@@ -2618,7 +2558,33 @@ fn seg_row(p: &Palette, label: &str, hint: &str, control: AnyElement) -> AnyElem
 
 /// A settings row whose control is a text field.
 fn field_row(p: &Palette, label: &str, hint: &str, control: AnyElement) -> AnyElement {
-    row_shell(p, label, hint, control)
+    div()
+        .flex()
+        .items_center()
+        .gap(px(14.))
+        .px(px(16.))
+        .py(px(11.))
+        .border_t(px(HAIRLINE))
+        .border_color(p.line)
+        .child(
+            div()
+                .flex_1()
+                .min_w_0()
+                .child(
+                    div()
+                        .text_size(px(FONT_BODY))
+                        .font_medium()
+                        .child(label.to_owned()),
+                )
+                .child(
+                    div()
+                        .text_size(px(FONT_META))
+                        .text_color(p.muted)
+                        .child(hint.to_owned()),
+                ),
+        )
+        .child(control)
+        .into_any_element()
 }
 
 fn switch_field_row(
@@ -2701,24 +2667,27 @@ fn theme_segments(state: &AppState, p: &Palette, cx: &mut Context<AppView>) -> A
 /// `AppView` is the single root view, so nothing keeps a stale translation.
 fn language_segments(state: &AppState, p: &Palette, cx: &mut Context<AppView>) -> AnyElement {
     let items = widgets::language_items();
-    widgets::seg_control(
+    let on_select = seg_handler(cx, |this, value: Language, window, cx| {
+        this.state.settings.language = value.tag().to_owned();
+        rust_i18n::set_locale(value.tag());
+        this.persist_settings();
+        // Input placeholders are stored in InputState; refresh both chrome fields.
+        this.search_input.update(cx, |input, cx| {
+            input.set_placeholder(tr!("search.placeholder"), window, cx);
+        });
+        this.official_search_input.update(cx, |input, cx| {
+            input.set_placeholder(tr!("official.search_placeholder"), window, cx);
+        });
+        cx.notify();
+    });
+    widgets::seg_dropdown(
+        cx,
         p,
-        "lang-seg",
+        "lang-dd",
         &items,
         Language::from_tag(&state.settings.language),
-        seg_handler(cx, |this, value: Language, window, cx| {
-            this.state.settings.language = value.tag().to_owned();
-            rust_i18n::set_locale(value.tag());
-            this.persist_settings();
-            // The search box's placeholder was baked into its InputState at
-            // construction; re-seed it so the chrome follows the language too.
-            this.search_input.update(cx, |input, cx| {
-                input.set_placeholder(tr!("search.placeholder"), window, cx);
-            });
-            cx.notify();
-        }),
+        on_select,
     )
-    .into_any_element()
 }
 
 fn accent_row(p: &Palette, state: &AppState, cx: &mut Context<AppView>) -> AnyElement {
@@ -2741,7 +2710,7 @@ fn accent_row(p: &Palette, state: &AppState, cx: &mut Context<AppView>) -> AnyEl
                     .size(px(20.))
                     .rounded(px(9999.))
                     .bg(color)
-                    .border_2()
+                    .border(px(HAIRLINE))
                     .border_color(if on { p.ink } else { p.line })
                     .cursor_pointer()
                     .on_click(cx.listener(move |this, _, _, cx| {
@@ -2783,7 +2752,7 @@ fn logs_card(p: &Palette, cx: &mut Context<AppView>) -> AnyElement {
     settings_card(
         p,
         &tr!("settings.logs"),
-        &tr!("settings.logs_hint"),
+        Some(&tr!("settings.logs_hint")),
         vec![row_shell(
             p,
             &tr!("settings.log_file"),
@@ -2813,11 +2782,10 @@ fn logs_card(p: &Palette, cx: &mut Context<AppView>) -> AnyElement {
                     })),
                 )
                 .child(
-                    widgets::icon_btn("log-copy", IconKey::Copy, 24., p.muted).on_click(
-                        cx.listener(move |this, _, window, cx| {
+                    widgets::icon_btn("log-copy", IconKey::Copy, 24., p.muted, tr!("common.copy"))
+                        .on_click(cx.listener(move |this, _, window, cx| {
                             this.copy(&copy_path, window, cx);
-                        }),
-                    ),
+                        })),
                 )
                 .into_any_element(),
         )],
@@ -2833,7 +2801,7 @@ fn about(p: &Palette, state: &AppState, cx: &mut Context<AppView>) -> AnyElement
     settings_card(
         p,
         &tr!("settings.about"),
-        "Pakkit v0.1.0-prototype · Rust + GPUI · MIT License",
+        None,
         vec![
             div()
                 .flex()
@@ -2841,7 +2809,7 @@ fn about(p: &Palette, state: &AppState, cx: &mut Context<AppView>) -> AnyElement
                 .gap(px(14.))
                 .px(px(16.))
                 .py(px(14.))
-                .border_t_1()
+                .border_t(px(HAIRLINE))
                 .border_color(p.line)
                 .child(
                     div()
@@ -2857,12 +2825,29 @@ fn about(p: &Palette, state: &AppState, cx: &mut Context<AppView>) -> AnyElement
                     div()
                         .flex_1()
                         .min_w_0()
-                        .child(div().text_size(px(13.5)).font_semibold().child("Pakkit"))
                         .child(
                             div()
-                                .text_size(px(11.5))
+                                .text_size(px(FONT_BODY))
+                                .font_semibold()
+                                .child("Pakkit"),
+                        )
+                        .child(
+                            div()
+                                .text_size(px(FONT_META))
                                 .text_color(p.muted)
-                                .child("Rust + GPUI · MIT License"),
+                                .child(format!("Pakkit v{}", env!("CARGO_PKG_VERSION"))),
+                        )
+                        .child(
+                            div()
+                                .text_size(px(FONT_META))
+                                .text_color(p.muted)
+                                .child("Rust + GPUI"),
+                        )
+                        .child(
+                            div()
+                                .text_size(px(FONT_META))
+                                .text_color(p.muted)
+                                .child("MIT License"),
                         ),
                 )
                 .child(
@@ -2885,9 +2870,9 @@ fn about(p: &Palette, state: &AppState, cx: &mut Context<AppView>) -> AnyElement
                 .gap(px(8.))
                 .px(px(16.))
                 .py(px(11.))
-                .border_t_1()
+                .border_t(px(HAIRLINE))
                 .border_color(p.line)
-                .text_size(px(12.))
+                .text_size(px(FONT_META))
                 .text_color(p.muted)
                 .child(tr!(
                     "settings.backend_version",
@@ -2917,7 +2902,7 @@ fn section_head(
         head = head.child(
             div()
                 .id(SharedString::from(format!("link-{label}")))
-                .text_size(px(12.))
+                .text_size(px(FONT_META))
                 .text_color(p.accent)
                 .cursor_pointer()
                 .on_click(cx.listener(move |this, _, window, cx| {
@@ -2944,7 +2929,7 @@ fn backend_missing(state: &AppState, p: &Palette, cx: &mut Context<AppView>) -> 
                 .child(
                     div()
                         .flex_1()
-                        .text_size(px(12.5))
+                        .text_size(px(FONT_META))
                         .text_color(p.ink2)
                         .child(tr!("home.backend_missing", backend = state.backend_name)),
                 )

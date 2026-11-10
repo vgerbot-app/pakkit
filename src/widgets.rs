@@ -11,62 +11,32 @@ use gpui_kit::component::button::{Button, ButtonCustomVariant, ButtonVariants as
 use gpui_kit::component::input::{Input, InputState};
 use gpui_kit::component::menu::{DropdownMenu, PopupMenuItem};
 use gpui_kit::component::switch::Switch;
-use gpui_kit::component::{StyledExt as _, h_flex};
+use gpui_kit::component::{Sizable as _, Size, StyledExt as _, h_flex};
 use gpui_kit::prelude::{
     FluentBuilder as _, InteractiveElement as _, StatefulInteractiveElement as _,
 };
 use gpui_kit::{
-    AnyElement, App, BoxShadow, ClickEvent, Div, ElementId, Hsla, IntoElement as _,
-    ParentElement as _, Pixels, Rgba, SharedString, Stateful, Styled as _, Window, div, point, px,
-    relative,
+    AnyElement, App, ClickEvent, Div, ElementId, Hsla, IntoElement as _, ParentElement as _,
+    Pixels, Rgba, SharedString, Stateful, Styled as _, Window, div, px, relative,
 };
 
 use crate::icons::{IconKey, icon};
 use crate::model::{Package, Source};
 use crate::queue::QueueAction;
 use crate::state::{CategorySort, Language, SearchSource, SortMode, StatusFilter};
-use crate::theme::{ModeChoice, Palette};
+use crate::theme::{FONT_BODY, FONT_META, FONT_PAGE, FONT_SECTION, HAIRLINE, ModeChoice, Palette};
 
 /// `.card` — surface panel with a hairline border and the 14 px radius.
 pub fn card(p: &Palette) -> Div {
     div()
         .bg(p.surface)
-        .border_1()
+        .border(px(HAIRLINE))
         .border_color(p.line)
         .rounded(px(14.))
 }
 
-/// `.card-hover` — `box-shadow: 0 1px 2px rgba(0,0,0,.06), 0 8px 24px -16px rgba(0,0,0,.35)`.
 pub fn card_hover(p: &Palette, el: Div) -> Div {
-    el.hover(move |this| {
-        this.border_color(p.line_strong).shadow(vec![
-            BoxShadow {
-                color: Hsla { a: 0.06, ..p.ink },
-                offset: point(px(0.), px(1.)),
-                blur_radius: px(2.),
-                spread_radius: px(0.),
-                inset: false,
-            },
-            BoxShadow {
-                color: Hsla { a: 0.35, ..p.ink },
-                offset: point(px(0.), px(8.)),
-                blur_radius: px(24.),
-                spread_radius: px(-16.),
-                inset: false,
-            },
-        ])
-    })
-}
-
-/// `shadow-pop: 0 24px 60px -20px rgba(0,0,0,.55)`.
-pub fn pop_shadow(p: &Palette) -> Vec<BoxShadow> {
-    vec![BoxShadow {
-        color: Hsla { a: 0.55, ..p.ink },
-        offset: point(px(0.), px(24.)),
-        blur_radius: px(60.),
-        spread_radius: px(-20.),
-        inset: false,
-    }]
+    el.hover(move |this| this.bg(p.surface2).border_color(p.line_strong))
 }
 
 /// The button metrics `app.css` defines for `.btn` / `.btn-sm`.
@@ -88,8 +58,8 @@ impl BtnSize {
 
     pub fn text_size(self) -> Pixels {
         match self {
-            BtnSize::Regular => px(13.),
-            BtnSize::Small => px(12.),
+            BtnSize::Regular => px(FONT_BODY),
+            BtnSize::Small => px(FONT_META),
         }
     }
 
@@ -145,6 +115,7 @@ pub fn btn(
     size: BtnSize,
     label: impl Into<SharedString>,
 ) -> Button {
+    let id = id.into();
     let custom = |bg: Hsla, fg: Hsla, hover: Hsla| {
         ButtonCustomVariant::new(cx)
             .color(bg)
@@ -170,21 +141,21 @@ pub fn btn(
             p.tint(p.danger, 0.22),
         )),
     };
-    button
+    let button = button
         .label(label)
         .text_size(size.text_size())
         .px(size.padding_x())
         .h(size.height())
+        .min_h(size.height())
         .rounded(size.radius())
-}
-
-/// The hairline the prototype's `.btn` rules carry; the custom variant paints
-/// no border of its own.
-pub fn button_border(p: &Palette, kind: BtnKind, button: Button) -> Button {
+        .with_size(Size::Size(size.height()));
     match kind {
-        BtnKind::Primary | BtnKind::Soft => button.border_1().border_color(p.line),
-        BtnKind::Outline => button.border_1().border_color(p.line_strong),
-        BtnKind::Danger => button.border_1().border_color(p.tint(p.danger, 0.3)),
+        BtnKind::Primary => button,
+        BtnKind::Soft => button.border(px(HAIRLINE)).border_color(p.line),
+        BtnKind::Outline => button.border(px(HAIRLINE)).border_color(p.line_strong),
+        BtnKind::Danger => button
+            .border(px(HAIRLINE))
+            .border_color(p.tint(p.danger, 0.3)),
     }
 }
 
@@ -199,7 +170,7 @@ fn brighten(color: Hsla, factor: f32) -> Hsla {
     })
 }
 
-/// `.btn-ghost` — borderless, 12 px, muted, darkening to `ink` on hover.
+/// Borderless button using the regular button's 34 px hit target.
 ///
 /// The hover colours come from a custom variant, never from `Div::hover`:
 /// `Button` forwards `InteractiveElement` to its base div, and `Button::render`
@@ -220,19 +191,28 @@ pub fn btn_ghost(
                 .hover(p.surface3)
                 .active(p.surface3),
         )
-        .text_size(px(12.))
-        .px(px(9.))
-        .py(px(4.))
-        .rounded(px(7.))
+        .text_size(px(FONT_BODY))
+        .px(BtnSize::Regular.padding_x())
+        .h(BtnSize::Regular.height())
+        .rounded(BtnSize::Regular.radius())
 }
 
-/// `.icon-btn` — a square, borderless icon hit target.
-pub fn icon_btn(id: impl Into<ElementId>, key: IconKey, side: f32, color: Hsla) -> Button {
+/// A square, borderless icon hit target with an accessible name and tooltip.
+pub fn icon_btn(
+    id: impl Into<ElementId>,
+    key: IconKey,
+    side: f32,
+    color: Hsla,
+    label: impl Into<SharedString>,
+) -> Button {
+    let label = label.into();
     Button::new(id)
         .icon(icon(key, px(side * 0.6), color))
         .ghost()
         .rounded(px(8.))
         .size(px(side))
+        .accessibility_label(label.clone())
+        .tooltip(label)
 }
 
 /// The `.badge` pill variants.
@@ -250,7 +230,7 @@ pub enum PillKind {
     Danger,
 }
 
-/// `.badge` — 10.5 px, 4×7 px padding, 6 px radius, a ~15 %-alpha tint.
+/// A tinted status label with no decorative outline.
 pub fn pill(p: &Palette, kind: PillKind, text: impl Into<SharedString>) -> Div {
     let (bg, fg) = match kind {
         PillKind::Line => (p.surface3, p.ink2),
@@ -259,21 +239,12 @@ pub fn pill(p: &Palette, kind: PillKind, text: impl Into<SharedString>) -> Div {
         PillKind::Warn => (p.tint(p.warn, 0.16), p.warn),
         PillKind::Danger => (p.tint(p.danger, 0.15), p.danger),
     };
-    let border = match kind {
-        PillKind::Line => p.line,
-        PillKind::Accent => p.tint(p.accent, 0.35),
-        PillKind::Ok => p.tint(p.ok, 0.35),
-        PillKind::Warn => p.tint(p.warn, 0.35),
-        PillKind::Danger => p.tint(p.danger, 0.35),
-    };
     div()
-        .text_size(px(10.5))
+        .text_size(px(FONT_META))
         .line_height(relative(1.))
-        .px(px(7.))
+        .px(px(8.))
         .py(px(4.))
         .rounded(px(6.))
-        .border_1()
-        .border_color(border)
         .bg(bg)
         .text_color(fg)
         .font_medium()
@@ -300,7 +271,7 @@ pub fn seg_control<T: Clone + PartialEq + 'static>(
         .p(px(3.))
         .rounded(px(10.))
         .bg(p.surface3)
-        .border_1()
+        .border(px(HAIRLINE))
         .border_color(p.line)
         .children(items.iter().enumerate().map(|(ix, (value, label))| {
             let value = value.clone();
@@ -315,20 +286,11 @@ pub fn seg_control<T: Clone + PartialEq + 'static>(
                 .h(px(27.))
                 .px(px(12.))
                 .rounded(px(7.))
-                .text_size(px(12.5))
+                .text_size(px(FONT_META))
                 .whitespace_nowrap()
                 .cursor_pointer()
                 .when(is_on, |this| {
-                    this.bg(p.surface)
-                        .text_color(p.ink)
-                        .font_semibold()
-                        .shadow(vec![BoxShadow {
-                            color: Hsla { a: 0.12, ..p.ink },
-                            offset: point(px(0.), px(1.)),
-                            blur_radius: px(3.),
-                            spread_radius: px(0.),
-                            inset: false,
-                        }])
+                    this.bg(p.surface).text_color(p.ink).font_semibold()
                 })
                 .when(!is_on, |this| {
                     this.text_color(idle)
@@ -339,9 +301,8 @@ pub fn seg_control<T: Clone + PartialEq + 'static>(
         }))
 }
 
-/// The compact stand-in for [`seg_control`] once the options no longer fit a
-/// narrow window: a small outline button naming the current value, opening a
-/// popup menu with one checkable item per option.
+/// Compact popup-menu alternative to [`seg_control`] when the options no
+/// longer fit a narrow window. The trigger shares the field's 38 px height.
 pub fn seg_dropdown<T: Clone + PartialEq + 'static>(
     cx: &App,
     p: &Palette,
@@ -357,18 +318,17 @@ pub fn seg_dropdown<T: Clone + PartialEq + 'static>(
         .map(|(_, label)| label.clone())
         .unwrap_or_default();
     let menu_items = items.to_vec();
-    button_border(
+    btn(
+        cx,
         p,
+        id,
         BtnKind::Outline,
-        btn(
-            cx,
-            p,
-            id,
-            BtnKind::Outline,
-            BtnSize::Small,
-            format!("{current} ▾"),
-        ),
+        BtnSize::Regular,
+        format!("{current} ▾"),
     )
+    .with_size(Size::Size(px(38.)))
+    .h(px(38.))
+    .min_h(px(38.))
     .dropdown_menu(move |menu, _, _| {
         menu_items.iter().fold(menu, |menu, (value, label)| {
             let value = value.clone();
@@ -394,18 +354,16 @@ pub fn pill_button(
 ) -> Stateful<Div> {
     div()
         .id(id)
-        .text_size(px(10.5))
-        .px(px(7.))
+        .text_size(px(FONT_META))
+        .px(px(8.))
         .py(px(4.))
         .rounded(px(6.))
-        .border_1()
-        .border_color(p.line)
         .bg(p.surface3)
         .text_color(p.ink2)
         .font_medium()
         .whitespace_nowrap()
         .cursor_pointer()
-        .hover(move |this| this.border_color(p.line_strong))
+        .hover(move |this| this.bg(p.surface2))
         .on_click(on_click)
         .child(text.into())
 }
@@ -423,19 +381,19 @@ pub fn switch_row(
         .on_change(on_change)
 }
 
-/// `.field` — a 38 px input with a `surface2` fill and a `line` border.
 pub fn field(p: &Palette, state: &gpui_kit::Entity<InputState>) -> Input {
-    Input::new(state)
-        .appearance(true)
+    gpui_kit::Styled::h(Input::new(state), px(38.))
+        .min_h(px(38.))
+        .focus_bordered(false)
         .bordered(true)
         .cleanable(true)
-        .h(px(38.))
         .rounded(px(9.))
         .bg(p.surface2)
+        .border(px(HAIRLINE))
         .border_color(p.line)
 }
 
-/// `.page-head` — 24 px side padding, 20 px top, a 21 px title.
+/// Shared page heading: 20 px title and optional metadata.
 pub fn page_head(
     p: &Palette,
     title: impl Into<SharedString>,
@@ -453,11 +411,16 @@ pub fn page_head(
         .child(
             div()
                 .min_w_0()
-                .child(div().text_size(px(21.)).font_semibold().child(title.into()))
+                .child(
+                    div()
+                        .text_size(px(FONT_PAGE))
+                        .font_semibold()
+                        .child(title.into()),
+                )
                 .when_some(subtitle, |this, subtitle| {
                     this.child(
                         div()
-                            .text_size(px(12.5))
+                            .text_size(px(FONT_META))
                             .text_color(p.muted)
                             .mt(px(4.))
                             .child(subtitle),
@@ -474,13 +437,12 @@ pub fn page_head(
         )
 }
 
-/// `.sec-title` — 12 px, semibold, muted. Letter-spacing is not part of
-/// gpui's text style, so `.tracking` from the prototype has no equivalent.
+/// Section heading: 16 px, semibold.
 pub fn section_label(p: &Palette, text: impl Into<SharedString>) -> Div {
     div()
-        .text_size(px(12.))
+        .text_size(px(FONT_SECTION))
         .font_semibold()
-        .text_color(p.muted)
+        .text_color(p.ink)
         .child(text.into())
 }
 
@@ -493,24 +455,23 @@ pub fn stat_tile(
 ) -> Div {
     div()
         .w(px(92.))
-        .px(px(12.))
-        .py(px(12.))
-        .rounded(px(12.))
+        .p(px(12.))
         .bg(p.surface2)
-        .border_1()
+        .border(px(HAIRLINE))
         .border_color(p.line)
+        .rounded(px(8.))
         .text_center()
         .child(icon(key, px(16.), p.accent))
         .child(
             div()
-                .text_size(px(18.))
+                .text_size(px(FONT_SECTION))
                 .font_semibold()
                 .mt(px(6.))
                 .child(value.into()),
         )
         .child(
             div()
-                .text_size(px(10.5))
+                .text_size(px(FONT_META))
                 .text_color(p.muted)
                 .child(label.into()),
         )
@@ -528,8 +489,8 @@ pub fn meta_item(p: &Palette, key: IconKey, text: impl Into<SharedString>) -> Di
         .child(text.into())
 }
 
-/// `.bar` + `.bar > i` — a 6 px `surface3` track with an accent fill.
-pub fn progress_bar(p: &Palette, value: f32) -> Div {
+/// A progress track with a caller-selected semantic fill colour.
+pub fn progress_track(p: &Palette, value: f32, color: Hsla) -> Div {
     let value = value.clamp(0., 100.);
     div()
         .h(px(6.))
@@ -542,7 +503,7 @@ pub fn progress_bar(p: &Palette, value: f32) -> Div {
                 .h_full()
                 .w(relative(value / 100.))
                 .rounded(px(99.))
-                .bg(p.accent),
+                .bg(color),
         )
 }
 
@@ -615,8 +576,6 @@ pub fn skeleton_card(p: &Palette) -> Div {
                 .items_center()
                 .gap(px(8.))
                 .pt(px(10.))
-                .border_t_1()
-                .border_color(p.line)
                 .child(div().w(px(72.)).h(px(29.)).rounded(px(8.)).bg(p.surface3))
                 .child(div().w(px(52.)).h(px(20.)).rounded(px(99.)).bg(p.surface3)),
         )
@@ -640,7 +599,7 @@ pub fn stars(p: &Palette, rating: f32) -> Div {
         .child(
             div()
                 .ml(px(4.))
-                .text_size(px(11.))
+                .text_size(px(FONT_META))
                 .text_color(p.muted)
                 .child(format!("{rating:.1}")),
         )
@@ -654,16 +613,16 @@ pub fn empty_state(
     hint: impl Into<SharedString>,
     actions: Vec<AnyElement>,
 ) -> Div {
-    card(p)
-        .p(px(48.))
+    div()
+        .bg(p.surface2)
+        .rounded(px(12.))
+        .p(px(32.))
         .text_center()
         .child(
             div()
                 .size(px(56.))
-                .rounded(px(16.))
+                .rounded(px(chip_radius(56.)))
                 .bg(p.surface3)
-                .border_1()
-                .border_color(p.line)
                 .flex()
                 .items_center()
                 .justify_center()
@@ -673,14 +632,14 @@ pub fn empty_state(
         )
         .child(
             div()
-                .text_size(px(14.))
+                .text_size(px(FONT_SECTION))
                 .font_medium()
                 .mt(px(16.))
                 .child(title.into()),
         )
         .child(
             div()
-                .text_size(px(12.5))
+                .text_size(px(FONT_META))
                 .text_color(p.muted)
                 .mt(px(6.))
                 .child(hint.into()),
@@ -702,17 +661,15 @@ pub fn empty_state(
 ///
 /// The prototype writes `style="background:<color>1f;color:<color>"` — the
 /// colour at 12 % over the surface, with the glyph at full strength.
-pub fn tinted_chip(p: &Palette, key: IconKey, hex: &str, side: f32, glyph: f32) -> Div {
+pub fn tinted_chip(_p: &Palette, key: IconKey, hex: &str, side: f32, glyph: f32) -> Div {
     let color = Palette::from_hex(hex);
     div()
         .size(px(side))
         .flex_none()
-        .rounded(px(12.))
+        .rounded(px(chip_radius(side)))
         .flex()
         .items_center()
         .justify_center()
-        .border_1()
-        .border_color(p.line)
         .bg(Hsla { a: 0.12, ..color })
         .text_color(color)
         .child(icon(key, px(glyph), color))
@@ -739,10 +696,8 @@ pub fn pkg_icon(
         Some(path) => div()
             .size(px(side))
             .flex_none()
-            .rounded(px(12.))
+            .rounded(px(chip_radius(side)))
             .overflow_hidden()
-            .border_1()
-            .border_color(p.line)
             .child(gpui_kit::img(path).size(px(side))),
         None => pkg_chip(p, pkg, side, glyph),
     }
@@ -751,6 +706,15 @@ pub fn pkg_icon(
 /// `.cat-tile`'s icon chip: 40 px, tile-tinted, 12 px radius.
 pub fn category_chip(p: &Palette, category: crate::model::CategoryId) -> Div {
     tinted_chip(p, category.icon(), category.color(), 40., 20.)
+}
+fn chip_radius(side: f32) -> f32 {
+    if (44. ..=64.).contains(&side) {
+        12.
+    } else if (30. ..=40.).contains(&side) {
+        9.
+    } else {
+        8.
+    }
 }
 
 /// The label and glyph an install button shows for a package's state.
@@ -843,11 +807,11 @@ pub fn page_body() -> Div {
     div().px(px(24.)).pb(px(32.))
 }
 
-/// The single-line style the prototype uses for monospaced command snippets.
+/// The single-line style used for monospaced command snippets.
 pub fn mono(p: &Palette) -> Div {
     div()
         .font_family("Cascadia Code")
-        .text_size(px(11.5))
+        .text_size(px(FONT_META))
         .text_color(p.muted)
 }
 
@@ -856,17 +820,15 @@ pub fn row_hover(p: &Palette, el: Div) -> Div {
     el.hover(move |this| this.bg(p.surface2))
 }
 
-/// The inline code chip the prototype draws around a command fragment.
+/// The inline code chip around a command fragment.
 pub fn code_chip(p: &Palette, text: impl Into<SharedString>) -> Div {
     div()
         .font_family("Cascadia Code")
-        .text_size(px(11.5))
+        .text_size(px(FONT_META))
         .px(px(6.))
         .py(px(2.))
         .rounded(px(6.))
         .bg(p.surface2)
-        .border_1()
-        .border_color(p.line)
         .text_color(p.ink2)
         .child(text.into())
 }

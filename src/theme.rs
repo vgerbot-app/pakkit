@@ -10,6 +10,12 @@ use std::{rc::Rc, sync::LazyLock};
 
 use gpui_kit::component::{Theme, ThemeConfig, ThemeMode, ThemeSet};
 use gpui_kit::{App, Global, Hsla, px};
+pub const FONT_META: f32 = 12.0;
+pub const FONT_BODY: f32 = 13.0;
+pub const FONT_SECTION: f32 = 16.0;
+pub const FONT_PAGE: f32 = 20.0;
+pub const HAIRLINE: f32 = 0.5;
+
 use serde::{Deserialize, Serialize};
 
 /// `#rrggbb` → `Hsla`, the way gpui's `rgba` accepts `0xRRGGBBAA`.
@@ -257,8 +263,8 @@ pub fn apply(cx: &mut App) {
         theme.radius_lg = px(14.);
         theme.font_family = "Segoe UI Variable Text".into();
         theme.mono_font_family = "Cascadia Code".into();
-        theme.font_size = px(13.);
-        theme.mono_font_size = px(12.);
+        theme.font_size = px(FONT_BODY);
+        theme.mono_font_size = px(FONT_META);
     });
 }
 

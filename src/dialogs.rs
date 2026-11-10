@@ -29,7 +29,7 @@ use crate::backends::types::PackageDetail;
 use crate::icons::{IconKey, icon};
 use crate::model::Package;
 use crate::shell::AppView;
-use crate::theme::Palette;
+use crate::theme::{FONT_BODY, FONT_META, FONT_SECTION, HAIRLINE, Palette};
 use crate::widgets::{self, BtnKind, BtnSize, PillKind};
 
 /// 软件包详情 — the large modal a card's 查看详情 opens.
@@ -137,22 +137,26 @@ pub fn pkg_detail(view: &mut AppView, id: &str, window: &mut Window, cx: &mut Co
             .filter(|notes| !notes.trim().is_empty());
 
         dialog
-            .w(px(920.))
             .title(
                 div()
                     .flex()
                     .flex_col()
                     .child(
                         div()
-                            .text_size(px(16.))
+                            .text_size(px(FONT_SECTION))
                             .font_semibold()
                             .child(pkg.name.clone()),
                     )
-                    .child(div().text_size(px(11.5)).text_color(p.muted).child(format!(
-                        "{} · {}",
-                        pkg.id,
-                        pkg.category.label()
-                    ))),
+                    .child(
+                        div()
+                            .flex()
+                            .flex_wrap()
+                            .gap(px(8.))
+                            .text_size(px(FONT_META))
+                            .text_color(p.muted)
+                            .child(pkg.id.clone())
+                            .child(pkg.category.label()),
+                    ),
             )
             .child(
                 div()
@@ -194,7 +198,7 @@ pub fn pkg_detail(view: &mut AppView, id: &str, window: &mut Window, cx: &mut Co
                     .when(loading, |this| {
                         this.child(
                             div()
-                                .text_size(px(11.5))
+                                .text_size(px(FONT_META))
                                 .text_color(p.muted)
                                 .child(tr!("dialog.loading")),
                         )
@@ -217,8 +221,8 @@ pub fn pkg_detail(view: &mut AppView, id: &str, window: &mut Window, cx: &mut Co
                                         .overflow_y_scroll()
                                         .p(px(10.))
                                         .rounded(px(10.))
-                                        .bg(p.surface2)
-                                        .border_1()
+                                        .bg(p.surface)
+                                        .border(px(HAIRLINE))
                                         .border_color(p.line)
                                         .child(prose_lines(&p, &notes)),
                                 ),
@@ -259,13 +263,13 @@ pub fn pkg_detail(view: &mut AppView, id: &str, window: &mut Window, cx: &mut Co
                                                     .min_w_0()
                                                     .child(
                                                         div()
-                                                            .text_size(px(12.5))
+                                                            .text_size(px(FONT_BODY))
                                                             .truncate()
                                                             .child(rel.name.clone()),
                                                     )
                                                     .child(
                                                         div()
-                                                            .text_size(px(11.5))
+                                                            .text_size(px(FONT_META))
                                                             .text_color(p.muted)
                                                             .truncate()
                                                             .child(rel.publisher.clone()),
@@ -338,6 +342,7 @@ pub fn pkg_detail(view: &mut AppView, id: &str, window: &mut Window, cx: &mut Co
                         ),
                     ),
             )
+            .border(px(HAIRLINE))
     });
 }
 
@@ -396,10 +401,13 @@ fn stat_grid(p: &Palette, pkg: &Package, detail: Option<&PackageDetail>) -> impl
                 .p(px(10.))
                 .rounded(px(10.))
                 .bg(p.surface2)
-                .border_1()
-                .border_color(p.line)
-                .child(div().text_size(px(10.5)).text_color(p.muted).child(label))
-                .child(div().text_size(px(12.5)).truncate().child(value))
+                .child(
+                    div()
+                        .text_size(px(FONT_META))
+                        .text_color(p.muted)
+                        .child(label),
+                )
+                .child(div().text_size(px(FONT_BODY)).truncate().child(value))
         }))
 }
 
@@ -410,7 +418,7 @@ fn prose_lines(p: &Palette, text: &str) -> impl IntoElement {
         .flex()
         .flex_col()
         .gap(px(2.))
-        .text_size(px(12.5))
+        .text_size(px(FONT_BODY))
         .line_height(relative(1.6))
         .text_color(p.ink2)
         .children(text.lines().map(|line| div().child(line.to_owned())))
@@ -435,28 +443,25 @@ fn command_block(
                 .items_center()
                 .gap(px(8.))
                 .p(px(10.))
-                .rounded(px(10.))
+                .rounded(px(8.))
                 .bg(p.surface2)
-                .border_1()
-                .border_color(p.line)
                 .child(div().text_color(p.accent).child("$"))
                 .child(
                     div()
                         .flex_1()
                         .min_w_0()
                         .font_family("Cascadia Code")
-                        .text_size(px(11.5))
+                        .text_size(px(FONT_META))
                         .text_color(p.ink2)
                         .child(command),
                 )
                 .child(
-                    widgets::icon_btn("cmd-copy", IconKey::Copy, 24., p.muted).on_click(
-                        move |_, window, cx| {
+                    widgets::icon_btn("cmd-copy", IconKey::Copy, 24., p.muted, tr!("common.copy"))
+                        .on_click(move |_, window, cx| {
                             let _ = view.update(cx, |this, cx| {
                                 this.copy(&copy_command, window, cx);
                             });
-                        },
-                    ),
+                        }),
                 ),
         )
 }
@@ -657,12 +662,10 @@ pub fn official_detail(
                             .flex()
                             .items_center()
                             .justify_center()
-                            .rounded(px(11.))
+                            .rounded(px(12.))
                             .bg(p.tint(accent, 0.12))
-                            .border_1()
-                            .border_color(p.tint(accent, 0.25))
                             .text_color(accent)
-                            .text_size(px(17.))
+                            .text_size(px(FONT_SECTION))
                             .font_semibold()
                             .child(app.mark.clone()),
                     )
@@ -670,18 +673,22 @@ pub fn official_detail(
                         div()
                             .child(
                                 div()
-                                    .text_size(px(16.))
+                                    .text_size(px(FONT_SECTION))
                                     .font_semibold()
                                     .child(app.name.clone()),
                             )
                             .child(
                                 div()
                                     .mt(px(3.))
-                                    .text_size(px(11.))
+                                    .flex()
+                                    .flex_wrap()
+                                    .gap(px(8.))
+                                    .text_size(px(FONT_META))
                                     .text_color(p.muted)
-                                    .child(format!("{} · {}", app.publisher, method_label)),
+                                    .child(app.publisher.clone())
+                                    .child(method_label.clone()),
                             ),
-                    ),
+                        ),
             )
             .child(
                 div()
@@ -746,8 +753,8 @@ pub fn official_detail(
                             .gap(px(8.))
                             .p(px(10.))
                             .rounded(px(9.))
-                            .bg(p.tint(p.accent, 0.08))
-                            .text_size(px(11.5))
+                            .bg(p.surface2)
+                            .text_size(px(FONT_META))
                             .text_color(p.ink2)
                             .child(icon(IconKey::Info, px(14.), p.accent))
                             .child(action_semantics),
@@ -764,8 +771,8 @@ pub fn official_detail(
                             div()
                                 .p(px(10.))
                                 .rounded(px(9.))
-                                .bg(p.tint(p.accent, 0.06))
-                                .text_size(px(11.5))
+                                .bg(p.surface2)
+                                .text_size(px(FONT_META))
                                 .text_color(p.ink2)
                                 .child(metadata),
                         )
@@ -773,11 +780,15 @@ pub fn official_detail(
                     .when_some(failed_message, |this, message| {
                         this.child(
                             div()
+                                .flex()
+                                .items_start()
+                                .gap(px(8.))
                                 .p(px(10.))
                                 .rounded(px(9.))
-                                .bg(p.tint(p.warn, 0.10))
-                                .text_size(px(11.5))
-                                .text_color(p.warn)
+                                .bg(p.tint(p.danger, 0.10))
+                                .text_size(px(FONT_META))
+                                .text_color(p.danger)
+                                .child(icon(IconKey::Warning, px(14.), p.danger))
                                 .child(message),
                         )
                     })
@@ -790,7 +801,7 @@ pub fn official_detail(
                                 .p(px(10.))
                                 .rounded(px(9.))
                                 .bg(p.tint(p.warn, 0.10))
-                                .text_size(px(11.5))
+                                .text_size(px(FONT_META))
                                 .text_color(p.warn)
                                 .child(icon(IconKey::Warning, px(14.), p.warn))
                                 .child(tr!("official.detail.no_sha")),
@@ -803,10 +814,10 @@ pub fn official_detail(
                             .gap(px(8.))
                             .p(px(10.))
                             .rounded(px(9.))
-                            .bg(p.tint(p.warn, 0.07))
-                            .text_size(px(11.5))
+                            .bg(p.surface2)
+                            .text_size(px(FONT_META))
                             .text_color(p.ink2)
-                            .child(icon(IconKey::Info, px(14.), p.warn))
+                            .child(icon(IconKey::Info, px(14.), p.accent))
                             .child(variant.note.get(&language).to_owned()),
                     ),
             )
@@ -891,6 +902,7 @@ pub fn official_detail(
                         }),
                     ),
             )
+            .border(px(HAIRLINE))
     });
 }
 
@@ -934,16 +946,19 @@ fn official_link_row(
         .p(px(10.))
         .rounded(px(9.))
         .bg(p.surface2)
-        .border_1()
-        .border_color(p.line)
         .child(icon(IconKey::Shield, px(14.), p.ok))
-        .child(div().text_size(px(11.)).text_color(p.muted).child(label))
+        .child(
+            div()
+                .text_size(px(FONT_META))
+                .text_color(p.muted)
+                .child(label),
+        )
         .child(
             div()
                 .id(SharedString::from(format!("official-link-{url}")))
                 .flex_1()
                 .min_w_0()
-                .text_size(px(11.))
+                .text_size(px(FONT_META))
                 .text_color(p.accent)
                 .cursor_pointer()
                 .hover(|this| this.underline())
@@ -971,10 +986,8 @@ fn official_payload_block(
         .child(widgets::section_label(p, label))
         .child(
             div()
-                .rounded(px(9.))
-                .border_1()
-                .border_color(p.line)
-                .bg(p.bg)
+                .rounded(px(8.))
+                .bg(p.surface2)
                 .child(
                     div()
                         .flex()
@@ -983,25 +996,29 @@ fn official_payload_block(
                         .gap(px(8.))
                         .px(px(9.))
                         .py(px(6.))
-                        .border_b_1()
-                        .border_color(p.line)
-                        .text_size(px(10.))
+                        .text_size(px(FONT_META))
                         .text_color(p.muted)
                         .child(kind.to_owned())
                         .child(
-                            widgets::icon_btn("official-copy", IconKey::Copy, 24., p.muted)
-                                .on_click(move |_, window, cx| {
-                                    let _ = view.update(cx, |this, cx| {
-                                        this.copy(&copied, window, cx);
-                                    });
-                                }),
+                            widgets::icon_btn(
+                                "official-copy",
+                                IconKey::Copy,
+                                24.,
+                                p.muted,
+                                tr!("common.copy"),
+                            )
+                            .on_click(move |_, window, cx| {
+                                let _ = view.update(cx, |this, cx| {
+                                    this.copy(&copied, window, cx);
+                                });
+                            }),
                         ),
                 )
                 .child(
                     div()
                         .p(px(12.))
                         .font_family("Cascadia Code")
-                        .text_size(px(11.))
+                        .text_size(px(FONT_META))
                         .line_height(relative(1.7))
                         .text_color(p.ink2)
                         .child(payload.to_owned()),
@@ -1042,14 +1059,17 @@ pub fn official_submission(view: &mut AppView, window: &mut Window, cx: &mut Con
         dialog
             .w(px(580.))
             .title(
-                div().child(tr!("official.submission.title")).child(
-                    div()
-                        .mt(px(3.))
-                        .text_size(px(11.))
-                        .font_normal()
-                        .text_color(p.muted)
-                        .child(tr!("official.submission.subtitle")),
-                ),
+                div()
+                    .text_size(px(FONT_SECTION))
+                    .child(tr!("official.submission.title"))
+                    .child(
+                        div()
+                            .mt(px(3.))
+                            .text_size(px(FONT_META))
+                            .font_normal()
+                            .text_color(p.muted)
+                            .child(tr!("official.submission.subtitle")),
+                    ),
             )
             .child(
                 div()
@@ -1073,7 +1093,7 @@ pub fn official_submission(view: &mut AppView, window: &mut Window, cx: &mut Con
                     ))
                     .child(
                         div()
-                            .text_size(px(11.5))
+                            .text_size(px(FONT_META))
                             .line_height(relative(1.5))
                             .text_color(p.muted)
                             .child(tr!("official.submission.hint")),
@@ -1144,6 +1164,7 @@ pub fn official_submission(view: &mut AppView, window: &mut Window, cx: &mut Con
                         }),
                     ),
             )
+            .border(px(HAIRLINE))
     });
 }
 
@@ -1173,7 +1194,11 @@ pub fn error_detail(view: &mut AppView, uid: u64, window: &mut Window, cx: &mut 
         let copy_text = detail.clone();
         dialog
             .w(px(560.))
-            .title(tr!("dialog.error_title"))
+            .title(
+                div()
+                    .text_size(px(FONT_SECTION))
+                    .child(tr!("dialog.error_title")),
+            )
             .child(
                 div()
                     .flex()
@@ -1186,12 +1211,10 @@ pub fn error_detail(view: &mut AppView, uid: u64, window: &mut Window, cx: &mut 
                             .max_h(px(320.))
                             .overflow_y_scroll()
                             .p(px(10.))
-                            .rounded(px(10.))
+                            .rounded(px(8.))
                             .bg(p.surface2)
-                            .border_1()
-                            .border_color(p.line)
                             .font_family("Cascadia Code")
-                            .text_size(px(11.5))
+                            .text_size(px(FONT_META))
                             .line_height(relative(1.5))
                             .text_color(p.ink2)
                             .children(detail.lines().map(|line| div().child(line.to_owned()))),
@@ -1233,6 +1256,7 @@ pub fn error_detail(view: &mut AppView, uid: u64, window: &mut Window, cx: &mut 
                         ),
                     ),
             )
+            .border(px(HAIRLINE))
     });
 }
 
@@ -1247,7 +1271,11 @@ pub fn advanced_search(view: &mut AppView, window: &mut Window, cx: &mut Context
         let apply_filters = filters.clone();
         dialog
             .w(px(520.))
-            .title(tr!("dialog.advanced_filter"))
+            .title(
+                div()
+                    .text_size(px(FONT_SECTION))
+                    .child(tr!("dialog.advanced_filter")),
+            )
             .child(
                 div().flex().flex_col().gap(px(6.)).children(
                     [
@@ -1300,6 +1328,7 @@ pub fn advanced_search(view: &mut AppView, window: &mut Window, cx: &mut Context
                     }),
                 ),
             )
+            .border(px(HAIRLINE))
     });
 }
 
@@ -1318,13 +1347,11 @@ fn filter_row(
         .p(px(10.))
         .rounded(px(10.))
         .bg(p.surface2)
-        .border_1()
-        .border_color(p.line)
         .child(widgets::code_chip(p, flag))
         .child(
             div()
                 .flex_1()
-                .text_size(px(12.))
+                .text_size(px(FONT_BODY))
                 .text_color(p.ink2)
                 .child(hint),
         )
@@ -1352,7 +1379,11 @@ pub fn add_source(view: &mut AppView, window: &mut Window, cx: &mut Context<AppV
         let submit_view = this.clone();
         dialog
             .w(px(560.))
-            .title(tr!("dialog.add_source"))
+            .title(
+                div()
+                    .text_size(px(FONT_SECTION))
+                    .child(tr!("dialog.add_source")),
+            )
             .child(
                 div()
                     .flex()
@@ -1375,10 +1406,10 @@ pub fn add_source(view: &mut AppView, window: &mut Window, cx: &mut Context<AppV
                             .gap(px(8.))
                             .p(px(10.))
                             .rounded(px(10.))
-                            .border_1()
+                            .border(px(HAIRLINE))
                             .border_color(p.tint(p.warn, 0.4))
                             .bg(p.tint(p.warn, 0.12))
-                            .text_size(px(11.5))
+                            .text_size(px(FONT_META))
                             .text_color(p.warn)
                             .child(icon(IconKey::Warning, px(14.), p.warn))
                             .child(tr!("dialog.source_admin_hint")),
@@ -1431,6 +1462,7 @@ pub fn add_source(view: &mut AppView, window: &mut Window, cx: &mut Context<AppV
                     }),
                 ),
             )
+            .border(px(HAIRLINE))
     });
 }
 
@@ -1461,7 +1493,11 @@ pub fn edit_source(view: &mut AppView, name: &str, window: &mut Window, cx: &mut
         let source_name = source_name.clone();
         dialog
             .w(px(560.))
-            .title(tr!("dialog.edit_source_title", name = source_name))
+            .title(
+                div()
+                    .text_size(px(FONT_SECTION))
+                    .child(tr!("dialog.edit_source_title", name = source_name)),
+            )
             .child(
                 div()
                     .flex()
@@ -1477,20 +1513,18 @@ pub fn edit_source(view: &mut AppView, name: &str, window: &mut Window, cx: &mut
                             .p(px(10.))
                             .rounded(px(10.))
                             .bg(p.surface2)
-                            .border_1()
-                            .border_color(p.line)
                             .child(
                                 div()
                                     .flex_1()
                                     .child(
                                         div()
-                                            .text_size(px(12.))
+                                            .text_size(px(FONT_BODY))
                                             .text_color(p.ink2)
                                             .child(tr!("dialog.explicit_label")),
                                     )
                                     .child(
                                         div()
-                                            .text_size(px(11.))
+                                            .text_size(px(FONT_META))
                                             .text_color(p.muted)
                                             .child(tr!("dialog.explicit_hint")),
                                     ),
@@ -1535,6 +1569,7 @@ pub fn edit_source(view: &mut AppView, name: &str, window: &mut Window, cx: &mut
                     }),
                 ),
             )
+            .border(px(HAIRLINE))
     });
 }
 
@@ -1573,7 +1608,11 @@ pub fn confirm_uninstall(
         let run_view = this.clone();
         let pkg_id = pkg_id.clone();
         alert
-            .title(tr!("dialog.uninstall_title", name = pkg.name))
+            .title(
+                div()
+                    .text_size(px(FONT_SECTION))
+                    .child(tr!("dialog.uninstall_title", name = pkg.name)),
+            )
             .description(
                 div()
                     .flex()
@@ -1581,7 +1620,7 @@ pub fn confirm_uninstall(
                     .gap(px(8.))
                     .child(
                         div()
-                            .text_size(px(12.5))
+                            .text_size(px(FONT_BODY))
                             .text_color(p.ink2)
                             .child(tr!("dialog.uninstall_body")),
                     )
@@ -1602,6 +1641,7 @@ pub fn confirm_uninstall(
                 });
                 true
             })
+            .border(px(HAIRLINE))
     });
 }
 
@@ -1620,10 +1660,14 @@ pub fn confirm_remove_source(
         let run_view = this.clone();
         let source_name = source_name.clone();
         alert
-            .title(tr!("dialog.remove_source_title", name = source_name))
+            .title(
+                div()
+                    .text_size(px(FONT_SECTION))
+                    .child(tr!("dialog.remove_source_title", name = source_name)),
+            )
             .description(
                 div()
-                    .text_size(px(12.5))
+                    .text_size(px(FONT_BODY))
                     .text_color(p.ink2)
                     .child(tr!("dialog.remove_source_body")),
             )
@@ -1642,6 +1686,7 @@ pub fn confirm_remove_source(
                 });
                 true
             })
+            .border(px(HAIRLINE))
     });
 }
 
@@ -1656,7 +1701,11 @@ pub fn export_manifest(view: &mut AppView, window: &mut Window, cx: &mut Context
         let copy_view = this.clone();
         dialog
             .w(px(640.))
-            .title(tr!("dialog.export_title"))
+            .title(
+                div()
+                    .text_size(px(FONT_SECTION))
+                    .child(tr!("dialog.export_title")),
+            )
             .child(
                 div()
                     .flex()
@@ -1664,7 +1713,7 @@ pub fn export_manifest(view: &mut AppView, window: &mut Window, cx: &mut Context
                     .gap(px(10.))
                     .child(
                         div()
-                            .text_size(px(12.5))
+                            .text_size(px(FONT_BODY))
                             .text_color(p.ink2)
                             .child(tr!("dialog.export_body")),
                     )
@@ -1674,12 +1723,10 @@ pub fn export_manifest(view: &mut AppView, window: &mut Window, cx: &mut Context
                             .max_h(px(360.))
                             .overflow_y_scroll()
                             .p(px(12.))
-                            .rounded(px(10.))
+                            .rounded(px(8.))
                             .bg(p.surface2)
-                            .border_1()
-                            .border_color(p.line)
                             .font_family("Cascadia Code")
-                            .text_size(px(11.5))
+                            .text_size(px(FONT_META))
                             .text_color(p.ink2)
                             .child(json.clone()),
                     ),
@@ -1701,6 +1748,7 @@ pub fn export_manifest(view: &mut AppView, window: &mut Window, cx: &mut Context
                     }),
                 ),
             )
+            .border(px(HAIRLINE))
     });
 }
 
@@ -1712,7 +1760,7 @@ fn form_field(_p: &Palette, label: &str, control: AnyElement) -> impl IntoElemen
         .gap(px(6.))
         .child(
             div()
-                .text_size(px(12.))
+                .text_size(px(FONT_BODY))
                 .font_medium()
                 .child(label.to_owned()),
         )
@@ -1727,7 +1775,7 @@ fn readonly_field(p: &Palette, label: &str, value: &str) -> impl IntoElement {
         .gap(px(6.))
         .child(
             div()
-                .text_size(px(12.))
+                .text_size(px(FONT_BODY))
                 .font_medium()
                 .child(label.to_owned()),
         )
@@ -1736,9 +1784,9 @@ fn readonly_field(p: &Palette, label: &str, value: &str) -> impl IntoElement {
                 .p(px(9.))
                 .rounded(px(9.))
                 .bg(p.surface3)
-                .border_1()
+                .border(px(HAIRLINE))
                 .border_color(p.line)
-                .text_size(px(12.))
+                .text_size(px(FONT_BODY))
                 .text_color(p.ink2)
                 .child(value.to_owned()),
         )

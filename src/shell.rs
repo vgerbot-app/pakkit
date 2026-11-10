@@ -14,14 +14,15 @@ use crate::logging;
 use crate::model::Package;
 use crate::queue::{self, Enqueued, QueueAction, QueueState};
 use crate::state::{AppState, Route, SearchSource};
-use crate::theme::{self, Palette};
+use crate::theme::{self, FONT_BODY, FONT_META, HAIRLINE, Palette};
 use crate::views;
 use crate::widgets;
-use gpui_kit::component::input::{Input, InputEvent, InputState};
+use gpui_kit::component::input::{InputEvent, InputState};
 use gpui_kit::component::notification::Notification;
 use gpui_kit::component::sidebar::{
     Sidebar, SidebarCollapsible, SidebarFooter, SidebarHeader, SidebarMenuItem,
 };
+use gpui_kit::component::tooltip::Tooltip;
 use gpui_kit::component::{
     Side, StyledExt as _, TitleBar, WindowExt as _, badge::Badge, h_flex, v_flex,
 };
@@ -29,9 +30,9 @@ use gpui_kit::prelude::{
     FluentBuilder as _, InteractiveElement as _, StatefulInteractiveElement as _,
 };
 use gpui_kit::{
-    AnyElement, AppContext as _, ClipboardItem, Context, Entity, Focusable as _, Hsla, IntoElement,
-    KeyBinding, ParentElement as _, Render, SharedString, Styled as _, Subscription, Task, Window,
-    actions, div, px, uniform_list,
+    AnyElement, App, AppContext as _, ClipboardItem, Context, Entity, Focusable as _, Hsla,
+    IntoElement, KeyBinding, ParentElement as _, Render, SharedString, Styled as _, Subscription,
+    Task, Window, actions, div, px, uniform_list,
 };
 
 actions!(pakkit, [FocusSearch]);
@@ -90,6 +91,10 @@ impl AppView {
         rust_i18n::set_locale(&settings.language);
         theme::set_mode(cx, settings.theme);
         theme::set_accent(cx, &settings.accent);
+        gpui_kit::base::apply_system_reduce_motion(cx);
+        if settings.reduce_motion {
+            cx.set_reduce_motion(true);
+        }
 
         let search_input =
             cx.new(|cx| InputState::new(window, cx).placeholder(tr!("search.placeholder")));
@@ -1294,14 +1299,18 @@ impl AppView {
         self.start_ticker(cx);
     }
 
-    fn start_ticker(&mut self, cx: &mut Context<Self>) {
-        if !self
-            .state
-            .queue
-            .iter()
-            .any(|item| item.state == QueueState::Running)
+    pub(crate) fn start_ticker(&mut self, cx: &mut Context<Self>) {
+        if cx.reduce_motion()
+            || !self
+                .state
+                .queue
+                .iter()
+                .any(|item| item.state == QueueState::Running)
         {
             self.ticker = None;
+            return;
+        }
+        if self.ticker.is_some() {
             return;
         }
         self.ticker = Some(cx.spawn(async move |this, cx| {
@@ -1473,6 +1482,7 @@ impl AppView {
 impl Render for AppView {
     fn render(&mut self, window: &mut Window, cx: &mut Context<Self>) -> impl IntoElement {
         let p = theme::palette(cx);
+        self.start_ticker(cx);
         let collapsed = window.viewport_size().width < px(1280.);
 
         v_flex()
@@ -1509,8 +1519,9 @@ impl AppView {
             // .child(brand_row(p))
             .child(
                 div().flex_1().flex().items_center().justify_center().child(
-                    div().w_full().max_w(px(560.)).h(px(34.)).child(
-                        Input::new(&self.search_input)
+                    div().w_full().max_w(px(560.)).h(px(36.)).child(
+                        widgets::field(p, &self.search_input)
+                            .rounded(px(9.))
                             .prefix(icon(IconKey::Search, px(15.), p.muted).into_any_element())
                             .suffix(source_pill(p, source, cx).into_any_element()),
                     ),
@@ -1528,6 +1539,7 @@ impl AppView {
         let active = self.state.route.sidebar_key();
         let queue_count = queue::active_count(&self.state);
         let theme_label = self.state.settings.theme.label();
+        let theme_tooltip = theme_label.clone();
 
         let routes: [(&str, String, IconKey, Route); 8] = [
             ("home", tr!("nav.home"), IconKey::Home, Route::Home),
@@ -1580,14 +1592,40 @@ impl AppView {
                 // theme and queue rows vertically instead.
                 SidebarFooter::new()
                     .flex_col()
-                    .child(nav_row(
-                        p,
-                        collapsed,
-                        IconKey::Theme,
-                        &format!("{} · {theme_label}", tr!("nav.theme")),
-                        None,
-                        cx.listener(|this, _, window, cx| this.cycle_theme(window, cx)),
-                    ))
+                    .child(
+                        h_flex()
+                            .id("nav-theme")
+                            .w_full()
+                            .h(px(34.))
+                            .px(px(8.))
+                            .gap(px(8.))
+                            .rounded(px(8.))
+                            .cursor_pointer()
+                            .tooltip(move |window, cx| {
+                                Tooltip::new(format!("{}: {theme_tooltip}", tr!("nav.theme")))
+                                    .build(window, cx)
+                            })
+                            .hover(move |this| this.bg(p.surface2))
+                            .child(icon(IconKey::Theme, px(16.), p.muted))
+                            .when(!collapsed, |this| {
+                                this.child(
+                                    div()
+                                        .text_size(px(FONT_META))
+                                        .text_color(p.ink2)
+                                        .child(tr!("nav.theme")),
+                                )
+                                .child(
+                                    div()
+                                        .ml_auto()
+                                        .text_size(px(FONT_META))
+                                        .text_color(p.muted)
+                                        .child(theme_label.clone()),
+                                )
+                            })
+                            .on_click(
+                                cx.listener(|this, _, window, cx| this.cycle_theme(window, cx)),
+                            ),
+                    )
                     .child(nav_row(
                         p,
                         collapsed,
@@ -1615,7 +1653,7 @@ impl AppView {
                             }))
                     }),
             )
-            .border_r_1()
+            .border_r(px(HAIRLINE))
             .h_full()
     }
 
@@ -1685,9 +1723,9 @@ impl AppView {
             .flex_none()
             .px(px(12.))
             .gap(px(10.))
-            .text_size(px(11.5))
+            .text_size(px(FONT_META))
             .text_color(p.muted)
-            .border_t_1()
+            .border_t(px(HAIRLINE))
             .border_color(p.line)
             .bg(Hsla {
                 a: 0.6,
@@ -1695,7 +1733,6 @@ impl AppView {
             })
             .child(div().size(px(7.)).rounded(px(99.)).bg(dot))
             .child(self.state.status.clone())
-            .child(div().text_color(p.line_strong).child("|"))
             .child(tr!(
                 "status.sources_count",
                 count = self.state.sources.len()
@@ -1707,17 +1744,22 @@ impl AppView {
                     .gap(px(6.))
                     .child(icon(IconKey::Terminal, px(12.), p.muted))
                     .child(version)
-                    .child(widgets::pill(p, widgets::PillKind::Line, "x64")),
+                    .child(widgets::pill(
+                        p,
+                        widgets::PillKind::Line,
+                        std::env::consts::ARCH,
+                    )),
             )
     }
 
     fn queue_drawer(&self, p: &Palette, cx: &mut Context<Self>) -> impl IntoElement {
         let view = cx.weak_entity();
+        let reduce_motion = cx.reduce_motion();
         v_flex()
             .w(px(360.))
             .flex_none()
             .h_full()
-            .border_l_1()
+            .border_l(px(HAIRLINE))
             .border_color(p.line)
             .bg(Hsla {
                 a: 0.85,
@@ -1729,12 +1771,12 @@ impl AppView {
                     .flex_none()
                     .px(px(14.))
                     .gap(px(8.))
-                    .border_b_1()
+                    .border_b(px(HAIRLINE))
                     .border_color(p.line)
                     .child(icon(IconKey::Queue, px(16.), p.accent))
                     .child(
                         div()
-                            .text_size(px(13.))
+                            .text_size(px(FONT_BODY))
                             .font_semibold()
                             .child(tr!("queue.title")),
                     )
@@ -1756,11 +1798,19 @@ impl AppView {
                                     ),
                             )
                             .child(
-                                widgets::icon_btn("queue-close", IconKey::Close, 26., p.muted)
-                                    .on_click(cx.listener(|this, _, _, cx| {
+                                widgets::icon_btn(
+                                    "queue-close",
+                                    IconKey::Close,
+                                    26.,
+                                    p.muted,
+                                    tr!("common.close"),
+                                )
+                                .on_click(cx.listener(
+                                    |this, _, _, cx| {
                                         this.state.queue_open = false;
                                         cx.notify();
-                                    })),
+                                    },
+                                )),
                             ),
                     ),
             )
@@ -1773,8 +1823,15 @@ impl AppView {
                     .when(self.state.queue.is_empty(), |this| {
                         this.child(
                             div()
-                                .text_size(px(12.5))
+                                .h_full()
+                                .flex()
+                                .flex_col()
+                                .items_center()
+                                .justify_center()
+                                .gap(px(8.))
+                                .text_size(px(FONT_META))
                                 .text_color(p.muted)
+                                .child(icon(IconKey::Queue, px(24.), p.muted))
                                 .child(tr!("queue.empty")),
                         )
                     })
@@ -1798,9 +1855,11 @@ impl AppView {
                         let view = view.clone();
                         let p = *p;
                         this.child(
-                            uniform_list("queue-body", count, move |range, _, _| {
+                            uniform_list("queue-body", count, move |range, _, cx| {
                                 range
-                                    .map(|ix| queue_row(&p, &rows[ix], view.clone()))
+                                    .map(|ix| {
+                                        queue_row(cx, &p, &rows[ix], view.clone(), reduce_motion)
+                                    })
                                     .collect()
                             })
                             .size_full(),
@@ -1812,9 +1871,9 @@ impl AppView {
                     .flex_none()
                     .p(px(10.))
                     .gap(px(6.))
-                    .text_size(px(11.))
+                    .text_size(px(FONT_META))
                     .text_color(p.muted)
-                    .border_t_1()
+                    .border_t(px(HAIRLINE))
                     .border_color(p.line)
                     .child(icon(IconKey::Info, px(12.), p.muted))
                     .child(tr!("queue.serial_hint")),
@@ -1847,7 +1906,7 @@ fn nav_row(
                 div()
                     .flex_1()
                     .min_w_0()
-                    .text_size(px(12.5))
+                    .text_size(px(FONT_META))
                     .text_color(p.ink2)
                     .truncate()
                     .child(label.to_owned()),
@@ -1891,7 +1950,13 @@ impl QueueRowModel {
     }
 }
 
-fn queue_row(p: &Palette, row: &QueueRowModel, view: gpui_kit::WeakEntity<AppView>) -> AnyElement {
+fn queue_row(
+    cx: &App,
+    p: &Palette,
+    row: &QueueRowModel,
+    view: gpui_kit::WeakEntity<AppView>,
+    reduce_motion: bool,
+) -> AnyElement {
     let uid = row.uid;
     // The remove button's `move` closure takes `view`; the detail affordance
     // further down needs its own clone.
@@ -1921,12 +1986,17 @@ fn queue_row(p: &Palette, row: &QueueRowModel, view: gpui_kit::WeakEntity<AppVie
                                 .min_w_0()
                                 .child(
                                     div()
-                                        .text_size(px(12.5))
+                                        .text_size(px(FONT_BODY))
                                         .font_medium()
                                         .truncate()
                                         .child(row.name.clone()),
                                 )
-                                .child(div().text_size(px(11.)).text_color(color).child(label)),
+                                .child(
+                                    div()
+                                        .text_size(px(FONT_META))
+                                        .text_color(color)
+                                        .child(label),
+                                ),
                         )
                         .child(
                             widgets::icon_btn(
@@ -1934,17 +2004,26 @@ fn queue_row(p: &Palette, row: &QueueRowModel, view: gpui_kit::WeakEntity<AppVie
                                 IconKey::Close,
                                 24.,
                                 p.muted,
+                                tr!("queue.remove"),
                             )
                             .on_click(move |_, _, cx| {
                                 let _ = view.update(cx, |this, cx| this.remove_queue_item(uid, cx));
                             }),
                         ),
                 )
-                .child(
-                    div()
-                        .mt(px(8.))
-                        .child(widgets::progress_bar(p, row.progress)),
-                )
+                .when(row.state == QueueState::Running, |this| {
+                    this.child(div().mt(px(8.)).child(widgets::progress_indeterminate(
+                        p,
+                        if reduce_motion { 0. } else { row.progress },
+                    )))
+                })
+                .when(row.state == QueueState::Done, |this| {
+                    this.child(
+                        div()
+                            .mt(px(8.))
+                            .child(widgets::progress_track(p, 100., p.ok)),
+                    )
+                })
                 .when_some(row.downloaded_path.clone(), |this, path| {
                     this.child(
                         gpui_kit::component::button::Button::new(format!(
@@ -1977,39 +2056,33 @@ fn queue_row(p: &Palette, row: &QueueRowModel, view: gpui_kit::WeakEntity<AppVie
                     // the uniform height the virtual list measures once.
                     if row.has_detail {
                         div()
-                            .id(SharedString::from(format!("queue-detail-{uid}")))
                             .mt(px(6.))
-                            .flex()
-                            .items_center()
-                            .gap(px(4.))
-                            .cursor_pointer()
-                            .on_click(move |_, window, cx| {
-                                let _ = detail_view.update(cx, |this, cx| {
-                                    crate::dialogs::error_detail(this, uid, window, cx);
-                                });
-                            })
-                            .child(icon(IconKey::Info, px(11.), p.danger))
                             .child(
                                 div()
-                                    .flex_1()
-                                    .min_w_0()
-                                    .text_size(px(11.))
+                                    .text_size(px(FONT_META))
                                     .font_family("Cascadia Code")
                                     .text_color(p.danger)
                                     .truncate()
                                     .child(row.log.clone()),
                             )
                             .child(
-                                div()
-                                    .text_size(px(10.5))
-                                    .text_color(p.accent)
-                                    .child(tr!("queue.details")),
+                                widgets::btn_ghost(
+                                    cx,
+                                    p,
+                                    SharedString::from(format!("queue-detail-{uid}")),
+                                    tr!("queue.details"),
+                                )
+                                .on_click(move |_, window, cx| {
+                                    let _ = detail_view.update(cx, |this, cx| {
+                                        crate::dialogs::error_detail(this, uid, window, cx);
+                                    });
+                                }),
                             )
                             .into_any_element()
                     } else {
                         div()
                             .mt(px(6.))
-                            .text_size(px(11.))
+                            .text_size(px(FONT_META))
                             .font_family("Cascadia Code")
                             .text_color(p.muted)
                             .truncate()
@@ -2034,17 +2107,22 @@ fn brand_mark(p: &Palette) -> impl IntoElement {
         .child(icon(IconKey::Logo, px(15.), p.on_accent))
 }
 
-/// The wordmark row: gradient tile, name, prototype pill.
+/// The wordmark row: neutral icon tile, name, and package version.
 fn brand_row(p: &Palette) -> impl IntoElement {
     h_flex()
         .gap(px(8.))
         .flex_none()
         .child(brand_mark(p))
-        .child(div().text_size(px(13.)).font_semibold().child("Pakkit"))
+        .child(
+            div()
+                .text_size(px(FONT_BODY))
+                .font_semibold()
+                .child("Pakkit"),
+        )
         .child(widgets::pill(
             p,
             widgets::PillKind::Line,
-            tr!("app.prototype_pill"),
+            format!("v{}", env!("CARGO_PKG_VERSION")),
         ))
 }
 
@@ -2053,13 +2131,11 @@ fn source_pill(p: &Palette, source: SearchSource, cx: &mut Context<AppView>) -> 
     div()
         .id("source-pill")
         .mr(px(6.))
-        .text_size(px(11.))
-        .px(px(7.))
+        .text_size(px(FONT_META))
+        .px(px(8.))
         .py(px(3.))
         .rounded(px(6.))
         .bg(p.surface3)
-        .border_1()
-        .border_color(p.line)
         .text_color(p.ink2)
         .whitespace_nowrap()
         .cursor_pointer()
@@ -2210,6 +2286,44 @@ mod tests {
                 assert!(view.backend.is_none());
                 assert!(view.state.backend_version.is_empty());
                 assert!(view.state.backend_error.is_some());
+            });
+        })
+        .expect("window");
+    }
+
+    #[gpui_kit::test]
+    fn reduce_motion_controls_the_running_ticker(cx: &mut TestAppContext) {
+        cx.update(gpui_kit::init);
+        cx.update(crate::theme::init);
+        let (window, view) = cx.update(|cx| {
+            gpui_kit::open_window(WindowOptions::default(), cx, |window, cx| {
+                cx.new(|cx| AppView::new(window, cx))
+            })
+            .expect("window")
+        });
+        cx.update_window(window, |_, _, cx| {
+            view.update(cx, |view, cx| {
+                view.state.packages.push(crate::model::Package {
+                    id: "Example.Package".into(),
+                    name: "Example".into(),
+                    ..crate::model::Package::default()
+                });
+                assert!(matches!(
+                    queue::enqueue(&mut view.state, "Example.Package", QueueAction::Install),
+                    Enqueued::Added(_)
+                ));
+                view.state.queue[0].state = QueueState::Running;
+
+                cx.set_reduce_motion(true);
+                view.start_ticker(cx);
+                assert!(view.ticker.is_none());
+
+                cx.set_reduce_motion(false);
+                view.start_ticker(cx);
+                assert!(view.ticker.is_some());
+
+                view.state.queue.clear();
+                view.ticker = None;
             });
         })
         .expect("window");

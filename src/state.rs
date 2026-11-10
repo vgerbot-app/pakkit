@@ -780,14 +780,14 @@ mod tests {
     }
 
     #[test]
-    fn status_text_matches_the_prototype_router() {
+    fn status_text_uses_meaningful_punctuation() {
         crate::ensure_zh_locale();
         let mut state = AppState::default();
         assert_eq!(state.status_for(Route::Home), "就绪");
         assert_eq!(state.status_for(Route::Categories), "分类 8");
         assert_eq!(
             state.status_for(Route::Category(CategoryId::Dev)),
-            "分类 · 编程开发"
+            "分类：编程开发"
         );
         assert_eq!(state.status_for(Route::Search), "全部软件包");
         state.query = "vscode".into();
