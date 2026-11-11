@@ -280,18 +280,18 @@
           "requiresAdmin": false,
           "interactive": true,
           "note": {
-            "zh-CN": "Windows 还需按提示准备 Visual Studio C++ Build Tools。Unix 脚本提供交互选项。",
-            "zh-TW": "Windows 還需依提示準備 Visual Studio C++ Build Tools。Unix 腳本提供互動選項。",
-            "en": "Windows also requires Visual Studio C++ Build Tools as prompted. The Unix script offers interactive options.",
-            "ja": "Windows では案内に従って Visual Studio C++ Build Tools も必要です。Unix スクリプトには対話オプションがあります。",
-            "ko": "Windows에서는 안내에 따라 Visual Studio C++ Build Tools도 준비해야 합니다. Unix 스크립트는 대화형 옵션을 제공합니다."
+            "zh-CN": "通过 winget 安装 Rustup；还需按提示准备 Visual Studio C++ Build Tools。",
+            "zh-TW": "透過 winget 安裝 Rustup；還需依提示準備 Visual Studio C++ Build Tools。",
+            "en": "Installs Rustup with winget. Visual Studio C++ Build Tools are also required as prompted.",
+            "ja": "winget で Rustup をインストールします。案内に従って Visual Studio C++ Build Tools も準備する必要があります。",
+            "ko": "winget으로 Rustup을 설치합니다. 안내에 따라 Visual Studio C++ Build Tools도 준비해야 합니다."
           },
           "sourceUrl": "https://www.rust-lang.org/tools/install",
           "method": {
-            "type": "artifact",
-            "url": "https://win.rustup.rs/x86_64",
-            "fileName": "rustup-init.exe",
-            "action": "run_installer"
+            "type": "package_manager",
+            "manager": "winget",
+            "packageId": "Rustlang.Rustup",
+            "source": "winget"
           },
           "detection": {
             "type": "command",
@@ -310,18 +310,18 @@
           "requiresAdmin": false,
           "interactive": true,
           "note": {
-            "zh-CN": "Windows 还需按提示准备 Visual Studio C++ Build Tools。Unix 脚本提供交互选项。",
-            "zh-TW": "Windows 還需依提示準備 Visual Studio C++ Build Tools。Unix 腳本提供互動選項。",
-            "en": "Windows also requires Visual Studio C++ Build Tools as prompted. The Unix script offers interactive options.",
-            "ja": "Windows では案内に従って Visual Studio C++ Build Tools も必要です。Unix スクリプトには対話オプションがあります。",
-            "ko": "Windows에서는 안내에 따라 Visual Studio C++ Build Tools도 준비해야 합니다. Unix 스크립트는 대화형 옵션을 제공합니다."
+            "zh-CN": "通过 winget 安装 Rustup；还需按提示准备 Visual Studio C++ Build Tools。",
+            "zh-TW": "透過 winget 安裝 Rustup；還需依提示準備 Visual Studio C++ Build Tools。",
+            "en": "Installs Rustup with winget. Visual Studio C++ Build Tools are also required as prompted.",
+            "ja": "winget で Rustup をインストールします。案内に従って Visual Studio C++ Build Tools も準備する必要があります。",
+            "ko": "winget으로 Rustup을 설치합니다. 안내에 따라 Visual Studio C++ Build Tools도 준비해야 합니다."
           },
           "sourceUrl": "https://www.rust-lang.org/tools/install",
           "method": {
-            "type": "artifact",
-            "url": "https://win.rustup.rs/aarch64",
-            "fileName": "rustup-init.exe",
-            "action": "run_installer"
+            "type": "package_manager",
+            "manager": "winget",
+            "packageId": "Rustlang.Rustup",
+            "source": "winget"
           },
           "detection": {
             "type": "command",
@@ -614,16 +614,53 @@
           "requiresAdmin": false,
           "interactive": false,
           "note": {
-            "zh-CN": "仅打开官方下载页，请选择匹配架构的 AppImage、DEB 或 RPM；打开页面不代表已安装。可选 AI 功能需自行配置模型服务或本地 CLI，相关服务可能收费。",
-            "zh-TW": "僅開啟官方下載頁，請選擇符合架構的 AppImage、DEB 或 RPM；開啟頁面不代表已安裝。可選 AI 功能需自行設定模型服務或本機 CLI，相關服務可能收費。",
-            "en": "Opens the official download page only; choose an AppImage, DEB or RPM matching your architecture. Opening a page does not mean installation. Optional AI features require a separately configured model service or local CLI; provider charges may apply.",
-            "ja": "公式ダウンロードページのみを開きます。アーキテクチャに合う AppImage、DEB、RPM を選択してください。ページを開いてもインストール完了ではありません。オプションの AI 機能には別途モデルサービスまたはローカル CLI の設定が必要で、プロバイダー料金が発生する場合があります。",
-            "ko": "공식 다운로드 페이지만 열리며 아키텍처에 맞는 AppImage, DEB 또는 RPM을 선택하세요. 페이지를 열었다고 설치된 것은 아닙니다. 선택적 AI 기능은 모델 서비스 또는 로컬 CLI를 별도로 구성해야 하며 제공업체 요금이 발생할 수 있습니다."
+            "zh-CN": "下载并校验匹配的正式稳定版，按 Linux 发行版使用 DEB、RPM 或 AppImage 安装；AppImage 安装到用户目录并创建启动链接。",
+            "zh-TW": "下載並驗證符合的正式穩定版，按 Linux 發行版使用 DEB、RPM 或 AppImage 安裝；AppImage 安裝到使用者目錄並建立啟動連結。",
+            "en": "Downloads and verifies the matching stable release, then installs the DEB, RPM or AppImage appropriate for the Linux distribution. AppImages are installed in the user directory with a launch link.",
+            "ja": "一致する安定版をダウンロードして検証し、Linux ディストリビューションに応じて DEB、RPM または AppImage をインストールします。AppImage はユーザーディレクトリにインストールし、起動リンクを作成します。",
+            "ko": "일치하는 안정 릴리스를 다운로드하고 검증한 후 Linux 배포판에 맞는 DEB, RPM 또는 AppImage를 설치합니다. AppImage는 사용자 디렉터리에 설치하고 실행 링크를 만듭니다."
           },
           "sourceUrl": "https://dbxio.com/en/docs/getting-started",
           "method": {
-            "type": "official_page",
-            "url": "https://dbxio.com/en"
+            "type": "github_release",
+            "repository": "t8y2/dbx",
+            "packages": [
+              {
+                "format": "deb",
+                "manager": "apt",
+                "assets": {
+                  "x86_64": "DBX_0.6.69_amd64.deb",
+                  "aarch64": "DBX_0.6.69_arm64.deb"
+                },
+                "install": "package"
+              },
+              {
+                "format": "rpm",
+                "manager": "dnf",
+                "assets": {
+                  "x86_64": "DBX-0.6.69-1.x86_64.rpm",
+                  "aarch64": "DBX_0.6.69_arm64.rpm"
+                },
+                "install": "package"
+              },
+              {
+                "format": "rpm",
+                "manager": "zypper",
+                "assets": {
+                  "x86_64": "DBX-0.6.69-1.x86_64.rpm",
+                  "aarch64": "DBX_0.6.69_arm64.rpm"
+                },
+                "install": "package"
+              },
+              {
+                "format": "appimage",
+                "assets": {
+                  "x86_64": "DBX_0.6.69_amd64.AppImage",
+                  "aarch64": "DBX_0.6.69_arm64.AppImage"
+                },
+                "install": { "kind": "app_image", "linkName": "dbx", "desktopName": "DBX" }
+              }
+            ]
           }
         },
         {
@@ -635,16 +672,18 @@
           "requiresAdmin": false,
           "interactive": false,
           "note": {
-            "zh-CN": "仅打开官方下载页，请选择 Windows 10/11 x64 安装器；在线安装器可能下载 WebView2。打开页面不代表已安装。可选 AI 功能需自行配置模型服务或本地 CLI，相关服务可能收费。",
-            "zh-TW": "僅開啟官方下載頁，請選擇 Windows 10/11 x64 安裝程式；線上安裝程式可能下載 WebView2。開啟頁面不代表已安裝。可選 AI 功能需自行設定模型服務或本機 CLI，相關服務可能收費。",
-            "en": "Opens the official download page only; choose the Windows 10/11 x64 installer. The online installer may download WebView2. Opening a page does not mean installation. Optional AI features require a separately configured model service or local CLI; provider charges may apply.",
-            "ja": "公式ダウンロードページのみを開き、Windows 10/11 x64 インストーラーを選択してください。オンラインインストーラーは WebView2 をダウンロードする場合があります。ページを開いてもインストール完了ではありません。オプションの AI 機能には別途モデルサービスまたはローカル CLI の設定が必要で、プロバイダー料金が発生する場合があります。",
-            "ko": "공식 다운로드 페이지만 열리며 Windows 10/11 x64 설치 관리자를 선택하세요. 온라인 설치 관리자는 WebView2를 다운로드할 수 있습니다. 페이지를 열었다고 설치된 것은 아닙니다. 선택적 AI 기능은 모델 서비스 또는 로컬 CLI를 별도로 구성해야 하며 제공업체 요금이 발생할 수 있습니다."
+            "zh-CN": "通过 winget 安装 t8y2.DBX（winget 源）；需要已安装并配置该包管理器。",
+            "zh-TW": "透過 winget 安裝 t8y2.DBX（winget 來源）；需要已安裝並設定該套件管理器。",
+            "en": "Installs t8y2.DBX with winget from the winget source. The package manager must already be installed and configured.",
+            "ja": "winget で t8y2.DBX をインストールします（winget ソース）。パッケージマネージャーを事前にインストールして設定する必要があります。",
+            "ko": "winget로 t8y2.DBX를 설치합니다(winget 소스). 패키지 관리자가 미리 설치되어 설정되어 있어야 합니다."
           },
           "sourceUrl": "https://dbxio.com/en/docs/getting-started",
           "method": {
-            "type": "official_page",
-            "url": "https://dbxio.com/en"
+            "type": "package_manager",
+            "manager": "winget",
+            "packageId": "t8y2.DBX",
+            "source": "winget"
           }
         },
         {
@@ -657,16 +696,18 @@
           "requiresAdmin": false,
           "interactive": false,
           "note": {
-            "zh-CN": "仅打开官方下载页，请选择匹配 Intel 或 Apple Silicon 的 DMG，也可按官方文档使用 Homebrew；打开页面不代表已安装。可选 AI 功能需自行配置模型服务或本地 CLI，相关服务可能收费。",
-            "zh-TW": "僅開啟官方下載頁，請選擇符合 Intel 或 Apple Silicon 的 DMG，也可依官方文件使用 Homebrew；開啟頁面不代表已安裝。可選 AI 功能需自行設定模型服務或本機 CLI，相關服務可能收費。",
-            "en": "Opens the official download page only; choose the DMG matching Intel or Apple Silicon, or use Homebrew as documented. Opening a page does not mean installation. Optional AI features require a separately configured model service or local CLI; provider charges may apply.",
-            "ja": "公式ダウンロードページのみを開き、Intel または Apple Silicon に合う DMG を選択するか、公式ドキュメントに従って Homebrew を使用してください。ページを開いてもインストール完了ではありません。オプションの AI 機能には別途モデルサービスまたはローカル CLI の設定が必要で、プロバイダー料金が発生する場合があります。",
-            "ko": "공식 다운로드 페이지만 열리며 Intel 또는 Apple Silicon에 맞는 DMG를 선택하거나 공식 문서에 따라 Homebrew를 사용하세요. 페이지를 열었다고 설치된 것은 아닙니다. 선택적 AI 기능은 모델 서비스 또는 로컬 CLI를 별도로 구성해야 하며 제공업체 요금이 발생할 수 있습니다."
+            "zh-CN": "通过 brew 安装 dbx；需要已安装并配置该包管理器。",
+            "zh-TW": "透過 brew 安裝 dbx；需要已安裝並設定該套件管理器。",
+            "en": "Installs dbx with brew. The package manager must already be installed and configured.",
+            "ja": "brew で dbx をインストールします。パッケージマネージャーを事前にインストールして設定する必要があります。",
+            "ko": "brew로 dbx를 설치합니다. 패키지 관리자가 미리 설치되어 설정되어 있어야 합니다."
           },
           "sourceUrl": "https://dbxio.com/en/docs/getting-started",
           "method": {
-            "type": "official_page",
-            "url": "https://dbxio.com/en"
+            "type": "package_manager",
+            "manager": "brew",
+            "packageId": "dbx",
+            "cask": true
           }
         }
       ]
@@ -730,16 +771,18 @@
           "requiresAdmin": false,
           "interactive": false,
           "note": {
-            "zh-CN": "官方 v2 文档提供独立二进制下载，但没有官方 PowerShell 安装脚本；此页面不会自动安装。需配置模型提供商凭据，部分模型或服务可能收费。",
-            "zh-TW": "官方 v2 文件提供獨立二進位檔下載，但沒有官方 PowerShell 安裝指令碼；此頁面不會自動安裝。需設定模型供應商憑證，部分模型或服務可能收費。",
-            "en": "The official v2 documentation offers standalone binary downloads but no official PowerShell installer; opening this page does not install anything. Provider credentials are required, and some models or services may charge fees.",
-            "ja": "v2 公式ドキュメントではスタンドアロンバイナリを配布していますが、公式 PowerShell インストーラーはありません。このページを開いてもインストールは実行されません。プロバイダーの認証情報が必要で、一部のモデルやサービスは有料です。",
-            "ko": "공식 v2 문서는 독립 실행 바이너리를 제공하지만 공식 PowerShell 설치 스크립트는 없습니다. 이 페이지를 열어도 자동으로 설치되지 않습니다. 제공업체 자격 증명이 필요하며 일부 모델이나 서비스는 유료일 수 있습니다."
+            "zh-CN": "通过 winget 安装 Anomaly.OpenCode（winget 源）；需要已安装并配置该包管理器。",
+            "zh-TW": "透過 winget 安裝 Anomaly.OpenCode（winget 來源）；需要已安裝並設定該套件管理器。",
+            "en": "Installs Anomaly.OpenCode with winget from the winget source. The package manager must already be installed and configured.",
+            "ja": "winget で Anomaly.OpenCode をインストールします（winget ソース）。パッケージマネージャーを事前にインストールして設定する必要があります。",
+            "ko": "winget로 Anomaly.OpenCode를 설치합니다(winget 소스). 패키지 관리자가 미리 설치되어 설정되어 있어야 합니다."
           },
           "sourceUrl": "https://opencode.ai/v2/docs/",
           "method": {
-            "type": "official_page",
-            "url": "https://opencode.ai/v2/docs/"
+            "type": "package_manager",
+            "manager": "winget",
+            "packageId": "Anomaly.OpenCode",
+            "source": "winget"
           },
           "detection": {
             "type": "command",
@@ -920,16 +963,17 @@
           "requiresAdmin": false,
           "interactive": false,
           "note": {
-            "zh-CN": "官方文档仅提供 npm、Homebrew 等安装方式，没有独立安装脚本；此页面不会自动安装。当前官方包的 Linux 原生目标仅确认 x64。建议 Ubuntu 20.04+、Node.js 20+。需要 Code Assist Standard/Enterprise、Code Assist for GitHub，或旧版付费 API/Vertex 密钥；个人免费版及 Google AI Pro/Ultra 已迁移至 Antigravity CLI。",
-            "zh-TW": "官方文件僅提供 npm、Homebrew 等安裝方式，沒有獨立安裝指令碼；此頁面不會自動安裝。目前官方套件的 Linux 原生目標僅確認 x64。建議 Ubuntu 20.04+、Node.js 20+。需要 Code Assist Standard/Enterprise、Code Assist for GitHub，或舊版付費 API/Vertex 金鑰；個人免費版及 Google AI Pro/Ultra 已移至 Antigravity CLI。",
-            "en": "The official guide documents npm, Homebrew, and similar methods but no standalone installer script; opening this page does not install anything. The current official package establishes only an x64 native Linux target. Ubuntu 20.04+ and Node.js 20+ are recommended. Requires Code Assist Standard/Enterprise, Code Assist for GitHub, or legacy paid API/Vertex keys; free individual and Google AI Pro/Ultra access moved to Antigravity CLI.",
-            "ja": "公式ガイドには npm や Homebrew などの方法が記載されていますが、独立したインストールスクリプトはありません。このページを開いてもインストールは実行されません。現在の公式パッケージで確認できる Linux ネイティブターゲットは x64 のみです。Ubuntu 20.04+ と Node.js 20+ を推奨。Code Assist Standard/Enterprise、Code Assist for GitHub、または従来の有料 API/Vertex キーが必要です。無料個人版と Google AI Pro/Ultra は Antigravity CLI に移行しました。",
-            "ko": "공식 안내서는 npm, Homebrew 등의 설치 방법만 제공하며 독립 설치 스크립트는 없습니다. 이 페이지를 열어도 자동으로 설치되지 않습니다. 현재 공식 패키지에서 확인된 Linux 네이티브 대상은 x64뿐입니다. Ubuntu 20.04 이상과 Node.js 20 이상을 권장합니다. Code Assist Standard/Enterprise, Code Assist for GitHub 또는 기존 유료 API/Vertex 키가 필요하며 묣료 개인 및 Google AI Pro/Ultra 액세스는 Antigravity CLI로 이전되었습니다."
+            "zh-CN": "按平台使用 Homebrew 或 npm 安装 Gemini CLI；npm 方式需要先安装 Node.js 和 npm。使用所需账号、许可或 API 密钥仍按官方要求配置。",
+            "zh-TW": "按平台使用 Homebrew 或 npm 安裝 Gemini CLI；npm 方式需要先安裝 Node.js 和 npm。使用所需帳號、授權或 API 金鑰仍按官方要求設定。",
+            "en": "Installs Gemini CLI with Homebrew or npm according to the platform. npm installation requires Node.js and npm. Required accounts, licenses or API keys must still be configured as documented by Google.",
+            "ja": "プラットフォームに応じて Homebrew または npm で Gemini CLI をインストールします。npm 方式には Node.js と npm が必要です。必要なアカウント、ライセンス、API キーは Google の案内に従って設定してください。",
+            "ko": "플랫폼에 따라 Homebrew 또는 npm으로 Gemini CLI를 설치합니다. npm 설치에는 Node.js와 npm이 필요합니다. 필요한 계정, 라이선스 또는 API 키는 Google 안내에 따라 설정해야 합니다."
           },
           "sourceUrl": "https://www.geminicli.com/docs/get-started/installation",
           "method": {
-            "type": "official_page",
-            "url": "https://www.geminicli.com/docs/get-started/installation"
+            "type": "package_manager",
+            "manager": "npm",
+            "packageId": "@google/gemini-cli"
           },
           "detection": {
             "type": "command",
@@ -949,16 +993,17 @@
           "requiresAdmin": false,
           "interactive": false,
           "note": {
-            "zh-CN": "官方文档仅提供 npm 等安装方式，没有独立安装脚本；此页面不会自动安装。建议 Windows 11 24H2+、PowerShell、Node.js 20+。需要 Code Assist Standard/Enterprise、Code Assist for GitHub，或旧版付费 API/Vertex 密钥；个人免费版及 Google AI Pro/Ultra 已迁移至 Antigravity CLI。",
-            "zh-TW": "官方文件僅提供 npm 等安裝方式，沒有獨立安裝指令碼；此頁面不會自動安裝。建議 Windows 11 24H2+、PowerShell、Node.js 20+。需要 Code Assist Standard/Enterprise、Code Assist for GitHub，或舊版付費 API/Vertex 金鑰；個人免費版及 Google AI Pro/Ultra 已移至 Antigravity CLI。",
-            "en": "The official guide documents npm and similar methods but no standalone installer script; opening this page does not install anything. Windows 11 24H2+, PowerShell, and Node.js 20+ are recommended. Requires Code Assist Standard/Enterprise, Code Assist for GitHub, or legacy paid API/Vertex keys; free individual and Google AI Pro/Ultra access moved to Antigravity CLI.",
-            "ja": "公式ガイドには npm などの方法が記載されていますが、独立したインストールスクリプトはありません。このページを開いてもインストールは実行されません。Windows 11 24H2+、PowerShell、Node.js 20+ を推奨。Code Assist Standard/Enterprise、Code Assist for GitHub、または従来の有料 API/Vertex キーが必要です。無料個人版と Google AI Pro/Ultra は Antigravity CLI に移行しました。",
-            "ko": "공식 안내서는 npm 등의 설치 방법만 제공하며 독립 설치 스크립트는 없습니다. 이 페이지를 열어도 자동으로 설치되지 않습니다. Windows 11 24H2 이상, PowerShell, Node.js 20 이상을 권장합니다. Code Assist Standard/Enterprise, Code Assist for GitHub 또는 기존 유료 API/Vertex 키가 필요하며 묣료 개인 및 Google AI Pro/Ultra 액세스는 Antigravity CLI로 이전되었습니다."
+            "zh-CN": "按平台使用 Homebrew 或 npm 安装 Gemini CLI；npm 方式需要先安装 Node.js 和 npm。使用所需账号、许可或 API 密钥仍按官方要求配置。",
+            "zh-TW": "按平台使用 Homebrew 或 npm 安裝 Gemini CLI；npm 方式需要先安裝 Node.js 和 npm。使用所需帳號、授權或 API 金鑰仍按官方要求設定。",
+            "en": "Installs Gemini CLI with Homebrew or npm according to the platform. npm installation requires Node.js and npm. Required accounts, licenses or API keys must still be configured as documented by Google.",
+            "ja": "プラットフォームに応じて Homebrew または npm で Gemini CLI をインストールします。npm 方式には Node.js と npm が必要です。必要なアカウント、ライセンス、API キーは Google の案内に従って設定してください。",
+            "ko": "플랫폼에 따라 Homebrew 또는 npm으로 Gemini CLI를 설치합니다. npm 설치에는 Node.js와 npm이 필요합니다. 필요한 계정, 라이선스 또는 API 키는 Google 안내에 따라 설정해야 합니다."
           },
           "sourceUrl": "https://www.geminicli.com/docs/get-started/installation",
           "method": {
-            "type": "official_page",
-            "url": "https://www.geminicli.com/docs/get-started/installation"
+            "type": "package_manager",
+            "manager": "npm",
+            "packageId": "@google/gemini-cli"
           },
           "detection": {
             "type": "command",
@@ -978,16 +1023,18 @@
           "requiresAdmin": false,
           "interactive": false,
           "note": {
-            "zh-CN": "官方文档仅提供 npm、Homebrew、MacPorts 等安装方式，没有独立安装脚本；此页面不会自动安装，部分方式可能需要管理员权限。建议 macOS 15+、Node.js 20+。需要 Code Assist Standard/Enterprise、Code Assist for GitHub，或旧版付费 API/Vertex 密钥；个人免费版及 Google AI Pro/Ultra 已迁移至 Antigravity CLI。",
-            "zh-TW": "官方文件僅提供 npm、Homebrew、MacPorts 等安裝方式，沒有獨立安裝指令碼；此頁面不會自動安裝，部分方式可能需要管理員權限。建議 macOS 15+、Node.js 20+。需要 Code Assist Standard/Enterprise、Code Assist for GitHub，或舊版付費 API/Vertex 金鑰；個人免費版及 Google AI Pro/Ultra 已移至 Antigravity CLI。",
-            "en": "The official guide documents npm, Homebrew, MacPorts, and similar methods but no standalone installer script; opening this page does not install anything, and some methods may require administrator access. macOS 15+ and Node.js 20+ are recommended. Requires Code Assist Standard/Enterprise, Code Assist for GitHub, or legacy paid API/Vertex keys; free individual and Google AI Pro/Ultra access moved to Antigravity CLI.",
-            "ja": "公式ガイドには npm、Homebrew、MacPorts などの方法が記載されていますが、独立したインストールスクリプトはありません。このページを開いてもインストールは実行されず、方法によっては管理者権限が必要です。macOS 15+ と Node.js 20+ を推奨。Code Assist Standard/Enterprise、Code Assist for GitHub、または従来の有料 API/Vertex キーが必要です。無料個人版と Google AI Pro/Ultra は Antigravity CLI に移行しました。",
-            "ko": "공식 안내서는 npm, Homebrew, MacPorts 등의 설치 방법만 제공하며 독립 설치 스크립트는 없습니다. 이 페이지를 열어도 자동으로 설치되지 않으며 일부 방법은 관리자 권한이 필요할 수 있습니다. macOS 15 이상과 Node.js 20 이상을 권장합니다. Code Assist Standard/Enterprise, Code Assist for GitHub 또는 기존 유료 API/Vertex 키가 필요하며 묣료 개인 및 Google AI Pro/Ultra 액세스는 Antigravity CLI로 이전되었습니다."
+            "zh-CN": "按平台使用 Homebrew 或 npm 安装 Gemini CLI；npm 方式需要先安装 Node.js 和 npm。使用所需账号、许可或 API 密钥仍按官方要求配置。",
+            "zh-TW": "按平台使用 Homebrew 或 npm 安裝 Gemini CLI；npm 方式需要先安裝 Node.js 和 npm。使用所需帳號、授權或 API 金鑰仍按官方要求設定。",
+            "en": "Installs Gemini CLI with Homebrew or npm according to the platform. npm installation requires Node.js and npm. Required accounts, licenses or API keys must still be configured as documented by Google.",
+            "ja": "プラットフォームに応じて Homebrew または npm で Gemini CLI をインストールします。npm 方式には Node.js と npm が必要です。必要なアカウント、ライセンス、API キーは Google の案内に従って設定してください。",
+            "ko": "플랫폼에 따라 Homebrew 또는 npm으로 Gemini CLI를 설치합니다. npm 설치에는 Node.js와 npm이 필요합니다. 필요한 계정, 라이선스 또는 API 키는 Google 안내에 따라 설정해야 합니다."
           },
           "sourceUrl": "https://www.geminicli.com/docs/get-started/installation",
           "method": {
-            "type": "official_page",
-            "url": "https://www.geminicli.com/docs/get-started/installation"
+            "type": "package_manager",
+            "manager": "brew",
+            "packageId": "gemini-cli",
+            "cask": false
           },
           "detection": {
             "type": "command",
@@ -1169,16 +1216,18 @@
           "requiresAdmin": false,
           "interactive": false,
           "note": {
-            "zh-CN": "仅打开官方下载页；打开页面不代表已安装。需要 64 位 Windows 10 1903+ 或 Windows 11 22H2+，以及支持 DirectX 11 的 GPU。安装器可能需要确认系统提示。",
-            "zh-TW": "僅開啟官方下載頁；開啟頁面不代表已安裝。需要 64 位元 Windows 10 1903+ 或 Windows 11 22H2+，以及支援 DirectX 11 的 GPU。安裝程式可能需要確認系統提示。",
-            "en": "Opens the official download page only; opening it does not install Zed. Requires 64-bit Windows 10 1903+ or Windows 11 22H2+ and a DirectX 11-capable GPU. The installer may present system prompts.",
-            "ja": "公式ダウンロードページを開くだけで、インストールは実行されません。64 ビット Windows 10 1903 以降または Windows 11 22H2 以降と、DirectX 11 対応 GPU が必要です。インストーラーでシステムの確認が求められる場合があります。",
-            "ko": "공식 다운로드 페이지만 열리며 Zed가 자동 설치되지는 않습니다. 64비트 Windows 10 1903 이상 또는 Windows 11 22H2 이상과 DirectX 11 지원 GPU가 필요합니다. 설치 프로그램에서 시스템 확인 메시지가 나타날 수 있습니다."
+            "zh-CN": "通过 winget 安装 ZedIndustries.Zed（winget 源）；需要已安装并配置该包管理器。",
+            "zh-TW": "透過 winget 安裝 ZedIndustries.Zed（winget 來源）；需要已安裝並設定該套件管理器。",
+            "en": "Installs ZedIndustries.Zed with winget from the winget source. The package manager must already be installed and configured.",
+            "ja": "winget で ZedIndustries.Zed をインストールします（winget ソース）。パッケージマネージャーを事前にインストールして設定する必要があります。",
+            "ko": "winget로 ZedIndustries.Zed를 설치합니다(winget 소스). 패키지 관리자가 미리 설치되어 설정되어 있어야 합니다."
           },
           "sourceUrl": "https://zed.dev/docs/installation",
           "method": {
-            "type": "official_page",
-            "url": "https://zed.dev/download"
+            "type": "package_manager",
+            "manager": "winget",
+            "packageId": "ZedIndustries.Zed",
+            "source": "winget"
           }
         },
         {
@@ -1242,16 +1291,34 @@
           "requiresAdmin": false,
           "interactive": false,
           "note": {
-            "zh-CN": "仅打开官方最新发布页，不会自动安装。请按架构选择压缩包，可核对页面提供的 SHA-256；手动解压后将 lazygit 放入 PATH，并确保 Git 可用。安装到系统目录可能需要管理员权限。",
-            "zh-TW": "僅開啟官方最新發布頁，不會自動安裝。請依架構選擇壓縮檔，可核對頁面提供的 SHA-256；手動解壓後將 lazygit 放入 PATH，並確保 Git 可用。安裝到系統目錄可能需要管理員權限。",
-            "en": "Opens the official latest release page only; it does not install Lazygit. Choose the archive for your architecture and optionally verify the published SHA-256. Extract it manually, place lazygit on PATH and ensure Git is available. Installing into a system directory may require administrator privileges.",
-            "ja": "公式の最新リリースページを開くだけで、自動インストールはされません。アーキテクチャに合うアーカイブを選び、公開された SHA-256 で確認できます。手動で展開して lazygit を PATH に配置し、Git が利用可能であることを確認してください。システムディレクトリーへのインストールには管理者権限が必要な場合があります。",
-            "ko": "공식 최신 릴리스 페이지만 열리며 자동 설치되지 않습니다. 아키텍처에 맞는 압축 파일을 선택하고 게시된 SHA-256으로 검증할 수 있습니다. 수동으로 압축을 풀고 lazygit을 PATH에 배치하며 Git을 사용할 수 있는지 확인하세요. 시스템 디렉터리 설치에는 관리자 권한이 필요할 수 있습니다."
+            "zh-CN": "下载、校验并解压匹配的正式稳定版到用户目录，创建启动链接；不修改系统 PATH。",
+            "zh-TW": "下載、驗證並解壓符合的正式穩定版到使用者目錄，建立啟動連結；不修改系統 PATH。",
+            "en": "Downloads, verifies and extracts the matching stable release into the user directory and creates a launch link. System PATH is not modified.",
+            "ja": "一致する安定版をダウンロード、検証し、ユーザーディレクトリに展開して起動リンクを作成します。システム PATH は変更しません。",
+            "ko": "일치하는 안정 릴리스를 다운로드하고 검증한 후 사용자 디렉터리에 압축을 풀고 실행 링크를 만듭니다. 시스템 PATH는 수정하지 않습니다."
           },
           "sourceUrl": "https://github.com/jesseduffield/lazygit#binary-releases",
           "method": {
-            "type": "official_page",
-            "url": "https://github.com/jesseduffield/lazygit/releases/latest"
+            "type": "github_release",
+            "repository": "jesseduffield/lazygit",
+            "packages": [
+              {
+                "format": "tar_gz",
+                "assets": {
+                  "x86_64": "lazygit_*_linux_x86_64.tar.gz",
+                  "aarch64": "lazygit_*_linux_arm64.tar.gz"
+                },
+                "install": {
+                  "kind": "archive",
+                  "executableByArch": {
+                    "x86_64": "lazygit",
+                    "aarch64": "lazygit"
+                  },
+                  "stripComponents": 0,
+                  "linkName": "lazygit"
+                }
+              }
+            ]
           },
           "detection": {
             "type": "command",
@@ -1271,16 +1338,18 @@
           "requiresAdmin": false,
           "interactive": false,
           "note": {
-            "zh-CN": "仅打开官方最新发布页，不会自动安装。请按架构选择 ZIP，可核对页面提供的 SHA-256；手动解压后将 lazygit.exe 放入 PATH，并确保 Git 可用。",
-            "zh-TW": "僅開啟官方最新發布頁，不會自動安裝。請依架構選擇 ZIP，可核對頁面提供的 SHA-256；手動解壓後將 lazygit.exe 放入 PATH，並確保 Git 可用。",
-            "en": "Opens the official latest release page only; it does not install Lazygit. Choose the ZIP for your architecture and optionally verify the published SHA-256. Extract it manually, place lazygit.exe on PATH and ensure Git is available.",
-            "ja": "公式の最新リリースページを開くだけで、自動インストールはされません。アーキテクチャに合う ZIP を選び、公開された SHA-256 で確認できます。手動で展開して lazygit.exe を PATH に配置し、Git が利用可能であることを確認してください。",
-            "ko": "공식 최신 릴리스 페이지만 열리며 자동 설치되지 않습니다. 아키텍처에 맞는 ZIP을 선택하고 게시된 SHA-256으로 검증할 수 있습니다. 수동으로 압축을 풀고 lazygit.exe를 PATH에 배치하며 Git을 사용할 수 있는지 확인하세요."
+            "zh-CN": "通过 winget 安装 JesseDuffield.lazygit（winget 源）；需要已安装并配置该包管理器。",
+            "zh-TW": "透過 winget 安裝 JesseDuffield.lazygit（winget 來源）；需要已安裝並設定該套件管理器。",
+            "en": "Installs JesseDuffield.lazygit with winget from the winget source. The package manager must already be installed and configured.",
+            "ja": "winget で JesseDuffield.lazygit をインストールします（winget ソース）。パッケージマネージャーを事前にインストールして設定する必要があります。",
+            "ko": "winget로 JesseDuffield.lazygit를 설치합니다(winget 소스). 패키지 관리자가 미리 설치되어 설정되어 있어야 합니다."
           },
           "sourceUrl": "https://github.com/jesseduffield/lazygit#binary-releases",
           "method": {
-            "type": "official_page",
-            "url": "https://github.com/jesseduffield/lazygit/releases/latest"
+            "type": "package_manager",
+            "manager": "winget",
+            "packageId": "JesseDuffield.lazygit",
+            "source": "winget"
           },
           "detection": {
             "type": "command",
@@ -1300,16 +1369,18 @@
           "requiresAdmin": false,
           "interactive": false,
           "note": {
-            "zh-CN": "仅打开官方最新发布页，不会自动安装；官方二进制发布说明要求 macOS 10.12+。请按架构选择压缩包并核对 SHA-256，手动解压后将 lazygit 放入 PATH，并确保 Git 可用。",
-            "zh-TW": "僅開啟官方最新發布頁，不會自動安裝；官方二進位發布說明要求 macOS 10.12+。請依架構選擇壓縮檔並核對 SHA-256，手動解壓後將 lazygit 放入 PATH，並確保 Git 可用。",
-            "en": "Opens the official latest release page only; it does not install Lazygit. The official binary release instructions specify macOS 10.12+. Choose the archive for your architecture, verify the published SHA-256 if desired, extract it manually, place lazygit on PATH and ensure Git is available.",
-            "ja": "公式の最新リリースページを開くだけで、自動インストールはされません。公式バイナリーリリースの要件は macOS 10.12 以降です。アーキテクチャに合うアーカイブを選び、必要に応じて SHA-256 を確認後、手動で展開して lazygit を PATH に配置し、Git が利用可能であることを確認してください。",
-            "ko": "공식 최신 릴리스 페이지만 열리며 자동 설치되지 않습니다. 공식 바이너리 릴리스 안내는 macOS 10.12 이상을 요구합니다. 아키텍처에 맞는 압축 파일을 선택하고 SHA-256을 검증한 후 수동으로 압축을 풀어 lazygit을 PATH에 배치하고 Git을 사용할 수 있는지 확인하세요."
+            "zh-CN": "通过 brew 安装 lazygit；需要已安装并配置该包管理器。",
+            "zh-TW": "透過 brew 安裝 lazygit；需要已安裝並設定該套件管理器。",
+            "en": "Installs lazygit with brew. The package manager must already be installed and configured.",
+            "ja": "brew で lazygit をインストールします。パッケージマネージャーを事前にインストールして設定する必要があります。",
+            "ko": "brew로 lazygit를 설치합니다. 패키지 관리자가 미리 설치되어 설정되어 있어야 합니다."
           },
           "sourceUrl": "https://github.com/jesseduffield/lazygit#binary-releases",
           "method": {
-            "type": "official_page",
-            "url": "https://github.com/jesseduffield/lazygit/releases/latest"
+            "type": "package_manager",
+            "manager": "brew",
+            "packageId": "lazygit",
+            "cask": false
           },
           "detection": {
             "type": "command",
@@ -1350,16 +1421,18 @@
           "requiresAdmin": false,
           "interactive": false,
           "note": {
-            "zh-CN": "仅打开 DBeaver Community 官方下载页，不是 PRO，也不会自动安装。请选匹配架构的 DEB、RPM 或 TAR.GZ；DEB/RPM 通常需管理员权限，TAR.GZ 可解压到用户目录。官方发行包内置 OpenJDK 25。",
-            "zh-TW": "僅開啟 DBeaver Community 官方下載頁，不是 PRO，也不會自動安裝。請選擇符合架構的 DEB、RPM 或 TAR.GZ；DEB/RPM 通常需管理員權限，TAR.GZ 可解壓到使用者目錄。官方發行套件內建 OpenJDK 25。",
-            "en": "Opens the DBeaver Community official download page, not PRO; it does not install the app. Choose DEB, RPM or TAR.GZ for your architecture. DEB/RPM usually require administrator privileges, while TAR.GZ can be extracted in a user directory. Official distributions bundle OpenJDK 25.",
-            "ja": "PRO ではなく DBeaver Community の公式ダウンロードページを開くだけで、自動インストールはされません。アーキテクチャに合う DEB、RPM、TAR.GZ を選んでください。DEB/RPM には通常管理者権限が必要ですが、TAR.GZ はユーザーディレクトリーに展開できます。公式ディストリビューションには OpenJDK 25 が同梱されています。",
-            "ko": "PRO가 아닌 DBeaver Community 공식 다운로드 페이지만 열리며 자동 설치되지 않습니다. 아키텍처에 맞는 DEB, RPM 또는 TAR.GZ를 선택하세요. DEB/RPM은 보통 관리자 권한이 필요하지만 TAR.GZ는 사용자 디렉터리에 압축을 풀 수 있습니다. 공식 배포판에는 OpenJDK 25가 포함되어 있습니다."
+            "zh-CN": "通过 Flatpak 从 Flathub 安装 io.dbeaver.DBeaverCommunity；需要已安装 Flatpak 并配置 Flathub remote。",
+            "zh-TW": "透過 Flatpak 從 Flathub 安裝 io.dbeaver.DBeaverCommunity；需要已安裝 Flatpak 並設定 Flathub remote。",
+            "en": "Installs io.dbeaver.DBeaverCommunity from Flathub with Flatpak. Flatpak and the Flathub remote must already be configured.",
+            "ja": "Flatpak で Flathub から io.dbeaver.DBeaverCommunity をインストールします。Flatpak と Flathub リモートを事前に設定する必要があります。",
+            "ko": "Flatpak으로 Flathub에서 io.dbeaver.DBeaverCommunity를 설치합니다. Flatpak과 Flathub 리모트가 미리 설정되어 있어야 합니다."
           },
           "sourceUrl": "https://dbeaver.io/download/",
           "method": {
-            "type": "official_page",
-            "url": "https://dbeaver.io/download/"
+            "type": "package_manager",
+            "manager": "flatpak",
+            "packageId": "io.dbeaver.DBeaverCommunity",
+            "source": "flathub"
           }
         },
         {
@@ -1372,16 +1445,18 @@
           "requiresAdmin": false,
           "interactive": false,
           "note": {
-            "zh-CN": "仅打开 DBeaver Community 官方下载页，不是 PRO，也不会自动安装。需要 Windows 10+ 或 Windows Server 2016+；EXE 安装器可能出现系统提示，ZIP 可手动解压。官方发行包内置 OpenJDK 25。",
-            "zh-TW": "僅開啟 DBeaver Community 官方下載頁，不是 PRO，也不會自動安裝。需要 Windows 10+ 或 Windows Server 2016+；EXE 安裝程式可能出現系統提示，ZIP 可手動解壓。官方發行套件內建 OpenJDK 25。",
-            "en": "Opens the DBeaver Community official download page, not PRO; it does not install the app. Requires Windows 10+ or Windows Server 2016+. The EXE installer may present system prompts; the ZIP can be extracted manually. Official distributions bundle OpenJDK 25.",
-            "ja": "PRO ではなく DBeaver Community の公式ダウンロードページを開くだけで、自動インストールはされません。Windows 10 以降または Windows Server 2016 以降が必要です。EXE インストーラーではシステムの確認が表示される場合がありますが、ZIP は手動で展開できます。公式ディストリビューションには OpenJDK 25 が同梱されています。",
-            "ko": "PRO가 아닌 DBeaver Community 공식 다운로드 페이지만 열리며 자동 설치되지 않습니다. Windows 10 이상 또는 Windows Server 2016 이상이 필요합니다. EXE 설치 프로그램에서 시스템 확인 메시지가 나타날 수 있으며 ZIP은 수동으로 압축을 풀 수 있습니다. 공식 배포판에는 OpenJDK 25가 포함되어 있습니다."
+            "zh-CN": "通过 winget 安装 DBeaver.DBeaver.Community（winget 源）；需要已安装并配置该包管理器。",
+            "zh-TW": "透過 winget 安裝 DBeaver.DBeaver.Community（winget 來源）；需要已安裝並設定該套件管理器。",
+            "en": "Installs DBeaver.DBeaver.Community with winget from the winget source. The package manager must already be installed and configured.",
+            "ja": "winget で DBeaver.DBeaver.Community をインストールします（winget ソース）。パッケージマネージャーを事前にインストールして設定する必要があります。",
+            "ko": "winget로 DBeaver.DBeaver.Community를 설치합니다(winget 소스). 패키지 관리자가 미리 설치되어 설정되어 있어야 합니다."
           },
           "sourceUrl": "https://dbeaver.io/download/",
           "method": {
-            "type": "official_page",
-            "url": "https://dbeaver.io/download/"
+            "type": "package_manager",
+            "manager": "winget",
+            "packageId": "DBeaver.DBeaver.Community",
+            "source": "winget"
           }
         },
         {
@@ -1394,16 +1469,18 @@
           "requiresAdmin": false,
           "interactive": false,
           "note": {
-            "zh-CN": "仅打开 DBeaver Community 官方下载页，不是 PRO，也不会自动安装。需要 macOS 11+；请选择 Apple Silicon 或 Intel DMG，拖入 /Applications 可能需要权限或系统确认。官方发行包内置 OpenJDK 25。",
-            "zh-TW": "僅開啟 DBeaver Community 官方下載頁，不是 PRO，也不會自動安裝。需要 macOS 11+；請選擇 Apple Silicon 或 Intel DMG，拖入 /Applications 可能需要權限或系統確認。官方發行套件內建 OpenJDK 25。",
-            "en": "Opens the DBeaver Community official download page, not PRO; it does not install the app. Requires macOS 11+. Choose the Apple Silicon or Intel DMG; moving it into /Applications may require privileges or system confirmation. Official distributions bundle OpenJDK 25.",
-            "ja": "PRO ではなく DBeaver Community の公式ダウンロードページを開くだけで、自動インストールはされません。macOS 11 以降が必要です。Apple Silicon または Intel の DMG を選び、/Applications への移動には権限やシステムの確認が必要な場合があります。公式ディストリビューションには OpenJDK 25 が同梱されています。",
-            "ko": "PRO가 아닌 DBeaver Community 공식 다운로드 페이지만 열리며 자동 설치되지 않습니다. macOS 11 이상이 필요합니다. Apple Silicon 또는 Intel DMG를 선택하며 /Applications로 이동할 때 권한이나 시스템 확인이 필요할 수 있습니다. 공식 배포판에는 OpenJDK 25가 포함되어 있습니다."
+            "zh-CN": "通过 brew 安装 dbeaver-community；需要已安装并配置该包管理器。",
+            "zh-TW": "透過 brew 安裝 dbeaver-community；需要已安裝並設定該套件管理器。",
+            "en": "Installs dbeaver-community with brew. The package manager must already be installed and configured.",
+            "ja": "brew で dbeaver-community をインストールします。パッケージマネージャーを事前にインストールして設定する必要があります。",
+            "ko": "brew로 dbeaver-community를 설치합니다. 패키지 관리자가 미리 설치되어 설정되어 있어야 합니다."
           },
           "sourceUrl": "https://dbeaver.io/download/",
           "method": {
-            "type": "official_page",
-            "url": "https://dbeaver.io/download/"
+            "type": "package_manager",
+            "manager": "brew",
+            "packageId": "dbeaver-community",
+            "cask": true
           }
         }
       ]
@@ -1437,16 +1514,53 @@
           "requiresAdmin": false,
           "interactive": false,
           "note": {
-            "zh-CN": "Apache-2.0 开源软件。仅打开官方稳定版发布页；请选择匹配架构的 AppImage、DEB 或 RPM，打开页面不代表已安装。",
-            "zh-TW": "Apache-2.0 開源軟體。僅開啟官方穩定版發布頁；請選擇符合架構的 AppImage、DEB 或 RPM，開啟頁面不代表已安裝。",
-            "en": "Apache-2.0 open-source software. Opens the official stable release page only; choose an AppImage, DEB or RPM matching your architecture. Opening a page does not mean installation.",
-            "ja": "Apache-2.0 のオープンソースソフトウェアです。公式の安定版リリースページのみを開きます。アーキテクチャに合う AppImage、DEB、RPM を選択してください。ページを開いてもインストール完了ではありません。",
-            "ko": "Apache-2.0 오픈 소스 소프트웨어입니다. 공식 안정 릴리스 페이지만 열리며 아키텍처에 맞는 AppImage, DEB 또는 RPM을 선택하세요. 페이지를 열었다고 설치된 것은 아닙니다."
+            "zh-CN": "下载并校验匹配的正式稳定版，按 Linux 发行版使用 DEB、RPM 或 AppImage 安装；AppImage 安装到用户目录并创建启动链接。",
+            "zh-TW": "下載並驗證符合的正式穩定版，按 Linux 發行版使用 DEB、RPM 或 AppImage 安裝；AppImage 安裝到使用者目錄並建立啟動連結。",
+            "en": "Downloads and verifies the matching stable release, then installs the DEB, RPM or AppImage appropriate for the Linux distribution. AppImages are installed in the user directory with a launch link.",
+            "ja": "一致する安定版をダウンロードして検証し、Linux ディストリビューションに応じて DEB、RPM または AppImage をインストールします。AppImage はユーザーディレクトリにインストールし、起動リンクを作成します。",
+            "ko": "일치하는 안정 릴리스를 다운로드하고 검증한 후 Linux 배포판에 맞는 DEB, RPM 또는 AppImage를 설치합니다. AppImage는 사용자 디렉터리에 설치하고 실행 링크를 만듭니다."
           },
           "sourceUrl": "https://github.com/l0ng-ai/openidea/releases/latest",
           "method": {
-            "type": "official_page",
-            "url": "https://github.com/l0ng-ai/openidea/releases/latest"
+            "type": "github_release",
+            "repository": "l0ng-ai/openidea",
+            "packages": [
+              {
+                "format": "deb",
+                "manager": "apt",
+                "assets": {
+                  "x86_64": "OpenIDEA_*_amd64.deb",
+                  "aarch64": "OpenIDEA_*_arm64.deb"
+                },
+                "install": "package"
+              },
+              {
+                "format": "rpm",
+                "manager": "dnf",
+                "assets": {
+                  "x86_64": "OpenIDEA-*.x86_64.rpm",
+                  "aarch64": "OpenIDEA-*.aarch64.rpm"
+                },
+                "install": "package"
+              },
+              {
+                "format": "rpm",
+                "manager": "zypper",
+                "assets": {
+                  "x86_64": "OpenIDEA-*.x86_64.rpm",
+                  "aarch64": "OpenIDEA-*.aarch64.rpm"
+                },
+                "install": "package"
+              },
+              {
+                "format": "appimage",
+                "assets": {
+                  "x86_64": "OpenIDEA_*_amd64.AppImage",
+                  "aarch64": "OpenIDEA_*_aarch64.AppImage"
+                },
+                "install": { "kind": "app_image", "linkName": "openidea", "desktopName": "OpenIDEA" }
+              }
+            ]
           }
         },
         {
@@ -1459,16 +1573,34 @@
           "requiresAdmin": false,
           "interactive": false,
           "note": {
-            "zh-CN": "Apache-2.0 开源软件。仅打开官方稳定版发布页；请选择匹配架构的 EXE 或 MSI，并核对发布说明和系统要求，打开页面不代表已安装。",
-            "zh-TW": "Apache-2.0 開源軟體。僅開啟官方穩定版發布頁；請選擇符合架構的 EXE 或 MSI，並核對發布說明與系統需求，開啟頁面不代表已安裝。",
-            "en": "Apache-2.0 open-source software. Opens the official stable release page only; choose an EXE or MSI matching your architecture and check the release notes and system requirements. Opening a page does not mean installation.",
-            "ja": "Apache-2.0 のオープンソースソフトウェアです。公式の安定版リリースページのみを開きます。アーキテクチャに合う EXE、MSI を選択し、リリースノートとシステム要件を確認してください。ページを開いてもインストール完了ではありません。",
-            "ko": "Apache-2.0 오픈 소스 소프트웨어입니다. 공식 안정 릴리스 페이지만 열리며 아키텍처에 맞는 EXE 또는 MSI를 선택하고 릴리스 노트와 시스템 요구 사항을 확인하세요. 페이지를 열었다고 설치된 것은 아닙니다."
+            "zh-CN": "下载、校验并解压匹配的正式稳定版到用户目录，创建启动链接；不修改系统 PATH。",
+            "zh-TW": "下載、驗證並解壓符合的正式穩定版到使用者目錄，建立啟動連結；不修改系統 PATH。",
+            "en": "Downloads, verifies and extracts the matching stable release into the user directory and creates a launch link. System PATH is not modified.",
+            "ja": "一致する安定版をダウンロード、検証し、ユーザーディレクトリに展開して起動リンクを作成します。システム PATH は変更しません。",
+            "ko": "일치하는 안정 릴리스를 다운로드하고 검증한 후 사용자 디렉터리에 압축을 풀고 실행 링크를 만듭니다. 시스템 PATH는 수정하지 않습니다."
           },
           "sourceUrl": "https://github.com/l0ng-ai/openidea/releases/latest",
           "method": {
-            "type": "official_page",
-            "url": "https://github.com/l0ng-ai/openidea/releases/latest"
+            "type": "github_release",
+            "repository": "l0ng-ai/openidea",
+            "packages": [
+              {
+                "format": "zip",
+                "assets": {
+                  "x86_64": "OpenIDEA_*_windows_x64_portable.zip",
+                  "aarch64": "OpenIDEA_*_windows_arm64_portable.zip"
+                },
+                "install": {
+                  "kind": "archive",
+                  "executableByArch": {
+                    "x86_64": "openidea.exe",
+                    "aarch64": "openidea.exe"
+                  },
+                  "stripComponents": 0,
+                  "linkName": "openidea"
+                }
+              }
+            ]
           }
         },
         {
@@ -1479,18 +1611,28 @@
             "aarch64"
           ],
           "requiresAdmin": false,
-          "interactive": false,
+          "interactive": true,
           "note": {
-            "zh-CN": "Apache-2.0 开源软件。仅打开官方稳定版发布页；请选择匹配 Intel 或 Apple Silicon 的 DMG，打开页面不代表已安装。",
-            "zh-TW": "Apache-2.0 開源軟體。僅開啟官方穩定版發布頁；請選擇符合 Intel 或 Apple Silicon 的 DMG，開啟頁面不代表已安裝。",
-            "en": "Apache-2.0 open-source software. Opens the official stable release page only; choose the DMG matching Intel or Apple Silicon. Opening a page does not mean installation.",
-            "ja": "Apache-2.0 のオープンソースソフトウェアです。公式の安定版リリースページのみを開きます。Intel、Apple Silicon のいずれかに合う DMG を選択してください。ページを開いてもインストール完了ではありません。",
-            "ko": "Apache-2.0 오픈 소스 소프트웨어입니다. 공식 안정 릴리스 페이지만 열리며 Intel 또는 Apple Silicon에 맞는 DMG를 선택하세요. 페이지를 열었다고 설치된 것은 아닙니다."
+            "zh-CN": "下载并校验匹配的官方 DMG 后打开安装器；需按界面完成安装，仅启动安装器不代表已安装。",
+            "zh-TW": "下載並驗證符合的官方 DMG 後開啟安裝器；需依介面完成安裝，僅啟動安裝器不代表已安裝。",
+            "en": "Downloads and verifies the matching official DMG, then opens its installer. Complete the on-screen installation; starting the installer does not mean the app is installed.",
+            "ja": "一致する公式 DMG をダウンロードして検証し、インストーラーを開きます。画面の手順を完了する必要があり、インストーラーを起動しただけではインストール完了ではありません。",
+            "ko": "일치하는 공식 DMG를 다운로드하고 검증한 후 설치 프로그램을 엽니다. 화면 안내에 따라 설치를 완료해야 하며 설치 프로그램을 시작한 것만으로 설치된 것은 아닙니다."
           },
           "sourceUrl": "https://github.com/l0ng-ai/openidea/releases/latest",
           "method": {
-            "type": "official_page",
-            "url": "https://github.com/l0ng-ai/openidea/releases/latest"
+            "type": "github_release",
+            "repository": "l0ng-ai/openidea",
+            "packages": [
+              {
+                "format": "dmg",
+                "assets": {
+                  "x86_64": "OpenIDEA_*_x64.dmg",
+                  "aarch64": "OpenIDEA_*_aarch64.dmg"
+                },
+                "install": "run_installer"
+              }
+            ]
           }
         }
       ]

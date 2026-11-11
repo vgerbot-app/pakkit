@@ -26,19 +26,21 @@
             "x86_64",
             "aarch64"
           ],
-          "requiresAdmin": true,
+          "requiresAdmin": false,
           "interactive": false,
           "note": {
-            "zh-CN": "官方发布页提供 EXE、MSI、DEB、RPM、DMG、AppImage 等多种格式。",
-            "zh-TW": "官方發布頁提供 EXE、MSI、DEB、RPM、DMG、AppImage 等多種格式。",
-            "en": "The official release page offers EXE, MSI, DEB, RPM, DMG, AppImage and other formats.",
-            "ja": "公式リリースページでは EXE、MSI、DEB、RPM、DMG、AppImage などの形式を提供しています。",
-            "ko": "공식 릴리스 페이지에서 EXE, MSI, DEB, RPM, DMG, AppImage 등 다양한 형식을 제공합니다."
+            "zh-CN": "通过 Flatpak 从 Flathub 安装 com.rustdesk.RustDesk；需要已安装 Flatpak 并配置 Flathub remote。",
+            "zh-TW": "透過 Flatpak 從 Flathub 安裝 com.rustdesk.RustDesk；需要已安裝 Flatpak 並設定 Flathub remote。",
+            "en": "Installs com.rustdesk.RustDesk from Flathub with Flatpak. Flatpak and the Flathub remote must already be configured.",
+            "ja": "Flatpak で Flathub から com.rustdesk.RustDesk をインストールします。Flatpak と Flathub リモートを事前に設定する必要があります。",
+            "ko": "Flatpak으로 Flathub에서 com.rustdesk.RustDesk를 설치합니다. Flatpak과 Flathub 리모트가 미리 설정되어 있어야 합니다."
           },
           "sourceUrl": "https://github.com/rustdesk/rustdesk/releases/latest",
           "method": {
-            "type": "official_page",
-            "url": "https://github.com/rustdesk/rustdesk/releases/latest"
+            "type": "package_manager",
+            "manager": "flatpak",
+            "packageId": "com.rustdesk.RustDesk",
+            "source": "flathub"
           },
           "detection": {
             "type": "command",
@@ -55,19 +57,30 @@
             "x86_64",
             "aarch64"
           ],
-          "requiresAdmin": true,
+          "requiresAdmin": false,
           "interactive": false,
           "note": {
-            "zh-CN": "官方发布页提供 EXE、MSI、DEB、RPM、DMG、AppImage 等多种格式。",
-            "zh-TW": "官方發布頁提供 EXE、MSI、DEB、RPM、DMG、AppImage 等多種格式。",
-            "en": "The official release page offers EXE, MSI, DEB, RPM, DMG, AppImage and other formats.",
-            "ja": "公式リリースページでは EXE、MSI、DEB、RPM、DMG、AppImage などの形式を提供しています。",
-            "ko": "공식 릴리스 페이지에서 EXE, MSI, DEB, RPM, DMG, AppImage 등 다양한 형식을 제공합니다."
+            "zh-CN": "下载并校验 RustDesk 官方 MSI，验证 PURSLANE 的 Authenticode 签名后安装；版本、摘要和签名者在确认后固定。",
+            "zh-TW": "下載並校驗 RustDesk 官方 MSI，驗證 PURSLANE 的 Authenticode 簽章後安裝；版本、摘要和簽章者在確認後固定。",
+            "en": "Downloads the official RustDesk MSI, verifies its PURSLANE Authenticode signature and installs it. The confirmed version, digest and signer are immutable.",
+            "ja": "RustDesk 公式 MSI をダウンロードして検証し、PURSLANE の Authenticode 署名を確認してインストールします。確認したバージョン、ダイジェスト、署名者は固定されます。",
+            "ko": "RustDesk 공식 MSI를 다운로드하고 검증한 후 PURSLANE Authenticode 서명을 확인하여 설치합니다. 확인한 버전, 다이제스트, 서명자는 고정됩니다."
           },
           "sourceUrl": "https://github.com/rustdesk/rustdesk/releases/latest",
           "method": {
-            "type": "official_page",
-            "url": "https://github.com/rustdesk/rustdesk/releases/latest"
+            "type": "github_release",
+            "repository": "rustdesk/rustdesk",
+            "packages": [
+              {
+                "format": "msi",
+                "expectedSigner": "CN=PURSLANE, O=PURSLANE, SERIALNUMBER=53481265A, S=North West, C=SG",
+                "assets": {
+                  "x86_64": "rustdesk-*-x86_64.msi",
+                  "aarch64": "rustdesk-*-aarch64.msi"
+                },
+                "install": "install_package"
+              }
+            ]
           },
           "detection": {
             "type": "command",
@@ -84,19 +97,21 @@
             "x86_64",
             "aarch64"
           ],
-          "requiresAdmin": true,
+          "requiresAdmin": false,
           "interactive": false,
           "note": {
-            "zh-CN": "官方发布页提供 EXE、MSI、DEB、RPM、DMG、AppImage 等多种格式。",
-            "zh-TW": "官方發布頁提供 EXE、MSI、DEB、RPM、DMG、AppImage 等多種格式。",
-            "en": "The official release page offers EXE, MSI, DEB, RPM, DMG, AppImage and other formats.",
-            "ja": "公式リリースページでは EXE、MSI、DEB、RPM、DMG、AppImage などの形式を提供しています。",
-            "ko": "공식 릴리스 페이지에서 EXE, MSI, DEB, RPM, DMG, AppImage 등 다양한 형식을 제공합니다."
+            "zh-CN": "通过 brew 安装 rustdesk；需要已安装并配置该包管理器。",
+            "zh-TW": "透過 brew 安裝 rustdesk；需要已安裝並設定該套件管理器。",
+            "en": "Installs rustdesk with brew. The package manager must already be installed and configured.",
+            "ja": "brew で rustdesk をインストールします。パッケージマネージャーを事前にインストールして設定する必要があります。",
+            "ko": "brew로 rustdesk를 설치합니다. 패키지 관리자가 미리 설치되어 설정되어 있어야 합니다."
           },
           "sourceUrl": "https://github.com/rustdesk/rustdesk/releases/latest",
           "method": {
-            "type": "official_page",
-            "url": "https://github.com/rustdesk/rustdesk/releases/latest"
+            "type": "package_manager",
+            "manager": "brew",
+            "packageId": "rustdesk",
+            "cask": true
           },
           "detection": {
             "type": "command",

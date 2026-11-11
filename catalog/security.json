@@ -29,16 +29,18 @@
           "requiresAdmin": false,
           "interactive": false,
           "note": {
-            "zh-CN": "仅打开官方下载页，由你核对系统要求、版本和许可后安装；打开页面不代表已安装。",
-            "zh-TW": "僅開啟官方下載頁，由你核對系統需求、版本與授權後安裝；開啟頁面不代表已安裝。",
-            "en": "Opens the official download page only. Check system requirements, the release and license before installing; opening a page does not mean the app is installed.",
-            "ja": "公式ダウンロードページを開くだけです。システム要件、リリース、ライセンスを確認してインストールしてください。ページを開いてもインストール完了ではありません。",
-            "ko": "공식 다운로드 페이지만 엽니다. 설치 전 시스템 요구 사항, 릴리스 및 라이선스를 확인하세요. 페이지를 열었다고 설치된 것은 아닙니다."
+            "zh-CN": "通过 Flatpak 从 Flathub 安装 org.keepassxc.KeePassXC；需要已安装 Flatpak 并配置 Flathub remote。",
+            "zh-TW": "透過 Flatpak 從 Flathub 安裝 org.keepassxc.KeePassXC；需要已安裝 Flatpak 並設定 Flathub remote。",
+            "en": "Installs org.keepassxc.KeePassXC from Flathub with Flatpak. Flatpak and the Flathub remote must already be configured.",
+            "ja": "Flatpak で Flathub から org.keepassxc.KeePassXC をインストールします。Flatpak と Flathub リモートを事前に設定する必要があります。",
+            "ko": "Flatpak으로 Flathub에서 org.keepassxc.KeePassXC를 설치합니다. Flatpak과 Flathub 리모트가 미리 설정되어 있어야 합니다."
           },
           "sourceUrl": "https://keepassxc.org/download/",
           "method": {
-            "type": "official_page",
-            "url": "https://keepassxc.org/download/"
+            "type": "package_manager",
+            "manager": "flatpak",
+            "packageId": "org.keepassxc.KeePassXC",
+            "source": "flathub"
           }
         },
         {
@@ -51,16 +53,18 @@
           "requiresAdmin": false,
           "interactive": false,
           "note": {
-            "zh-CN": "仅打开官方下载页，由你核对系统要求、版本和许可后安装；打开页面不代表已安装。",
-            "zh-TW": "僅開啟官方下載頁，由你核對系統需求、版本與授權後安裝；開啟頁面不代表已安裝。",
-            "en": "Opens the official download page only. Check system requirements, the release and license before installing; opening a page does not mean the app is installed.",
-            "ja": "公式ダウンロードページを開くだけです。システム要件、リリース、ライセンスを確認してインストールしてください。ページを開いてもインストール完了ではありません。",
-            "ko": "공식 다운로드 페이지만 엽니다. 설치 전 시스템 요구 사항, 릴리스 및 라이선스를 확인하세요. 페이지를 열었다고 설치된 것은 아닙니다."
+            "zh-CN": "通过 winget 安装 KeePassXCTeam.KeePassXC（winget 源）；需要已安装并配置该包管理器。",
+            "zh-TW": "透過 winget 安裝 KeePassXCTeam.KeePassXC（winget 來源）；需要已安裝並設定該套件管理器。",
+            "en": "Installs KeePassXCTeam.KeePassXC with winget from the winget source. The package manager must already be installed and configured.",
+            "ja": "winget で KeePassXCTeam.KeePassXC をインストールします（winget ソース）。パッケージマネージャーを事前にインストールして設定する必要があります。",
+            "ko": "winget로 KeePassXCTeam.KeePassXC를 설치합니다(winget 소스). 패키지 관리자가 미리 설치되어 설정되어 있어야 합니다."
           },
           "sourceUrl": "https://keepassxc.org/download/",
           "method": {
-            "type": "official_page",
-            "url": "https://keepassxc.org/download/"
+            "type": "package_manager",
+            "manager": "winget",
+            "packageId": "KeePassXCTeam.KeePassXC",
+            "source": "winget"
           }
         },
         {
@@ -73,16 +77,18 @@
           "requiresAdmin": false,
           "interactive": false,
           "note": {
-            "zh-CN": "仅打开官方下载页，由你核对系统要求、版本和许可后安装；打开页面不代表已安装。",
-            "zh-TW": "僅開啟官方下載頁，由你核對系統需求、版本與授權後安裝；開啟頁面不代表已安裝。",
-            "en": "Opens the official download page only. Check system requirements, the release and license before installing; opening a page does not mean the app is installed.",
-            "ja": "公式ダウンロードページを開くだけです。システム要件、リリース、ライセンスを確認してインストールしてください。ページを開いてもインストール完了ではありません。",
-            "ko": "공식 다운로드 페이지만 엽니다. 설치 전 시스템 요구 사항, 릴리스 및 라이선스를 확인하세요. 페이지를 열었다고 설치된 것은 아닙니다."
+            "zh-CN": "通过 brew 安装 keepassxc；需要已安装并配置该包管理器。",
+            "zh-TW": "透過 brew 安裝 keepassxc；需要已安裝並設定該套件管理器。",
+            "en": "Installs keepassxc with brew. The package manager must already be installed and configured.",
+            "ja": "brew で keepassxc をインストールします。パッケージマネージャーを事前にインストールして設定する必要があります。",
+            "ko": "brew로 keepassxc를 설치합니다. 패키지 관리자가 미리 설치되어 설정되어 있어야 합니다."
           },
           "sourceUrl": "https://keepassxc.org/download/",
           "method": {
-            "type": "official_page",
-            "url": "https://keepassxc.org/download/"
+            "type": "package_manager",
+            "manager": "brew",
+            "packageId": "keepassxc",
+            "cask": true
           }
         }
       ]
@@ -116,16 +122,18 @@
           "requiresAdmin": false,
           "interactive": false,
           "note": {
-            "zh-CN": "仅打开官方下载页。部分功能需要账号、付费订阅或单独许可；打开页面不代表已安装。",
-            "zh-TW": "僅開啟官方下載頁。部分功能需要帳號、付費訂閱或單獨授權；開啟頁面不代表已安裝。",
-            "en": "Opens the official download page only. Some features require an account, paid subscription or separate license; opening a page does not mean the app is installed.",
-            "ja": "公式ダウンロードページを開くだけです。一部機能にはアカウント、有料サブスクリプション、別途ライセンスが必要です。ページを開いてもインストール完了ではありません。",
-            "ko": "공식 다운로드 페이지만 엽니다. 일부 기능에는 계정, 유료 구독 또는 별도 라이선스가 필요합니다. 페이지를 열었다고 설치된 것은 아닙니다."
+            "zh-CN": "通过 Flatpak 从 Flathub 安装 com.bitwarden.desktop；需要已安装 Flatpak 并配置 Flathub remote。",
+            "zh-TW": "透過 Flatpak 從 Flathub 安裝 com.bitwarden.desktop；需要已安裝 Flatpak 並設定 Flathub remote。",
+            "en": "Installs com.bitwarden.desktop from Flathub with Flatpak. Flatpak and the Flathub remote must already be configured.",
+            "ja": "Flatpak で Flathub から com.bitwarden.desktop をインストールします。Flatpak と Flathub リモートを事前に設定する必要があります。",
+            "ko": "Flatpak으로 Flathub에서 com.bitwarden.desktop를 설치합니다. Flatpak과 Flathub 리모트가 미리 설정되어 있어야 합니다."
           },
           "sourceUrl": "https://bitwarden.com/download/",
           "method": {
-            "type": "official_page",
-            "url": "https://bitwarden.com/download/"
+            "type": "package_manager",
+            "manager": "flatpak",
+            "packageId": "com.bitwarden.desktop",
+            "source": "flathub"
           }
         },
         {
@@ -138,16 +146,18 @@
           "requiresAdmin": false,
           "interactive": false,
           "note": {
-            "zh-CN": "仅打开官方下载页。部分功能需要账号、付费订阅或单独许可；打开页面不代表已安装。",
-            "zh-TW": "僅開啟官方下載頁。部分功能需要帳號、付費訂閱或單獨授權；開啟頁面不代表已安裝。",
-            "en": "Opens the official download page only. Some features require an account, paid subscription or separate license; opening a page does not mean the app is installed.",
-            "ja": "公式ダウンロードページを開くだけです。一部機能にはアカウント、有料サブスクリプション、別途ライセンスが必要です。ページを開いてもインストール完了ではありません。",
-            "ko": "공식 다운로드 페이지만 엽니다. 일부 기능에는 계정, 유료 구독 또는 별도 라이선스가 필요합니다. 페이지를 열었다고 설치된 것은 아닙니다."
+            "zh-CN": "通过 winget 安装 Bitwarden.Bitwarden（winget 源）；需要已安装并配置该包管理器。",
+            "zh-TW": "透過 winget 安裝 Bitwarden.Bitwarden（winget 來源）；需要已安裝並設定該套件管理器。",
+            "en": "Installs Bitwarden.Bitwarden with winget from the winget source. The package manager must already be installed and configured.",
+            "ja": "winget で Bitwarden.Bitwarden をインストールします（winget ソース）。パッケージマネージャーを事前にインストールして設定する必要があります。",
+            "ko": "winget로 Bitwarden.Bitwarden를 설치합니다(winget 소스). 패키지 관리자가 미리 설치되어 설정되어 있어야 합니다."
           },
           "sourceUrl": "https://bitwarden.com/download/",
           "method": {
-            "type": "official_page",
-            "url": "https://bitwarden.com/download/"
+            "type": "package_manager",
+            "manager": "winget",
+            "packageId": "Bitwarden.Bitwarden",
+            "source": "winget"
           }
         },
         {
@@ -160,16 +170,18 @@
           "requiresAdmin": false,
           "interactive": false,
           "note": {
-            "zh-CN": "仅打开官方下载页。部分功能需要账号、付费订阅或单独许可；打开页面不代表已安装。",
-            "zh-TW": "僅開啟官方下載頁。部分功能需要帳號、付費訂閱或單獨授權；開啟頁面不代表已安裝。",
-            "en": "Opens the official download page only. Some features require an account, paid subscription or separate license; opening a page does not mean the app is installed.",
-            "ja": "公式ダウンロードページを開くだけです。一部機能にはアカウント、有料サブスクリプション、別途ライセンスが必要です。ページを開いてもインストール完了ではありません。",
-            "ko": "공식 다운로드 페이지만 엽니다. 일부 기능에는 계정, 유료 구독 또는 별도 라이선스가 필요합니다. 페이지를 열었다고 설치된 것은 아닙니다."
+            "zh-CN": "通过 brew 安装 bitwarden；需要已安装并配置该包管理器。",
+            "zh-TW": "透過 brew 安裝 bitwarden；需要已安裝並設定該套件管理器。",
+            "en": "Installs bitwarden with brew. The package manager must already be installed and configured.",
+            "ja": "brew で bitwarden をインストールします。パッケージマネージャーを事前にインストールして設定する必要があります。",
+            "ko": "brew로 bitwarden를 설치합니다. 패키지 관리자가 미리 설치되어 설정되어 있어야 합니다."
           },
           "sourceUrl": "https://bitwarden.com/download/",
           "method": {
-            "type": "official_page",
-            "url": "https://bitwarden.com/download/"
+            "type": "package_manager",
+            "manager": "brew",
+            "packageId": "bitwarden",
+            "cask": true
           }
         }
       ]

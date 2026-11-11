@@ -28,16 +28,18 @@
           "requiresAdmin": false,
           "interactive": false,
           "note": {
-            "zh-CN": "仅打开官方下载页，由你核对系统要求、版本和许可后安装；打开页面不代表已安装。",
-            "zh-TW": "僅開啟官方下載頁，由你核對系統需求、版本與授權後安裝；開啟頁面不代表已安裝。",
-            "en": "Opens the official download page only. Check system requirements, the release and license before installing; opening a page does not mean the app is installed.",
-            "ja": "公式ダウンロードページを開くだけです。システム要件、リリース、ライセンスを確認してインストールしてください。ページを開いてもインストール完了ではありません。",
-            "ko": "공식 다운로드 페이지만 엽니다. 설치 전 시스템 요구 사항, 릴리스 및 라이선스를 확인하세요. 페이지를 열었다고 설치된 것은 아닙니다."
+            "zh-CN": "通过 Flatpak 从 Flathub 安装 org.videolan.VLC；需要已安装 Flatpak 并配置 Flathub remote。",
+            "zh-TW": "透過 Flatpak 從 Flathub 安裝 org.videolan.VLC；需要已安裝 Flatpak 並設定 Flathub remote。",
+            "en": "Installs org.videolan.VLC from Flathub with Flatpak. Flatpak and the Flathub remote must already be configured.",
+            "ja": "Flatpak で Flathub から org.videolan.VLC をインストールします。Flatpak と Flathub リモートを事前に設定する必要があります。",
+            "ko": "Flatpak으로 Flathub에서 org.videolan.VLC를 설치합니다. Flatpak과 Flathub 리모트가 미리 설정되어 있어야 합니다."
           },
           "sourceUrl": "https://www.videolan.org/vlc/",
           "method": {
-            "type": "official_page",
-            "url": "https://www.videolan.org/vlc/"
+            "type": "package_manager",
+            "manager": "flatpak",
+            "packageId": "org.videolan.VLC",
+            "source": "flathub"
           }
         },
         {
@@ -50,16 +52,18 @@
           "requiresAdmin": false,
           "interactive": false,
           "note": {
-            "zh-CN": "仅打开官方下载页，由你核对系统要求、版本和许可后安装；打开页面不代表已安装。",
-            "zh-TW": "僅開啟官方下載頁，由你核對系統需求、版本與授權後安裝；開啟頁面不代表已安裝。",
-            "en": "Opens the official download page only. Check system requirements, the release and license before installing; opening a page does not mean the app is installed.",
-            "ja": "公式ダウンロードページを開くだけです。システム要件、リリース、ライセンスを確認してインストールしてください。ページを開いてもインストール完了ではありません。",
-            "ko": "공식 다운로드 페이지만 엽니다. 설치 전 시스템 요구 사항, 릴리스 및 라이선스를 확인하세요. 페이지를 열었다고 설치된 것은 아닙니다."
+            "zh-CN": "通过 winget 安装 VideoLAN.VLC（winget 源）；需要已安装并配置该包管理器。",
+            "zh-TW": "透過 winget 安裝 VideoLAN.VLC（winget 來源）；需要已安裝並設定該套件管理器。",
+            "en": "Installs VideoLAN.VLC with winget from the winget source. The package manager must already be installed and configured.",
+            "ja": "winget で VideoLAN.VLC をインストールします（winget ソース）。パッケージマネージャーを事前にインストールして設定する必要があります。",
+            "ko": "winget로 VideoLAN.VLC를 설치합니다(winget 소스). 패키지 관리자가 미리 설치되어 설정되어 있어야 합니다."
           },
           "sourceUrl": "https://www.videolan.org/vlc/",
           "method": {
-            "type": "official_page",
-            "url": "https://www.videolan.org/vlc/"
+            "type": "package_manager",
+            "manager": "winget",
+            "packageId": "VideoLAN.VLC",
+            "source": "winget"
           }
         },
         {
@@ -72,16 +76,18 @@
           "requiresAdmin": false,
           "interactive": false,
           "note": {
-            "zh-CN": "仅打开官方下载页，由你核对系统要求、版本和许可后安装；打开页面不代表已安装。",
-            "zh-TW": "僅開啟官方下載頁，由你核對系統需求、版本與授權後安裝；開啟頁面不代表已安裝。",
-            "en": "Opens the official download page only. Check system requirements, the release and license before installing; opening a page does not mean the app is installed.",
-            "ja": "公式ダウンロードページを開くだけです。システム要件、リリース、ライセンスを確認してインストールしてください。ページを開いてもインストール完了ではありません。",
-            "ko": "공식 다운로드 페이지만 엽니다. 설치 전 시스템 요구 사항, 릴리스 및 라이선스를 확인하세요. 페이지를 열었다고 설치된 것은 아닙니다."
+            "zh-CN": "通过 brew 安装 vlc；需要已安装并配置该包管理器。",
+            "zh-TW": "透過 brew 安裝 vlc；需要已安裝並設定該套件管理器。",
+            "en": "Installs vlc with brew. The package manager must already be installed and configured.",
+            "ja": "brew で vlc をインストールします。パッケージマネージャーを事前にインストールして設定する必要があります。",
+            "ko": "brew로 vlc를 설치합니다. 패키지 관리자가 미리 설치되어 설정되어 있어야 합니다."
           },
           "sourceUrl": "https://www.videolan.org/vlc/",
           "method": {
-            "type": "official_page",
-            "url": "https://www.videolan.org/vlc/"
+            "type": "package_manager",
+            "manager": "brew",
+            "packageId": "vlc",
+            "cask": true
           }
         }
       ]
@@ -114,16 +120,18 @@
           "requiresAdmin": false,
           "interactive": false,
           "note": {
-            "zh-CN": "仅打开官方下载页，由你核对系统要求、版本和许可后安装；打开页面不代表已安装。",
-            "zh-TW": "僅開啟官方下載頁，由你核對系統需求、版本與授權後安裝；開啟頁面不代表已安裝。",
-            "en": "Opens the official download page only. Check system requirements, the release and license before installing; opening a page does not mean the app is installed.",
-            "ja": "公式ダウンロードページを開くだけです。システム要件、リリース、ライセンスを確認してインストールしてください。ページを開いてもインストール完了ではありません。",
-            "ko": "공식 다운로드 페이지만 엽니다. 설치 전 시스템 요구 사항, 릴리스 및 라이선스를 확인하세요. 페이지를 열었다고 설치된 것은 아닙니다."
+            "zh-CN": "通过 Flatpak 从 Flathub 安装 com.obsproject.Studio；需要已安装 Flatpak 并配置 Flathub remote。",
+            "zh-TW": "透過 Flatpak 從 Flathub 安裝 com.obsproject.Studio；需要已安裝 Flatpak 並設定 Flathub remote。",
+            "en": "Installs com.obsproject.Studio from Flathub with Flatpak. Flatpak and the Flathub remote must already be configured.",
+            "ja": "Flatpak で Flathub から com.obsproject.Studio をインストールします。Flatpak と Flathub リモートを事前に設定する必要があります。",
+            "ko": "Flatpak으로 Flathub에서 com.obsproject.Studio를 설치합니다. Flatpak과 Flathub 리모트가 미리 설정되어 있어야 합니다."
           },
           "sourceUrl": "https://obsproject.com/download",
           "method": {
-            "type": "official_page",
-            "url": "https://obsproject.com/download"
+            "type": "package_manager",
+            "manager": "flatpak",
+            "packageId": "com.obsproject.Studio",
+            "source": "flathub"
           }
         },
         {
@@ -135,16 +143,18 @@
           "requiresAdmin": false,
           "interactive": false,
           "note": {
-            "zh-CN": "仅打开官方下载页，由你核对系统要求、版本和许可后安装；打开页面不代表已安装。",
-            "zh-TW": "僅開啟官方下載頁，由你核對系統需求、版本與授權後安裝；開啟頁面不代表已安裝。",
-            "en": "Opens the official download page only. Check system requirements, the release and license before installing; opening a page does not mean the app is installed.",
-            "ja": "公式ダウンロードページを開くだけです。システム要件、リリース、ライセンスを確認してインストールしてください。ページを開いてもインストール完了ではありません。",
-            "ko": "공식 다운로드 페이지만 엽니다. 설치 전 시스템 요구 사항, 릴리스 및 라이선스를 확인하세요. 페이지를 열었다고 설치된 것은 아닙니다."
+            "zh-CN": "通过 winget 安装 OBSProject.OBSStudio（winget 源）；需要已安装并配置该包管理器。",
+            "zh-TW": "透過 winget 安裝 OBSProject.OBSStudio（winget 來源）；需要已安裝並設定該套件管理器。",
+            "en": "Installs OBSProject.OBSStudio with winget from the winget source. The package manager must already be installed and configured.",
+            "ja": "winget で OBSProject.OBSStudio をインストールします（winget ソース）。パッケージマネージャーを事前にインストールして設定する必要があります。",
+            "ko": "winget로 OBSProject.OBSStudio를 설치합니다(winget 소스). 패키지 관리자가 미리 설치되어 설정되어 있어야 합니다."
           },
           "sourceUrl": "https://obsproject.com/download",
           "method": {
-            "type": "official_page",
-            "url": "https://obsproject.com/download"
+            "type": "package_manager",
+            "manager": "winget",
+            "packageId": "OBSProject.OBSStudio",
+            "source": "winget"
           }
         },
         {
@@ -157,16 +167,18 @@
           "requiresAdmin": false,
           "interactive": false,
           "note": {
-            "zh-CN": "仅打开官方下载页，由你核对系统要求、版本和许可后安装；打开页面不代表已安装。",
-            "zh-TW": "僅開啟官方下載頁，由你核對系統需求、版本與授權後安裝；開啟頁面不代表已安裝。",
-            "en": "Opens the official download page only. Check system requirements, the release and license before installing; opening a page does not mean the app is installed.",
-            "ja": "公式ダウンロードページを開くだけです。システム要件、リリース、ライセンスを確認してインストールしてください。ページを開いてもインストール完了ではありません。",
-            "ko": "공식 다운로드 페이지만 엽니다. 설치 전 시스템 요구 사항, 릴리스 및 라이선스를 확인하세요. 페이지를 열었다고 설치된 것은 아닙니다."
+            "zh-CN": "通过 brew 安装 obs；需要已安装并配置该包管理器。",
+            "zh-TW": "透過 brew 安裝 obs；需要已安裝並設定該套件管理器。",
+            "en": "Installs obs with brew. The package manager must already be installed and configured.",
+            "ja": "brew で obs をインストールします。パッケージマネージャーを事前にインストールして設定する必要があります。",
+            "ko": "brew로 obs를 설치합니다. 패키지 관리자가 미리 설치되어 설정되어 있어야 합니다."
           },
           "sourceUrl": "https://obsproject.com/download",
           "method": {
-            "type": "official_page",
-            "url": "https://obsproject.com/download"
+            "type": "package_manager",
+            "manager": "brew",
+            "packageId": "obs",
+            "cask": true
           }
         }
       ]
@@ -200,16 +212,18 @@
           "requiresAdmin": false,
           "interactive": false,
           "note": {
-            "zh-CN": "仅打开官方下载页，由你核对系统要求、版本和许可后安装；打开页面不代表已安装。",
-            "zh-TW": "僅開啟官方下載頁，由你核對系統需求、版本與授權後安裝；開啟頁面不代表已安裝。",
-            "en": "Opens the official download page only. Check system requirements, the release and license before installing; opening a page does not mean the app is installed.",
-            "ja": "公式ダウンロードページを開くだけです。システム要件、リリース、ライセンスを確認してインストールしてください。ページを開いてもインストール完了ではありません。",
-            "ko": "공식 다운로드 페이지만 엽니다. 설치 전 시스템 요구 사항, 릴리스 및 라이선스를 확인하세요. 페이지를 열었다고 설치된 것은 아닙니다."
+            "zh-CN": "通过 Flatpak 从 Flathub 安装 org.gimp.GIMP；需要已安装 Flatpak 并配置 Flathub remote。",
+            "zh-TW": "透過 Flatpak 從 Flathub 安裝 org.gimp.GIMP；需要已安裝 Flatpak 並設定 Flathub remote。",
+            "en": "Installs org.gimp.GIMP from Flathub with Flatpak. Flatpak and the Flathub remote must already be configured.",
+            "ja": "Flatpak で Flathub から org.gimp.GIMP をインストールします。Flatpak と Flathub リモートを事前に設定する必要があります。",
+            "ko": "Flatpak으로 Flathub에서 org.gimp.GIMP를 설치합니다. Flatpak과 Flathub 리모트가 미리 설정되어 있어야 합니다."
           },
           "sourceUrl": "https://www.gimp.org/downloads/",
           "method": {
-            "type": "official_page",
-            "url": "https://www.gimp.org/downloads/"
+            "type": "package_manager",
+            "manager": "flatpak",
+            "packageId": "org.gimp.GIMP",
+            "source": "flathub"
           }
         },
         {
@@ -222,16 +236,18 @@
           "requiresAdmin": false,
           "interactive": false,
           "note": {
-            "zh-CN": "仅打开官方下载页，由你核对系统要求、版本和许可后安装；打开页面不代表已安装。",
-            "zh-TW": "僅開啟官方下載頁，由你核對系統需求、版本與授權後安裝；開啟頁面不代表已安裝。",
-            "en": "Opens the official download page only. Check system requirements, the release and license before installing; opening a page does not mean the app is installed.",
-            "ja": "公式ダウンロードページを開くだけです。システム要件、リリース、ライセンスを確認してインストールしてください。ページを開いてもインストール完了ではありません。",
-            "ko": "공식 다운로드 페이지만 엽니다. 설치 전 시스템 요구 사항, 릴리스 및 라이선스를 확인하세요. 페이지를 열었다고 설치된 것은 아닙니다."
+            "zh-CN": "通过 winget 安装 GIMP.GIMP（winget 源）；需要已安装并配置该包管理器。",
+            "zh-TW": "透過 winget 安裝 GIMP.GIMP（winget 來源）；需要已安裝並設定該套件管理器。",
+            "en": "Installs GIMP.GIMP with winget from the winget source. The package manager must already be installed and configured.",
+            "ja": "winget で GIMP.GIMP をインストールします（winget ソース）。パッケージマネージャーを事前にインストールして設定する必要があります。",
+            "ko": "winget로 GIMP.GIMP를 설치합니다(winget 소스). 패키지 관리자가 미리 설치되어 설정되어 있어야 합니다."
           },
           "sourceUrl": "https://www.gimp.org/downloads/",
           "method": {
-            "type": "official_page",
-            "url": "https://www.gimp.org/downloads/"
+            "type": "package_manager",
+            "manager": "winget",
+            "packageId": "GIMP.GIMP",
+            "source": "winget"
           }
         },
         {
@@ -244,16 +260,18 @@
           "requiresAdmin": false,
           "interactive": false,
           "note": {
-            "zh-CN": "仅打开官方下载页，由你核对系统要求、版本和许可后安装；打开页面不代表已安装。",
-            "zh-TW": "僅開啟官方下載頁，由你核對系統需求、版本與授權後安裝；開啟頁面不代表已安裝。",
-            "en": "Opens the official download page only. Check system requirements, the release and license before installing; opening a page does not mean the app is installed.",
-            "ja": "公式ダウンロードページを開くだけです。システム要件、リリース、ライセンスを確認してインストールしてください。ページを開いてもインストール完了ではありません。",
-            "ko": "공식 다운로드 페이지만 엽니다. 설치 전 시스템 요구 사항, 릴리스 및 라이선스를 확인하세요. 페이지를 열었다고 설치된 것은 아닙니다."
+            "zh-CN": "通过 brew 安装 gimp；需要已安装并配置该包管理器。",
+            "zh-TW": "透過 brew 安裝 gimp；需要已安裝並設定該套件管理器。",
+            "en": "Installs gimp with brew. The package manager must already be installed and configured.",
+            "ja": "brew で gimp をインストールします。パッケージマネージャーを事前にインストールして設定する必要があります。",
+            "ko": "brew로 gimp를 설치합니다. 패키지 관리자가 미리 설치되어 설정되어 있어야 합니다."
           },
           "sourceUrl": "https://www.gimp.org/downloads/",
           "method": {
-            "type": "official_page",
-            "url": "https://www.gimp.org/downloads/"
+            "type": "package_manager",
+            "manager": "brew",
+            "packageId": "gimp",
+            "cask": true
           }
         }
       ]
@@ -286,16 +304,18 @@
           "requiresAdmin": false,
           "interactive": false,
           "note": {
-            "zh-CN": "仅打开官方下载页，由你核对系统要求、版本和许可后安装；打开页面不代表已安装。",
-            "zh-TW": "僅開啟官方下載頁，由你核對系統需求、版本與授權後安裝；開啟頁面不代表已安裝。",
-            "en": "Opens the official download page only. Check system requirements, the release and license before installing; opening a page does not mean the app is installed.",
-            "ja": "公式ダウンロードページを開くだけです。システム要件、リリース、ライセンスを確認してインストールしてください。ページを開いてもインストール完了ではありません。",
-            "ko": "공식 다운로드 페이지만 엽니다. 설치 전 시스템 요구 사항, 릴리스 및 라이선스를 확인하세요. 페이지를 열었다고 설치된 것은 아닙니다."
+            "zh-CN": "通过 Flatpak 从 Flathub 安装 org.blender.Blender；需要已安装 Flatpak 并配置 Flathub remote。",
+            "zh-TW": "透過 Flatpak 從 Flathub 安裝 org.blender.Blender；需要已安裝 Flatpak 並設定 Flathub remote。",
+            "en": "Installs org.blender.Blender from Flathub with Flatpak. Flatpak and the Flathub remote must already be configured.",
+            "ja": "Flatpak で Flathub から org.blender.Blender をインストールします。Flatpak と Flathub リモートを事前に設定する必要があります。",
+            "ko": "Flatpak으로 Flathub에서 org.blender.Blender를 설치합니다. Flatpak과 Flathub 리모트가 미리 설정되어 있어야 합니다."
           },
           "sourceUrl": "https://www.blender.org/download/",
           "method": {
-            "type": "official_page",
-            "url": "https://www.blender.org/download/"
+            "type": "package_manager",
+            "manager": "flatpak",
+            "packageId": "org.blender.Blender",
+            "source": "flathub"
           }
         },
         {
@@ -308,16 +328,18 @@
           "requiresAdmin": false,
           "interactive": false,
           "note": {
-            "zh-CN": "仅打开官方下载页，由你核对系统要求、版本和许可后安装；打开页面不代表已安装。",
-            "zh-TW": "僅開啟官方下載頁，由你核對系統需求、版本與授權後安裝；開啟頁面不代表已安裝。",
-            "en": "Opens the official download page only. Check system requirements, the release and license before installing; opening a page does not mean the app is installed.",
-            "ja": "公式ダウンロードページを開くだけです。システム要件、リリース、ライセンスを確認してインストールしてください。ページを開いてもインストール完了ではありません。",
-            "ko": "공식 다운로드 페이지만 엽니다. 설치 전 시스템 요구 사항, 릴리스 및 라이선스를 확인하세요. 페이지를 열었다고 설치된 것은 아닙니다."
+            "zh-CN": "通过 winget 安装 BlenderFoundation.Blender（winget 源）；需要已安装并配置该包管理器。",
+            "zh-TW": "透過 winget 安裝 BlenderFoundation.Blender（winget 來源）；需要已安裝並設定該套件管理器。",
+            "en": "Installs BlenderFoundation.Blender with winget from the winget source. The package manager must already be installed and configured.",
+            "ja": "winget で BlenderFoundation.Blender をインストールします（winget ソース）。パッケージマネージャーを事前にインストールして設定する必要があります。",
+            "ko": "winget로 BlenderFoundation.Blender를 설치합니다(winget 소스). 패키지 관리자가 미리 설치되어 설정되어 있어야 합니다."
           },
           "sourceUrl": "https://www.blender.org/download/",
           "method": {
-            "type": "official_page",
-            "url": "https://www.blender.org/download/"
+            "type": "package_manager",
+            "manager": "winget",
+            "packageId": "BlenderFoundation.Blender",
+            "source": "winget"
           }
         },
         {
@@ -329,16 +351,18 @@
           "requiresAdmin": false,
           "interactive": false,
           "note": {
-            "zh-CN": "仅打开官方下载页，由你核对系统要求、版本和许可后安装；打开页面不代表已安装。",
-            "zh-TW": "僅開啟官方下載頁，由你核對系統需求、版本與授權後安裝；開啟頁面不代表已安裝。",
-            "en": "Opens the official download page only. Check system requirements, the release and license before installing; opening a page does not mean the app is installed.",
-            "ja": "公式ダウンロードページを開くだけです。システム要件、リリース、ライセンスを確認してインストールしてください。ページを開いてもインストール完了ではありません。",
-            "ko": "공식 다운로드 페이지만 엽니다. 설치 전 시스템 요구 사항, 릴리스 및 라이선스를 확인하세요. 페이지를 열었다고 설치된 것은 아닙니다."
+            "zh-CN": "通过 brew 安装 blender；需要已安装并配置该包管理器。",
+            "zh-TW": "透過 brew 安裝 blender；需要已安裝並設定該套件管理器。",
+            "en": "Installs blender with brew. The package manager must already be installed and configured.",
+            "ja": "brew で blender をインストールします。パッケージマネージャーを事前にインストールして設定する必要があります。",
+            "ko": "brew로 blender를 설치합니다. 패키지 관리자가 미리 설치되어 설정되어 있어야 합니다."
           },
           "sourceUrl": "https://www.blender.org/download/",
           "method": {
-            "type": "official_page",
-            "url": "https://www.blender.org/download/"
+            "type": "package_manager",
+            "manager": "brew",
+            "packageId": "blender",
+            "cask": true
           }
         }
       ]
@@ -371,16 +395,18 @@
           "requiresAdmin": false,
           "interactive": false,
           "note": {
-            "zh-CN": "仅打开官方下载页，提供 x86_64 AppImage；需赋予执行权限后运行。请核对 GPLv3 许可和系统要求；打开页面不代表已安装。",
-            "zh-TW": "僅開啟官方下載頁，提供 x86_64 AppImage；需賦予執行權限後執行。請核對 GPLv3 授權與系統需求；開啟頁面不代表已安裝。",
-            "en": "Opens the official download page only, with an x86_64 AppImage that must be made executable. Review the GPLv3 license and system requirements; opening a page does not mean the app is installed.",
-            "ja": "公式ダウンロードページを開くだけです。実行可能に設定が必要な x86_64 AppImage を提供します。GPLv3 ライセンスとシステム要件を確認してください。ページを開いてもインストール完了ではありません。",
-            "ko": "공식 다운로드 페이지만 열리며 실행 권한을 부여해야 하는 x86_64 AppImage를 제공합니다. GPLv3 라이선스와 시스템 요구 사항을 확인하세요. 페이지를 열었다고 설치된 것은 아닙니다."
+            "zh-CN": "通过 Flatpak 从 Flathub 安装 org.kde.krita；需要已安装 Flatpak 并配置 Flathub remote。",
+            "zh-TW": "透過 Flatpak 從 Flathub 安裝 org.kde.krita；需要已安裝 Flatpak 並設定 Flathub remote。",
+            "en": "Installs org.kde.krita from Flathub with Flatpak. Flatpak and the Flathub remote must already be configured.",
+            "ja": "Flatpak で Flathub から org.kde.krita をインストールします。Flatpak と Flathub リモートを事前に設定する必要があります。",
+            "ko": "Flatpak으로 Flathub에서 org.kde.krita를 설치합니다. Flatpak과 Flathub 리모트가 미리 설정되어 있어야 합니다."
           },
           "sourceUrl": "https://krita.org/en/download/",
           "method": {
-            "type": "official_page",
-            "url": "https://krita.org/en/download/"
+            "type": "package_manager",
+            "manager": "flatpak",
+            "packageId": "org.kde.krita",
+            "source": "flathub"
           }
         },
         {
@@ -392,16 +418,18 @@
           "requiresAdmin": false,
           "interactive": false,
           "note": {
-            "zh-CN": "仅打开官方下载页，提供 x64 安装器或便携 ZIP；安装器包含资源管理器 Shell 扩展。请核对 GPLv3 许可和系统要求；打开页面不代表已安装。",
-            "zh-TW": "僅開啟官方下載頁，提供 x64 安裝器或便攜 ZIP；安裝器包含檔案總管 Shell 擴充功能。請核對 GPLv3 授權與系統需求；開啟頁面不代表已安裝。",
-            "en": "Opens the official download page only, with an x64 installer or portable ZIP; the installer includes a Windows shell extension. Review the GPLv3 license and system requirements; opening a page does not mean the app is installed.",
-            "ja": "公式ダウンロードページを開くだけです。x64 インストーラーまたはポータブル ZIP を提供し、インストーラーには Windows シェル拡張が含まれます。GPLv3 ライセンスとシステム要件を確認してください。ページを開いてもインストール完了ではありません。",
-            "ko": "공식 다운로드 페이지만 열리며 x64 설치 관리자 또는 포터블 ZIP을 제공합니다. 설치 관리자에는 Windows 셸 확장이 포함됩니다. GPLv3 라이선스와 시스템 요구 사항을 확인하세요. 페이지를 열었다고 설치된 것은 아닙니다."
+            "zh-CN": "通过 winget 安装 KDE.Krita（winget 源）；需要已安装并配置该包管理器。",
+            "zh-TW": "透過 winget 安裝 KDE.Krita（winget 來源）；需要已安裝並設定該套件管理器。",
+            "en": "Installs KDE.Krita with winget from the winget source. The package manager must already be installed and configured.",
+            "ja": "winget で KDE.Krita をインストールします（winget ソース）。パッケージマネージャーを事前にインストールして設定する必要があります。",
+            "ko": "winget로 KDE.Krita를 설치합니다(winget 소스). 패키지 관리자가 미리 설치되어 설정되어 있어야 합니다."
           },
           "sourceUrl": "https://krita.org/en/download/",
           "method": {
-            "type": "official_page",
-            "url": "https://krita.org/en/download/"
+            "type": "package_manager",
+            "manager": "winget",
+            "packageId": "KDE.Krita",
+            "source": "winget"
           }
         }
       ]
@@ -434,16 +462,18 @@
           "requiresAdmin": false,
           "interactive": false,
           "note": {
-            "zh-CN": "仅打开官方下载页，提供 x86_64 AppImage；需 FUSE 2 并赋予执行权限后运行。可核对页面公布的 SHA-256；打开页面不代表已安装。",
-            "zh-TW": "僅開啟官方下載頁，提供 x86_64 AppImage；需 FUSE 2 並賦予執行權限後執行。可核對頁面公布的 SHA-256；開啟頁面不代表已安裝。",
-            "en": "Opens the official download page only, with an x86_64 AppImage requiring FUSE 2 and executable permission. Verify against the published SHA-256; opening a page does not mean the app is installed.",
-            "ja": "公式ダウンロードページを開くだけです。x86_64 AppImage には FUSE 2 と実行権限が必要です。公開されている SHA-256 と照合してください。ページを開いてもインストール完了ではありません。",
-            "ko": "공식 다운로드 페이지만 열리며 FUSE 2와 실행 권한이 필요한 x86_64 AppImage를 제공합니다. 공개된 SHA-256과 대조하세요. 페이지를 열었다고 설치된 것은 아닙니다."
+            "zh-CN": "通过 Flatpak 从 Flathub 安装 org.audacityteam.Audacity；需要已安装 Flatpak 并配置 Flathub remote。",
+            "zh-TW": "透過 Flatpak 從 Flathub 安裝 org.audacityteam.Audacity；需要已安裝 Flatpak 並設定 Flathub remote。",
+            "en": "Installs org.audacityteam.Audacity from Flathub with Flatpak. Flatpak and the Flathub remote must already be configured.",
+            "ja": "Flatpak で Flathub から org.audacityteam.Audacity をインストールします。Flatpak と Flathub リモートを事前に設定する必要があります。",
+            "ko": "Flatpak으로 Flathub에서 org.audacityteam.Audacity를 설치합니다. Flatpak과 Flathub 리모트가 미리 설정되어 있어야 합니다."
           },
           "sourceUrl": "https://www.audacityteam.org/download/linux/",
           "method": {
-            "type": "official_page",
-            "url": "https://www.audacityteam.org/download/linux/"
+            "type": "package_manager",
+            "manager": "flatpak",
+            "packageId": "org.audacityteam.Audacity",
+            "source": "flathub"
           }
         },
         {
@@ -455,16 +485,18 @@
           "requiresAdmin": false,
           "interactive": false,
           "note": {
-            "zh-CN": "仅打开官方下载页，提供 ARM64 AppImage；需 FUSE 2 并赋予执行权限后运行，且不支持插件。可核对页面公布的 SHA-256；打开页面不代表已安装。",
-            "zh-TW": "僅開啟官方下載頁，提供 ARM64 AppImage；需 FUSE 2 並賦予執行權限後執行，且不支援外掛。可核對頁面公布的 SHA-256；開啟頁面不代表已安裝。",
-            "en": "Opens the official download page only, with an ARM64 AppImage requiring FUSE 2 and executable permission; plugins are not supported. Verify against the published SHA-256; opening a page does not mean the app is installed.",
-            "ja": "公式ダウンロードページを開くだけです。ARM64 AppImage には FUSE 2 と実行権限が必要で、プラグインはサポートされません。公開されている SHA-256 と照合してください。ページを開いてもインストール完了ではありません。",
-            "ko": "공식 다운로드 페이지만 열리며 FUSE 2와 실행 권한이 필요한 ARM64 AppImage를 제공하고 플러그인은 지원되지 않습니다. 공개된 SHA-256과 대조하세요. 페이지를 열었다고 설치된 것은 아닙니다."
+            "zh-CN": "通过 Flatpak 从 Flathub 安装 org.audacityteam.Audacity；需要已安装 Flatpak 并配置 Flathub remote。",
+            "zh-TW": "透過 Flatpak 從 Flathub 安裝 org.audacityteam.Audacity；需要已安裝 Flatpak 並設定 Flathub remote。",
+            "en": "Installs org.audacityteam.Audacity from Flathub with Flatpak. Flatpak and the Flathub remote must already be configured.",
+            "ja": "Flatpak で Flathub から org.audacityteam.Audacity をインストールします。Flatpak と Flathub リモートを事前に設定する必要があります。",
+            "ko": "Flatpak으로 Flathub에서 org.audacityteam.Audacity를 설치합니다. Flatpak과 Flathub 리모트가 미리 설정되어 있어야 합니다."
           },
           "sourceUrl": "https://www.audacityteam.org/download/linux/",
           "method": {
-            "type": "official_page",
-            "url": "https://www.audacityteam.org/download/linux/"
+            "type": "package_manager",
+            "manager": "flatpak",
+            "packageId": "org.audacityteam.Audacity",
+            "source": "flathub"
           }
         },
         {
@@ -476,16 +508,18 @@
           "requiresAdmin": false,
           "interactive": false,
           "note": {
-            "zh-CN": "仅打开官方下载页，提供 x86_64 MSI 安装器和便携压缩包；安装器可能请求管理员权限。可核对页面公布的 SHA-256；打开页面不代表已安装。",
-            "zh-TW": "僅開啟官方下載頁，提供 x86_64 MSI 安裝器與便攜壓縮包；安裝器可能要求管理員權限。可核對頁面公布的 SHA-256；開啟頁面不代表已安裝。",
-            "en": "Opens the official download page only, with an x86_64 MSI installer and portable archive; the installer may request administrator rights. Verify against the published SHA-256; opening a page does not mean the app is installed.",
-            "ja": "公式ダウンロードページを開くだけです。x86_64 MSI インストーラーとポータブルアーカイブを提供し、インストーラーは管理者権限を求める場合があります。公開されている SHA-256 と照合してください。ページを開いてもインストール完了ではありません。",
-            "ko": "공식 다운로드 페이지만 열리며 x86_64 MSI 설치 관리자와 포터블 아카이브를 제공합니다. 설치 관리자가 관리자 권한을 요청할 수 있습니다. 공개된 SHA-256과 대조하세요. 페이지를 열었다고 설치된 것은 아닙니다."
+            "zh-CN": "通过 winget 安装 Audacity.Audacity（winget 源）；需要已安装并配置该包管理器。",
+            "zh-TW": "透過 winget 安裝 Audacity.Audacity（winget 來源）；需要已安裝並設定該套件管理器。",
+            "en": "Installs Audacity.Audacity with winget from the winget source. The package manager must already be installed and configured.",
+            "ja": "winget で Audacity.Audacity をインストールします（winget ソース）。パッケージマネージャーを事前にインストールして設定する必要があります。",
+            "ko": "winget로 Audacity.Audacity를 설치합니다(winget 소스). 패키지 관리자가 미리 설치되어 설정되어 있어야 합니다."
           },
           "sourceUrl": "https://www.audacityteam.org/download/windows/",
           "method": {
-            "type": "official_page",
-            "url": "https://www.audacityteam.org/download/windows/"
+            "type": "package_manager",
+            "manager": "winget",
+            "packageId": "Audacity.Audacity",
+            "source": "winget"
           }
         },
         {
@@ -497,16 +531,18 @@
           "requiresAdmin": false,
           "interactive": false,
           "note": {
-            "zh-CN": "仅打开官方下载页；ARM64 版需要 Windows 11 或更新版本，不支持插件，额外格式需 ARM64 专用 FFmpeg。提供 MSI 和便携包，安装器可能请求管理员权限；打开页面不代表已安装。",
-            "zh-TW": "僅開啟官方下載頁；ARM64 版需要 Windows 11 或更新版本，不支援外掛，額外格式需 ARM64 專用 FFmpeg。提供 MSI 與便攜包，安裝器可能要求管理員權限；開啟頁面不代表已安裝。",
-            "en": "Opens the official download page only. The ARM64 build requires Windows 11 or newer, does not support plugins, and needs an ARM64-specific FFmpeg for extra formats. MSI and portable options are available; the installer may request administrator rights. Opening a page does not mean the app is installed.",
-            "ja": "公式ダウンロードページを開くだけです。ARM64 版には Windows 11 以降が必要で、プラグインはサポートされず、追加形式には ARM64 専用 FFmpeg が必要です。MSI とポータブル版があり、インストーラーは管理者権限を求める場合があります。ページを開いてもインストール完了ではありません。",
-            "ko": "공식 다운로드 페이지만 열립니다. ARM64 빌드에는 Windows 11 이상이 필요하며 플러그인을 지원하지 않고 추가 형식에는 ARM64 전용 FFmpeg가 필요합니다. MSI와 포터블 옵션이 있으며 설치 관리자가 관리자 권한을 요청할 수 있습니다. 페이지를 열었다고 설치된 것은 아닙니다."
+            "zh-CN": "通过 winget 安装 Audacity.Audacity（winget 源）；需要已安装并配置该包管理器。",
+            "zh-TW": "透過 winget 安裝 Audacity.Audacity（winget 來源）；需要已安裝並設定該套件管理器。",
+            "en": "Installs Audacity.Audacity with winget from the winget source. The package manager must already be installed and configured.",
+            "ja": "winget で Audacity.Audacity をインストールします（winget ソース）。パッケージマネージャーを事前にインストールして設定する必要があります。",
+            "ko": "winget로 Audacity.Audacity를 설치합니다(winget 소스). 패키지 관리자가 미리 설치되어 설정되어 있어야 합니다."
           },
           "sourceUrl": "https://www.audacityteam.org/download/windows/",
           "method": {
-            "type": "official_page",
-            "url": "https://www.audacityteam.org/download/windows/"
+            "type": "package_manager",
+            "manager": "winget",
+            "packageId": "Audacity.Audacity",
+            "source": "winget"
           }
         },
         {
@@ -518,16 +554,18 @@
           "requiresAdmin": false,
           "interactive": false,
           "note": {
-            "zh-CN": "仅打开官方下载页，提供 Intel 专用 DMG（适用于不支持 Universal DMG 的旧版 macOS）；拖入“应用程序”完成安装。可核对页面公布的 SHA-256；打开页面不代表已安装。",
-            "zh-TW": "僅開啟官方下載頁，提供 Intel 專用 DMG（適用於不支援 Universal DMG 的舊版 macOS）；拖入「應用程式」完成安裝。可核對頁面公布的 SHA-256；開啟頁面不代表已安裝。",
-            "en": "Opens the official download page only, with an Intel-only DMG for older macOS versions that do not support the Universal DMG; drag the app to Applications. Verify against the published SHA-256; opening a page does not mean the app is installed.",
-            "ja": "公式ダウンロードページを開くだけです。Universal DMG に対応しない古い macOS 向けの Intel 専用 DMG を提供し、アプリを「アプリケーション」へドラッグしてインストールします。公開されている SHA-256 と照合してください。ページを開いてもインストール完了ではありません。",
-            "ko": "공식 다운로드 페이지만 열리며 Universal DMG를 지원하지 않는 이전 macOS용 Intel 전용 DMG를 제공합니다. 앱을 응용 프로그램으로 드래그해 설치하세요. 공개된 SHA-256과 대조하세요. 페이지를 열었다고 설치된 것은 아닙니다."
+            "zh-CN": "通过 brew 安装 audacity；需要已安装并配置该包管理器。",
+            "zh-TW": "透過 brew 安裝 audacity；需要已安裝並設定該套件管理器。",
+            "en": "Installs audacity with brew. The package manager must already be installed and configured.",
+            "ja": "brew で audacity をインストールします。パッケージマネージャーを事前にインストールして設定する必要があります。",
+            "ko": "brew로 audacity를 설치합니다. 패키지 관리자가 미리 설치되어 설정되어 있어야 합니다."
           },
           "sourceUrl": "https://www.audacityteam.org/download/mac/",
           "method": {
-            "type": "official_page",
-            "url": "https://www.audacityteam.org/download/mac/"
+            "type": "package_manager",
+            "manager": "brew",
+            "packageId": "audacity",
+            "cask": true
           }
         },
         {
@@ -539,16 +577,18 @@
           "requiresAdmin": false,
           "interactive": false,
           "note": {
-            "zh-CN": "仅打开官方下载页，提供 Apple Silicon（ARM64）专用 DMG，但不支持插件；拖入“应用程序”完成安装。可核对页面公布的 SHA-256；打开页面不代表已安装。",
-            "zh-TW": "僅開啟官方下載頁，提供 Apple Silicon（ARM64）專用 DMG，但不支援外掛；拖入「應用程式」完成安裝。可核對頁面公布的 SHA-256；開啟頁面不代表已安裝。",
-            "en": "Opens the official download page only, with an Apple Silicon (ARM64) DMG that does not support plugins; drag the app to Applications. Verify against the published SHA-256; opening a page does not mean the app is installed.",
-            "ja": "公式ダウンロードページを開くだけです。Apple Silicon（ARM64）専用 DMG を提供しますが、プラグインはサポートされません。アプリを「アプリケーション」へドラッグしてインストールします。公開されている SHA-256 と照合してください。ページを開いてもインストール完了ではありません。",
-            "ko": "공식 다운로드 페이지만 열리며 플러그인을 지원하지 않는 Apple Silicon(ARM64) 전용 DMG를 제공합니다. 앱을 응용 프로그램으로 드래그해 설치하세요. 공개된 SHA-256과 대조하세요. 페이지를 열었다고 설치된 것은 아닙니다."
+            "zh-CN": "通过 brew 安装 audacity；需要已安装并配置该包管理器。",
+            "zh-TW": "透過 brew 安裝 audacity；需要已安裝並設定該套件管理器。",
+            "en": "Installs audacity with brew. The package manager must already be installed and configured.",
+            "ja": "brew で audacity をインストールします。パッケージマネージャーを事前にインストールして設定する必要があります。",
+            "ko": "brew로 audacity를 설치합니다. 패키지 관리자가 미리 설치되어 설정되어 있어야 합니다."
           },
           "sourceUrl": "https://www.audacityteam.org/download/mac/",
           "method": {
-            "type": "official_page",
-            "url": "https://www.audacityteam.org/download/mac/"
+            "type": "package_manager",
+            "manager": "brew",
+            "packageId": "audacity",
+            "cask": true
           }
         }
       ]
@@ -581,16 +621,18 @@
           "requiresAdmin": false,
           "interactive": false,
           "note": {
-            "zh-CN": "仅打开官方下载页，提供 x86_64 Flatpak 软件包或 Flathub 安装；需先配置 Flatpak/Flathub。官方文档建议先移除发行版或第三方 HandBrake 软件包；打开页面不代表已安装。",
-            "zh-TW": "僅開啟官方下載頁，提供 x86_64 Flatpak 套件或 Flathub 安裝；需先設定 Flatpak/Flathub。官方文件建議先移除發行版或第三方 HandBrake 套件；開啟頁面不代表已安裝。",
-            "en": "Opens the official download page only, with an x86_64 Flatpak bundle or Flathub installation; Flatpak/Flathub setup is required. The official guide recommends removing distribution or third-party HandBrake packages first. Opening a page does not mean the app is installed.",
-            "ja": "公式ダウンロードページを開くだけです。x86_64 Flatpak バンドルまたは Flathub インストールを提供し、Flatpak/Flathub の設定が必要です。公式ガイドではディストリビューションまたはサードパーティーの HandBrake パッケージを先に削除することが推奨されています。ページを開いてもインストール完了ではありません。",
-            "ko": "공식 다운로드 페이지만 열리며 x86_64 Flatpak 번들 또는 Flathub 설치를 제공하고 Flatpak/Flathub 설정이 필요합니다. 공식 안내에서는 배포판 또는 타사 HandBrake 패키지를 먼저 제거하도록 권장합니다. 페이지를 열었다고 설치된 것은 아닙니다."
+            "zh-CN": "通过 Flatpak 从 Flathub 安装 fr.handbrake.ghb；需要已安装 Flatpak 并配置 Flathub remote。",
+            "zh-TW": "透過 Flatpak 從 Flathub 安裝 fr.handbrake.ghb；需要已安裝 Flatpak 並設定 Flathub remote。",
+            "en": "Installs fr.handbrake.ghb from Flathub with Flatpak. Flatpak and the Flathub remote must already be configured.",
+            "ja": "Flatpak で Flathub から fr.handbrake.ghb をインストールします。Flatpak と Flathub リモートを事前に設定する必要があります。",
+            "ko": "Flatpak으로 Flathub에서 fr.handbrake.ghb를 설치합니다. Flatpak과 Flathub 리모트가 미리 설정되어 있어야 합니다."
           },
           "sourceUrl": "https://handbrake.fr/downloads.php",
           "method": {
-            "type": "official_page",
-            "url": "https://handbrake.fr/downloads.php"
+            "type": "package_manager",
+            "manager": "flatpak",
+            "packageId": "fr.handbrake.ghb",
+            "source": "flathub"
           }
         },
         {
@@ -602,16 +644,18 @@
           "requiresAdmin": false,
           "interactive": false,
           "note": {
-            "zh-CN": "仅打开官方下载页，提供 Windows 10 或更新版本的 x64 安装器和便携 ZIP；需另行安装 Microsoft .NET Desktop Runtime 10（x64）。安装器可提议移除旧版；打开页面不代表已安装。",
-            "zh-TW": "僅開啟官方下載頁，提供 Windows 10 或更新版本的 x64 安裝器與便攜 ZIP；需另行安裝 Microsoft .NET Desktop Runtime 10（x64）。安裝器可提議移除舊版；開啟頁面不代表已安裝。",
-            "en": "Opens the official download page only, with an x64 installer and portable ZIP for Windows 10 or newer; Microsoft .NET Desktop Runtime 10 (x64) must also be installed. The installer may offer to remove an older release. Opening a page does not mean the app is installed.",
-            "ja": "公式ダウンロードページを開くだけです。Windows 10 以降向けの x64 インストーラーとポータブル ZIP を提供し、Microsoft .NET Desktop Runtime 10（x64）の追加インストールが必要です。インストーラーは旧バージョンの削除を提案する場合があります。ページを開いてもインストール完了ではありません。",
-            "ko": "공식 다운로드 페이지만 열리며 Windows 10 이상용 x64 설치 관리자와 포터블 ZIP을 제공합니다. Microsoft .NET Desktop Runtime 10(x64)도 설치해야 합니다. 설치 관리자가 이전 릴리스 제거를 제안할 수 있습니다. 페이지를 열었다고 설치된 것은 아닙니다."
+            "zh-CN": "通过 winget 安装 HandBrake.HandBrake（winget 源）；需要已安装并配置该包管理器。",
+            "zh-TW": "透過 winget 安裝 HandBrake.HandBrake（winget 來源）；需要已安裝並設定該套件管理器。",
+            "en": "Installs HandBrake.HandBrake with winget from the winget source. The package manager must already be installed and configured.",
+            "ja": "winget で HandBrake.HandBrake をインストールします（winget ソース）。パッケージマネージャーを事前にインストールして設定する必要があります。",
+            "ko": "winget로 HandBrake.HandBrake를 설치합니다(winget 소스). 패키지 관리자가 미리 설치되어 설정되어 있어야 합니다."
           },
           "sourceUrl": "https://handbrake.fr/downloads.php",
           "method": {
-            "type": "official_page",
-            "url": "https://handbrake.fr/downloads.php"
+            "type": "package_manager",
+            "manager": "winget",
+            "packageId": "HandBrake.HandBrake",
+            "source": "winget"
           }
         },
         {
@@ -623,16 +667,18 @@
           "requiresAdmin": false,
           "interactive": false,
           "note": {
-            "zh-CN": "仅打开官方下载页，提供 Windows 10 或更新版本的 ARM64 安装器和便携 ZIP；需另行安装 Microsoft .NET Desktop Runtime 10（ARM64）。安装器可提议移除旧版；打开页面不代表已安装。",
-            "zh-TW": "僅開啟官方下載頁，提供 Windows 10 或更新版本的 ARM64 安裝器與便攜 ZIP；需另行安裝 Microsoft .NET Desktop Runtime 10（ARM64）。安裝器可提議移除舊版；開啟頁面不代表已安裝。",
-            "en": "Opens the official download page only, with an ARM64 installer and portable ZIP for Windows 10 or newer; Microsoft .NET Desktop Runtime 10 (ARM64) must also be installed. The installer may offer to remove an older release. Opening a page does not mean the app is installed.",
-            "ja": "公式ダウンロードページを開くだけです。Windows 10 以降向けの ARM64 インストーラーとポータブル ZIP を提供し、Microsoft .NET Desktop Runtime 10（ARM64）の追加インストールが必要です。インストーラーは旧バージョンの削除を提案する場合があります。ページを開いてもインストール完了ではありません。",
-            "ko": "공식 다운로드 페이지만 열리며 Windows 10 이상용 ARM64 설치 관리자와 포터블 ZIP을 제공합니다. Microsoft .NET Desktop Runtime 10(ARM64)도 설치해야 합니다. 설치 관리자가 이전 릴리스 제거를 제안할 수 있습니다. 페이지를 열었다고 설치된 것은 아닙니다."
+            "zh-CN": "通过 winget 安装 HandBrake.HandBrake（winget 源）；需要已安装并配置该包管理器。",
+            "zh-TW": "透過 winget 安裝 HandBrake.HandBrake（winget 來源）；需要已安裝並設定該套件管理器。",
+            "en": "Installs HandBrake.HandBrake with winget from the winget source. The package manager must already be installed and configured.",
+            "ja": "winget で HandBrake.HandBrake をインストールします（winget ソース）。パッケージマネージャーを事前にインストールして設定する必要があります。",
+            "ko": "winget로 HandBrake.HandBrake를 설치합니다(winget 소스). 패키지 관리자가 미리 설치되어 설정되어 있어야 합니다."
           },
           "sourceUrl": "https://handbrake.fr/downloads.php",
           "method": {
-            "type": "official_page",
-            "url": "https://handbrake.fr/downloads.php"
+            "type": "package_manager",
+            "manager": "winget",
+            "packageId": "HandBrake.HandBrake",
+            "source": "winget"
           }
         },
         {
@@ -645,16 +691,18 @@
           "requiresAdmin": false,
           "interactive": false,
           "note": {
-            "zh-CN": "仅打开官方下载页，提供适用于 macOS 10.13 或更新版本的 Universal DMG，支持 Intel 与 Apple Silicon；拖入“应用程序”完成安装。可用官方校验和或 OpenPGP 签名验证；打开页面不代表已安装。",
-            "zh-TW": "僅開啟官方下載頁，提供適用於 macOS 10.13 或更新版本的 Universal DMG，支援 Intel 與 Apple Silicon；拖入「應用程式」完成安裝。可用官方校驗和或 OpenPGP 簽章驗證；開啟頁面不代表已安裝。",
-            "en": "Opens the official download page only, with a Universal DMG for Intel and Apple Silicon on macOS 10.13 or newer; drag the app to Applications. Verify with the official checksum or OpenPGP signature. Opening a page does not mean the app is installed.",
-            "ja": "公式ダウンロードページを開くだけです。macOS 10.13 以降の Intel と Apple Silicon に対応する Universal DMG を提供し、アプリを「アプリケーション」へドラッグしてインストールします。公式チェックサムまたは OpenPGP 署名で検証できます。ページを開いてもインストール完了ではありません。",
-            "ko": "공식 다운로드 페이지만 열리며 macOS 10.13 이상의 Intel 및 Apple Silicon용 Universal DMG를 제공합니다. 앱을 응용 프로그램으로 드래그해 설치하세요. 공식 체크섬 또는 OpenPGP 서명으로 검증할 수 있습니다. 페이지를 열었다고 설치된 것은 아닙니다."
+            "zh-CN": "通过 brew 安装 handbrake-app；需要已安装并配置该包管理器。",
+            "zh-TW": "透過 brew 安裝 handbrake-app；需要已安裝並設定該套件管理器。",
+            "en": "Installs handbrake-app with brew. The package manager must already be installed and configured.",
+            "ja": "brew で handbrake-app をインストールします。パッケージマネージャーを事前にインストールして設定する必要があります。",
+            "ko": "brew로 handbrake-app를 설치합니다. 패키지 관리자가 미리 설치되어 설정되어 있어야 합니다."
           },
           "sourceUrl": "https://handbrake.fr/downloads.php",
           "method": {
-            "type": "official_page",
-            "url": "https://handbrake.fr/downloads.php"
+            "type": "package_manager",
+            "manager": "brew",
+            "packageId": "handbrake-app",
+            "cask": true
           }
         }
       ]
