@@ -493,10 +493,7 @@ pub fn official_detail(
     let language = view.state.settings.language.clone();
     let dynamic = matches!(
         &variant.method,
-        crate::official::OfficialMethod::OfficialPage {
-            release: Some(_),
-            ..
-        }
+        crate::official::OfficialMethod::GithubRelease { .. }
     );
     let queue_id = variant.id.clone();
     let resolution_id = variant.id.clone();
@@ -511,7 +508,7 @@ pub fn official_detail(
         let copy_view = this.clone();
         let queue_view = this.clone();
         let retry_view = this.clone();
-        let fallback_view = this.clone();
+
         let queue_id = queue_id.clone();
         let resolution = this
             .read_with(cx, |view, _| {
@@ -535,10 +532,7 @@ pub fn official_detail(
             _ => None,
         };
         let resolution_failed = failed_message.is_some();
-        let official_url = match &variant.method {
-            crate::official::OfficialMethod::OfficialPage { url, .. } => Some(url.clone()),
-            _ => None,
-        };
+
         let accent = Palette::from_hex(&app.accent);
         let (method_label, _) = official_method_labels(&variant.method);
         let method_label = if dynamic {
@@ -551,8 +545,23 @@ pub fn official_detail(
         } else {
             match &variant.method {
                 crate::official::OfficialMethod::Script { command, .. } => command.clone(),
-                crate::official::OfficialMethod::Artifact { url, .. }
-                | crate::official::OfficialMethod::OfficialPage { url, .. } => url.clone(),
+                crate::official::OfficialMethod::PackageManager {
+                    manager,
+                    package_id,
+                    source,
+                    ..
+                } => format!(
+                    "{} {}{}",
+                    manager.label(),
+                    package_id,
+                    source.as_deref().map_or_else(String::new, |source| format!("\n{source}"))
+                ),
+                crate::official::OfficialMethod::Portable { url, sha256, .. } => {
+                    format!("{url}\nSHA-256: {sha256}")
+                }
+                crate::official::OfficialMethod::GithubRelease { repository, .. } => {
+                    repository.clone()
+                }
             }
         };
         let payload_label = if dynamic && resolved.is_some() {
@@ -576,7 +585,13 @@ pub fn official_detail(
                     ..
                 } => "PowerShell".to_owned(),
                 crate::official::OfficialMethod::Script { .. } => "Shell".to_owned(),
-                _ => tr!("official.detail.https_direct"),
+                crate::official::OfficialMethod::PackageManager { manager, .. } => {
+                    manager.label().to_owned()
+                }
+                crate::official::OfficialMethod::Portable { .. } => {
+                    tr!("official.detail.https_direct")
+                }
+                crate::official::OfficialMethod::GithubRelease { .. } => unreachable!(),
             }
         };
         let action_semantics = if dynamic {
@@ -585,13 +600,11 @@ pub fn official_detail(
                     crate::official::resolver::OfficialInstallAction::InstallPackage => {
                         tr!("official.detail.semantic_package_install")
                     }
-                    crate::official::resolver::OfficialInstallAction::RunInstaller => {
-                        tr!("official.detail.semantic_installer")
-                    }
-                    crate::official::resolver::OfficialInstallAction::OpenInstaller => {
+                    crate::official::resolver::OfficialInstallAction::RunInstaller
+                    | crate::official::resolver::OfficialInstallAction::OpenInstaller => {
                         tr!("official.detail.semantic_open_installer")
                     }
-                    crate::official::resolver::OfficialInstallAction::DownloadPortable => {
+                    crate::official::resolver::OfficialInstallAction::InstallPortable => {
                         tr!("official.detail.semantic_portable")
                     }
                 }
@@ -608,27 +621,21 @@ pub fn official_detail(
                 crate::official::OfficialMethod::Script { .. } => {
                     tr!("official.detail.semantic_script")
                 }
-                crate::official::OfficialMethod::Artifact {
-                    action: crate::official::ArtifactAction::RunInstaller,
-                    ..
-                } => tr!("official.detail.semantic_installer"),
-                crate::official::OfficialMethod::Artifact {
-                    action: crate::official::ArtifactAction::DownloadPackage,
-                    ..
-                } => tr!("official.detail.semantic_package"),
-                crate::official::OfficialMethod::Artifact {
-                    action: crate::official::ArtifactAction::DownloadPortable,
-                    ..
-                } => tr!("official.detail.semantic_portable"),
-                crate::official::OfficialMethod::OfficialPage { .. } => {
-                    tr!("official.detail.semantic_page")
+                crate::official::OfficialMethod::PackageManager { .. } => {
+                    tr!("official.detail.semantic_package_install")
                 }
+                crate::official::OfficialMethod::Portable { .. } => {
+                    tr!("official.detail.semantic_portable")
+                }
+                crate::official::OfficialMethod::GithubRelease { .. } => unreachable!(),
             }
         };
-        let no_sha = matches!(
-            &variant.method,
-            crate::official::OfficialMethod::Artifact { sha256: None, .. }
-        );
+        let portable_sha = match &variant.method {
+            crate::official::OfficialMethod::Portable { sha256, .. } => {
+                Some(format!("SHA-256: {sha256}"))
+            }
+            _ => None,
+        };
         let resolved_metadata = resolved.map(|resolved| {
             let size = resolved.size.map_or_else(
                 || tr!("official.resolve.unknown_size"),
@@ -807,19 +814,15 @@ pub fn official_detail(
                                 .child(message),
                         )
                     })
-                    .when(no_sha, |this| {
+                    .when_some(portable_sha, |this, sha256| {
                         this.child(
                             div()
-                                .flex()
-                                .items_start()
-                                .gap(px(8.))
                                 .p(px(10.))
                                 .rounded(px(9.))
-                                .bg(p.tint(p.warn, 0.10))
+                                .bg(p.surface2)
                                 .text_size(px(FONT_META))
-                                .text_color(p.warn)
-                                .child(icon(IconKey::Warning, px(14.), p.warn))
-                                .child(tr!("official.detail.no_sha")),
+                                .text_color(p.ink2)
+                                .child(sha256),
                         )
                     })
                     .child(
@@ -842,23 +845,7 @@ pub fn official_detail(
                     .items_center()
                     .justify_end()
                     .gap(px(8.))
-                    .when_some(official_url, |this, url| {
-                        this.child(
-                            widgets::btn(
-                                cx,
-                                &p,
-                                "official-detail-fallback",
-                                BtnKind::Outline,
-                                BtnSize::Regular,
-                                tr!("official.detail.open_official"),
-                            )
-                            .on_click(move |_, window, cx| {
-                                let _ = fallback_view.update(cx, |this, cx| {
-                                    this.open_official_url(url.clone(), window, cx);
-                                });
-                            }),
-                        )
-                    })
+
                     .when(resolution_failed, |this| {
                         let retry_id = queue_id.clone();
                         this.child(
@@ -895,17 +882,24 @@ pub fn official_detail(
                             "official-detail-queue",
                             BtnKind::Primary,
                             BtnSize::Regular,
-                            if dynamic
-                                && resolved.is_some_and(|resolved| {
-                                    resolved.install_action
-                                        == crate::official::resolver::OfficialInstallAction::DownloadPortable
-                                })
-                            {
-                                tr!("official.detail.queue")
-                            } else if dynamic {
-                                tr!("official.detail.install")
+                            if matches!(
+                                &variant.method,
+                                crate::official::OfficialMethod::Portable { .. }
+                            ) || resolved.is_some_and(|resolved| {
+                                resolved.install_action
+                                    == crate::official::resolver::OfficialInstallAction::InstallPortable
+                            }) {
+                                tr!("official.detail.install_portable")
+                            } else if resolved.is_some_and(|resolved| {
+                                matches!(
+                                    resolved.install_action,
+                                    crate::official::resolver::OfficialInstallAction::RunInstaller
+                                        | crate::official::resolver::OfficialInstallAction::OpenInstaller
+                                )
+                            }) {
+                                tr!("official.detail.installer_only")
                             } else {
-                                tr!("official.detail.queue")
+                                tr!("official.detail.install")
                             },
                         )
                         .disabled(resolving)
@@ -926,23 +920,17 @@ fn official_method_labels(method: &crate::official::OfficialMethod) -> (String, 
         crate::official::OfficialMethod::Script { .. } => {
             (tr!("official.method.script"), tr!("official.action.script"))
         }
-        crate::official::OfficialMethod::Artifact { action, .. } => match action {
-            crate::official::ArtifactAction::RunInstaller => (
-                tr!("official.method.installer"),
-                tr!("official.action.installer"),
-            ),
-            crate::official::ArtifactAction::DownloadPackage => (
-                tr!("official.method.package"),
-                tr!("official.action.package"),
-            ),
-            crate::official::ArtifactAction::DownloadPortable => (
-                tr!("official.method.portable"),
-                tr!("official.action.portable"),
-            ),
-        },
-        crate::official::OfficialMethod::OfficialPage { .. } => (
-            tr!("official.method.official_page"),
-            tr!("official.action.official_page"),
+        crate::official::OfficialMethod::PackageManager { .. } => (
+            tr!("official.method.package_manager"),
+            tr!("official.detail.install"),
+        ),
+        crate::official::OfficialMethod::GithubRelease { .. } => (
+            tr!("official.method.release"),
+            tr!("official.detail.install"),
+        ),
+        crate::official::OfficialMethod::Portable { .. } => (
+            tr!("official.method.portable"),
+            tr!("official.detail.install_portable"),
         ),
     }
 }

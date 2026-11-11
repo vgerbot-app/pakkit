@@ -660,21 +660,21 @@ impl AppView {
         ) {
             return;
         }
-        let source = self.state.official.catalog.as_ref().and_then(|catalog| {
+        let release = self.state.official.catalog.as_ref().and_then(|catalog| {
             catalog
                 .apps
                 .iter()
                 .flat_map(|app| app.variants.iter())
                 .find(|variant| variant.id == variant_id)
                 .and_then(|variant| match &variant.method {
-                    crate::official::OfficialMethod::OfficialPage {
-                        release: Some(source),
-                        ..
-                    } => Some((variant.clone(), source.clone())),
+                    crate::official::OfficialMethod::GithubRelease {
+                        repository,
+                        packages,
+                    } => Some((variant.clone(), repository.clone(), packages.clone())),
                     _ => None,
                 })
         });
-        let Some((variant, source)) = source else {
+        let Some((variant, repository, packages)) = release else {
             return;
         };
         let Some(host) = crate::official::resolver::HostContext::host() else {
@@ -704,7 +704,8 @@ impl AppView {
             let result = cx
                 .background_spawn(async move {
                     crate::official::resolver::resolve_release(
-                        &source,
+                        &repository,
+                        &packages,
                         &variant,
                         host,
                         crate::official::resolver::NetworkOptions {
@@ -722,7 +723,9 @@ impl AppView {
                 }
                 this.official_resolution_requests.remove(&id);
                 let state = match result {
-                    Ok(resolved) => crate::official::OfficialResolutionState::Resolved(resolved),
+                    Ok(resolved) => {
+                        crate::official::OfficialResolutionState::Resolved(Box::new(resolved))
+                    }
                     Err(error) => {
                         crate::official::OfficialResolutionState::Failed(error.localized())
                     }
@@ -752,10 +755,7 @@ impl AppView {
                     .and_then(|variant| {
                         let dynamic = matches!(
                             &variant.method,
-                            crate::official::OfficialMethod::OfficialPage {
-                                release: Some(_),
-                                ..
-                            }
+                            crate::official::OfficialMethod::GithubRelease { .. }
                         );
                         if dynamic {
                             match self.state.official.resolutions.get(variant_id) {
@@ -765,7 +765,7 @@ impl AppView {
                                     crate::queue::OfficialQueueSpec::resolved(
                                         app,
                                         variant,
-                                        resolved.clone(),
+                                        *resolved.clone(),
                                     )
                                 }
                                 _ => None,
@@ -801,9 +801,7 @@ impl AppView {
 
     pub fn open_official_url(&mut self, url: String, window: &mut Window, cx: &mut Context<Self>) {
         match crate::official::open_path(std::path::Path::new(&url)) {
-            Ok(()) => {
-                window.push_notification(Notification::success(tr!("official.success.page")), cx)
-            }
+            Ok(()) => {}
             Err(error) => window.push_notification(Notification::error(error.localized()), cx),
         }
     }
@@ -1198,6 +1196,7 @@ impl AppView {
                             } else {
                                 crate::official::run_method(
                                     &spec.variant.method,
+                                    &spec.variant,
                                     spec.variant.interactive,
                                     &proxy,
                                     allow_http,
@@ -2034,17 +2033,20 @@ fn queue_row(
                         .rounded(px(8.))
                         .on_click(move |_, window, cx| {
                             let _ = folder_view.update(cx, |_, cx| {
-                                if let Some(parent) = path.parent() {
-                                    match crate::official::open_path(parent) {
-                                        Ok(()) => window.push_notification(
-                                            Notification::success(tr!("queue.folder_opened")),
-                                            cx,
-                                        ),
-                                        Err(error) => window.push_notification(
-                                            Notification::error(error.localized()),
-                                            cx,
-                                        ),
-                                    }
+                                let target = if path.is_dir() {
+                                    path.as_path()
+                                } else {
+                                    path.parent().unwrap_or(path.as_path())
+                                };
+                                match crate::official::open_path(target) {
+                                    Ok(()) => window.push_notification(
+                                        Notification::success(tr!("queue.folder_opened")),
+                                        cx,
+                                    ),
+                                    Err(error) => window.push_notification(
+                                        Notification::error(error.localized()),
+                                        cx,
+                                    ),
                                 }
                             });
                         }),

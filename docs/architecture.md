@@ -37,9 +37,17 @@ shell   ← icons, model, queue, state, theme, views, widgets, winget
 
 `src/official.rs` 独立于 GPUI 与包管理后端，是远程目录契约的唯一权威。它按索引顺序读取全部分类，成功组合并校验后才把目录交给 `AppState.official`；缺失分类、非法 JSON 或任一非法软件会拒绝整份目录，不展示部分结果，也不回退旧缓存。安装确认、解析、执行与队列继续复用现有机制。
 
-目录使用 `schemaVersion: 2`。每个 `OfficialApp` 必须包含 `sourceRepository`、SPDX `license` 与 `licenseUrl`；两个 URL 只接受 HTTPS。`spdx::Expression::parse` 负责语法与标识符解析，每个 `AND`／`OR` 候选项都必须有未弃用且经 OSI 批准的 SPDX ID，`LicenseRef` 一律拒绝。详情弹窗展示源码仓库、原始 SPDX 表达式和许可证原文链接；提交入口复用相同校验，预填完整开源证明。运行时不联网核验许可证内容，目录发布前由维护者核对原文。
+目录使用 `schemaVersion: 3`。每个 `OfficialApp` 必须包含 `sourceRepository`、SPDX `license` 与 `licenseUrl`；两个 URL 只接受 HTTPS。`spdx::Expression::parse` 负责语法与标识符解析，每个 `AND`／`OR` 候选项都必须有未弃用且经 OSI 批准的 SPDX ID，`LicenseRef` 一律拒绝。详情弹窗展示源码仓库、原始 SPDX 表达式和许可证原文链接；提交入口复用相同校验，预填完整开源证明。运行时不联网核验许可证内容，目录发布前由维护者核对原文。
 
-`official_*` 内部标识、路由与 `official-install` 分支名仅是稳定的协议／持久化名称，不再表示「官网直装」用户界面。发布时先合并客户端 schema 2 支持，再发布已用该客户端解析器通过的分支目录；旧客户端会拒绝 schema 2。
+安装方法白名单只有 `script`、`package_manager`、`github_release` 和 `portable`，enum 与配置结构拒绝未知字段；旧 `official_page` 及仅下载安装包或便携文件的动作不再是合法目录契约，也不会回退浏览器。`package_manager` 只接受 `winget`、`brew`、`flatpak`、`npm` 和目录声明的固定包 ID／来源，执行时独立调用 `backends::detect` 或从 `PATH` 解析 npm，不读取设置页的后端路径或安装选项。缺失后端或 Flatpak remote 时直接给出可操作错误，不自动安装管理器、切换来源或打开官网。
+
+GitHub Release 只在用户打开详情时解析稳定版、当前 OS／架构及 Linux 包管理器对应的唯一资产。确认后，`OfficialQueueSpec` 保存 clone 的变体和包含版本、资产 URL、大小、SHA-256、安装动作与签名者的不可变解析快照；入队和执行不重新解析。Linux 的 DEB／RPM 选择依据 `/etc/os-release` 的 `ID`／`ID_LIKE`，要求对应的 apt、dnf 或 zypper，不能仅根据 PATH 选择。Windows 安装包继续验证 Authenticode 签名与架构；交互式 EXE／PKG／DMG 只报告安装器已启动，不能报告已安装。
+
+ZIP、TAR.GZ、TAR.ZST 和便携文件仍复用 HTTPS、大小与 SHA-256 下载校验。归档在库内逐项解包，不调用 shell：拒绝绝对路径、父目录逃逸、反斜杠歧义、链接、设备文件和重复目标，并限制条目数、单文件与总解压大小；先写入同级随机临时目录，确认声明入口存在且位于目标内，再原子 rename 为尚不存在的版本目录，最后原子替换启动链接或 `current` 指针，失败清理临时目录，不覆盖非空安装目录。
+
+软件安装到 `dirs::data_local_dir()/pakkit/apps/<variant-id>/<release-tag-or-file-stem>`：Linux 通常为 `~/.local/share/pakkit/apps`，macOS 为 `~/Library/Application Support/pakkit/apps`，Windows 为 `%LOCALAPPDATA%\pakkit\apps`。Linux／macOS 在 `~/.local/bin` 建启动符号链接，Windows 在 `%LOCALAPPDATA%\pakkit\bin` 建 `.cmd`；不改系统 PATH，不自动复制到 `/Applications`。AppImage 的 desktop 文件由 Pakkit 固定生成，不执行归档内 desktop 文件。Rufus 和 Ventoy 安装后不自动运行，旧版本暂不自动删除。
+
+`official_*` 内部标识、路由与 `official-install` 分支名仅是稳定的协议／持久化名称，不再表示「官网直装」用户界面。发布时先合并客户端 schema 3 支持，再发布已用该客户端解析器通过的分支目录；旧客户端会拒绝 schema 3。目录发布前的只读实时 Release 校验失败会阻止发布，不调用安装器，也不回退网页安装。
 
 **状态变更只有两条入口**：`AppView` 自己的方法，和 `dialogs` 里通过
 `cx.listener` 拿到的 `&mut AppView`。`views` 与 `widgets` 只拿到 `&AppState`

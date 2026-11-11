@@ -50,3 +50,10 @@ jobs:
         env:
           PAKKIT_OFFICIAL_CATALOG_PATH: ${{ github.workspace }}/catalog/catalog/index.json
         run: cargo test --locked real_catalog -- --ignored --nocapture
+
+      - name: Verify live release assets and immutable install declarations
+        working-directory: client
+        env:
+          PAKKIT_OFFICIAL_CATALOG_PATH: ${{ github.workspace }}/catalog/catalog/index.json
+          PAKKIT_OFFICIAL_VERIFY_RELEASES: "1"
+        run: cargo test --locked real_catalog -- --ignored --nocapture

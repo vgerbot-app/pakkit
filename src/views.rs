@@ -8,8 +8,8 @@ use crate::icons::{IconKey, icon};
 use crate::logging;
 use crate::model::{CategoryId, Package};
 use crate::official::{
-    ArtifactAction, OfficialApp, OfficialArch, OfficialInstallState, OfficialLoadState,
-    OfficialMethod, OfficialOs, OfficialVariant, variant_for, visible_official_apps_for_language,
+    OfficialApp, OfficialArch, OfficialInstallState, OfficialLoadState, OfficialMethod, OfficialOs,
+    OfficialVariant, variant_for, visible_official_apps_for_language,
 };
 use crate::queue::QueueAction;
 use crate::shell::AppView;
@@ -1734,29 +1734,17 @@ fn official_method_labels(method: &OfficialMethod) -> (String, String) {
         OfficialMethod::Script { .. } => {
             (tr!("official.method.script"), tr!("official.action.script"))
         }
-        OfficialMethod::Artifact { action, .. } => match action {
-            ArtifactAction::RunInstaller => (
-                tr!("official.method.installer"),
-                tr!("official.action.installer"),
-            ),
-            ArtifactAction::DownloadPackage => (
-                tr!("official.method.package"),
-                tr!("official.action.package"),
-            ),
-            ArtifactAction::DownloadPortable => (
-                tr!("official.method.portable"),
-                tr!("official.action.portable"),
-            ),
-        },
-        OfficialMethod::OfficialPage {
-            release: Some(_), ..
-        } => (
-            tr!("official.method.release"),
-            tr!("official.action.release"),
+        OfficialMethod::PackageManager { .. } => (
+            tr!("official.method.package_manager"),
+            tr!("official.detail.install"),
         ),
-        OfficialMethod::OfficialPage { release: None, .. } => (
-            tr!("official.method.official_page"),
-            tr!("official.action.official_page"),
+        OfficialMethod::GithubRelease { .. } => (
+            tr!("official.method.release"),
+            tr!("official.detail.install"),
+        ),
+        OfficialMethod::Portable { .. } => (
+            tr!("official.method.portable"),
+            tr!("official.detail.install_portable"),
         ),
     }
 }

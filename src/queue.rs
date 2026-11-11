@@ -136,8 +136,9 @@ impl QueueItem {
 pub struct OfficialQueueSpec {
     pub app_id: String,
     pub variant: crate::official::OfficialVariant,
-    /// The exact dynamic artifact confirmed by the user. `None` means a
-    /// legacy static method, which continues through `run_method`.
+    /// A dynamic release always requires the exact confirmed snapshot. Static
+    /// scripts, package-manager methods and portable files are immutable in
+    /// the cloned variant.
     pub resolved: Option<crate::official::ResolvedOfficialInstall>,
     pub display: String,
 }
@@ -149,8 +150,15 @@ impl OfficialQueueSpec {
     ) -> Self {
         let display = match &variant.method {
             crate::official::OfficialMethod::Script { command, .. } => command.clone(),
-            crate::official::OfficialMethod::Artifact { url, .. }
-            | crate::official::OfficialMethod::OfficialPage { url, .. } => url.clone(),
+            crate::official::OfficialMethod::PackageManager {
+                manager,
+                package_id,
+                ..
+            } => format!("{} install {}", manager.label(), package_id),
+            crate::official::OfficialMethod::Portable { url, .. } => url.clone(),
+            crate::official::OfficialMethod::GithubRelease { .. } => {
+                "GitHub release resolution required".to_owned()
+            }
         };
         Self {
             app_id: app.id.clone(),
@@ -504,14 +512,23 @@ pub fn complete_official(
                 crate::official::OfficialOutcome::InstallerRebootRequired { .. } => {
                     tr!("official.success.reboot")
                 }
-                crate::official::OfficialOutcome::PackageDownloaded { .. } => {
-                    tr!("official.success.package")
+                crate::official::OfficialOutcome::PackageManagerInstalled {
+                    manager,
+                    package_id,
+                    log,
+                } => {
+                    if !log.trim().is_empty() {
+                        item.detail = Some(format!("$ {command}\n{log}"));
+                    }
+                    tr!(
+                        "official.success.package_manager",
+                        manager = manager,
+                        package_id = package_id
+                    )
                 }
-                crate::official::OfficialOutcome::PortableDownloaded { .. } => {
-                    tr!("official.success.portable")
-                }
-                crate::official::OfficialOutcome::OfficialPageOpened => {
-                    tr!("official.success.page")
+                crate::official::OfficialOutcome::PortableInstalled { launch_path, .. } => {
+                    item.detail = Some(format!("$ {command}\n{}", launch_path.display()));
+                    tr!("official.success.portable_installed")
                 }
             };
         }
@@ -568,7 +585,7 @@ mod tests {
     }
 
     #[test]
-    fn official_download_does_not_mark_package_or_variant_installed() {
+    fn official_results_preserve_snapshots_and_distinguish_actual_installation() {
         crate::ensure_zh_locale();
         let mut state = state_with(&["official-app"]);
         let app = crate::official::OfficialApp {
@@ -600,9 +617,9 @@ mod tests {
             interactive: false,
             note: app.summary.clone(),
             source_url: app.homepage.clone(),
-            method: crate::official::OfficialMethod::OfficialPage {
-                url: app.homepage.clone(),
-                release: None,
+            method: crate::official::OfficialMethod::GithubRelease {
+                repository: "owner/repo".to_owned(),
+                packages: Vec::new(),
             },
             detection: None,
         };
@@ -615,8 +632,8 @@ mod tests {
             size: Some(42),
             sha256: "a".repeat(64),
             format: crate::official::resolver::OfficialPackageFormat::Deb,
+            install: crate::official::resolver::OfficialInstallConfig::Package,
             install_action: crate::official::resolver::OfficialInstallAction::InstallPackage,
-            fallback_url: app.homepage.clone(),
             expected_signer: None,
             requires_admin: true,
         };
@@ -651,14 +668,48 @@ mod tests {
         complete_official(
             &mut state,
             uid,
-            Ok(crate::official::OfficialOutcome::PortableDownloaded {
-                path: std::path::PathBuf::from("/tmp/example.AppImage"),
+            Ok(crate::official::OfficialOutcome::PortableInstalled {
+                path: std::path::PathBuf::from("/tmp/example"),
+                launch_path: std::path::PathBuf::from("/tmp/bin/example"),
             }),
         );
         assert_eq!(state.queue[0].state, QueueState::Done);
-        assert_eq!(state.queue[0].log, "便携版已下载");
-        assert!(!state.packages[0].installed);
+        assert_eq!(
+            state.queue[0].downloaded_path.as_deref(),
+            Some(std::path::Path::new("/tmp/example"))
+        );
+        complete_official(
+            &mut state,
+            uid,
+            Ok(crate::official::OfficialOutcome::PackageManagerInstalled {
+                manager: "flatpak".to_owned(),
+                package_id: "org.example.App".to_owned(),
+                log: "installed\nnotice".to_owned(),
+            }),
+        );
+        assert_eq!(state.queue[0].log, "已通过 flatpak 安装 org.example.App");
+        assert!(
+            state.queue[0]
+                .detail
+                .as_deref()
+                .is_some_and(|detail| detail.contains("installed\nnotice"))
+        );
+        complete_official(
+            &mut state,
+            uid,
+            Ok(crate::official::OfficialOutcome::InstallerStarted {
+                path: std::path::PathBuf::from("/tmp/setup.exe"),
+            }),
+        );
+        assert_eq!(state.queue[0].log, "安装器已启动");
         assert!(state.official.installed.is_empty());
+        assert!(
+            !crate::official::OfficialOutcome::InstallerStarted {
+                path: std::path::PathBuf::from("/tmp/setup.exe"),
+            }
+            .should_detect()
+        );
+        assert!(!state.packages[0].installed);
     }
 
     /// A winget handle for building command lines; nothing is ever spawned.

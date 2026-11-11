@@ -8,14 +8,14 @@ use std::time::Duration;
 use serde::Deserialize;
 
 use super::resolver::{
-    HostContext, NetworkOptions, OfficialReleaseSource, ResolvedOfficialInstall,
+    HostContext, NetworkOptions, OfficialReleasePackage, ResolvedOfficialInstall,
     asset_pattern_matches,
 };
-use super::{OfficialError, OfficialMethod, OfficialVariant, validate_file_name};
+use super::{OfficialError, OfficialVariant, validate_file_name};
 
 const MAX_RELEASE_RESPONSE: u64 = 4 * 1024 * 1024;
 
-#[derive(Debug, Deserialize)]
+#[derive(Clone, Deserialize)]
 struct GithubRelease {
     tag_name: String,
     draft: bool,
@@ -23,7 +23,7 @@ struct GithubRelease {
     assets: Vec<GithubAsset>,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Clone, Deserialize)]
 struct GithubAsset {
     name: String,
     browser_download_url: String,
@@ -33,39 +33,58 @@ struct GithubAsset {
 }
 
 pub(super) fn resolve(
-    source: &OfficialReleaseSource,
+    repository: &str,
+    packages: &[OfficialReleasePackage],
     variant: &OfficialVariant,
     host: HostContext,
     network: NetworkOptions<'_>,
 ) -> Result<ResolvedOfficialInstall, OfficialError> {
-    let OfficialReleaseSource::GithubRelease { repository, .. } = source else {
-        return Err(OfficialError::Resolve(
-            "不是 GitHub release 配置".to_owned(),
-        ));
+    let endpoint = if network.allow_http {
+        std::env::var("PAKKIT_OFFICIAL_GITHUB_API_URL")
+            .ok()
+            .filter(|value| !value.trim().is_empty())
+            .map(|base| {
+                format!(
+                    "{}/repos/{repository}/releases/latest",
+                    base.trim_end_matches('/')
+                )
+            })
+            .unwrap_or_else(|| format!("https://api.github.com/repos/{repository}/releases/latest"))
+    } else {
+        format!("https://api.github.com/repos/{repository}/releases/latest")
     };
-    let endpoint = format!("https://api.github.com/repos/{repository}/releases/latest");
-    resolve_endpoint(source, variant, host, network, &endpoint)
+    resolve_endpoint(repository, packages, variant, host, network, &endpoint)
 }
 
-fn resolve_endpoint(
-    source: &OfficialReleaseSource,
-    variant: &OfficialVariant,
-    host: HostContext,
-    network: NetworkOptions<'_>,
+fn fetch_release(
     endpoint: &str,
-) -> Result<ResolvedOfficialInstall, OfficialError> {
+    network: NetworkOptions<'_>,
+) -> Result<GithubRelease, OfficialError> {
     let client = super::agent(Duration::from_secs(30), network.proxy, network.allow_http)?;
-    let response = super::get_following(
-        &client,
-        endpoint,
-        &[
-            ("Accept", "application/vnd.github+json"),
-            ("X-GitHub-Api-Version", "2022-11-28"),
-            ("User-Agent", concat!("pakkit/", env!("CARGO_PKG_VERSION"))),
-        ],
-        network.allow_http,
-    )
-    .map_err(OfficialError::ResolveRequest)?;
+    let headers = [
+        ("Accept", "application/vnd.github+json".to_owned()),
+        ("X-GitHub-Api-Version", "2022-11-28".to_owned()),
+        (
+            "User-Agent",
+            concat!("pakkit/", env!("CARGO_PKG_VERSION")).to_owned(),
+        ),
+    ];
+    #[cfg(not(test))]
+    let headers = headers.to_vec();
+    #[cfg(test)]
+    let mut headers = headers.to_vec();
+    #[cfg(test)]
+    if let Ok(token) = std::env::var("GITHUB_TOKEN")
+        && !token.is_empty()
+    {
+        headers.push(("Authorization", format!("Bearer {token}")));
+    }
+    let headers = headers
+        .iter()
+        .map(|(name, value)| (*name, value.as_str()))
+        .collect::<Vec<_>>();
+    let response = super::get_following(&client, endpoint, &headers, network.allow_http)
+        .map_err(OfficialError::ResolveRequest)?;
     if !response.status().is_success() {
         return Err(OfficialError::ResolveRequest(format!(
             "GitHub API 返回 {}",
@@ -74,31 +93,58 @@ fn resolve_endpoint(
     }
     let mut body = response.into_body();
     let mut reader = body.with_config().limit(MAX_RELEASE_RESPONSE).reader();
-    let release: GithubRelease = serde_json::from_reader(&mut reader)
-        .map_err(|error| OfficialError::Resolve(format!("GitHub release 响应无效: {error}")))?;
-    select_asset(source, variant, host, release)
+    serde_json::from_reader(&mut reader)
+        .map_err(|error| OfficialError::Resolve(format!("GitHub release 响应无效: {error}")))
 }
 
-fn select_asset(
-    source: &OfficialReleaseSource,
+fn resolve_endpoint(
+    repository: &str,
+    packages: &[OfficialReleasePackage],
+    variant: &OfficialVariant,
+    host: HostContext,
+    network: NetworkOptions<'_>,
+    endpoint: &str,
+) -> Result<ResolvedOfficialInstall, OfficialError> {
+    let release = fetch_release(endpoint, network)?;
+    select_asset_with_options(
+        repository,
+        packages,
+        variant,
+        host,
+        release,
+        network.allow_http,
+    )
+}
+
+#[cfg(test)]
+pub fn verify_release_hosts(
+    repository: &str,
+    packages: &[OfficialReleasePackage],
+    variant: &OfficialVariant,
+    hosts: &[HostContext],
+    network: NetworkOptions<'_>,
+) -> Result<Vec<ResolvedOfficialInstall>, OfficialError> {
+    let endpoint = format!("https://api.github.com/repos/{repository}/releases/latest");
+    let release = fetch_release(&endpoint, network)?;
+    hosts
+        .iter()
+        .map(|host| {
+            select_asset_with_options(repository, packages, variant, *host, release.clone(), false)
+        })
+        .collect()
+}
+
+fn select_asset_with_options(
+    repository: &str,
+    packages: &[OfficialReleasePackage],
     variant: &OfficialVariant,
     host: HostContext,
     release: GithubRelease,
+    development: bool,
 ) -> Result<ResolvedOfficialInstall, OfficialError> {
-    let OfficialReleaseSource::GithubRelease {
-        repository,
-        packages,
-    } = source
-    else {
-        return Err(OfficialError::Resolve(
-            "不是 GitHub release 配置".to_owned(),
-        ));
-    };
-    let OfficialMethod::OfficialPage { url, .. } = &variant.method else {
-        return Err(OfficialError::Resolve(
-            "动态 release 必须挂在 official_page 上".to_owned(),
-        ));
-    };
+    if repository.trim().is_empty() {
+        return Err(OfficialError::Resolve("GitHub 仓库为空".to_owned()));
+    }
     if host.os != variant.os || !variant.architectures.contains(&host.arch) {
         return Err(OfficialError::Resolve(
             "当前系统与目录变体不匹配".to_owned(),
@@ -135,7 +181,7 @@ fn select_asset(
             "资产扩展名与安装格式不符".to_owned(),
         ));
     }
-    validate_asset_url(repository, &release.tag_name, asset)?;
+    validate_asset_url(repository, &release.tag_name, asset, development)?;
     let sha256 = parse_digest(asset.digest.as_deref())?;
     Ok(ResolvedOfficialInstall {
         variant_id: variant.id.clone(),
@@ -145,10 +191,10 @@ fn select_asset(
         size: Some(asset.size),
         sha256,
         format: package.format,
-        install_action: package.format.action(),
-        fallback_url: url.clone(),
+        install: package.install.clone(),
+        install_action: package.install.action(),
         expected_signer: package.expected_signer.clone(),
-        requires_admin: package.format.action()
+        requires_admin: package.install.action()
             == super::resolver::OfficialInstallAction::InstallPackage
             || variant.requires_admin,
     })
@@ -165,6 +211,7 @@ fn validate_asset_url(
     repository: &str,
     tag: &str,
     asset: &GithubAsset,
+    development: bool,
 ) -> Result<(), OfficialError> {
     let actual = url::Url::parse(&asset.browser_download_url)
         .map_err(|error| OfficialError::Resolve(format!("资产 URL 无效: {error}")))?;
@@ -173,7 +220,15 @@ fn validate_asset_url(
         asset.name
     ))
     .map_err(|error| OfficialError::Resolve(format!("资产 URL 无效: {error}")))?;
-    if actual != expected {
+    let development_loopback = development
+        && actual.scheme() == "http"
+        && actual.host_str().is_some_and(|host| {
+            host.eq_ignore_ascii_case("localhost")
+                || host
+                    .parse::<std::net::IpAddr>()
+                    .is_ok_and(|ip| ip.is_loopback())
+        });
+    if actual != expected && !development_loopback {
         return Err(OfficialError::Resolve(
             "资产 URL 不属于所选仓库和版本".to_owned(),
         ));
@@ -199,30 +254,39 @@ mod tests {
     use std::collections::BTreeMap;
 
     use super::*;
-    use crate::official::resolver::{
-        OfficialInstallAction, OfficialPackageFormat, OfficialReleasePackage,
-    };
-    use crate::official::{OfficialArch, OfficialOs};
+    fn select_asset(
+        repository: &str,
+        packages: &[OfficialReleasePackage],
+        variant: &OfficialVariant,
+        host: HostContext,
+        release: GithubRelease,
+    ) -> Result<ResolvedOfficialInstall, OfficialError> {
+        select_asset_with_options(repository, packages, variant, host, release, false)
+    }
 
-    fn fixture() -> (OfficialVariant, OfficialReleaseSource, GithubRelease) {
-        let source = OfficialReleaseSource::GithubRelease {
-            repository: "owner/repo".to_owned(),
-            packages: vec![OfficialReleasePackage {
-                format: OfficialPackageFormat::Deb,
-                assets: BTreeMap::from([
-                    (OfficialArch::X86_64, "OpenIDEA-*-amd64.deb".to_owned()),
-                    (OfficialArch::Aarch64, "OpenIDEA-*-arm64.deb".to_owned()),
-                ]),
-                expected_signer: None,
-            }],
-        };
+    use crate::official::resolver::{
+        OfficialInstallAction, OfficialInstallConfig, OfficialPackageFormat, OfficialReleasePackage,
+    };
+    use crate::official::{OfficialArch, OfficialMethod, OfficialOs};
+
+    fn fixture() -> (OfficialVariant, Vec<OfficialReleasePackage>, GithubRelease) {
+        let packages = vec![OfficialReleasePackage {
+            format: OfficialPackageFormat::Deb,
+            manager: Some(super::super::resolver::LinuxPackageManager::Apt),
+            assets: BTreeMap::from([
+                (OfficialArch::X86_64, "OpenIDEA-*-amd64.deb".to_owned()),
+                (OfficialArch::Aarch64, "OpenIDEA-*-arm64.deb".to_owned()),
+            ]),
+            expected_signer: None,
+            install: OfficialInstallConfig::Package,
+        }];
         let variant = OfficialVariant {
             id: "openidea-linux".to_owned(),
             os: OfficialOs::Linux,
             architectures: vec![OfficialArch::X86_64, OfficialArch::Aarch64],
-            method: OfficialMethod::OfficialPage {
-                url: "https://github.com/owner/repo/releases/latest".to_owned(),
-                release: Some(source.clone()),
+            method: OfficialMethod::GithubRelease {
+                repository: "owner/repo".to_owned(),
+                packages: packages.clone(),
             },
             requires_admin: true,
             interactive: false,
@@ -248,7 +312,7 @@ mod tests {
                 state: "uploaded".to_owned(),
             }],
         };
-        (variant, source, release)
+        (variant, packages, release)
     }
 
     fn host() -> HostContext {
@@ -262,8 +326,8 @@ mod tests {
     #[test]
     fn selects_one_stable_asset_and_preserves_metadata() {
         let (variant, source, release) = fixture();
-        let resolved =
-            select_asset(&source, &variant, host(), release).expect("valid stable asset");
+        let resolved = select_asset("owner/repo", &source, &variant, host(), release)
+            .expect("valid stable asset");
         assert_eq!(resolved.version.as_deref(), Some("v1.2.3"));
         assert_eq!(resolved.size, Some(42));
         assert_eq!(resolved.sha256, "a".repeat(64));
@@ -285,26 +349,51 @@ mod tests {
             digest: Some(format!("sha256:{}", "a".repeat(64))),
             state: "uploaded".to_owned(),
         });
-        assert!(select_asset(&source, &variant, host(), release).is_err());
+        assert!(select_asset("owner/repo", &source, &variant, host(), release).is_err());
 
         let (_, _, mut release) = fixture();
         release.prerelease = true;
-        assert!(select_asset(&source, &variant, host(), release).is_err());
+        assert!(select_asset("owner/repo", &source, &variant, host(), release).is_err());
 
         let (_, _, mut release) = fixture();
         release.assets[0].browser_download_url = "https://evil.example/installer.deb".to_owned();
-        assert!(select_asset(&source, &variant, host(), release).is_err());
+        assert!(select_asset("owner/repo", &source, &variant, host(), release).is_err());
+    }
+
+    #[test]
+    fn development_assets_accept_only_loopback() {
+        let (variant, source, mut release) = fixture();
+        release.assets[0].browser_download_url =
+            "http://127.0.0.1:8080/OpenIDEA-v1.2.3-amd64.deb".to_owned();
+        assert!(
+            select_asset_with_options(
+                "owner/repo",
+                &source,
+                &variant,
+                host(),
+                release.clone(),
+                true,
+            )
+            .is_ok()
+        );
+        assert!(select_asset("owner/repo", &source, &variant, host(), release.clone()).is_err());
+        release.assets[0].browser_download_url =
+            "http://192.0.2.1/OpenIDEA-v1.2.3-amd64.deb".to_owned();
+        assert!(
+            select_asset_with_options("owner/repo", &source, &variant, host(), release, true)
+                .is_err()
+        );
     }
 
     #[test]
     fn missing_or_invalid_digest_blocks_automatic_execution() {
         let (variant, source, mut release) = fixture();
         release.assets[0].digest = None;
-        assert!(select_asset(&source, &variant, host(), release).is_err());
+        assert!(select_asset("owner/repo", &source, &variant, host(), release).is_err());
 
         let (_, _, mut release) = fixture();
         release.assets[0].digest = Some("sha256:short".to_owned());
-        assert!(select_asset(&source, &variant, host(), release).is_err());
+        assert!(select_asset("owner/repo", &source, &variant, host(), release).is_err());
     }
 
     fn serve(status: &'static str, body: Vec<u8>) -> (String, std::thread::JoinHandle<()>) {
@@ -338,6 +427,7 @@ mod tests {
             let (endpoint, server) = serve(status, body);
             let (variant, source, _) = fixture();
             let result = resolve_endpoint(
+                "owner/repo",
                 &source,
                 &variant,
                 host(),

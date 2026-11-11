@@ -11,6 +11,7 @@ description = "A native multi-backend package manager GUI (winget / Chocolatey /
 [dependencies]
 dirs = "6"
 gpui-kit = "0.8"
+flate2 = "1"
 image = { version = "0.25", default-features = false, features = ["png"] }
 resvg = { version = "0.46", default-features = false }
 rust-i18n = "4"
@@ -21,7 +22,10 @@ spdx = "0.13.6"
 sys-locale = "0.3"
 thiserror = "2"
 ureq = { version = "3", default-features = false, features = ["rustls"] }
+tar = { version = "0.4", default-features = false }
 url = "2"
+zip = { version = "7", default-features = false, features = ["deflate"] }
+zstd = "0.13"
 
 [build-dependencies]
 embed-resource = "3"

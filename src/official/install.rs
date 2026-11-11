@@ -28,10 +28,10 @@ pub fn run_resolved(
         OfficialPackageFormat::Deb | OfficialPackageFormat::Rpm => {
             install_linux_package(resolved.format, &path)
         }
-        OfficialPackageFormat::AppImage => {
-            super::make_executable(&path)?;
-            Ok(OfficialOutcome::PortableDownloaded { path })
-        }
+        OfficialPackageFormat::AppImage
+        | OfficialPackageFormat::Zip
+        | OfficialPackageFormat::TarGz
+        | OfficialPackageFormat::TarZst => super::portable::install_resolved(resolved, &path),
         OfficialPackageFormat::Exe | OfficialPackageFormat::Msi => install_windows(resolved, &path),
         OfficialPackageFormat::Pkg | OfficialPackageFormat::Dmg => {
             #[cfg(target_os = "macos")]
@@ -321,8 +321,9 @@ fn msi_template_matches(template: &str, arch: super::OfficialArch) -> bool {
 mod tests {
     use super::*;
     use crate::official::OfficialArch;
-    use crate::official::resolver::{LinuxPackageManager, OfficialInstallAction};
-
+    use crate::official::resolver::{
+        LinuxPackageManager, OfficialInstallAction, OfficialInstallConfig,
+    };
     #[test]
     fn package_arguments_never_use_a_shell_or_bare_dpkg() {
         let apt = HostContext::new(
@@ -390,14 +391,18 @@ mod tests {
     }
 
     #[test]
-    fn action_is_derived_only_from_the_closed_format_enum() {
+    fn installer_actions_remain_distinct_from_portable_installation() {
         assert_eq!(
-            OfficialPackageFormat::Dmg.action(),
-            OfficialInstallAction::OpenInstaller
+            OfficialInstallConfig::RunInstaller.action(),
+            OfficialInstallAction::RunInstaller
         );
         assert_eq!(
-            OfficialPackageFormat::AppImage.action(),
-            OfficialInstallAction::DownloadPortable
+            OfficialInstallConfig::AppImage {
+                link_name: "app".to_owned(),
+                desktop_name: None,
+            }
+            .action(),
+            OfficialInstallAction::InstallPortable
         );
     }
 }

@@ -18,6 +18,8 @@ use crate::backends::exec;
 
 mod github;
 pub mod install;
+pub mod package_manager;
+pub mod portable;
 pub mod resolver;
 
 pub use resolver::{OfficialResolutionState, ResolvedOfficialInstall};
@@ -87,7 +89,7 @@ struct OfficialCategoryCatalog {
 
 impl OfficialCatalogIndex {
     fn validate_categories(&self) -> Result<(), OfficialError> {
-        if self.schema_version != 2 {
+        if self.schema_version != 3 {
             return Err(OfficialError::Validation(format!(
                 "不支持的 schemaVersion {}",
                 self.schema_version
@@ -239,29 +241,61 @@ impl std::fmt::Display for OfficialArch {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
-#[serde(tag = "type", rename_all = "snake_case")]
+#[serde(tag = "type", rename_all = "snake_case", deny_unknown_fields)]
 pub enum OfficialMethod {
     Script {
         shell: OfficialShell,
         command: String,
     },
     #[serde(rename_all = "camelCase")]
-    Artifact {
+    PackageManager {
+        manager: OfficialPackageManager,
+        package_id: String,
+        #[serde(default)]
+        source: Option<String>,
+        #[serde(default)]
+        cask: bool,
+    },
+    #[serde(rename_all = "camelCase")]
+    GithubRelease {
+        repository: String,
+        packages: Vec<resolver::OfficialReleasePackage>,
+    },
+    #[serde(rename_all = "camelCase")]
+    Portable {
         url: String,
         file_name: String,
-        action: ArtifactAction,
-        #[serde(default)]
-        sha256: Option<String>,
-        #[serde(default)]
-        make_executable: Option<bool>,
+        sha256: String,
     },
-    OfficialPage {
-        url: String,
-        /// Optional for old catalogs. Old clients ignore it and retain the
-        /// browser fallback; new clients resolve only after an explicit click.
-        #[serde(default)]
-        release: Option<resolver::OfficialReleaseSource>,
-    },
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum OfficialPackageManager {
+    Winget,
+    Brew,
+    Flatpak,
+    Npm,
+}
+
+impl OfficialPackageManager {
+    pub const fn supports_os(self, os: OfficialOs) -> bool {
+        match self {
+            Self::Winget => matches!(os, OfficialOs::Windows),
+            Self::Brew => matches!(os, OfficialOs::Macos),
+            Self::Flatpak => matches!(os, OfficialOs::Linux),
+            Self::Npm => matches!(os, OfficialOs::Windows | OfficialOs::Linux),
+        }
+    }
+
+    pub const fn label(self) -> &'static str {
+        match self {
+            Self::Winget => "winget",
+            Self::Brew => "brew",
+            Self::Flatpak => "flatpak",
+            Self::Npm => "npm",
+        }
+    }
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
@@ -269,14 +303,6 @@ pub enum OfficialMethod {
 pub enum OfficialShell {
     Sh,
     Powershell,
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
-#[serde(rename_all = "snake_case")]
-pub enum ArtifactAction {
-    RunInstaller,
-    DownloadPackage,
-    DownloadPortable,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
@@ -393,7 +419,7 @@ pub fn parse_catalog(
 
 fn validate_catalog(catalog: &OfficialCatalog) -> Result<(), OfficialError> {
     let invalid = |message: String| Err(OfficialError::Validation(message));
-    if catalog.schema_version != 2 {
+    if catalog.schema_version != 3 {
         return invalid(format!("不支持的 schemaVersion {}", catalog.schema_version));
     }
     if catalog.catalog_version.trim().is_empty() {
@@ -483,49 +509,61 @@ fn validate_catalog(catalog: &OfficialCatalog) -> Result<(), OfficialError> {
                         return invalid(format!("变体 {} 的 shell 与操作系统不匹配", variant.id));
                     }
                 }
-                OfficialMethod::Artifact {
+                OfficialMethod::PackageManager {
+                    manager,
+                    package_id,
+                    source,
+                    cask,
+                } => {
+                    if !manager.supports_os(variant.os) {
+                        return invalid(format!("变体 {} 的包管理器与操作系统不匹配", variant.id));
+                    }
+                    if package_id.is_empty()
+                        || package_id.len() > 256
+                        || package_id.trim() != package_id
+                        || package_id.chars().any(|character| {
+                            character.is_control()
+                                || matches!(
+                                    character,
+                                    ';' | '|' | '&' | '$' | '`' | '<' | '>' | '\n' | '\r'
+                                )
+                        })
+                    {
+                        return invalid(format!("变体 {} 的包 ID 无效", variant.id));
+                    }
+                    let expected_source = match manager {
+                        OfficialPackageManager::Winget => Some("winget"),
+                        OfficialPackageManager::Flatpak => Some("flathub"),
+                        _ => None,
+                    };
+                    if source.as_deref() != expected_source
+                        || (*cask && *manager != OfficialPackageManager::Brew)
+                    {
+                        return invalid(format!("变体 {} 的包管理器来源配置无效", variant.id));
+                    }
+                }
+                OfficialMethod::GithubRelease {
+                    repository,
+                    packages,
+                } => resolver::validate_release(repository, packages, variant)?,
+                OfficialMethod::Portable {
                     url,
                     file_name,
-                    action,
                     sha256,
-                    ..
                 } => {
                     validate_https(url)?;
                     validate_file_name(file_name)?;
-                    if let Some(hash) = sha256
-                        && (hash.len() != 64
-                            || !hash
-                                .bytes()
-                                .all(|b| b.is_ascii_digit() || (b'a'..=b'f').contains(&b)))
+                    if variant.os != OfficialOs::Windows
+                        || !file_name.to_ascii_lowercase().ends_with(".exe")
+                    {
+                        return invalid(format!("变体 {} 的便携文件与操作系统不匹配", variant.id));
+                    }
+                    if sha256.len() != 64
+                        || !sha256
+                            .bytes()
+                            .all(|byte| byte.is_ascii_digit() || (b'a'..=b'f').contains(&byte))
                     {
                         return invalid(format!("变体 {} 的 SHA-256 无效", variant.id));
-                    }
-                    if *action == ArtifactAction::RunInstaller {
-                        let extension = Path::new(file_name)
-                            .extension()
-                            .and_then(|s| s.to_str())
-                            .unwrap_or_default()
-                            .to_ascii_lowercase();
-                        let valid = match variant.os {
-                            OfficialOs::Windows => matches!(extension.as_str(), "exe" | "msi"),
-                            OfficialOs::Macos => matches!(extension.as_str(), "pkg" | "dmg"),
-                            OfficialOs::Linux => false,
-                        };
-                        if !valid {
-                            return invalid(format!("变体 {} 不允许运行此安装器", variant.id));
-                        }
-                    }
-                }
-                OfficialMethod::OfficialPage { url, release } => {
-                    validate_https(url)?;
-                    if let Some(source) = release {
-                        resolver::validate_release(source, variant)?;
-                        if let resolver::OfficialReleaseSource::GithubRelease {
-                            repository, ..
-                        } = source
-                        {
-                            resolver::validate_fallback_page(url, repository)?;
-                        }
                     }
                 }
             }
@@ -805,14 +843,29 @@ pub fn detect_installation(detection: Option<&OfficialDetection>) -> OfficialIns
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum OfficialOutcome {
-    ScriptCompleted { log: String },
+    ScriptCompleted {
+        log: String,
+    },
     TerminalOpened,
-    InstallerStarted { path: PathBuf },
-    PackageInstalled { path: PathBuf, log: String },
-    InstallerRebootRequired { path: PathBuf },
-    PackageDownloaded { path: PathBuf },
-    PortableDownloaded { path: PathBuf },
-    OfficialPageOpened,
+    InstallerStarted {
+        path: PathBuf,
+    },
+    PackageInstalled {
+        path: PathBuf,
+        log: String,
+    },
+    InstallerRebootRequired {
+        path: PathBuf,
+    },
+    PackageManagerInstalled {
+        manager: String,
+        package_id: String,
+        log: String,
+    },
+    PortableInstalled {
+        path: PathBuf,
+        launch_path: PathBuf,
+    },
 }
 
 impl OfficialOutcome {
@@ -821,8 +874,7 @@ impl OfficialOutcome {
             Self::InstallerStarted { path }
             | Self::PackageInstalled { path, .. }
             | Self::InstallerRebootRequired { path }
-            | Self::PackageDownloaded { path }
-            | Self::PortableDownloaded { path } => Some(path),
+            | Self::PortableInstalled { path, .. } => Some(path),
             _ => None,
         }
     }
@@ -833,12 +885,15 @@ impl OfficialOutcome {
             Self::ScriptCompleted { .. }
                 | Self::PackageInstalled { .. }
                 | Self::InstallerRebootRequired { .. }
+                | Self::PackageManagerInstalled { .. }
+                | Self::PortableInstalled { .. }
         )
     }
 }
 
 pub fn run_method(
     method: &OfficialMethod,
+    variant: &OfficialVariant,
     interactive: bool,
     proxy: &str,
     allow_http: bool,
@@ -877,33 +932,23 @@ pub fn run_method(
             }
             Ok(OfficialOutcome::ScriptCompleted { log })
         }
-        OfficialMethod::Artifact {
+        OfficialMethod::PackageManager {
+            manager,
+            package_id,
+            cask,
+            ..
+        } => package_manager::run(*manager, package_id, *cask),
+        OfficialMethod::Portable {
             url,
             file_name,
-            action,
             sha256,
-            make_executable: executable,
         } => {
-            let path =
-                download_artifact(url, file_name, sha256.as_deref(), None, proxy, allow_http)?;
-            if *executable == Some(true) {
-                make_executable(&path)?;
-            }
-            match action {
-                ArtifactAction::RunInstaller => {
-                    launch_installer(&path)?;
-                    Ok(OfficialOutcome::InstallerStarted { path })
-                }
-                ArtifactAction::DownloadPackage => Ok(OfficialOutcome::PackageDownloaded { path }),
-                ArtifactAction::DownloadPortable => {
-                    Ok(OfficialOutcome::PortableDownloaded { path })
-                }
-            }
+            let path = download_artifact(url, file_name, Some(sha256), None, proxy, allow_http)?;
+            portable::install_fixed(variant, &path)
         }
-        OfficialMethod::OfficialPage { url, .. } => {
-            open_path(Path::new(url))?;
-            Ok(OfficialOutcome::OfficialPageOpened)
-        }
+        OfficialMethod::GithubRelease { .. } => Err(OfficialError::Process(
+            "GitHub release 必须先解析并由用户确认".to_owned(),
+        )),
     }
 }
 
@@ -1005,6 +1050,7 @@ pub fn download_artifact(
         )));
     }
     let dir = dirs::download_dir()
+        .or_else(|| dirs::home_dir().map(|home| home.join("Downloads")))
         .ok_or_else(|| OfficialError::Download("无法确定下载目录".to_owned()))?
         .join("Pakkit");
     std::fs::create_dir_all(&dir)?;
@@ -1113,38 +1159,6 @@ fn unique_path(dir: &Path, file_name: &str) -> PathBuf {
     unreachable!()
 }
 
-#[cfg(unix)]
-fn make_executable(path: &Path) -> Result<(), OfficialError> {
-    use std::os::unix::fs::PermissionsExt as _;
-    let mut permissions = std::fs::metadata(path)?.permissions();
-    permissions.set_mode(permissions.mode() | 0o100);
-    std::fs::set_permissions(path, permissions)?;
-    Ok(())
-}
-
-#[cfg(not(unix))]
-fn make_executable(_path: &Path) -> Result<(), OfficialError> {
-    Ok(())
-}
-
-fn launch_installer(path: &Path) -> Result<(), OfficialError> {
-    #[cfg(target_os = "windows")]
-    let extension = path
-        .extension()
-        .and_then(|s| s.to_str())
-        .unwrap_or_default();
-    #[cfg(target_os = "windows")]
-    if extension.eq_ignore_ascii_case("msi") {
-        Command::new("msiexec")
-            .arg("/i")
-            .arg(path)
-            .spawn()
-            .map_err(OfficialError::Open)?;
-        return Ok(());
-    }
-    open_path(path)
-}
-
 pub fn open_path(path: &Path) -> Result<(), OfficialError> {
     #[cfg(target_os = "linux")]
     let result = Command::new("xdg-open").arg(path).spawn();
@@ -1207,7 +1221,7 @@ mod tests {
 
     fn fixture() -> String {
         serde_json::json!({
-            "schemaVersion": 2,
+            "schemaVersion": 3,
             "catalogVersion": "test",
             "homepage": "https://example.com/catalog",
             "submissionUrl": "https://example.com/issues/new",
@@ -1218,8 +1232,8 @@ mod tests {
                 "sourceRepository":"https://github.com/example/test-app", "license":"MIT", "licenseUrl":"https://raw.githubusercontent.com/example/test-app/main/LICENSE",
                 "variants": [
                     {"id":"test-script","os":"linux","architectures":["x86_64","aarch64"],"requiresAdmin":false,"interactive":false,"note":text(),"sourceUrl":"https://example.com/install","method":{"type":"script","shell":"sh","command":"printf safe"},"detection":{"type":"command","program":"sh","args":["-c","exit 0"]}},
-                    {"id":"test-artifact","os":"windows","architectures":["x86_64"],"requiresAdmin":false,"interactive":false,"note":text(),"sourceUrl":"https://example.com/install","method":{"type":"artifact","url":"https://example.com/test.exe","fileName":"test.exe","action":"run_installer","sha256":"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"}},
-                    {"id":"test-page","os":"macos","architectures":["aarch64"],"requiresAdmin":false,"interactive":false,"note":text(),"sourceUrl":"https://example.com/install","method":{"type":"official_page","url":"https://example.com/releases"}}
+                    {"id":"test-artifact","os":"windows","architectures":["x86_64"],"requiresAdmin":false,"interactive":false,"note":text(),"sourceUrl":"https://example.com/install","method":{"type":"package_manager","manager":"winget","packageId":"Publisher.Test","source":"winget"}},
+                    {"id":"test-page","os":"macos","architectures":["aarch64"],"requiresAdmin":false,"interactive":false,"note":text(),"sourceUrl":"https://example.com/install","method":{"type":"package_manager","manager":"brew","packageId":"test-app","cask":true}}
                 ]
             }]
         }).to_string()
@@ -1255,52 +1269,32 @@ mod tests {
     fn github_doc() -> serde_json::Value {
         let mut doc: serde_json::Value = serde_json::from_str(&fixture()).expect("fixture");
         doc["apps"][0]["variants"][0]["method"] = serde_json::json!({
-            "type": "official_page",
-            "url": "https://github.com/owner/repo/releases/latest",
-            "release": {
-                "type": "github_release",
-                "repository": "owner/repo",
-                "packages": [{
-                    "format": "deb",
-                    "assets": {
-                        "x86_64": "App-*-amd64.deb",
-                        "aarch64": "App-*-arm64.deb"
-                    }
-                }]
-            }
+            "type": "github_release",
+            "repository": "owner/repo",
+            "packages": [{
+                "format": "deb",
+                "manager": "apt",
+                "assets": {
+                    "x86_64": "App-*-amd64.deb",
+                    "aarch64": "App-*-arm64.deb"
+                },
+                "install": {"kind":"package"}
+            }]
         });
         doc
     }
 
     #[test]
-    fn legacy_parser_ignores_release_and_keeps_browser_fallback() {
-        #[derive(serde::Deserialize)]
-        #[serde(tag = "type", rename_all = "snake_case")]
-        enum LegacyMethod {
-            OfficialPage { url: String },
+    fn webpage_and_download_only_methods_are_rejected() {
+        for method in [
+            serde_json::json!({"type":"official_page","url":"https://example.com"}),
+            serde_json::json!({"type":"artifact","url":"https://example.com/test.exe","fileName":"test.exe","action":"run_installer"}),
+            serde_json::json!({"type":"vendor_json_feed","url":"https://example.com/releases.json"}),
+        ] {
+            let mut doc = github_doc();
+            doc["apps"][0]["variants"][0]["method"] = method;
+            assert!(parse_fixture(&doc.to_string()).is_err());
         }
-
-        let method = github_doc()["apps"][0]["variants"][0]["method"].clone();
-        let LegacyMethod::OfficialPage { url } =
-            serde_json::from_value(method).expect("old clients ignore the new field");
-        assert_eq!(url, "https://github.com/owner/repo/releases/latest");
-    }
-
-    #[test]
-    fn unknown_provider_degrades_only_dynamic_install() {
-        let mut doc = github_doc();
-        doc["apps"][0]["variants"][0]["method"]["release"] = serde_json::json!({
-            "type": "vendor_json_feed",
-            "url": "https://example.com/releases.json"
-        });
-        let catalog = parse_fixture(&doc.to_string()).expect("unknown provider remains a page");
-        assert!(matches!(
-            &catalog.apps[0].variants[0].method,
-            OfficialMethod::OfficialPage {
-                release: Some(resolver::OfficialReleaseSource::Unsupported),
-                ..
-            }
-        ));
     }
 
     #[test]
@@ -1308,35 +1302,27 @@ mod tests {
         assert!(parse_fixture(&github_doc().to_string()).is_ok());
         for (pointer, value) in [
             (
-                "/apps/0/variants/0/method/release/repository",
+                "/apps/0/variants/0/method/repository",
                 serde_json::json!("owner/repo/extra"),
             ),
-            (
-                "/apps/0/variants/0/method/release/packages",
-                serde_json::json!([]),
-            ),
-            (
-                "/apps/0/variants/0/method/url",
-                serde_json::json!("https://github.com/owner/repo/releases-evil"),
-            ),
+            ("/apps/0/variants/0/method/packages", serde_json::json!([])),
         ] {
             let mut doc = github_doc();
             *doc.pointer_mut(pointer).expect("field") = value;
             assert!(parse_fixture(&doc.to_string()).is_err(), "{pointer}");
         }
+        let mut unknown = github_doc();
+        unknown["apps"][0]["variants"][0]["method"]["unknown"] = serde_json::json!(true);
+        assert!(parse_fixture(&unknown.to_string()).is_err());
 
         let mut windows = github_doc();
         windows["apps"][0]["variants"][1]["method"] = serde_json::json!({
-            "type": "official_page",
-            "url": "https://github.com/owner/repo/releases/latest",
-            "release": {
-                "type": "github_release",
-                "repository": "owner/repo",
-                "packages": [{"format": "exe", "assets": {"x86_64": "App-*.exe"}}]
-            }
+            "type": "github_release",
+            "repository": "owner/repo",
+            "packages": [{"format": "exe", "assets": {"x86_64": "App-*.exe"}, "install":"run_installer"}]
         });
         assert!(parse_fixture(&windows.to_string()).is_err());
-        windows["apps"][0]["variants"][1]["method"]["release"]["packages"][0]["expectedSigner"] =
+        windows["apps"][0]["variants"][1]["method"]["packages"][0]["expectedSigner"] =
             serde_json::json!("CN=Publisher");
         assert!(parse_fixture(&windows.to_string()).is_ok());
     }
@@ -1479,25 +1465,33 @@ mod tests {
             .should_detect()
         );
         assert!(
-            !OfficialOutcome::PortableDownloaded {
-                path: PathBuf::from("a.AppImage"),
+            OfficialOutcome::PortableInstalled {
+                path: PathBuf::from("apps/a"),
+                launch_path: PathBuf::from("bin/a"),
             }
             .should_detect()
         );
-        assert!(!OfficialOutcome::OfficialPageOpened.should_detect());
+        assert!(
+            OfficialOutcome::PackageManagerInstalled {
+                manager: "flatpak".to_owned(),
+                package_id: "org.example.App".to_owned(),
+                log: String::new(),
+            }
+            .should_detect()
+        );
     }
 
     #[test]
-    fn windows_arm64_selects_its_own_download_url() {
+    fn package_manager_architecture_remains_catalog_owned() {
         let mut doc: serde_json::Value = serde_json::from_str(&fixture()).expect("fixture");
         doc["apps"][0]["variants"][1]["architectures"] = serde_json::json!(["aarch64"]);
-        doc["apps"][0]["variants"][1]["method"]["url"] =
-            serde_json::json!("https://example.com/arm64.exe");
+        doc["apps"][0]["variants"][1]["method"]["packageId"] =
+            serde_json::json!("Publisher.TestArm");
         let catalog = parse_fixture(&doc.to_string()).expect("valid catalog");
         let variant = variant_for(&catalog.apps[0], OfficialOs::Windows, OfficialArch::Aarch64)
             .expect("variant");
         assert!(
-            matches!(&variant.method, OfficialMethod::Artifact { url, .. } if url == "https://example.com/arm64.exe")
+            matches!(&variant.method, OfficialMethod::PackageManager { package_id, .. } if package_id == "Publisher.TestArm")
         );
     }
 
@@ -1507,10 +1501,13 @@ mod tests {
             ("/schemaVersion", serde_json::json!(1)),
             ("/apps/0/homepage", serde_json::json!("http://example.com")),
             (
-                "/apps/0/variants/1/method/fileName",
-                serde_json::json!("../test.exe"),
+                "/apps/0/variants/1/method/packageId",
+                serde_json::json!("bad;command"),
             ),
-            ("/apps/0/variants/1/method/sha256", serde_json::json!("ABC")),
+            (
+                "/apps/0/variants/1/method/manager",
+                serde_json::json!("apt"),
+            ),
         ] {
             let mut value_doc: serde_json::Value =
                 serde_json::from_str(&fixture()).expect("fixture");
@@ -1879,5 +1876,101 @@ mod tests {
             catalog.categories.len(),
             catalog.apps.len()
         );
+
+        for app in &catalog.apps {
+            for variant in &app.variants {
+                let OfficialMethod::GithubRelease { packages, .. } = &variant.method else {
+                    continue;
+                };
+                for arch in &variant.architectures {
+                    let managers: &[Option<resolver::LinuxPackageManager>] =
+                        if variant.os == OfficialOs::Linux {
+                            &[
+                                Some(resolver::LinuxPackageManager::Apt),
+                                Some(resolver::LinuxPackageManager::Dnf),
+                                Some(resolver::LinuxPackageManager::Zypper),
+                                None,
+                            ]
+                        } else {
+                            &[None]
+                        };
+                    for manager in managers {
+                        let host = resolver::HostContext::new(variant.os, *arch, *manager);
+                        assert!(
+                            packages.iter().any(|package| {
+                                host.supports(package) && package.assets.contains_key(arch)
+                            }),
+                            "{} {arch} {manager:?} has no release candidate",
+                            variant.id
+                        );
+                    }
+                }
+            }
+        }
+        if std::env::var_os("PAKKIT_OFFICIAL_VERIFY_RELEASES").is_some() {
+            let proxy = std::env::var("PAKKIT_PROXY").unwrap_or_default();
+            for app in &catalog.apps {
+                for variant in &app.variants {
+                    let OfficialMethod::GithubRelease {
+                        repository,
+                        packages,
+                    } = &variant.method
+                    else {
+                        continue;
+                    };
+                    let hosts = variant
+                        .architectures
+                        .iter()
+                        .flat_map(|arch| {
+                            let managers: &[Option<resolver::LinuxPackageManager>] =
+                                if variant.os == OfficialOs::Linux {
+                                    &[
+                                        Some(resolver::LinuxPackageManager::Apt),
+                                        Some(resolver::LinuxPackageManager::Dnf),
+                                        Some(resolver::LinuxPackageManager::Zypper),
+                                        None,
+                                    ]
+                                } else {
+                                    &[None]
+                                };
+                            managers
+                                .iter()
+                                .map(move |manager| {
+                                    resolver::HostContext::new(variant.os, *arch, *manager)
+                                })
+                                .collect::<Vec<_>>()
+                        })
+                        .collect::<Vec<_>>();
+                    let resolved = github::verify_release_hosts(
+                        repository,
+                        packages,
+                        variant,
+                        &hosts,
+                        resolver::NetworkOptions {
+                            proxy: &proxy,
+                            allow_http: false,
+                        },
+                    )
+                    .unwrap_or_else(|error| panic!("verify {}: {error}", variant.id));
+                    for resolved in resolved {
+                        assert_eq!(resolved.variant_id, variant.id);
+                        assert_eq!(resolved.sha256.len(), 64);
+                        if variant.os == OfficialOs::Windows
+                            && matches!(
+                                resolved.format,
+                                resolver::OfficialPackageFormat::Exe
+                                    | resolver::OfficialPackageFormat::Msi
+                            )
+                        {
+                            assert!(resolved.expected_signer.is_some());
+                        }
+                        println!(
+                            "verified {}: {} {}",
+                            variant.id, resolved.file_name, resolved.sha256
+                        );
+                    }
+                }
+            }
+        }
     }
 }
