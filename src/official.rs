@@ -24,8 +24,7 @@ pub mod resolver;
 
 pub use resolver::{OfficialResolutionState, ResolvedOfficialInstall};
 
-pub const DEFAULT_CATALOG_URL: &str =
-    "https://raw.githubusercontent.com/vgerbot-app/winget-gui/official-install/catalog/index.json";
+pub const DEFAULT_CATALOG_URL: &str = "https://raw.githubusercontent.com/vgerbot-app/winget-gui/opensource-catalog/catalog/index.json";
 const CATALOG_LIMIT: u64 = 4 * 1024 * 1024;
 const DOWNLOAD_LIMIT: u64 = 2 * 1024 * 1024 * 1024;
 const OFFICIAL_CATEGORY_ICONS: &[&str] = &[
@@ -1840,7 +1839,7 @@ mod tests {
     }
 
     #[test]
-    #[ignore = "set PAKKIT_OFFICIAL_CATALOG_PATH to a local official-install catalog/index.json"]
+    #[ignore = "set PAKKIT_OFFICIAL_CATALOG_PATH to a local opensource-catalog catalog/index.json"]
     fn real_catalog() {
         let path = std::env::var("PAKKIT_OFFICIAL_CATALOG_PATH")
             .expect("PAKKIT_OFFICIAL_CATALOG_PATH is required");

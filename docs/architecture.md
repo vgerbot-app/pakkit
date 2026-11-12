@@ -47,7 +47,7 @@ ZIP、TAR.GZ、TAR.ZST 和便携文件仍复用 HTTPS、大小与 SHA-256 下载
 
 软件安装到 `dirs::data_local_dir()/pakkit/apps/<variant-id>/<release-tag-or-file-stem>`：Linux 通常为 `~/.local/share/pakkit/apps`，macOS 为 `~/Library/Application Support/pakkit/apps`，Windows 为 `%LOCALAPPDATA%\pakkit\apps`。Linux／macOS 在 `~/.local/bin` 建启动符号链接，Windows 在 `%LOCALAPPDATA%\pakkit\bin` 建 `.cmd`；不改系统 PATH，不自动复制到 `/Applications`。AppImage 的 desktop 文件由 Pakkit 固定生成，不执行归档内 desktop 文件。Rufus 和 Ventoy 安装后不自动运行，旧版本暂不自动删除。
 
-`official_*` 内部标识、路由与 `official-install` 分支名仅是稳定的协议／持久化名称，不再表示「官网直装」用户界面。发布时先合并客户端 schema 3 支持，再发布已用该客户端解析器通过的分支目录；旧客户端会拒绝 schema 3。目录发布前的只读实时 Release 校验失败会阻止发布，不调用安装器，也不回退网页安装。
+`official_*` 内部标识、路由与持久化 ID 仅是稳定的协议名称，不再表示「官网直装」用户界面；目录发布分支为 `opensource-catalog`。发布时先合并客户端 schema 3 支持，再发布已用该客户端解析器通过的分支目录；旧客户端会拒绝 schema 3。目录发布前的只读实时 Release 校验失败会阻止发布，不调用安装器，也不回退网页安装。
 
 **状态变更只有两条入口**：`AppView` 自己的方法，和 `dialogs` 里通过
 `cx.listener` 拿到的 `&mut AppView`。`views` 与 `widgets` 只拿到 `&AppState`
