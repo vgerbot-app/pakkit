@@ -18,6 +18,8 @@
 
 ### 新增
 
+- 归档安装支持通过 `additionalExecutables` 显式声明必需的辅助可执行文件；只给声明的普通文件入口添加执行权限，复用已有版本时也校验并修复这些入口。
+
 - 新增 dnf 后端（Fedora/RHEL，兼容 dnf5）：只读查询直跑 `dnf`，变更
   操作优先走 PackageKit D-Bus 通道、不可用时回退 `pkexec dnf …`；
   `check-update` 的退出码 100（有待更新包）按良性处理；源管理不开放

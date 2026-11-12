@@ -111,6 +111,7 @@ An `official_page` method can add an optional `release` configuration. A `github
 | Windows MSI | Require the same Authenticode/signer checks and a matching MSI architecture, then wait for `msiexec /i`. Pakkit distinguishes completion, reboot required, cancellation, and failure. |
 | macOS PKG / DMG | Open the verified file with macOS `open` only; Pakkit does not wait for or confirm installation. |
 | Linux AppImage | Mark the verified download executable and report a portable download; never launch it automatically. |
+| ZIP / TAR archives | Extract safely and mark only `executableByArch` and explicitly declared `additionalExecutables` regular-file paths executable. Create the launcher and desktop entry without starting the application. |
 
 Release providers use the provider-neutral `ReleaseResolver` extension point and produce the same restricted snapshot for confirmation, queueing, download, and platform handlers. Dynamic releases add no generic HTML scraping or arbitrary command execution; release metadata and notes never become shell commands.
 

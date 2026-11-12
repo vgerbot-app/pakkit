@@ -163,6 +163,7 @@ fn install_resolved_at(
         (
             OfficialInstallConfig::Archive {
                 executable_by_arch,
+                additional_executables,
                 strip_components,
                 link_name,
                 desktop_name,
@@ -183,6 +184,7 @@ fn install_resolved_at(
                 roots,
                 &resolved.variant_id,
                 executable,
+                additional_executables,
                 *strip_components,
                 link_name,
                 desktop_name.as_deref(),
@@ -239,11 +241,18 @@ fn install_archive(
     roots: &Roots,
     variant_id: &str,
     executable: &str,
+    additional_executables: &[String],
     strip_components: u8,
     link_name: &str,
     desktop_name: Option<&str>,
 ) -> Result<OfficialOutcome, OfficialError> {
-    if !valid_archive_path(executable) || strip_components > 1 || !valid_link_name(link_name) {
+    if !valid_archive_path(executable)
+        || !additional_executables
+            .iter()
+            .all(|path| valid_archive_path(path))
+        || strip_components > 1
+        || !valid_link_name(link_name)
+    {
         return Err(OfficialError::Validation(
             "归档入口或启动链接无效".to_owned(),
         ));
@@ -260,6 +269,7 @@ fn install_archive(
             roots,
             variant_id,
             executable,
+            additional_executables,
             link_name,
             desktop_name,
         );
@@ -276,12 +286,16 @@ fn install_archive(
         };
         validate_entry(&staging, executable)?;
         set_executable(&staging.join(executable))?;
+        for executable in additional_executables {
+            validate_entry(&staging, executable)?;
+        }
         commit_staging(&staging, target)?;
         finish_existing(
             target,
             roots,
             variant_id,
             executable,
+            additional_executables,
             link_name,
             desktop_name,
         )
@@ -320,6 +334,7 @@ fn install_single_file(
             roots,
             variant_id,
             file_name,
+            &[],
             link_name,
             desktop_name,
         );
@@ -336,6 +351,7 @@ fn install_single_file(
             roots,
             variant_id,
             file_name,
+            &[],
             link_name,
             desktop_name,
         )
@@ -354,11 +370,15 @@ fn finish_existing(
     roots: &Roots,
     variant_id: &str,
     executable: &str,
+    additional_executables: &[String],
     link_name: &str,
     desktop_name: Option<&str>,
 ) -> Result<OfficialOutcome, OfficialError> {
     reject_symlink_components(target)?;
     let executable_path = validate_entry(target, executable)?;
+    for executable in additional_executables {
+        validate_entry(target, executable)?;
+    }
     let launch_path = create_launcher(roots, link_name, &executable_path)?;
     if let Some(name) = desktop_name {
         write_desktop_file(roots, variant_id, name, &executable_path, target)?;
@@ -791,6 +811,7 @@ mod tests {
                 ]
                 .into_iter()
                 .collect(),
+                additional_executables: Vec::new(),
                 strip_components: 1,
                 link_name: "test-app".to_owned(),
                 desktop_name: Some("Test App".to_owned()),
@@ -813,6 +834,76 @@ mod tests {
         builder.append(&header, content).expect("entry");
         let encoder = builder.into_inner().expect("finish archive");
         encoder.finish().expect("finish gzip");
+    }
+
+    #[test]
+    fn only_declared_auxiliary_entries_become_executable() {
+        let temp = TempDir::new();
+        let roots = roots(&temp);
+        let archive = temp.0.join("app.tar.gz");
+        let file = File::create(&archive).expect("archive");
+        let encoder = flate2::write::GzEncoder::new(file, flate2::Compression::default());
+        let mut builder = tar::Builder::new(encoder);
+        for (name, content) in [
+            ("top/bin/app", &b"launcher"[..]),
+            ("top/libexec/helper", &b"helper"[..]),
+            ("top/other", &b"other"[..]),
+        ] {
+            let mut header = tar::Header::new_gnu();
+            header.set_path(name).expect("path");
+            header.set_size(content.len() as u64);
+            header.set_mode(0o644);
+            header.set_cksum();
+            builder.append(&header, content).expect("entry");
+        }
+        builder
+            .into_inner()
+            .expect("finish archive")
+            .finish()
+            .expect("finish gzip");
+        let mut spec = resolved();
+        let OfficialInstallConfig::Archive {
+            additional_executables,
+            ..
+        } = &mut spec.install
+        else {
+            panic!("archive config");
+        };
+        additional_executables.push("libexec/helper".to_owned());
+        let path = roots.apps().join("test-app/v1.2.3");
+        install_resolved_at(&spec, &archive, &roots).expect("install helper");
+        #[cfg(unix)]
+        {
+            use std::os::unix::fs::PermissionsExt as _;
+            let mode = |relative| {
+                std::fs::metadata(path.join(relative))
+                    .expect("entry")
+                    .permissions()
+                    .mode()
+                    & 0o111
+            };
+            assert_ne!(mode("bin/app"), 0);
+            assert_ne!(mode("libexec/helper"), 0);
+            assert_eq!(mode("other"), 0);
+            std::fs::set_permissions(
+                path.join("libexec/helper"),
+                std::fs::Permissions::from_mode(0o644),
+            )
+            .expect("simulate an older installation");
+            install_resolved_at(&spec, &archive, &roots).expect("repair existing helper");
+            assert_ne!(mode("libexec/helper"), 0);
+            std::fs::remove_file(path.join("libexec/helper")).expect("remove required helper");
+            assert!(install_resolved_at(&spec, &archive, &roots).is_err());
+        }
+        let OfficialInstallConfig::Archive {
+            additional_executables,
+            ..
+        } = &mut spec.install
+        else {
+            panic!("archive config");
+        };
+        *additional_executables = vec!["../escape".to_owned()];
+        assert!(install_resolved_at(&spec, &archive, &roots).is_err());
     }
 
     #[test]

@@ -32,6 +32,8 @@ pub enum OfficialInstallConfig {
     Archive {
         executable_by_arch: BTreeMap<OfficialArch, String>,
         #[serde(default)]
+        additional_executables: Vec<String>,
+        #[serde(default)]
         strip_components: u8,
         link_name: String,
         #[serde(default)]
@@ -92,6 +94,8 @@ impl<'de> Deserialize<'de> for OfficialInstallConfig {
                         struct Archive {
                             executable_by_arch: BTreeMap<OfficialArch, String>,
                             #[serde(default)]
+                            additional_executables: Vec<String>,
+                            #[serde(default)]
                             strip_components: u8,
                             link_name: String,
                             #[serde(default)]
@@ -101,6 +105,7 @@ impl<'de> Deserialize<'de> for OfficialInstallConfig {
                             .map_err(serde::de::Error::custom)?;
                         Ok(Self::Archive {
                             executable_by_arch: config.executable_by_arch,
+                            additional_executables: config.additional_executables,
                             strip_components: config.strip_components,
                             link_name: config.link_name,
                             desktop_name: config.desktop_name,
@@ -372,6 +377,7 @@ pub fn validate_release(
             (
                 OfficialInstallConfig::Archive {
                     executable_by_arch,
+                    additional_executables,
                     strip_components,
                     link_name,
                     desktop_name,
@@ -387,6 +393,9 @@ pub fn validate_release(
                             .get(arch)
                             .is_some_and(|path| valid_archive_path(path))
                     })
+                    && additional_executables
+                        .iter()
+                        .all(|path| valid_archive_path(path))
                     && valid_link_name(link_name)
                     && valid_desktop_name(desktop_name.as_deref())
             }
