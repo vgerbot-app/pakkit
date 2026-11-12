@@ -1,6 +1,6 @@
 ---
-name: official-install
-description: Curate and validate Pakkit schema-3 open-source catalog entries on the official-install branch. Use when adding or updating applications, mapping package-manager IDs or GitHub release assets, reviewing install methods and permissions, verifying signatures/digests/archives, or accepting real installations.
+name: opensource-catalog
+description: Curate and validate Pakkit schema-3 open-source catalog entries on the opensource-catalog branch. Use when adding or updating applications, mapping package-manager IDs or GitHub release assets, reviewing install methods and permissions, verifying signatures/digests/archives, or accepting real installations.
 ---
 
 # Official install catalog
@@ -9,7 +9,7 @@ description: Curate and validate Pakkit schema-3 open-source catalog entries on 
 
 ## 工作边界
 
-- 在 `official-install` 分支修改 `catalog/*.json`；客户端安装能力或解析器变更先在 `master` 验证、发布，再发布目录。
+- 在 `opensource-catalog` 分支修改 `catalog/*.json`；客户端安装能力或解析器变更先在 `master` 验证、发布，再发布目录。
 - 保留现有 application/variant ID、分类、OS/架构覆盖和元数据，除非任务明确要求迁移。
 - 当前契约是 schema 3。不要使用 `official_page`、download-only 结果、浏览器安装或网页兜底。
 - `homepage`、`sourceRepository`、`licenseUrl` 和 `sourceUrl` 是来源与审阅链接，不是安装回退。
@@ -136,7 +136,7 @@ Linux 每个声明架构都要覆盖 Apt、DNF、Zypper 和无系统包管理器
 
 ### 每次目录变更
 
-从客户端 `master` 对 `official-install` 的**完整目录**运行：
+从客户端 `master` 对 `opensource-catalog` 的**完整目录**运行：
 
 ```bash
 PAKKIT_OFFICIAL_CATALOG_PATH=/path/to/catalog/index.json \

@@ -118,6 +118,6 @@ Pakkit 的 Rust 解析器是完整契约的唯一权威，负责逐软件校验�
 PAKKIT_OFFICIAL_CATALOG_PATH=/path/to/catalog/index.json cargo test --locked real_catalog -- --ignored --nocapture
 ```
 
-该测试读取索引及其同目录的全部索引分类文件，检查合计大小，不访问网络；普通测试也不依赖本分支 checkout。独立 GitHub Actions 工作流会在 `official-install` 推送、拉取请求、定时或手动运行时 checkout `master` 与 `official-install`，用客户端解析器验证已发布目录。
+该测试读取索引及其同目录的全部索引分类文件，检查合计大小，不访问网络；普通测试也不依赖本分支 checkout。独立 GitHub Actions 工作流会在 `opensource-catalog` 推送、拉取请求、定时或手动运行时 checkout `master` 与 `opensource-catalog`，用客户端解析器验证已发布目录。
 
 发布顺序必须为：先合并并发布支持 `schemaVersion: 2` 的客户端，再用该客户端验证并发布目录，最后确认远程索引和全部分类 JSON 与本地已验证内容一致，并用实际客户端刷新。不得先发布新目录，也不得为兼容旧客户端退回 schema 1。当前候选池不写入已发布目录；后续每批只发布已验收条目。
