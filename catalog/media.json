@@ -706,6 +706,140 @@
           }
         }
       ]
+    },
+    {
+      "id": "mygo-music",
+      "name": "MyGo Music",
+      "publisher": "egoist",
+      "category": "media",
+      "summary": {
+        "zh-CN": "使用 Go 和 MyGo 编写的原生桌面音乐播放器，无 WebView，支持本地音乐、标签、封面、歌词和插件。",
+        "zh-TW": "使用 Go 和 MyGo 編寫的原生桌面音樂播放器，無 WebView，支援本機音樂、標籤、封面、歌詞和外掛。",
+        "en": "A native desktop music player written in Go with MyGo, with no WebView, local music, tags, covers, lyrics and plugins.",
+        "ja": "Go と MyGo で作られた WebView を使わないネイティブデスクトップ音楽プレーヤー。ローカル音楽、タグ、ジャケット、歌詞、プラグインに対応します。",
+        "ko": "Go와 MyGo로 작성된 WebView 없는 네이티브 데스크톱 음악 플레이어로, 로컬 음악, 태그, 커버, 가사 및 플러그인을 지원합니다."
+      },
+      "homepage": "https://mygo-music.egoist.dev/",
+      "mark": "MG",
+      "accent": "#8b5cf6",
+      "sourceRepository": "https://github.com/egoist/mygo-music",
+      "license": "AGPL-3.0-only",
+      "licenseUrl": "https://raw.githubusercontent.com/egoist/mygo-music/v0.1.24/LICENSE",
+      "variants": [
+        {
+          "id": "mygo-music-linux",
+          "os": "linux",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "下载、校验并解压匹配的正式稳定版到用户目录，创建启动链接和桌面入口；不修改系统 PATH 或自动运行。插件和播客转写组件可按需在运行时另行下载。",
+            "zh-TW": "下載、驗證並解壓符合的正式穩定版到使用者目錄，建立啟動連結和桌面項目；不修改系統 PATH 或自動執行。外掛和 Podcast 轉寫元件可依需要在執行時另行下載。",
+            "en": "Downloads, verifies and extracts the matching stable release into the user directory, creating a launch link and desktop entry. It does not modify system PATH or launch the app. Plugins and podcast-caption components can be downloaded separately at runtime when requested.",
+            "ja": "一致する安定版をダウンロード、検証し、ユーザーディレクトリに展開して起動リンクとデスクトップ項目を作成します。システム PATH の変更やアプリの自動実行は行いません。プラグインとポッドキャスト字幕コンポーネントは、必要に応じて実行時に別途ダウンロードされます。",
+            "ko": "일치하는 안정 릴리스를 다운로드하고 검증한 후 사용자 디렉터리에 압축을 풀고 실행 링크와 데스크톱 항목을 만듭니다. 시스템 PATH를 수정하거나 앱을 자동 실행하지 않습니다. 플러그인과 팟캐스트 자막 구성 요소는 요청 시 런타임에 별도로 다운로드할 수 있습니다."
+          },
+          "sourceUrl": "https://mygo-music.egoist.dev/download/",
+          "method": {
+            "type": "github_release",
+            "repository": "egoist/mygo-music",
+            "packages": [
+              {
+                "format": "tar_gz",
+                "assets": {
+                  "x86_64": "mygo-music-*-linux-amd64.tar.gz",
+                  "aarch64": "mygo-music-*-linux-arm64.tar.gz"
+                },
+                "install": {
+                  "kind": "archive",
+                  "executableByArch": {
+                    "x86_64": "mygo-music",
+                    "aarch64": "mygo-music"
+                  },
+                  "stripComponents": 0,
+                  "linkName": "mygo-music",
+                  "desktopName": "MyGo Music"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "id": "mygo-music-windows",
+          "os": "windows",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "下载、校验并解压匹配的正式稳定版到用户目录，创建启动链接；不修改系统 PATH 或自动运行。",
+            "zh-TW": "下載、驗證並解壓符合的正式穩定版到使用者目錄，建立啟動連結；不修改系統 PATH 或自動執行。",
+            "en": "Downloads, verifies and extracts the matching stable release into the user directory and creates a launch link. System PATH is not modified and the app is not launched automatically.",
+            "ja": "一致する安定版をダウンロード、検証し、ユーザーディレクトリに展開して起動リンクを作成します。システム PATH は変更せず、アプリも自動実行しません。",
+            "ko": "일치하는 안정 릴리스를 다운로드하고 검증한 후 사용자 디렉터리에 압축을 풀고 실행 링크를 만듭니다. 시스템 PATH를 수정하지 않으며 앱을 자동 실행하지 않습니다."
+          },
+          "sourceUrl": "https://mygo-music.egoist.dev/download/",
+          "method": {
+            "type": "github_release",
+            "repository": "egoist/mygo-music",
+            "packages": [
+              {
+                "format": "tar_gz",
+                "assets": {
+                  "x86_64": "mygo-music-*-windows-amd64.tar.gz",
+                  "aarch64": "mygo-music-*-windows-arm64.tar.gz"
+                },
+                "install": {
+                  "kind": "archive",
+                  "executableByArch": {
+                    "x86_64": "MyGo Music.exe",
+                    "aarch64": "MyGo Music.exe"
+                  },
+                  "stripComponents": 0,
+                  "linkName": "mygo-music"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "id": "mygo-music-macos",
+          "os": "macos",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": true,
+          "note": {
+            "zh-CN": "下载并校验匹配架构的正式 DMG，然后打开安装器；需要 macOS 13 或更高版本。按界面将应用拖入 Applications，打开 DMG 不等于安装完成。",
+            "zh-TW": "下載並驗證符合架構的正式 DMG，然後開啟安裝程式；需要 macOS 13 或更新版本。依介面將應用程式拖入 Applications，開啟 DMG 不代表安裝完成。",
+            "en": "Downloads and verifies the stable DMG for the matching architecture, then opens it. macOS 13 or later is required. Drag the app into Applications as directed; opening the DMG does not mean installation is complete.",
+            "ja": "対応アーキテクチャの安定版 DMG をダウンロードして検証し、開きます。macOS 13 以降が必要です。画面の指示に従ってアプリを Applications にドラッグしてください。DMG を開いただけではインストール完了ではありません。",
+            "ko": "해당 아키텍처의 안정 DMG를 다운로드하고 검증한 후 엽니다. macOS 13 이상이 필요합니다. 안내에 따라 앱을 Applications로 드래그하세요. DMG를 여는 것만으로 설치가 완료되는 것은 아닙니다."
+          },
+          "sourceUrl": "https://mygo-music.egoist.dev/download/",
+          "method": {
+            "type": "github_release",
+            "repository": "egoist/mygo-music",
+            "packages": [
+              {
+                "format": "dmg",
+                "assets": {
+                  "x86_64": "mygo-music-*-amd64.dmg",
+                  "aarch64": "mygo-music-*-arm64.dmg"
+                },
+                "install": "run_installer"
+              }
+            ]
+          }
+        }
+      ]
     }
   ]
 }

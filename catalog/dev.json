@@ -1636,6 +1636,110 @@
           }
         }
       ]
+    },
+    {
+      "id": "wu",
+      "name": "Wu",
+      "publisher": "Daystrom Labs",
+      "category": "dev",
+      "summary": {
+        "zh-CN": "使用 Rust 编写的原生代码编辑器和代理工作区，内置 Claude Code、Codex 与 OpenCode 集成；Wu 本身无需账号，不收集使用遥测。",
+        "zh-TW": "使用 Rust 編寫的原生程式碼編輯器和代理工作區，內建 Claude Code、Codex 與 OpenCode 整合；Wu 本身無需帳號，不收集使用遙測。",
+        "en": "A native Rust code editor and agent workspace with Claude Code, Codex and OpenCode integrations. Wu itself requires no account and collects no usage telemetry.",
+        "ja": "Rust 製のネイティブコードエディター兼エージェントワークスペース。Claude Code、Codex、OpenCode を統合し、Wu 自体はアカウント不要で使用テレメトリを収集しません。",
+        "ko": "Claude Code, Codex 및 OpenCode 통합을 제공하는 네이티브 Rust 코드 편집기이자 에이전트 작업 공간입니다. Wu 자체는 계정이 필요 없으며 사용 원격 측정을 수집하지 않습니다."
+      },
+      "homepage": "https://wu.dstrml.org/",
+      "mark": "Wu",
+      "accent": "#6e9fff",
+      "sourceRepository": "https://github.com/dstrml/wu",
+      "license": "GPL-3.0-or-later",
+      "licenseUrl": "https://raw.githubusercontent.com/dstrml/wu/v1.2.2/LICENSE-GPL",
+      "variants": [
+        {
+          "id": "wu-linux",
+          "os": "linux",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "下载、校验并解压匹配的正式稳定版到用户目录，创建启动链接和桌面入口；不修改系统 PATH 或自动运行。主机仍需提供 Wu 的图形和音频运行库；代理功能的外部工具、账号或 API 费用另计。",
+            "zh-TW": "下載、驗證並解壓符合的正式穩定版到使用者目錄，建立啟動連結和桌面項目；不修改系統 PATH 或自動執行。主機仍需提供 Wu 的圖形和音訊執行階段程式庫；代理功能的外部工具、帳號或 API 費用另計。",
+            "en": "Downloads, verifies and extracts the matching stable release into the user directory, creating a launch link and desktop entry. It does not modify system PATH or launch Wu. The host must still provide Wu's graphics and audio runtime libraries. External agent tools, accounts and API charges are separate.",
+            "ja": "一致する安定版をダウンロード、検証し、ユーザーディレクトリに展開して起動リンクとデスクトップ項目を作成します。システム PATH の変更や Wu の自動実行は行いません。ホストには Wu のグラフィックス・オーディオ実行ライブラリが必要です。外部エージェントツール、アカウント、API 料金は別途必要です。",
+            "ko": "일치하는 안정 릴리스를 다운로드하고 검증한 후 사용자 디렉터리에 압축을 풀고 실행 링크와 데스크톱 항목을 만듭니다. 시스템 PATH를 수정하거나 Wu를 자동 실행하지 않습니다. 호스트에는 Wu의 그래픽 및 오디오 런타임 라이브러리가 필요합니다. 외부 에이전트 도구, 계정 및 API 요금은 별도입니다."
+          },
+          "sourceUrl": "https://github.com/dstrml/wu/blob/v1.2.2/docs/INSTALL.md",
+          "method": {
+            "type": "github_release",
+            "repository": "dstrml/wu",
+            "packages": [
+              {
+                "format": "tar_gz",
+                "assets": {
+                  "x86_64": "wu-linux-x86_64.tar.gz",
+                  "aarch64": "wu-linux-aarch64.tar.gz"
+                },
+                "install": {
+                  "kind": "archive",
+                  "executableByArch": {
+                    "x86_64": "bin/wu",
+                    "aarch64": "bin/wu"
+                  },
+                  "stripComponents": 1,
+                  "additionalExecutables": [
+                    "libexec/wu-editor"
+                  ],
+                  "linkName": "wu",
+                  "desktopName": "Wu"
+                }
+              }
+            ]
+          },
+          "detection": {
+            "type": "command",
+            "program": "wu",
+            "args": [
+              "--version"
+            ]
+          }
+        },
+        {
+          "id": "wu-macos",
+          "os": "macos",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": true,
+          "note": {
+            "zh-CN": "下载并校验匹配架构的正式 DMG 后打开；手动将 Wu 拖入 Applications，打开 DMG 不等于安装完成。上游未使用 Apple Developer 证书签名，首次启动需按官方文档执行 xattr -d com.apple.quarantine /Applications/Wu.app，或在隐私与安全性中选择“仍要打开”并确认密码；此操作会降低 Gatekeeper 检查。可选 CLI 安装可能请求密码。",
+            "zh-TW": "下載並驗證符合架構的正式 DMG 後開啟；手動將 Wu 拖入 Applications，開啟 DMG 不代表安裝完成。上游未使用 Apple Developer 憑證簽章，首次啟動需依官方文件執行 xattr -d com.apple.quarantine /Applications/Wu.app，或在隱私權與安全性中選擇「仍要打開」並確認密碼；此操作會降低 Gatekeeper 檢查。可選 CLI 安裝可能要求密碼。",
+            "en": "Downloads and verifies the matching stable DMG, then opens it. Manually drag Wu into Applications; opening the DMG does not complete installation. Wu is not signed with an Apple Developer certificate. Before first launch, follow the upstream instructions to run xattr -d com.apple.quarantine /Applications/Wu.app, or choose Open Anyway in Privacy & Security and confirm your password. This bypasses a Gatekeeper check. Optional CLI installation may request a password.",
+            "ja": "一致する安定版 DMG をダウンロードして検証し、開きます。手動で Wu を Applications にドラッグしてください。DMG を開いただけではインストール完了ではありません。Wu は Apple Developer 証明書で署名されていないため、初回起動前に公式手順に従って xattr -d com.apple.quarantine /Applications/Wu.app を実行するか、「プライバシーとセキュリティ」で「このまま開く」を選びパスワードを確認する必要があります。この操作は Gatekeeper チェックを回避します。オプションの CLI インストールでもパスワードが求められる場合があります。",
+            "ko": "일치하는 안정 DMG를 다운로드하고 검증한 후 엽니다. Wu를 Applications로 직접 드래그해야 하며 DMG를 여는 것만으로 설치가 완료되지 않습니다. Wu는 Apple Developer 인증서로 서명되지 않았습니다. 처음 실행하기 전에 공식 안내에 따라 xattr -d com.apple.quarantine /Applications/Wu.app을 실행하거나 개인 정보 보호 및 보안에서 '그래도 열기'를 선택하고 암호를 확인해야 합니다. 이 작업은 Gatekeeper 검사를 우회합니다. 선택적 CLI 설치 시에도 암호가 필요할 수 있습니다."
+          },
+          "sourceUrl": "https://github.com/dstrml/wu/blob/v1.2.2/docs/INSTALL.md",
+          "method": {
+            "type": "github_release",
+            "repository": "dstrml/wu",
+            "packages": [
+              {
+                "format": "dmg",
+                "assets": {
+                  "x86_64": "Wu-x86_64.dmg",
+                  "aarch64": "Wu-aarch64.dmg"
+                },
+                "install": "run_installer"
+              }
+            ]
+          }
+        }
+      ]
     }
   ]
 }

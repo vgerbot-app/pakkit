@@ -1,6 +1,6 @@
 {
   "schemaVersion": 3,
-  "catalogVersion": "2026.11.12-1",
+  "catalogVersion": "2026.11.12-2",
   "homepage": "https://github.com/vgerbot-app/winget-gui/tree/opensource-catalog",
   "submissionUrl": "https://github.com/vgerbot-app/winget-gui/issues/new",
   "categories": [
