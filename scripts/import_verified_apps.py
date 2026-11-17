@@ -242,6 +242,8 @@ CASK_ARCHITECTURES = {
     "tabby": ["x86_64", "aarch64"],
     "ghostty": ["x86_64", "aarch64"],
     "stats": ["x86_64", "aarch64"],
+    "amethyst": ["x86_64", "aarch64"],
+    "adrafinil": ["aarch64"],
     "rectangle": ["x86_64", "aarch64"],
     "maccy": ["x86_64", "aarch64"],
     "motrix": ["x86_64", "aarch64"],
@@ -290,6 +292,12 @@ CASK_ARCHITECTURES = {
     "switchhosts": ["x86_64", "aarch64"],
     "readest": ["x86_64", "aarch64"],
 }
+
+
+# App IDs that were reviewed and rejected. The generator is otherwise additive,
+# so exclusions must be removed explicitly instead of silently surviving in catalog JSON.
+EXCLUDED_APP_IDS = {"alttab"}
+
 
 REVIEWED = {
     "yt-dlp": {
@@ -389,6 +397,44 @@ REVIEWED = {
             "en": "Requires macOS 13 or later. This variant installs only the macOS app; no Windows or Linux installation path is provided.",
             "ja": "macOS 13 以降が必要です。このバリアントは macOS アプリのみをインストールし、Windows や Linux のインストール経路は提供しません。",
             "ko": "macOS 13 이상이 필요합니다. 이 변형은 macOS 앱만 설치하며 Windows 또는 Linux 설치 경로는 제공하지 않습니다.",
+        },
+    },
+    "amethyst": {
+        "name": "Amethyst", "publisher": "Ian Ynda-Hummel and contributors", "category": "system", "mark": "Am", "accent": "#557fa8",
+        "repo": "ianyh/Amethyst", "license": "MIT", "licenseFile": "LICENSE.md",
+        "homepage": "https://github.com/ianyh/Amethyst", "cask": "amethyst",
+        "summary": {
+            "zh-CN": "macOS 平铺式窗口管理器，支持键盘快捷键、空间布局和自动窗口排列。",
+            "zh-TW": "macOS 平鋪式視窗管理員，支援鍵盤快捷鍵、空間佈局和自動視窗排列。",
+            "en": "A tiling window manager for macOS with keyboard shortcuts, Space layouts and automatic window arrangement.",
+            "ja": "キーボードショートカット、Space レイアウト、自動ウィンドウ配置に対応する macOS のタイル型ウィンドウマネージャー。",
+            "ko": "키보드 단축키, Spaces 레이아웃, 자동 창 배치를 지원하는 macOS 타일형 창 관리자.",
+        },
+        "extra": {
+            "zh-CN": "需要 macOS 12 或更高版本。首次使用需在隐私与安全设置中授予辅助功能权限；还可关闭“根据最近使用情况自动重新排列空间”以获得稳定的空间导航。",
+            "zh-TW": "需要 macOS 12 或更高版本。首次使用需在隱私與安全性設定中授予輔助使用權限；還可關閉「根據最近使用情況自動重新排列空間」以獲得穩定的空間導覽。",
+            "en": "Requires macOS 12 or later. Grant Accessibility permission in Privacy & Security settings on first use; disabling Automatically rearrange Spaces based on most recent use makes Space navigation predictable.",
+            "ja": "macOS 12 以降が必要です。初回使用時にプライバシーとセキュリティ設定でアクセシビリティ権限を許可してください。「最近の使用状況に基づいて Spaces を自動的に並べ替える」を無効にすると、Space ナビゲーションが安定します。",
+            "ko": "macOS 12 이상이 필요합니다. 처음 사용할 때 개인정보 보호 및 보안 설정에서 손쉬운 사용 권한을 허용해야 하며, '최근 사용 기록에 따라 Spaces 자동 재정렬'을 끄면 Spaces 탐색 동작이 예측 가능해집니다.",
+        },
+    },
+    "adrafinil": {
+        "name": "Adrafinil", "publisher": "kagerou and contributors", "category": "system", "mark": "Ad", "accent": "#607d9b",
+        "repo": "kageroumado/adrafinil", "license": "MIT", "licenseFile": "LICENSE",
+        "homepage": "https://github.com/kageroumado/adrafinil", "cask": "adrafinil",
+        "summary": {
+            "zh-CN": "macOS 防睡眠与唤醒保持工具，支持应用进程、CLI、定时保持和温度保护。",
+            "zh-TW": "macOS 防睡眠與喚醒保持工具，支援應用程式程序、CLI、定時保持和溫度保護。",
+            "en": "A macOS sleep-blocking and wake-hold tool with process integration, CLI access, timed holds and thermal protection.",
+            "ja": "プロセス連携、CLI、時間指定の保持、温度保護を備えた macOS のスリープ抑制・起床維持ツール。",
+            "ko": "프로세스 연동, CLI, 시간 지정 유지 및 온도 보호를 제공하는 macOS 수면 방지·깨우기 유지 도구.",
+        },
+        "extra": {
+            "zh-CN": "仅支持 Apple 芯片且需要 macOS 26 或更高版本。Cask 安装只放置应用；首次运行后需用户显式批准，才会注册用户 LaunchAgent、root LaunchDaemon 特权 helper 及可选 CLI/PATH 链接。",
+            "zh-TW": "僅支援 Apple 晶片且需要 macOS 26 或更高版本。Cask 安裝只放置應用程式；首次執行後需使用者明確批准，才會註冊使用者 LaunchAgent、root LaunchDaemon 特權 helper 及可選 CLI/PATH 連結。",
+            "en": "Apple silicon only; requires macOS 26 or later. The cask installation only places the app. After first launch, explicit user approval is required before registering the user LaunchAgent, root LaunchDaemon privileged helper and optional CLI/PATH links.",
+            "ja": "Apple シリコンのみ対応で、macOS 26 以降が必要です。Cask のインストールはアプリの配置のみです。初回起動後、ユーザー LaunchAgent、root の LaunchDaemon 特権ヘルパー、任意の CLI/PATH リンクの登録にはユーザーの明示的な許可が必要です。",
+            "ko": "Apple Silicon만 지원하며 macOS 26 이상이 필요합니다. Cask 설치는 앱 배치만 수행합니다. 처음 실행한 후 사용자 LaunchAgent, root LaunchDaemon 권한 헬퍼 및 선택적 CLI/PATH 링크를 등록하려면 사용자의 명시적 승인이 필요합니다.",
         },
     },
     "stats": {
@@ -1993,6 +2039,17 @@ REVIEWED = {
 
 
 def main() -> None:
+    excluded_in_reviewed = EXCLUDED_APP_IDS.intersection(REVIEWED)
+    if excluded_in_reviewed:
+        raise ValueError(f"Excluded app IDs must not have reviewed catalog entries: {sorted(excluded_in_reviewed)}")
+    for category_path in (ROOT / "catalog").glob("*.json"):
+        if category_path.name == "index.json":
+            continue
+        category = json.loads(category_path.read_text())
+        retained_apps = [app for app in category["apps"] if app["id"] not in EXCLUDED_APP_IDS]
+        if len(retained_apps) != len(category["apps"]):
+            category["apps"] = retained_apps
+            category_path.write_text(json.dumps(category, ensure_ascii=False, indent=2) + "\n")
     for app_id, source in REVIEWED.items():
         app = dict(source)
         variants = []
@@ -2045,7 +2102,7 @@ def main() -> None:
         path.write_text(json.dumps(category, ensure_ascii=False, indent=2) + "\n")
     index = ROOT / "catalog" / "index.json"
     document = json.loads(index.read_text())
-    document["catalogVersion"] = "2026.11.15-1"
+    document["catalogVersion"] = "2026.11.17-1"
     index.write_text(json.dumps(document, ensure_ascii=False, indent=2) + "\n")
     print(f"Added {len(REVIEWED)} reviewed applications")
 
