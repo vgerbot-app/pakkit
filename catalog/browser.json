@@ -92,6 +92,51 @@
           }
         }
       ]
+    },
+    {
+      "name": "Zen Browser",
+      "publisher": "Zen Browser contributors",
+      "category": "browser",
+      "mark": "Z",
+      "accent": "#657daa",
+      "license": "MPL-2.0",
+      "homepage": "https://zen-browser.app/",
+      "summary": {
+        "zh-CN": "基于 Firefox 的桌面浏览器，提供工作区、分栏视图和可定制界面。",
+        "zh-TW": "基於 Firefox 的桌面瀏覽器，提供工作區、分割檢視和可自訂介面。",
+        "en": "A Firefox-based desktop browser with workspaces, split views and a customizable interface.",
+        "ja": "ワークスペース、分割ビュー、カスタマイズ可能なインターフェイスを備える Firefox ベースのデスクトップブラウザー。",
+        "ko": "작업 공간, 분할 보기 및 사용자 정의 인터페이스를 제공하는 Firefox 기반 데스크톱 브라우저."
+      },
+      "sourceRepository": "https://github.com/zen-browser/desktop",
+      "licenseUrl": "https://raw.githubusercontent.com/zen-browser/desktop/1.24.2b/LICENSE",
+      "id": "zen-browser",
+      "variants": [
+        {
+          "id": "zen-browser-macos",
+          "os": "macos",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "通过 Homebrew 安装 zen；需要已安装并配置 brew。 macOS 使用同一通用 DMG 支持 Intel 与 ARM64。此 1.24.2b 在上游 release 页明确标为 Stable Release，b 不是 beta。浏览和可选同步会访问相应服务。",
+            "zh-TW": "透過 Homebrew 安裝 zen；需要已安裝並設定 brew。 macOS 使用同一通用 DMG 支援 Intel 與 ARM64。此 1.24.2b 在上游 release 頁明確標為 Stable Release，b 不是 beta。瀏覽和可選同步會存取相應服務。",
+            "en": "Installs zen with Homebrew. brew must already be installed and configured. One universal macOS DMG supports Intel and ARM64. Upstream explicitly labels 1.24.2b a Stable Release; the b suffix is not beta. Browsing and optional sync access their respective services.",
+            "ja": "Homebrew で zen をインストールします。brew を事前にインストールして設定する必要があります。 1 つのユニバーサル macOS DMG が Intel と ARM64 に対応します。1.24.2b は上流で Stable Release と明示され、b は beta ではありません。ブラウジングとオプションの同期はそれぞれのサービスにアクセスします。",
+            "ko": "Homebrew로 zen를 설치합니다. brew가 미리 설치되어 설정되어 있어야 합니다. 하나의 유니버설 macOS DMG가 Intel과 ARM64를 지원합니다. 1.24.2b는 업스트림에서 Stable Release로 명시되며 b 접미사는 베타가 아닙니다. 브라우징과 선택적 동기화는 해당 서비스에 접근합니다."
+          },
+          "sourceUrl": "https://zen-browser.app/",
+          "method": {
+            "type": "package_manager",
+            "manager": "brew",
+            "packageId": "zen",
+            "cask": true
+          }
+        }
+      ]
     }
   ]
 }

@@ -1,6 +1,140 @@
 {
   "apps": [
     {
+      "name": "ActivityWatch",
+      "publisher": "ActivityWatch contributors",
+      "category": "tools",
+      "mark": "AW",
+      "accent": "#58849c",
+      "license": "MPL-2.0",
+      "homepage": "https://activitywatch.net/",
+      "summary": {
+        "zh-CN": "本地活动时间跟踪工具，记录应用与窗口使用情况并提供时间线和分析界面。",
+        "zh-TW": "本機活動時間追蹤工具，記錄應用程式與視窗使用情況並提供時間線和分析介面。",
+        "en": "A local activity tracker recording application and window usage with timelines and analytics.",
+        "ja": "アプリとウィンドウの使用状況を記録し、タイムラインと分析を提供するローカルアクティビティトラッカー。",
+        "ko": "앱과 창 사용을 기록하고 타임라인과 분석을 제공하는 로컬 활동 추적 도구."
+      },
+      "sourceRepository": "https://github.com/ActivityWatch/activitywatch",
+      "licenseUrl": "https://raw.githubusercontent.com/ActivityWatch/activitywatch/v0.14.2/LICENSE.txt",
+      "id": "activitywatch",
+      "variants": [
+        {
+          "id": "activitywatch-macos",
+          "os": "macos",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "通过 Homebrew 安装 activitywatch；需要已安装并配置 brew。 需要 macOS 12 或更高版本。窗口标题记录需辅助功能权限；aw-qt 会启动本地服务与监视器，默认本地 API 未认证，其他本地进程可能访问活动数据。可选 AI 摘要会发送活动概览。",
+            "zh-TW": "透過 Homebrew 安裝 activitywatch；需要已安裝並設定 brew。 需要 macOS 12 或更高版本。視窗標題記錄需輔助使用權限；aw-qt 會啟動本機服務與監視器，預設本機 API 未認證，其他本機處理程序可能存取活動資料。可選 AI 摘要會傳送活動概覽。",
+            "en": "Installs activitywatch with Homebrew. brew must already be installed and configured. Requires macOS 12 or later. Window-title tracking needs Accessibility permission. aw-qt starts a local server and watchers; the default unauthenticated local API can expose activity data to other local processes. Optional AI summaries transmit an activity overview.",
+            "ja": "Homebrew で activitywatch をインストールします。brew を事前にインストールして設定する必要があります。 macOS 12 以降が必要です。ウィンドウタイトルの記録にはアクセシビリティ権限が必要です。aw-qt はローカルサーバーと watcher を起動し、デフォルトの未認証ローカル API から他のローカルプロセスが活動データにアクセスできる場合があります。オプションの AI 要約は活動概要を送信します。",
+            "ko": "Homebrew로 activitywatch를 설치합니다. brew가 미리 설치되어 설정되어 있어야 합니다. macOS 12 이상이 필요합니다. 창 제목 추적에는 손쉬운 사용 권한이 필요합니다. aw-qt는 로컬 서버와 감시자를 시작하며 기본 인증되지 않은 로컬 API를 통해 다른 로컬 프로세스가 활동 데이터에 접근할 수 있습니다. 선택적 AI 요약은 활동 개요를 전송합니다."
+          },
+          "sourceUrl": "https://activitywatch.net/",
+          "method": {
+            "type": "package_manager",
+            "manager": "brew",
+            "packageId": "activitywatch",
+            "cask": true
+          }
+        }
+      ]
+    },
+    {
+      "name": "Espanso",
+      "publisher": "Federico Terzi",
+      "category": "tools",
+      "mark": "E",
+      "accent": "#5c88a6",
+      "license": "GPL-3.0-only",
+      "homepage": "https://espanso.org/",
+      "summary": {
+        "zh-CN": "跨平台文本扩展工具，通过自定义触发词插入文本、剪贴板内容或命令输出。",
+        "zh-TW": "跨平台文字擴充工具，透過自訂觸發詞插入文字、剪貼簿內容或命令輸出。",
+        "en": "A cross-platform text expander inserting text, clipboard content or command output from custom triggers.",
+        "ja": "カスタムトリガーからテキスト、クリップボード内容、コマンド出力を挿入するクロスプラットフォームテキスト展開ツール。",
+        "ko": "사용자 정의 트리거로 텍스트, 클립보드 내용 또는 명령 출력을 삽입하는 크로스 플랫폼 텍스트 확장 도구."
+      },
+      "sourceRepository": "https://github.com/espanso/espanso",
+      "licenseUrl": "https://raw.githubusercontent.com/espanso/espanso/v2.4.1/LICENSE",
+      "id": "espanso",
+      "variants": [
+        {
+          "id": "espanso-macos",
+          "os": "macos",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "通过 Homebrew 安装 espanso；需要已安装并配置 brew。 需要辅助功能权限以识别系统范围输入。扩展可模拟键盘或暂时修改剪贴板；规则可执行命令，软件包需来自可信来源。后台服务与登录启动需由用户启用。",
+            "zh-TW": "透過 Homebrew 安裝 espanso；需要已安裝並設定 brew。 需要輔助使用權限以識別系統範圍輸入。擴充可模擬鍵盤或暫時修改剪貼簿；規則可執行命令，套件需來自可信來源。背景服務與登入啟動需由使用者啟用。",
+            "en": "Installs espanso with Homebrew. brew must already be installed and configured. Accessibility permission is required to recognize system-wide typing. Expansion can simulate keys or temporarily modify the clipboard; rules can execute commands, so packages need trusted sources. Background service and login startup are user-enabled.",
+            "ja": "Homebrew で espanso をインストールします。brew を事前にインストールして設定する必要があります。 システム全体の入力を認識するにはアクセシビリティ権限が必要です。展開はキー入力をシミュレートしたりクリップボードを一時変更したりします。ルールはコマンドを実行できるため、パッケージは信頼できるソースが必要です。バックグラウンドサービスとログイン起動はユーザーが有効にします。",
+            "ko": "Homebrew로 espanso를 설치합니다. brew가 미리 설치되어 설정되어 있어야 합니다. 시스템 전체 입력을 인식하려면 손쉬운 사용 권한이 필요합니다. 확장은 키 입력을 시뮬레이션하거나 클립보드를 일시적으로 수정할 수 있으며 규칙은 명령을 실행할 수 있으므로 패키지는 신뢰할 수 있는 소스에서 가져와야 합니다. 백그라운드 서비스와 로그인 시작은 사용자가 활성화합니다."
+          },
+          "sourceUrl": "https://espanso.org/",
+          "method": {
+            "type": "package_manager",
+            "manager": "brew",
+            "packageId": "espanso",
+            "cask": true
+          }
+        }
+      ]
+    },
+    {
+      "name": "FSearch",
+      "publisher": "Christian Boxdörfer and contributors",
+      "category": "tools",
+      "mark": "FS",
+      "accent": "#6388a5",
+      "license": "GPL-2.0-or-later",
+      "homepage": "https://github.com/cboxdoerfer/fsearch",
+      "summary": {
+        "zh-CN": "Linux 文件搜索工具，通过可配置索引快速按名称查找本地文件。",
+        "zh-TW": "Linux 檔案搜尋工具，透過可設定索引快速依名稱尋找本機檔案。",
+        "en": "A Linux file-search utility that uses configurable indexes for fast local filename searches.",
+        "ja": "設定可能なインデックスでローカルファイル名を高速検索する Linux 用ファイル検索ユーティリティ。",
+        "ko": "구성 가능한 인덱스로 로컬 파일 이름을 빠르게 검색하는 Linux용 파일 검색 도구."
+      },
+      "sourceRepository": "https://github.com/cboxdoerfer/fsearch",
+      "licenseUrl": "https://raw.githubusercontent.com/cboxdoerfer/fsearch/master/src/fsearch.c",
+      "id": "fsearch",
+      "variants": [
+        {
+          "id": "fsearch-linux-x86-64",
+          "os": "linux",
+          "architectures": [
+            "x86_64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "通过 Flatpak 从 Flathub 安装 io.github.cboxdoerfer.FSearch；需要已安装 Flatpak 并配置 Flathub remote。 当前 Flathub 应用 ref 仅验证 x86_64。首次搜索需建立文件索引；索引范围和更新由用户配置，可能读取所选目录的文件名和元数据。",
+            "zh-TW": "透過 Flatpak 從 Flathub 安裝 io.github.cboxdoerfer.FSearch；需要已安裝 Flatpak 並設定 Flathub remote。 目前 Flathub 應用程式 ref 僅驗證 x86_64。首次搜尋需建立檔案索引；索引範圍和更新由使用者設定，可能讀取所選目錄的檔名和中繼資料。",
+            "en": "Installs io.github.cboxdoerfer.FSearch from Flathub with Flatpak. Flatpak and the Flathub remote must already be configured. Only the x86_64 application ref is currently verified on Flathub. Initial searches require an index. Its scope and updates are user-configured and may read filenames and metadata in selected directories.",
+            "ja": "Flatpak で Flathub から io.github.cboxdoerfer.FSearch をインストールします。Flatpak と Flathub リモートを事前に設定する必要があります。 現在 Flathub で確認できるアプリ ref は x86_64 のみです。初回検索にはインデックス作成が必要です。対象範囲と更新はユーザー設定で、選択したディレクトリのファイル名やメタデータを読み取ります。",
+            "ko": "Flatpak으로 Flathub에서 io.github.cboxdoerfer.FSearch를 설치합니다. Flatpak과 Flathub 리모트가 미리 설정되어 있어야 합니다. 현재 Flathub에서는 x86_64 애플리케이션 ref만 확인했습니다. 첫 검색에는 인덱스 생성이 필요합니다. 범위와 업데이트는 사용자가 구성하며 선택한 디렉터리의 파일 이름과 메타데이터를 읽을 수 있습니다."
+          },
+          "sourceUrl": "https://github.com/cboxdoerfer/fsearch",
+          "method": {
+            "type": "package_manager",
+            "manager": "flatpak",
+            "packageId": "io.github.cboxdoerfer.FSearch",
+            "source": "flathub"
+          }
+        }
+      ]
+    },
+    {
       "id": "localsend",
       "name": "LocalSend",
       "publisher": "LocalSend",
@@ -88,6 +222,184 @@
             "type": "package_manager",
             "manager": "brew",
             "packageId": "localsend",
+            "cask": true
+          }
+        }
+      ]
+    },
+    {
+      "name": "Maccy",
+      "publisher": "Alex Rodionov",
+      "category": "tools",
+      "mark": "M",
+      "accent": "#7095d3",
+      "license": "MIT",
+      "homepage": "https://maccy.app/",
+      "summary": {
+        "zh-CN": "轻量级 macOS 剪贴板管理器，可搜索并快速使用历史复制内容。",
+        "zh-TW": "輕量級 macOS 剪貼簿管理器，可搜尋並快速使用歷史複製內容。",
+        "en": "A lightweight macOS clipboard manager for searching and quickly reusing copied content.",
+        "ja": "コピー履歴を検索してすばやく再利用できる軽量 macOS クリップボードマネージャー。",
+        "ko": "복사 기록을 검색하고 빠르게 다시 사용할 수 있는 가벼운 macOS 클립보드 관리자."
+      },
+      "sourceRepository": "https://github.com/p0deje/Maccy",
+      "licenseUrl": "https://raw.githubusercontent.com/p0deje/Maccy/HEAD/LICENSE",
+      "id": "maccy",
+      "variants": [
+        {
+          "id": "maccy-macos",
+          "os": "macos",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "通过 Homebrew 安装 maccy；需要已安装并配置 brew。 需要 macOS 14 或更高版本。剪贴板历史可能包含敏感信息，请按需要配置排除应用和清除策略。",
+            "zh-TW": "透過 Homebrew 安裝 maccy；需要已安裝並設定 brew。 需要 macOS 14 或更高版本。剪貼簿歷史可能包含敏感資訊，請按需要設定排除應用程式和清除策略。",
+            "en": "Installs maccy with Homebrew. brew must already be installed and configured. Requires macOS 14 or later. Clipboard history can contain sensitive data; configure application exclusions and clearing policies as needed.",
+            "ja": "Homebrew で maccy をインストールします。brew を事前にインストールして設定する必要があります。 macOS 14 以降が必要です。クリップボード履歴には機密情報が含まれる場合があるため、必要に応じて除外アプリと消去ポリシーを設定してください。",
+            "ko": "Homebrew로 maccy를 설치합니다. brew가 미리 설치되어 설정되어 있어야 합니다. macOS 14 이상이 필요합니다. 클립보드 기록에 민감한 정보가 포함될 수 있으므로 필요에 따라 제외 앱과 삭제 정책을 설정하세요."
+          },
+          "sourceUrl": "https://maccy.app/",
+          "method": {
+            "type": "package_manager",
+            "manager": "brew",
+            "packageId": "maccy",
+            "cask": true
+          }
+        }
+      ]
+    },
+    {
+      "name": "Vorssaint",
+      "publisher": "Vorssaint",
+      "category": "tools",
+      "mark": "V",
+      "accent": "#6389a6",
+      "license": "GPL-3.0-or-later",
+      "homepage": "https://github.com/vorssaint/vorssaint-utils",
+      "summary": {
+        "zh-CN": "Apple Silicon Mac 实用工具集，提供系统信息与常用桌面辅助功能。",
+        "zh-TW": "Apple Silicon Mac 實用工具集，提供系統資訊與常用桌面輔助功能。",
+        "en": "An Apple Silicon Mac utility collection with system information and desktop helpers.",
+        "ja": "システム情報とデスクトップ補助機能を備える Apple Silicon Mac 用ユーティリティ集。",
+        "ko": "시스템 정보와 데스크톱 보조 기능을 제공하는 Apple Silicon Mac 유틸리티 모음."
+      },
+      "sourceRepository": "https://github.com/vorssaint/vorssaint-utils",
+      "licenseUrl": "https://raw.githubusercontent.com/vorssaint/vorssaint-utils/v3.4.4/LICENSE",
+      "id": "vorssaint-utils",
+      "variants": [
+        {
+          "id": "vorssaint-utils-macos",
+          "os": "macos",
+          "architectures": [
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "通过 Homebrew 安装 vorssaint；需要已安装并配置 brew。 仅提供原生 ARM64 构建，需要 macOS 14 或更高版本；不声称支持 Intel 或通过 Rosetta 运行。具体系统权限取决于启用的工具。",
+            "zh-TW": "透過 Homebrew 安裝 vorssaint；需要已安裝並設定 brew。 僅提供原生 ARM64 建置，需要 macOS 14 或更高版本；不聲稱支援 Intel 或透過 Rosetta 執行。具體系統權限取決於啟用的工具。",
+            "en": "Installs vorssaint with Homebrew. brew must already be installed and configured. Only a native ARM64 build is provided, requiring macOS 14 or later. Intel and Rosetta operation are not claimed. System permissions depend on the enabled tools.",
+            "ja": "Homebrew で vorssaint をインストールします。brew を事前にインストールして設定する必要があります。 ネイティブ ARM64 ビルドのみで、macOS 14 以降が必要です。Intel や Rosetta での動作は示しません。システム権限は有効にするツールによります。",
+            "ko": "Homebrew로 vorssaint를 설치합니다. brew가 미리 설치되어 설정되어 있어야 합니다. 네이티브 ARM64 빌드만 제공하며 macOS 14 이상이 필요합니다. Intel이나 Rosetta 실행은 지원한다고 명시하지 않습니다. 시스템 권한은 활성화한 도구에 따라 다릅니다."
+          },
+          "sourceUrl": "https://github.com/vorssaint/vorssaint-utils",
+          "method": {
+            "type": "package_manager",
+            "manager": "brew",
+            "packageId": "vorssaint",
+            "cask": true
+          }
+        }
+      ]
+    },
+    {
+      "name": "wayback",
+      "publisher": "wabarc and contributors",
+      "category": "tools",
+      "mark": "Wb",
+      "accent": "#6587a4",
+      "license": "GPL-3.0-only",
+      "homepage": "https://github.com/wabarc/wayback",
+      "summary": {
+        "zh-CN": "网页归档命令行工具，将指定页面提交到一个或多个公共归档服务。",
+        "zh-TW": "網頁封存命令列工具，將指定頁面提交到一個或多個公共封存服務。",
+        "en": "A command-line web archiver that submits selected pages to one or more public archiving services.",
+        "ja": "指定した Web ページを一つ以上の公開アーカイブサービスへ送信するコマンドラインアーカイバー。",
+        "ko": "선택한 웹 페이지를 하나 이상의 공개 아카이브 서비스에 제출하는 명령줄 아카이버."
+      },
+      "sourceRepository": "https://github.com/wabarc/wayback",
+      "licenseUrl": "https://raw.githubusercontent.com/wabarc/wayback/main/LICENSE",
+      "id": "wayback",
+      "variants": [
+        {
+          "id": "wayback-linux-x86-64",
+          "os": "linux",
+          "architectures": [
+            "x86_64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "通过 Flatpak 从 Flathub 安装 org.eu.wabarc.wayback；需要已安装 Flatpak 并配置 Flathub remote。 当前 Flathub 应用 ref 仅验证 x86_64。归档会把 URL 及可访问页面内容发送给外部服务，可能形成公开且难以删除的副本；仅提交有权公开的内容。",
+            "zh-TW": "透過 Flatpak 從 Flathub 安裝 org.eu.wabarc.wayback；需要已安裝 Flatpak 並設定 Flathub remote。 目前 Flathub 應用程式 ref 僅驗證 x86_64。封存會將 URL 及可存取頁面內容傳送給外部服務，可能形成公開且難以刪除的副本；僅提交有權公開的內容。",
+            "en": "Installs org.eu.wabarc.wayback from Flathub with Flatpak. Flatpak and the Flathub remote must already be configured. Only the x86_64 application ref is currently verified on Flathub. Archiving sends URLs and accessible page content to external services and may create public, hard-to-delete copies. Submit only content you may publish.",
+            "ja": "Flatpak で Flathub から org.eu.wabarc.wayback をインストールします。Flatpak と Flathub リモートを事前に設定する必要があります。 現在 Flathub で確認できるアプリ ref は x86_64 のみです。URL とアクセス可能なページ内容を外部サービスへ送信し、公開され削除困難な複製が作られる場合があります。公開権限のある内容だけを送信してください。",
+            "ko": "Flatpak으로 Flathub에서 org.eu.wabarc.wayback를 설치합니다. Flatpak과 Flathub 리모트가 미리 설정되어 있어야 합니다. 현재 Flathub에서는 x86_64 애플리케이션 ref만 확인했습니다. 아카이빙은 URL과 접근 가능한 페이지 내용을 외부 서비스에 전송하며 공개되고 삭제하기 어려운 사본이 생길 수 있습니다. 공개 권한이 있는 내용만 제출하세요."
+          },
+          "sourceUrl": "https://github.com/wabarc/wayback",
+          "method": {
+            "type": "package_manager",
+            "manager": "flatpak",
+            "packageId": "org.eu.wabarc.wayback",
+            "source": "flathub"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Wox",
+      "publisher": "Wox launcher contributors",
+      "category": "tools",
+      "mark": "W",
+      "accent": "#6486a8",
+      "license": "GPL-3.0-only",
+      "homepage": "https://github.com/Wox-launcher/Wox",
+      "summary": {
+        "zh-CN": "跨平台桌面启动器，通过搜索框启动应用、查找内容并运行插件。",
+        "zh-TW": "跨平台桌面啟動器，透過搜尋框啟動應用程式、尋找內容並執行外掛。",
+        "en": "A cross-platform launcher for applications, content search and plugins through a search box.",
+        "ja": "検索ボックスからアプリ起動、コンテンツ検索、プラグイン実行を行うクロスプラットフォームランチャー。",
+        "ko": "검색 상자에서 앱 실행, 콘텐츠 검색 및 플러그인 실행을 지원하는 크로스 플랫폼 런처."
+      },
+      "sourceRepository": "https://github.com/Wox-launcher/Wox",
+      "licenseUrl": "https://raw.githubusercontent.com/Wox-launcher/Wox/v2.5.0/LICENSE",
+      "id": "wox",
+      "variants": [
+        {
+          "id": "wox-macos",
+          "os": "macos",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "通过 Homebrew 安装 wox；需要已安装并配置 brew。 需要 macOS 12 或更高版本，使用独立 Intel/ARM64 DMG。全局快捷键和插件可能需要辅助功能等权限；插件可执行代码，应仅安装可信来源。",
+            "zh-TW": "透過 Homebrew 安裝 wox；需要已安裝並設定 brew。 需要 macOS 12 或更高版本，使用獨立 Intel／ARM64 DMG。全域快速鍵和外掛可能需要輔助使用等權限；外掛可執行程式碼，應僅安裝可信來源。",
+            "en": "Installs wox with Homebrew. brew must already be installed and configured. Requires macOS 12 or later, with separate Intel/ARM64 DMGs. Global shortcuts and plugins may need Accessibility or other permissions. Plugins can execute code and must come from trusted sources.",
+            "ja": "Homebrew で wox をインストールします。brew を事前にインストールして設定する必要があります。 macOS 12 以降が必要で、Intel と ARM64 用に別の DMG があります。グローバルショートカットとプラグインにはアクセシビリティ等の権限が必要な場合があります。プラグインはコードを実行できるため信頼できるソースのみ使用してください。",
+            "ko": "Homebrew로 wox를 설치합니다. brew가 미리 설치되어 설정되어 있어야 합니다. macOS 12 이상이 필요하며 별도의 Intel/ARM64 DMG를 사용합니다. 전역 단축키와 플러그인에는 손쉬운 사용 등의 권한이 필요할 수 있습니다. 플러그인은 코드를 실행할 수 있으므로 신뢰할 수 있는 소스만 설치해야 합니다."
+          },
+          "sourceUrl": "https://github.com/Wox-launcher/Wox",
+          "method": {
+            "type": "package_manager",
+            "manager": "brew",
+            "packageId": "wox",
             "cask": true
           }
         }

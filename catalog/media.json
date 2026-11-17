@@ -1,440 +1,6 @@
 {
   "apps": [
     {
-      "id": "vlc",
-      "name": "VLC media player",
-      "publisher": "VideoLAN",
-      "category": "media",
-      "summary": {
-        "zh-CN": "自由开源多媒体播放器，支持常见音视频格式、字幕与网络流。",
-        "zh-TW": "自由開源多媒體播放器，支援常見影音格式、字幕與網路串流。",
-        "en": "A free and open-source multimedia player for common audio/video formats, subtitles and network streams.",
-        "ja": "一般的な音声・動画形式、字幕、ネットワークストリームに対応する自由でオープンソースのメディアプレーヤー。",
-        "ko": "일반적인 오디오/비디오 형식, 자막 및 네트워크 스트림을 지원하는 자유 오픈 소스 멀티미디어 플레이어."
-      },
-      "homepage": "https://www.videolan.org/vlc/",
-      "mark": "V",
-      "accent": "#ff8800",
-      "sourceRepository": "https://code.videolan.org/videolan/vlc",
-      "license": "GPL-2.0-or-later",
-      "licenseUrl": "https://code.videolan.org/videolan/vlc/-/raw/master/COPYING",
-      "variants": [
-        {
-          "id": "vlc-linux",
-          "os": "linux",
-          "architectures": [
-            "x86_64"
-          ],
-          "requiresAdmin": false,
-          "interactive": false,
-          "note": {
-            "zh-CN": "通过 Flatpak 从 Flathub 安装 org.videolan.VLC；需要已安装 Flatpak 并配置 Flathub remote。",
-            "zh-TW": "透過 Flatpak 從 Flathub 安裝 org.videolan.VLC；需要已安裝 Flatpak 並設定 Flathub remote。",
-            "en": "Installs org.videolan.VLC from Flathub with Flatpak. Flatpak and the Flathub remote must already be configured.",
-            "ja": "Flatpak で Flathub から org.videolan.VLC をインストールします。Flatpak と Flathub リモートを事前に設定する必要があります。",
-            "ko": "Flatpak으로 Flathub에서 org.videolan.VLC를 설치합니다. Flatpak과 Flathub 리모트가 미리 설정되어 있어야 합니다."
-          },
-          "sourceUrl": "https://www.videolan.org/vlc/",
-          "method": {
-            "type": "package_manager",
-            "manager": "flatpak",
-            "packageId": "org.videolan.VLC",
-            "source": "flathub"
-          }
-        },
-        {
-          "id": "vlc-windows",
-          "os": "windows",
-          "architectures": [
-            "x86_64",
-            "aarch64"
-          ],
-          "requiresAdmin": false,
-          "interactive": false,
-          "note": {
-            "zh-CN": "通过 winget 安装 VideoLAN.VLC（winget 源）；需要已安装并配置该包管理器。",
-            "zh-TW": "透過 winget 安裝 VideoLAN.VLC（winget 來源）；需要已安裝並設定該套件管理器。",
-            "en": "Installs VideoLAN.VLC with winget from the winget source. The package manager must already be installed and configured.",
-            "ja": "winget で VideoLAN.VLC をインストールします（winget ソース）。パッケージマネージャーを事前にインストールして設定する必要があります。",
-            "ko": "winget로 VideoLAN.VLC를 설치합니다(winget 소스). 패키지 관리자가 미리 설치되어 설정되어 있어야 합니다."
-          },
-          "sourceUrl": "https://www.videolan.org/vlc/",
-          "method": {
-            "type": "package_manager",
-            "manager": "winget",
-            "packageId": "VideoLAN.VLC",
-            "source": "winget"
-          }
-        },
-        {
-          "id": "vlc-macos",
-          "os": "macos",
-          "architectures": [
-            "x86_64",
-            "aarch64"
-          ],
-          "requiresAdmin": false,
-          "interactive": false,
-          "note": {
-            "zh-CN": "通过 brew 安装 vlc；需要已安装并配置该包管理器。",
-            "zh-TW": "透過 brew 安裝 vlc；需要已安裝並設定該套件管理器。",
-            "en": "Installs vlc with brew. The package manager must already be installed and configured.",
-            "ja": "brew で vlc をインストールします。パッケージマネージャーを事前にインストールして設定する必要があります。",
-            "ko": "brew로 vlc를 설치합니다. 패키지 관리자가 미리 설치되어 설정되어 있어야 합니다."
-          },
-          "sourceUrl": "https://www.videolan.org/vlc/",
-          "method": {
-            "type": "package_manager",
-            "manager": "brew",
-            "packageId": "vlc",
-            "cask": true
-          }
-        }
-      ]
-    },
-    {
-      "id": "obs-studio",
-      "name": "OBS Studio",
-      "publisher": "OBS Project",
-      "category": "media",
-      "summary": {
-        "zh-CN": "自由开源录屏与直播工具，支持场景、来源和音视频混音。",
-        "zh-TW": "自由開源錄影與直播工具，支援場景、來源與影音混音。",
-        "en": "Free and open-source screen recording and live streaming with scenes, sources and audio/video mixing.",
-        "ja": "シーン、ソース、音声・映像ミキシングに対応する自由でオープンソースの画面録画・ライブ配信ツール。",
-        "ko": "장면, 소스 및 오디오/비디오 믹싱을 지원하는 자유 오픈 소스 화면 녹화 및 라이브 스트리밍 도구."
-      },
-      "homepage": "https://obsproject.com/download",
-      "mark": "OB",
-      "accent": "#dce1e8",
-      "sourceRepository": "https://github.com/obsproject/obs-studio",
-      "license": "GPL-2.0-or-later",
-      "licenseUrl": "https://raw.githubusercontent.com/obsproject/obs-studio/master/COPYING",
-      "variants": [
-        {
-          "id": "obs-studio-linux",
-          "os": "linux",
-          "architectures": [
-            "x86_64"
-          ],
-          "requiresAdmin": false,
-          "interactive": false,
-          "note": {
-            "zh-CN": "通过 Flatpak 从 Flathub 安装 com.obsproject.Studio；需要已安装 Flatpak 并配置 Flathub remote。",
-            "zh-TW": "透過 Flatpak 從 Flathub 安裝 com.obsproject.Studio；需要已安裝 Flatpak 並設定 Flathub remote。",
-            "en": "Installs com.obsproject.Studio from Flathub with Flatpak. Flatpak and the Flathub remote must already be configured.",
-            "ja": "Flatpak で Flathub から com.obsproject.Studio をインストールします。Flatpak と Flathub リモートを事前に設定する必要があります。",
-            "ko": "Flatpak으로 Flathub에서 com.obsproject.Studio를 설치합니다. Flatpak과 Flathub 리모트가 미리 설정되어 있어야 합니다."
-          },
-          "sourceUrl": "https://obsproject.com/download",
-          "method": {
-            "type": "package_manager",
-            "manager": "flatpak",
-            "packageId": "com.obsproject.Studio",
-            "source": "flathub"
-          }
-        },
-        {
-          "id": "obs-studio-windows",
-          "os": "windows",
-          "architectures": [
-            "x86_64"
-          ],
-          "requiresAdmin": false,
-          "interactive": false,
-          "note": {
-            "zh-CN": "通过 winget 安装 OBSProject.OBSStudio（winget 源）；需要已安装并配置该包管理器。",
-            "zh-TW": "透過 winget 安裝 OBSProject.OBSStudio（winget 來源）；需要已安裝並設定該套件管理器。",
-            "en": "Installs OBSProject.OBSStudio with winget from the winget source. The package manager must already be installed and configured.",
-            "ja": "winget で OBSProject.OBSStudio をインストールします（winget ソース）。パッケージマネージャーを事前にインストールして設定する必要があります。",
-            "ko": "winget로 OBSProject.OBSStudio를 설치합니다(winget 소스). 패키지 관리자가 미리 설치되어 설정되어 있어야 합니다."
-          },
-          "sourceUrl": "https://obsproject.com/download",
-          "method": {
-            "type": "package_manager",
-            "manager": "winget",
-            "packageId": "OBSProject.OBSStudio",
-            "source": "winget"
-          }
-        },
-        {
-          "id": "obs-studio-macos",
-          "os": "macos",
-          "architectures": [
-            "x86_64",
-            "aarch64"
-          ],
-          "requiresAdmin": false,
-          "interactive": false,
-          "note": {
-            "zh-CN": "通过 brew 安装 obs；需要已安装并配置该包管理器。",
-            "zh-TW": "透過 brew 安裝 obs；需要已安裝並設定該套件管理器。",
-            "en": "Installs obs with brew. The package manager must already be installed and configured.",
-            "ja": "brew で obs をインストールします。パッケージマネージャーを事前にインストールして設定する必要があります。",
-            "ko": "brew로 obs를 설치합니다. 패키지 관리자가 미리 설치되어 설정되어 있어야 합니다."
-          },
-          "sourceUrl": "https://obsproject.com/download",
-          "method": {
-            "type": "package_manager",
-            "manager": "brew",
-            "packageId": "obs",
-            "cask": true
-          }
-        }
-      ]
-    },
-    {
-      "id": "gimp",
-      "name": "GIMP",
-      "publisher": "The GIMP Team",
-      "category": "media",
-      "summary": {
-        "zh-CN": "自由开源图像编辑器，支持图层、蒙版、绘画与插件。",
-        "zh-TW": "自由開源圖像編輯器，支援圖層、遮色片、繪畫與外掛。",
-        "en": "A free and open-source image editor with layers, masks, painting and plugins.",
-        "ja": "レイヤー、マスク、ペイント、プラグインに対応する自由でオープンソースの画像エディター。",
-        "ko": "레이어, 마스크, 페인팅 및 플러그인을 지원하는 자유 오픈 소스 이미지 편집기."
-      },
-      "homepage": "https://www.gimp.org/downloads/",
-      "mark": "G",
-      "accent": "#80755f",
-      "sourceRepository": "https://gitlab.gnome.org/GNOME/gimp",
-      "license": "GPL-3.0-or-later",
-      "licenseUrl": "https://gitlab.gnome.org/GNOME/gimp/-/raw/master/COPYING",
-      "variants": [
-        {
-          "id": "gimp-linux",
-          "os": "linux",
-          "architectures": [
-            "x86_64",
-            "aarch64"
-          ],
-          "requiresAdmin": false,
-          "interactive": false,
-          "note": {
-            "zh-CN": "通过 Flatpak 从 Flathub 安装 org.gimp.GIMP；需要已安装 Flatpak 并配置 Flathub remote。",
-            "zh-TW": "透過 Flatpak 從 Flathub 安裝 org.gimp.GIMP；需要已安裝 Flatpak 並設定 Flathub remote。",
-            "en": "Installs org.gimp.GIMP from Flathub with Flatpak. Flatpak and the Flathub remote must already be configured.",
-            "ja": "Flatpak で Flathub から org.gimp.GIMP をインストールします。Flatpak と Flathub リモートを事前に設定する必要があります。",
-            "ko": "Flatpak으로 Flathub에서 org.gimp.GIMP를 설치합니다. Flatpak과 Flathub 리모트가 미리 설정되어 있어야 합니다."
-          },
-          "sourceUrl": "https://www.gimp.org/downloads/",
-          "method": {
-            "type": "package_manager",
-            "manager": "flatpak",
-            "packageId": "org.gimp.GIMP",
-            "source": "flathub"
-          }
-        },
-        {
-          "id": "gimp-windows",
-          "os": "windows",
-          "architectures": [
-            "x86_64",
-            "aarch64"
-          ],
-          "requiresAdmin": false,
-          "interactive": false,
-          "note": {
-            "zh-CN": "通过 winget 安装 GIMP.GIMP（winget 源）；需要已安装并配置该包管理器。",
-            "zh-TW": "透過 winget 安裝 GIMP.GIMP（winget 來源）；需要已安裝並設定該套件管理器。",
-            "en": "Installs GIMP.GIMP with winget from the winget source. The package manager must already be installed and configured.",
-            "ja": "winget で GIMP.GIMP をインストールします（winget ソース）。パッケージマネージャーを事前にインストールして設定する必要があります。",
-            "ko": "winget로 GIMP.GIMP를 설치합니다(winget 소스). 패키지 관리자가 미리 설치되어 설정되어 있어야 합니다."
-          },
-          "sourceUrl": "https://www.gimp.org/downloads/",
-          "method": {
-            "type": "package_manager",
-            "manager": "winget",
-            "packageId": "GIMP.GIMP",
-            "source": "winget"
-          }
-        },
-        {
-          "id": "gimp-macos",
-          "os": "macos",
-          "architectures": [
-            "x86_64",
-            "aarch64"
-          ],
-          "requiresAdmin": false,
-          "interactive": false,
-          "note": {
-            "zh-CN": "通过 brew 安装 gimp；需要已安装并配置该包管理器。",
-            "zh-TW": "透過 brew 安裝 gimp；需要已安裝並設定該套件管理器。",
-            "en": "Installs gimp with brew. The package manager must already be installed and configured.",
-            "ja": "brew で gimp をインストールします。パッケージマネージャーを事前にインストールして設定する必要があります。",
-            "ko": "brew로 gimp를 설치합니다. 패키지 관리자가 미리 설치되어 설정되어 있어야 합니다."
-          },
-          "sourceUrl": "https://www.gimp.org/downloads/",
-          "method": {
-            "type": "package_manager",
-            "manager": "brew",
-            "packageId": "gimp",
-            "cask": true
-          }
-        }
-      ]
-    },
-    {
-      "id": "blender",
-      "name": "Blender",
-      "publisher": "Blender Foundation",
-      "category": "media",
-      "summary": {
-        "zh-CN": "自由开源三维创作套件，覆盖建模、雕刻、动画、渲染与视频编辑。",
-        "zh-TW": "自由開源三維創作套件，涵蓋建模、雕刻、動畫、算繪與影片編輯。",
-        "en": "A free and open-source 3D suite for modeling, sculpting, animation, rendering and video editing.",
-        "ja": "モデリング、スカルプト、アニメーション、レンダリング、動画編集を網羅する自由でオープンソースの 3D スイート。",
-        "ko": "모델링, 스컬핑, 애니메이션, 렌더링 및 비디오 편집을 위한 자유 오픈 소스 3D 제품군."
-      },
-      "homepage": "https://www.blender.org/download/",
-      "mark": "B",
-      "accent": "#ea7600",
-      "sourceRepository": "https://projects.blender.org/blender/blender",
-      "license": "GPL-2.0-or-later",
-      "licenseUrl": "https://projects.blender.org/blender/blender/raw/branch/main/doc/license/GPL-license.txt",
-      "variants": [
-        {
-          "id": "blender-linux",
-          "os": "linux",
-          "architectures": [
-            "x86_64"
-          ],
-          "requiresAdmin": false,
-          "interactive": false,
-          "note": {
-            "zh-CN": "通过 Flatpak 从 Flathub 安装 org.blender.Blender；需要已安装 Flatpak 并配置 Flathub remote。",
-            "zh-TW": "透過 Flatpak 從 Flathub 安裝 org.blender.Blender；需要已安裝 Flatpak 並設定 Flathub remote。",
-            "en": "Installs org.blender.Blender from Flathub with Flatpak. Flatpak and the Flathub remote must already be configured.",
-            "ja": "Flatpak で Flathub から org.blender.Blender をインストールします。Flatpak と Flathub リモートを事前に設定する必要があります。",
-            "ko": "Flatpak으로 Flathub에서 org.blender.Blender를 설치합니다. Flatpak과 Flathub 리모트가 미리 설정되어 있어야 합니다."
-          },
-          "sourceUrl": "https://www.blender.org/download/",
-          "method": {
-            "type": "package_manager",
-            "manager": "flatpak",
-            "packageId": "org.blender.Blender",
-            "source": "flathub"
-          }
-        },
-        {
-          "id": "blender-windows",
-          "os": "windows",
-          "architectures": [
-            "x86_64",
-            "aarch64"
-          ],
-          "requiresAdmin": false,
-          "interactive": false,
-          "note": {
-            "zh-CN": "通过 winget 安装 BlenderFoundation.Blender（winget 源）；需要已安装并配置该包管理器。",
-            "zh-TW": "透過 winget 安裝 BlenderFoundation.Blender（winget 來源）；需要已安裝並設定該套件管理器。",
-            "en": "Installs BlenderFoundation.Blender with winget from the winget source. The package manager must already be installed and configured.",
-            "ja": "winget で BlenderFoundation.Blender をインストールします（winget ソース）。パッケージマネージャーを事前にインストールして設定する必要があります。",
-            "ko": "winget로 BlenderFoundation.Blender를 설치합니다(winget 소스). 패키지 관리자가 미리 설치되어 설정되어 있어야 합니다."
-          },
-          "sourceUrl": "https://www.blender.org/download/",
-          "method": {
-            "type": "package_manager",
-            "manager": "winget",
-            "packageId": "BlenderFoundation.Blender",
-            "source": "winget"
-          }
-        },
-        {
-          "id": "blender-macos-aarch64",
-          "os": "macos",
-          "architectures": [
-            "aarch64"
-          ],
-          "requiresAdmin": false,
-          "interactive": false,
-          "note": {
-            "zh-CN": "通过 brew 安装 blender；需要已安装并配置该包管理器。",
-            "zh-TW": "透過 brew 安裝 blender；需要已安裝並設定該套件管理器。",
-            "en": "Installs blender with brew. The package manager must already be installed and configured.",
-            "ja": "brew で blender をインストールします。パッケージマネージャーを事前にインストールして設定する必要があります。",
-            "ko": "brew로 blender를 설치합니다. 패키지 관리자가 미리 설치되어 설정되어 있어야 합니다."
-          },
-          "sourceUrl": "https://www.blender.org/download/",
-          "method": {
-            "type": "package_manager",
-            "manager": "brew",
-            "packageId": "blender",
-            "cask": true
-          }
-        }
-      ]
-    },
-    {
-      "id": "krita",
-      "name": "Krita",
-      "publisher": "KDE",
-      "category": "media",
-      "summary": {
-        "zh-CN": "自由开源数字绘画与插画应用，提供笔刷引擎、图层、动画和色彩管理；采用 GPLv3 许可。",
-        "zh-TW": "自由開源數位繪畫與插畫應用，提供筆刷引擎、圖層、動畫與色彩管理；採用 GPLv3 授權。",
-        "en": "A free and open-source digital painting and illustration app with brush engines, layers, animation and color management, licensed under GPLv3.",
-        "ja": "ブラシエンジン、レイヤー、アニメーション、カラーマネジメントを備える GPLv3 ライセンスの自由でオープンソースなデジタルペイント・イラストアプリ。",
-        "ko": "브러시 엔진, 레이어, 애니메이션 및 색상 관리를 제공하는 GPLv3 라이선스의 자유 오픈 소스 디지털 페인팅·일러스트 앱."
-      },
-      "homepage": "https://krita.org/",
-      "mark": "K",
-      "accent": "#3daee9",
-      "sourceRepository": "https://invent.kde.org/graphics/krita",
-      "license": "GPL-3.0-only",
-      "licenseUrl": "https://invent.kde.org/graphics/krita/-/raw/master/COPYING",
-      "variants": [
-        {
-          "id": "krita-linux",
-          "os": "linux",
-          "architectures": [
-            "x86_64"
-          ],
-          "requiresAdmin": false,
-          "interactive": false,
-          "note": {
-            "zh-CN": "通过 Flatpak 从 Flathub 安装 org.kde.krita；需要已安装 Flatpak 并配置 Flathub remote。",
-            "zh-TW": "透過 Flatpak 從 Flathub 安裝 org.kde.krita；需要已安裝 Flatpak 並設定 Flathub remote。",
-            "en": "Installs org.kde.krita from Flathub with Flatpak. Flatpak and the Flathub remote must already be configured.",
-            "ja": "Flatpak で Flathub から org.kde.krita をインストールします。Flatpak と Flathub リモートを事前に設定する必要があります。",
-            "ko": "Flatpak으로 Flathub에서 org.kde.krita를 설치합니다. Flatpak과 Flathub 리모트가 미리 설정되어 있어야 합니다."
-          },
-          "sourceUrl": "https://krita.org/en/download/",
-          "method": {
-            "type": "package_manager",
-            "manager": "flatpak",
-            "packageId": "org.kde.krita",
-            "source": "flathub"
-          }
-        },
-        {
-          "id": "krita-windows",
-          "os": "windows",
-          "architectures": [
-            "x86_64"
-          ],
-          "requiresAdmin": false,
-          "interactive": false,
-          "note": {
-            "zh-CN": "通过 winget 安装 KDE.Krita（winget 源）；需要已安装并配置该包管理器。",
-            "zh-TW": "透過 winget 安裝 KDE.Krita（winget 來源）；需要已安裝並設定該套件管理器。",
-            "en": "Installs KDE.Krita with winget from the winget source. The package manager must already be installed and configured.",
-            "ja": "winget で KDE.Krita をインストールします（winget ソース）。パッケージマネージャーを事前にインストールして設定する必要があります。",
-            "ko": "winget로 KDE.Krita를 설치합니다(winget 소스). 패키지 관리자가 미리 설치되어 설정되어 있어야 합니다."
-          },
-          "sourceUrl": "https://krita.org/en/download/",
-          "method": {
-            "type": "package_manager",
-            "manager": "winget",
-            "packageId": "KDE.Krita",
-            "source": "winget"
-          }
-        }
-      ]
-    },
-    {
       "id": "audacity",
       "name": "Audacity",
       "publisher": "Muse Group & contributors",
@@ -594,6 +160,500 @@
       ]
     },
     {
+      "name": "Blanket",
+      "publisher": "Rafael Mardojai CM and contributors",
+      "category": "media",
+      "mark": "Bl",
+      "accent": "#6687a4",
+      "license": "GPL-3.0-or-later",
+      "homepage": "https://apps.gnome.org/Blanket/",
+      "summary": {
+        "zh-CN": "环境声音播放器，组合雨声、风声等背景音并调节各音轨音量。",
+        "zh-TW": "環境聲音播放器，組合雨聲、風聲等背景音並調節各音軌音量。",
+        "en": "An ambient-sound player that mixes rain, wind and other background tracks with individual volume controls.",
+        "ja": "雨や風などの環境音を組み合わせ、トラックごとの音量を調整できるアンビエントサウンドプレーヤー。",
+        "ko": "빗소리, 바람 소리 등 배경음을 조합하고 트랙별 음량을 조절하는 앰비언트 사운드 플레이어."
+      },
+      "sourceRepository": "https://github.com/rafaelmardojai/blanket",
+      "licenseUrl": "https://raw.githubusercontent.com/rafaelmardojai/blanket/master/blanket/main.py",
+      "id": "blanket",
+      "variants": [
+        {
+          "id": "blanket-linux-x86-64",
+          "os": "linux",
+          "architectures": [
+            "x86_64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "通过 Flatpak 从 Flathub 安装 com.rafaelmardojai.Blanket；需要已安装 Flatpak 并配置 Flathub remote。 当前 Flathub 应用 ref 仅验证 x86_64。随附声音素材有独立许可说明；自定义音频由用户选择并保留其原有权利和许可。",
+            "zh-TW": "透過 Flatpak 從 Flathub 安裝 com.rafaelmardojai.Blanket；需要已安裝 Flatpak 並設定 Flathub remote。 目前 Flathub 應用程式 ref 僅驗證 x86_64。隨附聲音素材有獨立授權說明；自訂音訊由使用者選擇並保留其原有權利和授權。",
+            "en": "Installs com.rafaelmardojai.Blanket from Flathub with Flatpak. Flatpak and the Flathub remote must already be configured. Only the x86_64 application ref is currently verified on Flathub. Bundled sounds have separate license notices. User-selected custom audio retains its own rights and licensing.",
+            "ja": "Flatpak で Flathub から com.rafaelmardojai.Blanket をインストールします。Flatpak と Flathub リモートを事前に設定する必要があります。 現在 Flathub で確認できるアプリ ref は x86_64 のみです。同梱サウンドには個別のライセンス表示があります。ユーザー追加の音声には元の権利とライセンスが適用されます。",
+            "ko": "Flatpak으로 Flathub에서 com.rafaelmardojai.Blanket를 설치합니다. Flatpak과 Flathub 리모트가 미리 설정되어 있어야 합니다. 현재 Flathub에서는 x86_64 애플리케이션 ref만 확인했습니다. 번들 사운드에는 별도의 라이선스 고지가 있습니다. 사용자가 추가한 오디오에는 기존 권리와 라이선스가 적용됩니다."
+          },
+          "sourceUrl": "https://apps.gnome.org/Blanket/",
+          "method": {
+            "type": "package_manager",
+            "manager": "flatpak",
+            "packageId": "com.rafaelmardojai.Blanket",
+            "source": "flathub"
+          }
+        }
+      ]
+    },
+    {
+      "id": "blender",
+      "name": "Blender",
+      "publisher": "Blender Foundation",
+      "category": "media",
+      "summary": {
+        "zh-CN": "自由开源三维创作套件，覆盖建模、雕刻、动画、渲染与视频编辑。",
+        "zh-TW": "自由開源三維創作套件，涵蓋建模、雕刻、動畫、算繪與影片編輯。",
+        "en": "A free and open-source 3D suite for modeling, sculpting, animation, rendering and video editing.",
+        "ja": "モデリング、スカルプト、アニメーション、レンダリング、動画編集を網羅する自由でオープンソースの 3D スイート。",
+        "ko": "모델링, 스컬핑, 애니메이션, 렌더링 및 비디오 편집을 위한 자유 오픈 소스 3D 제품군."
+      },
+      "homepage": "https://www.blender.org/download/",
+      "mark": "B",
+      "accent": "#ea7600",
+      "sourceRepository": "https://projects.blender.org/blender/blender",
+      "license": "GPL-2.0-or-later",
+      "licenseUrl": "https://projects.blender.org/blender/blender/raw/branch/main/doc/license/GPL-license.txt",
+      "variants": [
+        {
+          "id": "blender-linux",
+          "os": "linux",
+          "architectures": [
+            "x86_64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "通过 Flatpak 从 Flathub 安装 org.blender.Blender；需要已安装 Flatpak 并配置 Flathub remote。",
+            "zh-TW": "透過 Flatpak 從 Flathub 安裝 org.blender.Blender；需要已安裝 Flatpak 並設定 Flathub remote。",
+            "en": "Installs org.blender.Blender from Flathub with Flatpak. Flatpak and the Flathub remote must already be configured.",
+            "ja": "Flatpak で Flathub から org.blender.Blender をインストールします。Flatpak と Flathub リモートを事前に設定する必要があります。",
+            "ko": "Flatpak으로 Flathub에서 org.blender.Blender를 설치합니다. Flatpak과 Flathub 리모트가 미리 설정되어 있어야 합니다."
+          },
+          "sourceUrl": "https://www.blender.org/download/",
+          "method": {
+            "type": "package_manager",
+            "manager": "flatpak",
+            "packageId": "org.blender.Blender",
+            "source": "flathub"
+          }
+        },
+        {
+          "id": "blender-windows",
+          "os": "windows",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "通过 winget 安装 BlenderFoundation.Blender（winget 源）；需要已安装并配置该包管理器。",
+            "zh-TW": "透過 winget 安裝 BlenderFoundation.Blender（winget 來源）；需要已安裝並設定該套件管理器。",
+            "en": "Installs BlenderFoundation.Blender with winget from the winget source. The package manager must already be installed and configured.",
+            "ja": "winget で BlenderFoundation.Blender をインストールします（winget ソース）。パッケージマネージャーを事前にインストールして設定する必要があります。",
+            "ko": "winget로 BlenderFoundation.Blender를 설치합니다(winget 소스). 패키지 관리자가 미리 설치되어 설정되어 있어야 합니다."
+          },
+          "sourceUrl": "https://www.blender.org/download/",
+          "method": {
+            "type": "package_manager",
+            "manager": "winget",
+            "packageId": "BlenderFoundation.Blender",
+            "source": "winget"
+          }
+        },
+        {
+          "id": "blender-macos-aarch64",
+          "os": "macos",
+          "architectures": [
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "通过 brew 安装 blender；需要已安装并配置该包管理器。",
+            "zh-TW": "透過 brew 安裝 blender；需要已安裝並設定該套件管理器。",
+            "en": "Installs blender with brew. The package manager must already be installed and configured.",
+            "ja": "brew で blender をインストールします。パッケージマネージャーを事前にインストールして設定する必要があります。",
+            "ko": "brew로 blender를 설치합니다. 패키지 관리자가 미리 설치되어 설정되어 있어야 합니다."
+          },
+          "sourceUrl": "https://www.blender.org/download/",
+          "method": {
+            "type": "package_manager",
+            "manager": "brew",
+            "packageId": "blender",
+            "cask": true
+          }
+        }
+      ]
+    },
+    {
+      "name": "Cava",
+      "publisher": "Karl Stavestrand and contributors",
+      "category": "media",
+      "mark": "Ca",
+      "accent": "#6687a4",
+      "license": "MIT",
+      "homepage": "https://github.com/karlstav/cava",
+      "summary": {
+        "zh-CN": "终端音频可视化工具，将实时音频输入显示为可配置的频谱。",
+        "zh-TW": "終端音訊視覺化工具，將即時音訊輸入顯示為可設定頻譜。",
+        "en": "A terminal audio visualizer that renders live audio input as a configurable spectrum.",
+        "ja": "ライブ音声入力を設定可能なスペクトルとして表示するターミナルオーディオビジュアライザー。",
+        "ko": "실시간 오디오 입력을 설정 가능한 스펙트럼으로 표시하는 터미널 오디오 시각화 도구."
+      },
+      "sourceRepository": "https://github.com/karlstav/cava",
+      "licenseUrl": "https://raw.githubusercontent.com/karlstav/cava/master/LICENSE",
+      "id": "cava",
+      "variants": [
+        {
+          "id": "cava-macos",
+          "os": "macos",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "通过 Homebrew 安装 cava；需要已安装并配置 brew。 Homebrew formula 仅提供本目录已验证的 macOS 架构，并含 Intel macOS bottle。使用需可访问的音频输入或支持的播放后端，安装不开始捕获音频。",
+            "zh-TW": "透過 Homebrew 安裝 cava；需要已安裝並設定 brew。 Homebrew formula 僅提供本目錄已驗證的 macOS 架構，並含 Intel macOS bottle。使用需可存取的音訊輸入或支援的播放後端，安裝不開始擷取音訊。",
+            "en": "Installs cava with Homebrew. brew must already be installed and configured. The Homebrew formula provides the macOS architectures verified for this catalog, including an Intel-macOS bottle. Accessible audio input or a supported playback backend is required; installation starts no audio capture.",
+            "ja": "Homebrew で cava をインストールします。brew を事前にインストールして設定する必要があります。 Homebrew formula はこのカタログで確認済みの macOS アーキテクチャを提供し、Intel macOS bottle もあります。音声入力または対応再生バックエンドが必要で、インストール時に音声キャプチャは開始されません。",
+            "ko": "Homebrew로 cava를 설치합니다. brew가 미리 설치되어 설정되어 있어야 합니다. Homebrew formula는 이 카탈로그에서 확인된 macOS 아키텍처를 제공하며 Intel macOS bottle도 포함합니다. 접근 가능한 오디오 입력 또는 지원되는 재생 백엔드가 필요하며 설치 시 오디오 캡처를 시작하지 않습니다."
+          },
+          "sourceUrl": "https://github.com/karlstav/cava",
+          "method": {
+            "type": "package_manager",
+            "manager": "brew",
+            "packageId": "cava",
+            "cask": false
+          }
+        }
+      ]
+    },
+    {
+      "name": "Easy Effects",
+      "publisher": "Wellington Wallace and contributors",
+      "category": "media",
+      "mark": "EE",
+      "accent": "#6289a8",
+      "license": "GPL-3.0-or-later",
+      "homepage": "https://github.com/wwmm/easyeffects",
+      "summary": {
+        "zh-CN": "PipeWire 音频效果处理器，为输入和输出音频流配置均衡器、压缩器等效果。",
+        "zh-TW": "PipeWire 音訊效果處理器，為輸入和輸出音訊串流設定等化器、壓縮器等效果。",
+        "en": "A PipeWire audio-effects processor for input and output streams, including equalizers and compressors.",
+        "ja": "入出力オーディオストリームにイコライザーやコンプレッサー等を設定する PipeWire エフェクトプロセッサー。",
+        "ko": "입출력 오디오 스트림에 이퀄라이저와 컴프레서 등의 효과를 설정하는 PipeWire 오디오 효과 처리기."
+      },
+      "sourceRepository": "https://github.com/wwmm/easyeffects",
+      "licenseUrl": "https://raw.githubusercontent.com/wwmm/easyeffects/master/LICENSE",
+      "id": "easyeffects",
+      "variants": [
+        {
+          "id": "easyeffects-linux-x86-64",
+          "os": "linux",
+          "architectures": [
+            "x86_64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "通过 Flatpak 从 Flathub 安装 com.github.wwmm.easyeffects；需要已安装 Flatpak 并配置 Flathub remote。 当前 Flathub 应用 ref 仅验证 x86_64。运行需要可用的 PipeWire 音频服务；启用效果会改变所选音频流的处理，安装本身不调整系统音频配置。",
+            "zh-TW": "透過 Flatpak 從 Flathub 安裝 com.github.wwmm.easyeffects；需要已安裝 Flatpak 並設定 Flathub remote。 目前 Flathub 應用程式 ref 僅驗證 x86_64。執行需要可用的 PipeWire 音訊服務；啟用效果會改變所選音訊串流的處理，安裝本身不調整系統音訊設定。",
+            "en": "Installs com.github.wwmm.easyeffects from Flathub with Flatpak. Flatpak and the Flathub remote must already be configured. Only the x86_64 application ref is currently verified on Flathub. A working PipeWire service is required. Enabled effects change processing for selected streams; installation itself does not alter system audio configuration.",
+            "ja": "Flatpak で Flathub から com.github.wwmm.easyeffects をインストールします。Flatpak と Flathub リモートを事前に設定する必要があります。 現在 Flathub で確認できるアプリ ref は x86_64 のみです。動作には PipeWire サービスが必要です。有効にしたエフェクトは選択したストリームの処理を変更しますが、インストール自体はシステム音声設定を変更しません。",
+            "ko": "Flatpak으로 Flathub에서 com.github.wwmm.easyeffects를 설치합니다. Flatpak과 Flathub 리모트가 미리 설정되어 있어야 합니다. 현재 Flathub에서는 x86_64 애플리케이션 ref만 확인했습니다. 실행에는 PipeWire 서비스가 필요합니다. 활성화한 효과는 선택한 스트림의 처리를 변경하지만 설치 자체가 시스템 오디오 구성을 바꾸지는 않습니다."
+          },
+          "sourceUrl": "https://github.com/wwmm/easyeffects",
+          "method": {
+            "type": "package_manager",
+            "manager": "flatpak",
+            "packageId": "com.github.wwmm.easyeffects",
+            "source": "flathub"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Feishin",
+      "publisher": "jeffvli and contributors",
+      "category": "media",
+      "mark": "F",
+      "accent": "#5f87a7",
+      "license": "GPL-3.0-only",
+      "homepage": "https://github.com/jeffvli/feishin",
+      "summary": {
+        "zh-CN": "自托管音乐服务桌面客户端，支持 Subsonic、Navidrome、Jellyfin 等音乐库。",
+        "zh-TW": "自託管音樂服務桌面用戶端，支援 Subsonic、Navidrome、Jellyfin 等音樂庫。",
+        "en": "A desktop client for self-hosted music services including Subsonic, Navidrome and Jellyfin libraries.",
+        "ja": "Subsonic、Navidrome、Jellyfin 等のライブラリに対応するセルフホスト音楽サービス用デスクトップクライアント。",
+        "ko": "Subsonic, Navidrome, Jellyfin 등의 라이브러리를 지원하는 자체 호스팅 음악 서비스 데스크톱 클라이언트."
+      },
+      "sourceRepository": "https://github.com/jeffvli/feishin",
+      "licenseUrl": "https://raw.githubusercontent.com/jeffvli/feishin/development/LICENSE",
+      "id": "feishin",
+      "variants": [
+        {
+          "id": "feishin-linux-x86-64",
+          "os": "linux",
+          "architectures": [
+            "x86_64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "通过 Flatpak 从 Flathub 安装 org.jeffvli.feishin；需要已安装 Flatpak 并配置 Flathub remote。 当前 Flathub 应用 ref 仅验证 x86_64。使用需另行提供兼容音乐服务器及账号；音乐会从用户配置的服务器读取，安装不提供音乐内容或托管服务。",
+            "zh-TW": "透過 Flatpak 從 Flathub 安裝 org.jeffvli.feishin；需要已安裝 Flatpak 並設定 Flathub remote。 目前 Flathub 應用程式 ref 僅驗證 x86_64。使用需另行提供相容音樂伺服器及帳號；音樂會從使用者設定的伺服器讀取，安裝不提供音樂內容或託管服務。",
+            "en": "Installs org.jeffvli.feishin from Flathub with Flatpak. Flatpak and the Flathub remote must already be configured. Only the x86_64 application ref is currently verified on Flathub. A compatible music server and account are required separately. Music is read from the configured server; installation provides neither content nor hosting.",
+            "ja": "Flatpak で Flathub から org.jeffvli.feishin をインストールします。Flatpak と Flathub リモートを事前に設定する必要があります。 現在 Flathub で確認できるアプリ ref は x86_64 のみです。互換音楽サーバーとアカウントを別途用意する必要があります。音楽は設定したサーバーから読み込み、インストールでコンテンツやホスティングは提供されません。",
+            "ko": "Flatpak으로 Flathub에서 org.jeffvli.feishin를 설치합니다. Flatpak과 Flathub 리모트가 미리 설정되어 있어야 합니다. 현재 Flathub에서는 x86_64 애플리케이션 ref만 확인했습니다. 호환 음악 서버와 계정이 별도로 필요합니다. 음악은 구성된 서버에서 읽으며 설치 시 콘텐츠나 호스팅을 제공하지 않습니다."
+          },
+          "sourceUrl": "https://github.com/jeffvli/feishin",
+          "method": {
+            "type": "package_manager",
+            "manager": "flatpak",
+            "packageId": "org.jeffvli.feishin",
+            "source": "flathub"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Folo",
+      "publisher": "RSSNext",
+      "category": "media",
+      "mark": "F",
+      "accent": "#5d85a9",
+      "license": "AGPL-3.0-only",
+      "homepage": "https://folo.is/",
+      "summary": {
+        "zh-CN": "内容订阅与阅读桌面客户端，组织信息流、订阅源和稍后阅读内容。",
+        "zh-TW": "內容訂閱與閱讀桌面用戶端，組織資訊流、訂閱源和稍後閱讀內容。",
+        "en": "A desktop feed reader organizing timelines, subscriptions and read-later content.",
+        "ja": "タイムライン、購読フィード、後で読むコンテンツを整理するデスクトップフィードリーダー。",
+        "ko": "타임라인, 구독 피드 및 나중에 읽을 콘텐츠를 구성하는 데스크톱 피드 리더."
+      },
+      "sourceRepository": "https://github.com/RSSNext/Folo",
+      "licenseUrl": "https://raw.githubusercontent.com/RSSNext/Folo/desktop/v1.17.0/LICENSE",
+      "id": "folo",
+      "variants": [
+        {
+          "id": "folo-macos",
+          "os": "macos",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "通过 Homebrew 安装 folo；需要已安装并配置 brew。 需要 macOS 13 或更高版本，Intel 与 ARM64 使用不同 DMG。订阅获取需要网络；登录和同步取决于所选服务，可能涉及账号或付费功能。",
+            "zh-TW": "透過 Homebrew 安裝 folo；需要已安裝並設定 brew。 需要 macOS 13 或更高版本，Intel 與 ARM64 使用不同 DMG。訂閱擷取需要網路；登入和同步取決於所選服務，可能涉及帳號或付費功能。",
+            "en": "Installs folo with Homebrew. brew must already be installed and configured. Requires macOS 13 or later, with separate Intel and ARM64 DMGs. Feed retrieval needs network access; login and sync depend on the selected service and may involve accounts or paid features.",
+            "ja": "Homebrew で folo をインストールします。brew を事前にインストールして設定する必要があります。 macOS 13 以降が必要で、Intel と ARM64 用に別の DMG があります。フィード取得にはネットワークが必要で、ログインと同期は選択サービスに依存し、アカウントや有料機能が必要な場合があります。",
+            "ko": "Homebrew로 folo를 설치합니다. brew가 미리 설치되어 설정되어 있어야 합니다. macOS 13 이상이 필요하며 Intel과 ARM64용 DMG가 다릅니다. 피드를 가져오려면 네트워크가 필요하며 로그인과 동기화는 선택한 서비스에 따라 계정이나 유료 기능이 필요할 수 있습니다."
+          },
+          "sourceUrl": "https://folo.is/",
+          "method": {
+            "type": "package_manager",
+            "manager": "brew",
+            "packageId": "folo",
+            "cask": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "gimp",
+      "name": "GIMP",
+      "publisher": "The GIMP Team",
+      "category": "media",
+      "summary": {
+        "zh-CN": "自由开源图像编辑器，支持图层、蒙版、绘画与插件。",
+        "zh-TW": "自由開源圖像編輯器，支援圖層、遮色片、繪畫與外掛。",
+        "en": "A free and open-source image editor with layers, masks, painting and plugins.",
+        "ja": "レイヤー、マスク、ペイント、プラグインに対応する自由でオープンソースの画像エディター。",
+        "ko": "레이어, 마스크, 페인팅 및 플러그인을 지원하는 자유 오픈 소스 이미지 편집기."
+      },
+      "homepage": "https://www.gimp.org/downloads/",
+      "mark": "G",
+      "accent": "#80755f",
+      "sourceRepository": "https://gitlab.gnome.org/GNOME/gimp",
+      "license": "GPL-3.0-or-later",
+      "licenseUrl": "https://gitlab.gnome.org/GNOME/gimp/-/raw/master/COPYING",
+      "variants": [
+        {
+          "id": "gimp-linux",
+          "os": "linux",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "通过 Flatpak 从 Flathub 安装 org.gimp.GIMP；需要已安装 Flatpak 并配置 Flathub remote。",
+            "zh-TW": "透過 Flatpak 從 Flathub 安裝 org.gimp.GIMP；需要已安裝 Flatpak 並設定 Flathub remote。",
+            "en": "Installs org.gimp.GIMP from Flathub with Flatpak. Flatpak and the Flathub remote must already be configured.",
+            "ja": "Flatpak で Flathub から org.gimp.GIMP をインストールします。Flatpak と Flathub リモートを事前に設定する必要があります。",
+            "ko": "Flatpak으로 Flathub에서 org.gimp.GIMP를 설치합니다. Flatpak과 Flathub 리모트가 미리 설정되어 있어야 합니다."
+          },
+          "sourceUrl": "https://www.gimp.org/downloads/",
+          "method": {
+            "type": "package_manager",
+            "manager": "flatpak",
+            "packageId": "org.gimp.GIMP",
+            "source": "flathub"
+          }
+        },
+        {
+          "id": "gimp-windows",
+          "os": "windows",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "通过 winget 安装 GIMP.GIMP（winget 源）；需要已安装并配置该包管理器。",
+            "zh-TW": "透過 winget 安裝 GIMP.GIMP（winget 來源）；需要已安裝並設定該套件管理器。",
+            "en": "Installs GIMP.GIMP with winget from the winget source. The package manager must already be installed and configured.",
+            "ja": "winget で GIMP.GIMP をインストールします（winget ソース）。パッケージマネージャーを事前にインストールして設定する必要があります。",
+            "ko": "winget로 GIMP.GIMP를 설치합니다(winget 소스). 패키지 관리자가 미리 설치되어 설정되어 있어야 합니다."
+          },
+          "sourceUrl": "https://www.gimp.org/downloads/",
+          "method": {
+            "type": "package_manager",
+            "manager": "winget",
+            "packageId": "GIMP.GIMP",
+            "source": "winget"
+          }
+        },
+        {
+          "id": "gimp-macos",
+          "os": "macos",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "通过 brew 安装 gimp；需要已安装并配置该包管理器。",
+            "zh-TW": "透過 brew 安裝 gimp；需要已安裝並設定該套件管理器。",
+            "en": "Installs gimp with brew. The package manager must already be installed and configured.",
+            "ja": "brew で gimp をインストールします。パッケージマネージャーを事前にインストールして設定する必要があります。",
+            "ko": "brew로 gimp를 설치합니다. 패키지 관리자가 미리 설치되어 설정되어 있어야 합니다."
+          },
+          "sourceUrl": "https://www.gimp.org/downloads/",
+          "method": {
+            "type": "package_manager",
+            "manager": "brew",
+            "packageId": "gimp",
+            "cask": true
+          }
+        }
+      ]
+    },
+    {
+      "name": "Gowall",
+      "publisher": "Achno and contributors",
+      "category": "media",
+      "mark": "Go",
+      "accent": "#6687a4",
+      "license": "MIT",
+      "homepage": "https://github.com/Achno/gowall",
+      "summary": {
+        "zh-CN": "命令行图像转换工具，用于壁纸转换、调色板、缩放和批量图像处理。",
+        "zh-TW": "命令列圖像轉換工具，用於桌布轉換、調色盤、縮放和批次圖像處理。",
+        "en": "A command-line image converter for wallpapers, palettes, resizing and batch image processing.",
+        "ja": "壁紙変換、パレット、リサイズ、バッチ画像処理を行うコマンドライン画像コンバーター。",
+        "ko": "배경 화면 변환, 팔레트, 크기 조정 및 일괄 이미지 처리를 위한 명령줄 이미지 변환기."
+      },
+      "sourceRepository": "https://github.com/Achno/gowall",
+      "licenseUrl": "https://raw.githubusercontent.com/Achno/gowall/main/LICENSE",
+      "id": "gowall",
+      "variants": [
+        {
+          "id": "gowall-macos",
+          "os": "macos",
+          "architectures": [
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "通过 Homebrew 安装 gowall；需要已安装并配置 brew。 Homebrew 仅提供本目录已验证的 macOS arm64 bottle，未声明 Intel macOS。转换会写出或覆盖用户指定图像，安装不处理图片或更改壁纸。",
+            "zh-TW": "透過 Homebrew 安裝 gowall；需要已安裝並設定 brew。 Homebrew 僅提供本目錄已驗證的 macOS arm64 bottle，未宣告 Intel macOS。轉換會寫出或覆蓋使用者指定圖像，安裝不處理圖片或更改桌布。",
+            "en": "Installs gowall with Homebrew. brew must already be installed and configured. Homebrew provides only the macOS arm64 bottle verified for this catalog; Intel macOS is not declared. Conversion writes or overwrites selected images. Installation processes no images and changes no wallpaper.",
+            "ja": "Homebrew で gowall をインストールします。brew を事前にインストールして設定する必要があります。 Homebrew はこのカタログで確認済みの macOS arm64 bottle のみを提供し、Intel macOS は対象外です。変換は指定画像を出力または上書きしますが、インストール時に画像処理や壁紙変更は行いません。",
+            "ko": "Homebrew로 gowall를 설치합니다. brew가 미리 설치되어 설정되어 있어야 합니다. Homebrew는 이 카탈로그에서 확인된 macOS arm64 bottle만 제공하며 Intel macOS는 선언하지 않습니다. 변환은 지정한 이미지를 쓰거나 덮어씁니다. 설치 시 이미지를 처리하거나 배경 화면을 바꾸지 않습니다."
+          },
+          "sourceUrl": "https://github.com/Achno/gowall",
+          "method": {
+            "type": "package_manager",
+            "manager": "brew",
+            "packageId": "gowall",
+            "cask": false
+          }
+        },
+        {
+          "id": "gowall-linux-x86-64",
+          "os": "linux",
+          "architectures": [
+            "x86_64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "下载、校验并解压匹配的正式稳定版 GitHub Release 到用户目录，创建 gowall 启动链接；不修改系统 PATH。 Linux 仅验证 x86_64 上游 GitHub Release 归档；当前稳定版没有 Linux ARM64 资产。转换会写出或覆盖用户指定图像，安装不处理图片或更改壁纸。",
+            "zh-TW": "下載、驗證並解壓符合的正式穩定版 GitHub Release 到使用者目錄，建立 gowall 啟動連結；不修改系統 PATH。 Linux 僅驗證 x86_64 上游 GitHub Release 封存檔；目前穩定版沒有 Linux ARM64 資產。轉換會寫出或覆蓋使用者指定圖像，安裝不處理圖片或更改桌布。",
+            "en": "Downloads, verifies and extracts the matching stable GitHub Release into the user directory and creates a gowall launch link. System PATH is not modified. Only the x86_64 upstream Linux GitHub Release archive is verified; the current stable release has no Linux ARM64 asset. Conversion writes or overwrites selected images. Installation processes no images and changes no wallpaper.",
+            "ja": "一致する安定版 GitHub Release をダウンロード、検証し、ユーザーディレクトリに展開して gowall の起動リンクを作成します。システム PATH は変更しません。 Linux では x86_64 の上流 GitHub Release アーカイブのみを検証済みです。現在の安定版に Linux ARM64 資産はありません。変換は指定画像を出力または上書きしますが、インストール時に画像処理や壁紙変更は行いません。",
+            "ko": "일치하는 안정 GitHub Release를 다운로드하고 검증한 후 사용자 디렉터리에 압축을 풀고 gowall 실행 링크를 만듭니다. 시스템 PATH는 수정하지 않습니다. Linux에서는 x86_64 업스트림 GitHub Release 아카이브만 확인했으며 현재 안정 릴리스에는 Linux ARM64 자산이 없습니다. 변환은 지정한 이미지를 쓰거나 덮어씁니다. 설치 시 이미지를 처리하거나 배경 화면을 바꾸지 않습니다."
+          },
+          "sourceUrl": "https://github.com/Achno/gowall",
+          "method": {
+            "type": "github_release",
+            "repository": "Achno/gowall",
+            "packages": [
+              {
+                "format": "tar_gz",
+                "assets": {
+                  "x86_64": "gowall-amd64-linux.tar.gz"
+                },
+                "install": {
+                  "kind": "archive",
+                  "executableByArch": {
+                    "x86_64": "gowall"
+                  },
+                  "stripComponents": 0,
+                  "linkName": "gowall"
+                }
+              }
+            ]
+          },
+          "detection": {
+            "type": "command",
+            "program": "gowall",
+            "args": [
+              "--version"
+            ]
+          }
+        }
+      ]
+    },
+    {
       "id": "handbrake",
       "name": "HandBrake",
       "publisher": "The HandBrake Team",
@@ -702,6 +762,472 @@
             "type": "package_manager",
             "manager": "brew",
             "packageId": "handbrake-app",
+            "cask": true
+          }
+        }
+      ]
+    },
+    {
+      "name": "Jellyfin Desktop",
+      "publisher": "Jellyfin contributors",
+      "category": "media",
+      "mark": "JD",
+      "accent": "#6687a4",
+      "license": "GPL-2.0-only",
+      "homepage": "https://github.com/jellyfin/jellyfin-desktop",
+      "summary": {
+        "zh-CN": "Jellyfin 媒体服务器桌面客户端，整合网页界面与本地媒体播放。",
+        "zh-TW": "Jellyfin 媒體伺服器桌面用戶端，整合網頁介面與本機媒體播放。",
+        "en": "A Jellyfin media-server desktop client combining the web interface with local media playback.",
+        "ja": "Web インターフェースとローカルメディア再生を統合する Jellyfin メディアサーバー用デスクトップクライアント。",
+        "ko": "웹 인터페이스와 로컬 미디어 재생을 결합한 Jellyfin 미디어 서버용 데스크톱 클라이언트."
+      },
+      "sourceRepository": "https://github.com/jellyfin/jellyfin-desktop",
+      "licenseUrl": "https://raw.githubusercontent.com/jellyfin/jellyfin-desktop/master/LICENSE",
+      "id": "jellyfin-desktop",
+      "variants": [
+        {
+          "id": "jellyfin-desktop-linux-x86-64",
+          "os": "linux",
+          "architectures": [
+            "x86_64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "通过 Flatpak 从 Flathub 安装 org.jellyfin.JellyfinDesktop；需要已安装 Flatpak 并配置 Flathub remote。 当前 Flathub 应用 ref 仅验证 x86_64。使用需用户配置可访问的 Jellyfin 服务器；服务器地址和凭据由用户输入，安装不配置服务器或账号。",
+            "zh-TW": "透過 Flatpak 從 Flathub 安裝 org.jellyfin.JellyfinDesktop；需要已安裝 Flatpak 並設定 Flathub remote。 目前 Flathub 應用程式 ref 僅驗證 x86_64。使用需使用者設定可存取的 Jellyfin 伺服器；伺服器位址和憑證由使用者輸入，安裝不設定伺服器或帳號。",
+            "en": "Installs org.jellyfin.JellyfinDesktop from Flathub with Flatpak. Flatpak and the Flathub remote must already be configured. Only the x86_64 application ref is currently verified on Flathub. A reachable user-configured Jellyfin server is required. Server addresses and credentials are user-supplied; installation configures neither.",
+            "ja": "Flatpak で Flathub から org.jellyfin.JellyfinDesktop をインストールします。Flatpak と Flathub リモートを事前に設定する必要があります。 現在 Flathub で確認できるアプリ ref は x86_64 のみです。接続可能な Jellyfin サーバーの設定が必要です。アドレスと認証情報はユーザーが入力し、インストールでサーバーやアカウントは設定されません。",
+            "ko": "Flatpak으로 Flathub에서 org.jellyfin.JellyfinDesktop를 설치합니다. Flatpak과 Flathub 리모트가 미리 설정되어 있어야 합니다. 현재 Flathub에서는 x86_64 애플리케이션 ref만 확인했습니다. 접근 가능한 Jellyfin 서버를 사용자가 구성해야 합니다. 서버 주소와 자격 증명은 사용자가 입력하며 설치 시 서버나 계정을 설정하지 않습니다."
+          },
+          "sourceUrl": "https://github.com/jellyfin/jellyfin-desktop",
+          "method": {
+            "type": "package_manager",
+            "manager": "flatpak",
+            "packageId": "org.jellyfin.JellyfinDesktop",
+            "source": "flathub"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Kooha",
+      "publisher": "SeaDve and contributors",
+      "category": "media",
+      "mark": "Ko",
+      "accent": "#6387a4",
+      "license": "GPL-3.0-or-later",
+      "homepage": "https://github.com/SeaDve/Kooha",
+      "summary": {
+        "zh-CN": "Linux 屏幕录制应用，可录制选定区域、系统音频和麦克风输入。",
+        "zh-TW": "Linux 螢幕錄製應用程式，可錄製選定區域、系統音訊和麥克風輸入。",
+        "en": "A Linux screen recorder for selected areas, system audio and microphone input.",
+        "ja": "選択領域、システム音声、マイク入力を録画できる Linux 用スクリーンレコーダー。",
+        "ko": "선택 영역, 시스템 오디오 및 마이크 입력을 녹화하는 Linux 화면 녹화기."
+      },
+      "sourceRepository": "https://github.com/SeaDve/Kooha",
+      "licenseUrl": "https://raw.githubusercontent.com/SeaDve/Kooha/main/Cargo.toml",
+      "id": "kooha",
+      "variants": [
+        {
+          "id": "kooha-linux-x86-64",
+          "os": "linux",
+          "architectures": [
+            "x86_64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "通过 Flatpak 从 Flathub 安装 io.github.seadve.Kooha；需要已安装 Flatpak 并配置 Flathub remote。 当前 Flathub 应用 ref 仅验证 x86_64。录制需要屏幕/音频 portal 权限；录制文件写入用户选择的位置，安装不自动开始录制。",
+            "zh-TW": "透過 Flatpak 從 Flathub 安裝 io.github.seadve.Kooha；需要已安裝 Flatpak 並設定 Flathub remote。 目前 Flathub 應用程式 ref 僅驗證 x86_64。錄製需要螢幕／音訊 portal 權限；錄製檔案寫入使用者選擇的位置，安裝不自動開始錄製。",
+            "en": "Installs io.github.seadve.Kooha from Flathub with Flatpak. Flatpak and the Flathub remote must already be configured. Only the x86_64 application ref is currently verified on Flathub. Recording requires screen/audio portal permission. Recordings are written to a user-selected location; installation does not start recording.",
+            "ja": "Flatpak で Flathub から io.github.seadve.Kooha をインストールします。Flatpak と Flathub リモートを事前に設定する必要があります。 現在 Flathub で確認できるアプリ ref は x86_64 のみです。録画には画面／音声ポータル権限が必要です。録画ファイルは選択した場所に保存され、インストール時に録画は開始されません。",
+            "ko": "Flatpak으로 Flathub에서 io.github.seadve.Kooha를 설치합니다. Flatpak과 Flathub 리모트가 미리 설정되어 있어야 합니다. 현재 Flathub에서는 x86_64 애플리케이션 ref만 확인했습니다. 녹화에는 화면/오디오 포털 권한이 필요합니다. 파일은 선택한 위치에 저장되며 설치 시 녹화가 시작되지 않습니다."
+          },
+          "sourceUrl": "https://github.com/SeaDve/Kooha",
+          "method": {
+            "type": "package_manager",
+            "manager": "flatpak",
+            "packageId": "io.github.seadve.Kooha",
+            "source": "flathub"
+          }
+        }
+      ]
+    },
+    {
+      "id": "krita",
+      "name": "Krita",
+      "publisher": "KDE",
+      "category": "media",
+      "summary": {
+        "zh-CN": "自由开源数字绘画与插画应用，提供笔刷引擎、图层、动画和色彩管理；采用 GPLv3 许可。",
+        "zh-TW": "自由開源數位繪畫與插畫應用，提供筆刷引擎、圖層、動畫與色彩管理；採用 GPLv3 授權。",
+        "en": "A free and open-source digital painting and illustration app with brush engines, layers, animation and color management, licensed under GPLv3.",
+        "ja": "ブラシエンジン、レイヤー、アニメーション、カラーマネジメントを備える GPLv3 ライセンスの自由でオープンソースなデジタルペイント・イラストアプリ。",
+        "ko": "브러시 엔진, 레이어, 애니메이션 및 색상 관리를 제공하는 GPLv3 라이선스의 자유 오픈 소스 디지털 페인팅·일러스트 앱."
+      },
+      "homepage": "https://krita.org/",
+      "mark": "K",
+      "accent": "#3daee9",
+      "sourceRepository": "https://invent.kde.org/graphics/krita",
+      "license": "GPL-3.0-only",
+      "licenseUrl": "https://invent.kde.org/graphics/krita/-/raw/master/COPYING",
+      "variants": [
+        {
+          "id": "krita-linux",
+          "os": "linux",
+          "architectures": [
+            "x86_64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "通过 Flatpak 从 Flathub 安装 org.kde.krita；需要已安装 Flatpak 并配置 Flathub remote。",
+            "zh-TW": "透過 Flatpak 從 Flathub 安裝 org.kde.krita；需要已安裝 Flatpak 並設定 Flathub remote。",
+            "en": "Installs org.kde.krita from Flathub with Flatpak. Flatpak and the Flathub remote must already be configured.",
+            "ja": "Flatpak で Flathub から org.kde.krita をインストールします。Flatpak と Flathub リモートを事前に設定する必要があります。",
+            "ko": "Flatpak으로 Flathub에서 org.kde.krita를 설치합니다. Flatpak과 Flathub 리모트가 미리 설정되어 있어야 합니다."
+          },
+          "sourceUrl": "https://krita.org/en/download/",
+          "method": {
+            "type": "package_manager",
+            "manager": "flatpak",
+            "packageId": "org.kde.krita",
+            "source": "flathub"
+          }
+        },
+        {
+          "id": "krita-windows",
+          "os": "windows",
+          "architectures": [
+            "x86_64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "通过 winget 安装 KDE.Krita（winget 源）；需要已安装并配置该包管理器。",
+            "zh-TW": "透過 winget 安裝 KDE.Krita（winget 來源）；需要已安裝並設定該套件管理器。",
+            "en": "Installs KDE.Krita with winget from the winget source. The package manager must already be installed and configured.",
+            "ja": "winget で KDE.Krita をインストールします（winget ソース）。パッケージマネージャーを事前にインストールして設定する必要があります。",
+            "ko": "winget로 KDE.Krita를 설치합니다(winget 소스). 패키지 관리자가 미리 설치되어 설정되어 있어야 합니다."
+          },
+          "sourceUrl": "https://krita.org/en/download/",
+          "method": {
+            "type": "package_manager",
+            "manager": "winget",
+            "packageId": "KDE.Krita",
+            "source": "winget"
+          }
+        }
+      ]
+    },
+    {
+      "name": "LosslessCut",
+      "publisher": "Mikael Finstad",
+      "category": "media",
+      "mark": "LC",
+      "accent": "#3b83a8",
+      "license": "GPL-2.0-or-later",
+      "homepage": "https://losslesscut.app/",
+      "summary": {
+        "zh-CN": "基于 FFmpeg 的无损音视频编辑器，可快速剪切、合并、提取轨道和重新封装。",
+        "zh-TW": "基於 FFmpeg 的無損影音編輯器，可快速剪切、合併、擷取軌道和重新封裝。",
+        "en": "An FFmpeg-based lossless media editor for fast cutting, merging, track extraction and remuxing.",
+        "ja": "FFmpeg ベースの無損メディアエディターで、高速なカット、結合、トラック抽出、再 mux に対応します。",
+        "ko": "FFmpeg 기반 무손실 미디어 편집기로 빠른 자르기, 병합, 트랙 추출 및 리먹싱을 지원합니다."
+      },
+      "sourceRepository": "https://github.com/mifi/lossless-cut",
+      "licenseUrl": "https://raw.githubusercontent.com/mifi/lossless-cut/HEAD/LICENSE",
+      "id": "lossless-cut",
+      "variants": [
+        {
+          "id": "lossless-cut-macos",
+          "os": "macos",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "通过 Homebrew 安装 losslesscut；需要已安装并配置 brew。 需要 macOS 12 或更高版本。无损剪切依赖源文件编码和关键帧；重新编码或导出覆盖原文件前请确认输出位置。",
+            "zh-TW": "透過 Homebrew 安裝 losslesscut；需要已安裝並設定 brew。 需要 macOS 12 或更高版本。無損剪切依賴來源檔案編碼和關鍵幀；重新編碼或匯出覆蓋原檔案前請確認輸出位置。",
+            "en": "Installs losslesscut with Homebrew. brew must already be installed and configured. Requires macOS 12 or later. Lossless cutting depends on source codecs and keyframes; confirm output locations before re-encoding or overwriting source files.",
+            "ja": "Homebrew で losslesscut をインストールします。brew を事前にインストールして設定する必要があります。 macOS 12 以降が必要です。無損カットはソースのコーデックとキーフレームに依存します。再エンコードやソースの上書き前に出力先を確認してください。",
+            "ko": "Homebrew로 losslesscut를 설치합니다. brew가 미리 설치되어 설정되어 있어야 합니다. macOS 12 이상이 필요합니다. 무손실 자르기는 소스 코덱과 키프레임에 따라 달라집니다. 재인코딩하거나 원본을 덮어쓰기 전에 출력 위치를 확인하세요."
+          },
+          "sourceUrl": "https://losslesscut.app/",
+          "method": {
+            "type": "package_manager",
+            "manager": "brew",
+            "packageId": "losslesscut",
+            "cask": true
+          }
+        }
+      ]
+    },
+    {
+      "name": "LRCGET",
+      "publisher": "LRCLIB contributors",
+      "category": "media",
+      "mark": "LR",
+      "accent": "#6487a4",
+      "license": "MIT",
+      "homepage": "https://lrclib.net/",
+      "summary": {
+        "zh-CN": "本地音乐同步歌词工具，从 LRCLIB 检索、下载并嵌入或保存歌词。",
+        "zh-TW": "本機音樂同步歌詞工具，從 LRCLIB 檢索、下載並嵌入或儲存歌詞。",
+        "en": "A synchronized-lyrics tool for local music that retrieves and saves or embeds lyrics from LRCLIB.",
+        "ja": "LRCLIB から同期歌詞を検索・取得し、保存または埋め込むローカル音楽向けツール。",
+        "ko": "LRCLIB에서 동기화 가사를 검색·다운로드하여 저장하거나 삽입하는 로컬 음악 도구."
+      },
+      "sourceRepository": "https://github.com/tranxuanthang/lrcget",
+      "licenseUrl": "https://raw.githubusercontent.com/tranxuanthang/lrcget/HEAD/src-tauri/Cargo.toml",
+      "id": "lrcget",
+      "variants": [
+        {
+          "id": "lrcget-linux-x86-64",
+          "os": "linux",
+          "architectures": [
+            "x86_64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "通过 Flatpak 从 Flathub 安装 net.lrclib.lrcget；需要已安装 Flatpak 并配置 Flathub remote。 当前 Flathub 应用 ref 仅验证 x86_64。歌词检索会连接 LRCLIB 并发送曲目元数据；嵌入歌词会修改所选音频文件，安装不扫描或修改音乐库。",
+            "zh-TW": "透過 Flatpak 從 Flathub 安裝 net.lrclib.lrcget；需要已安裝 Flatpak 並設定 Flathub remote。 目前 Flathub 應用程式 ref 僅驗證 x86_64。歌詞檢索會連線 LRCLIB 並傳送曲目中繼資料；嵌入歌詞會修改所選音訊檔案，安裝不掃描或修改音樂庫。",
+            "en": "Installs net.lrclib.lrcget from Flathub with Flatpak. Flatpak and the Flathub remote must already be configured. Only the x86_64 application ref is currently verified on Flathub. Searches contact LRCLIB with track metadata. Embedding lyrics modifies selected audio files; installation neither scans nor changes a music library.",
+            "ja": "Flatpak で Flathub から net.lrclib.lrcget をインストールします。Flatpak と Flathub リモートを事前に設定する必要があります。 現在 Flathub で確認できるアプリ ref は x86_64 のみです。検索時に曲のメタデータを LRCLIB へ送信します。歌詞の埋め込みは選択した音声ファイルを変更しますが、インストール時にライブラリのスキャンや変更は行いません。",
+            "ko": "Flatpak으로 Flathub에서 net.lrclib.lrcget를 설치합니다. Flatpak과 Flathub 리모트가 미리 설정되어 있어야 합니다. 현재 Flathub에서는 x86_64 애플리케이션 ref만 확인했습니다. 검색 시 곡 메타데이터가 LRCLIB로 전송됩니다. 가사 삽입은 선택한 오디오 파일을 수정하지만 설치 시 음악 라이브러리를 검색하거나 변경하지 않습니다."
+          },
+          "sourceUrl": "https://lrclib.net/",
+          "method": {
+            "type": "package_manager",
+            "manager": "flatpak",
+            "packageId": "net.lrclib.lrcget",
+            "source": "flathub"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Ludusavi",
+      "publisher": "Matthew Kennerly and contributors",
+      "category": "media",
+      "mark": "Lu",
+      "accent": "#6687a4",
+      "license": "MIT",
+      "homepage": "https://github.com/mtkennerly/ludusavi",
+      "summary": {
+        "zh-CN": "PC 游戏存档备份工具，扫描已支持游戏并备份、预览和恢复存档。",
+        "zh-TW": "PC 遊戲存檔備份工具，掃描已支援遊戲並備份、預覽和還原存檔。",
+        "en": "A PC game-save backup tool that scans supported games and backs up, previews and restores saves.",
+        "ja": "対応 PC ゲームをスキャンし、セーブデータのバックアップ、プレビュー、復元を行うツール。",
+        "ko": "지원되는 PC 게임을 검색하고 세이브 파일을 백업, 미리 보기 및 복원하는 도구."
+      },
+      "sourceRepository": "https://github.com/mtkennerly/ludusavi",
+      "licenseUrl": "https://raw.githubusercontent.com/mtkennerly/ludusavi/master/LICENSE",
+      "id": "ludusavi",
+      "variants": [
+        {
+          "id": "ludusavi-linux-x86-64",
+          "os": "linux",
+          "architectures": [
+            "x86_64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "通过 Flatpak 从 Flathub 安装 com.github.mtkennerly.ludusavi；需要已安装 Flatpak 并配置 Flathub remote。 当前 Flathub 应用 ref 仅验证 x86_64。扫描会读取游戏目录；恢复会覆盖所选存档，操作前应检查预览和备份。安装不自动扫描、备份或恢复。",
+            "zh-TW": "透過 Flatpak 從 Flathub 安裝 com.github.mtkennerly.ludusavi；需要已安裝 Flatpak 並設定 Flathub remote。 目前 Flathub 應用程式 ref 僅驗證 x86_64。掃描會讀取遊戲目錄；還原會覆蓋所選存檔，操作前應檢查預覽和備份。安裝不自動掃描、備份或還原。",
+            "en": "Installs com.github.mtkennerly.ludusavi from Flathub with Flatpak. Flatpak and the Flathub remote must already be configured. Only the x86_64 application ref is currently verified on Flathub. Scans read game directories; restores overwrite selected saves. Review previews and backups before restoring. Installation performs no scan, backup or restore.",
+            "ja": "Flatpak で Flathub から com.github.mtkennerly.ludusavi をインストールします。Flatpak と Flathub リモートを事前に設定する必要があります。 現在 Flathub で確認できるアプリ ref は x86_64 のみです。スキャンはゲームディレクトリを読み、復元は選択したセーブを上書きします。復元前にプレビューとバックアップを確認してください。インストール時に自動実行はされません。",
+            "ko": "Flatpak으로 Flathub에서 com.github.mtkennerly.ludusavi를 설치합니다. Flatpak과 Flathub 리모트가 미리 설정되어 있어야 합니다. 현재 Flathub에서는 x86_64 애플리케이션 ref만 확인했습니다. 검색은 게임 디렉터리를 읽고 복원은 선택한 세이브를 덮어씁니다. 복원 전에 미리 보기와 백업을 확인하세요. 설치 시 검색, 백업 또는 복원을 수행하지 않습니다."
+          },
+          "sourceUrl": "https://github.com/mtkennerly/ludusavi",
+          "method": {
+            "type": "package_manager",
+            "manager": "flatpak",
+            "packageId": "com.github.mtkennerly.ludusavi",
+            "source": "flathub"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Lutris",
+      "publisher": "Lutris contributors",
+      "category": "media",
+      "mark": "L",
+      "accent": "#6688a7",
+      "license": "GPL-3.0-or-later",
+      "homepage": "https://lutris.net/",
+      "summary": {
+        "zh-CN": "Linux 游戏库与启动管理器，集中配置本地游戏、模拟器和兼容运行环境。",
+        "zh-TW": "Linux 遊戲庫與啟動管理器，集中設定本機遊戲、模擬器和相容執行環境。",
+        "en": "A Linux game library and launcher for local games, emulators and compatibility runners.",
+        "ja": "ローカルゲーム、エミュレーター、互換ランナーを一元設定する Linux ゲームライブラリ・ランチャー。",
+        "ko": "로컬 게임, 에뮬레이터 및 호환 러너를 통합 관리하는 Linux 게임 라이브러리 및 런처."
+      },
+      "sourceRepository": "https://github.com/lutris/lutris",
+      "licenseUrl": "https://raw.githubusercontent.com/lutris/lutris/master/LICENSE",
+      "id": "lutris",
+      "variants": [
+        {
+          "id": "lutris-linux-x86-64",
+          "os": "linux",
+          "architectures": [
+            "x86_64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "通过 Flatpak 从 Flathub 安装 net.lutris.Lutris；需要已安装 Flatpak 并配置 Flathub remote。 当前 Flathub 应用 ref 仅验证 x86_64。安装 Lutris 不会自动安装 Wine、runner、游戏或登录商店；这些需用户另行配置，可能涉及第三方账号、下载和各自许可。",
+            "zh-TW": "透過 Flatpak 從 Flathub 安裝 net.lutris.Lutris；需要已安裝 Flatpak 並設定 Flathub remote。 目前 Flathub 應用程式 ref 僅驗證 x86_64。安裝 Lutris 不會自動安裝 Wine、runner、遊戲或登入商店；這些需使用者另行設定，可能涉及第三方帳號、下載和各自授權。",
+            "en": "Installs net.lutris.Lutris from Flathub with Flatpak. Flatpak and the Flathub remote must already be configured. Only the x86_64 application ref is currently verified on Flathub. Installing Lutris does not install Wine, runners or games, or sign into stores. Those require separate user configuration and may involve third-party accounts, downloads and licenses.",
+            "ja": "Flatpak で Flathub から net.lutris.Lutris をインストールします。Flatpak と Flathub リモートを事前に設定する必要があります。 現在 Flathub で確認できるアプリ ref は x86_64 のみです。Lutris のインストールで Wine、ランナー、ゲームの導入やストアへのログインは行われません。これらは個別設定が必要で、サードパーティのアカウント、ダウンロード、ライセンスが関係する場合があります。",
+            "ko": "Flatpak으로 Flathub에서 net.lutris.Lutris를 설치합니다. Flatpak과 Flathub 리모트가 미리 설정되어 있어야 합니다. 현재 Flathub에서는 x86_64 애플리케이션 ref만 확인했습니다. Lutris 설치 시 Wine, 러너 또는 게임이 설치되거나 스토어에 로그인되지 않습니다. 이는 사용자가 별도로 구성해야 하며 타사 계정, 다운로드 및 라이선스가 필요할 수 있습니다."
+          },
+          "sourceUrl": "https://lutris.net/",
+          "method": {
+            "type": "package_manager",
+            "manager": "flatpak",
+            "packageId": "net.lutris.Lutris",
+            "source": "flathub"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Media Downloader",
+      "publisher": "Francis Banyikwa and contributors",
+      "category": "media",
+      "mark": "MD",
+      "accent": "#6687a3",
+      "license": "GPL-2.0-or-later",
+      "homepage": "https://mhogomchungu.github.io/media-downloader/",
+      "summary": {
+        "zh-CN": "媒体下载器图形前端，通过受支持下载引擎获取在线音视频和播放列表。",
+        "zh-TW": "媒體下載器圖形前端，透過受支援下載引擎取得線上影音和播放清單。",
+        "en": "A graphical media downloader that uses supported download engines for online audio, video and playlists.",
+        "ja": "対応ダウンロードエンジンでオンライン音声・動画・プレイリストを取得する GUI メディアダウンローダー。",
+        "ko": "지원되는 다운로드 엔진으로 온라인 오디오, 동영상 및 재생 목록을 받는 그래픽 미디어 다운로더."
+      },
+      "sourceRepository": "https://github.com/mhogomchungu/media-downloader",
+      "licenseUrl": "https://raw.githubusercontent.com/mhogomchungu/media-downloader/main/src/main.cpp",
+      "id": "media-downloader",
+      "variants": [
+        {
+          "id": "media-downloader-linux-x86-64",
+          "os": "linux",
+          "architectures": [
+            "x86_64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "通过 Flatpak 从 Flathub 安装 io.github.mhogomchungu.media-downloader；需要已安装 Flatpak 并配置 Flathub remote。 当前 Flathub 应用 ref 仅验证 x86_64。下载会访问用户指定服务并写入文件；外部引擎、网站条款和内容版权由用户另行确认，安装不下载媒体。",
+            "zh-TW": "透過 Flatpak 從 Flathub 安裝 io.github.mhogomchungu.media-downloader；需要已安裝 Flatpak 並設定 Flathub remote。 目前 Flathub 應用程式 ref 僅驗證 x86_64。下載會存取使用者指定服務並寫入檔案；外部引擎、網站條款和內容版權由使用者另行確認，安裝不下載媒體。",
+            "en": "Installs io.github.mhogomchungu.media-downloader from Flathub with Flatpak. Flatpak and the Flathub remote must already be configured. Only the x86_64 application ref is currently verified on Flathub. Downloads contact user-selected services and write files. External engines, site terms and content rights require separate consideration; installation downloads no media.",
+            "ja": "Flatpak で Flathub から io.github.mhogomchungu.media-downloader をインストールします。Flatpak と Flathub リモートを事前に設定する必要があります。 現在 Flathub で確認できるアプリ ref は x86_64 のみです。ダウンロードは指定サービスへ接続してファイルを保存します。外部エンジン、サイト規約、コンテンツの権利は個別確認が必要で、インストール時にメディアは取得しません。",
+            "ko": "Flatpak으로 Flathub에서 io.github.mhogomchungu.media-downloader를 설치합니다. Flatpak과 Flathub 리모트가 미리 설정되어 있어야 합니다. 현재 Flathub에서는 x86_64 애플리케이션 ref만 확인했습니다. 다운로드는 선택한 서비스에 접근해 파일을 저장합니다. 외부 엔진, 사이트 약관 및 콘텐츠 권리는 별도 확인이 필요하며 설치 시 미디어를 받지 않습니다."
+          },
+          "sourceUrl": "https://mhogomchungu.github.io/media-downloader/",
+          "method": {
+            "type": "package_manager",
+            "manager": "flatpak",
+            "packageId": "io.github.mhogomchungu.media-downloader",
+            "source": "flathub"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Motrix",
+      "publisher": "Dr_rOot",
+      "category": "media",
+      "mark": "M",
+      "accent": "#4a8ec2",
+      "license": "MIT",
+      "homepage": "https://motrix.app/",
+      "summary": {
+        "zh-CN": "桌面下载管理器，支持 HTTP、FTP、BitTorrent、磁力链接和断点续传。",
+        "zh-TW": "桌面下載管理器，支援 HTTP、FTP、BitTorrent、磁力連結和斷點續傳。",
+        "en": "A desktop download manager supporting HTTP, FTP, BitTorrent, magnet links and resumable downloads.",
+        "ja": "HTTP、FTP、BitTorrent、マグネットリンク、ダウンロード再開に対応するデスクトップダウンロードマネージャー。",
+        "ko": "HTTP, FTP, BitTorrent, 마그넷 링크 및 다운로드 재개를 지원하는 데스크톱 다운로드 관리자."
+      },
+      "sourceRepository": "https://github.com/agalwood/Motrix",
+      "licenseUrl": "https://raw.githubusercontent.com/agalwood/Motrix/HEAD/LICENSE",
+      "id": "motrix",
+      "variants": [
+        {
+          "id": "motrix-macos",
+          "os": "macos",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "通过 Homebrew 安装 motrix；需要已安装并配置 brew。 需要 macOS 13 或更高版本。升级会迁移 SQLite 数据库；请先备份配置和下载记录。第三方素材另见其许可证声明。",
+            "zh-TW": "透過 Homebrew 安裝 motrix；需要已安裝並設定 brew。 需要 macOS 13 或更高版本。升級會遷移 SQLite 資料庫；請先備份設定和下載記錄。第三方素材另見其授權聲明。",
+            "en": "Installs motrix with Homebrew. brew must already be installed and configured. Requires macOS 13 or later. Upgrades migrate the SQLite database; back up your profile and download history first. Third-party assets have separate notices.",
+            "ja": "Homebrew で motrix をインストールします。brew を事前にインストールして設定する必要があります。 macOS 13 以降が必要です。アップグレードで SQLite データベースを移行するため、先にプロフィールとダウンロード履歴をバックアップしてください。第三者素材には別の通知があります。",
+            "ko": "Homebrew로 motrix를 설치합니다. brew가 미리 설치되어 설정되어 있어야 합니다. macOS 13 이상이 필요합니다. 업그레이드 시 SQLite 데이터베이스를 마이그레이션하므로 먼저 프로필과 다운로드 기록을 백업하세요. 타사 자산에는 별도의 고지가 적용됩니다."
+          },
+          "sourceUrl": "https://motrix.app/",
+          "method": {
+            "type": "package_manager",
+            "manager": "brew",
+            "packageId": "motrix",
+            "cask": true
+          }
+        }
+      ]
+    },
+    {
+      "name": "MuseScore Studio",
+      "publisher": "Muse Group",
+      "category": "media",
+      "mark": "MS",
+      "accent": "#3979b9",
+      "license": "GPL-3.0-only",
+      "homepage": "https://musescore.org/",
+      "summary": {
+        "zh-CN": "乐谱编辑与制谱软件，支持乐谱排版、播放、导入导出和本地保存。",
+        "zh-TW": "樂譜編輯與製譜軟體，支援樂譜排版、播放、匯入匯出和本機儲存。",
+        "en": "A music-notation editor for score layout, playback, import/export and local saving.",
+        "ja": "楽譜のレイアウト、再生、インポート・エクスポート、ローカル保存に対応する楽譜作成エディター。",
+        "ko": "악보 레이아웃, 재생, 가져오기, 다른 형식으로 저장 및 로컬 저장을 지원하는 악보 편집기."
+      },
+      "sourceRepository": "https://github.com/musescore/MuseScore",
+      "licenseUrl": "https://raw.githubusercontent.com/musescore/MuseScore/HEAD/LICENSE.txt",
+      "id": "musescore",
+      "variants": [
+        {
+          "id": "musescore-macos",
+          "os": "macos",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "通过 Homebrew 安装 musescore；需要已安装并配置 brew。 本地制谱和保存不要求账号；发布或云保存到 MuseScore.com 需要账号，订阅服务另有条件。MuseSounds 在 macOS 需另装 Muse Hub。",
+            "zh-TW": "透過 Homebrew 安裝 musescore；需要已安裝並設定 brew。 本機製譜和儲存不要求帳號；發佈或雲端儲存到 MuseScore.com 需要帳號，訂閱服務另有條件。MuseSounds 在 macOS 需另裝 Muse Hub。",
+            "en": "Installs musescore with Homebrew. brew must already be installed and configured. Local notation and saving require no account. Publishing or cloud saving to MuseScore.com requires an account and subscription tiers have separate terms. MuseSounds requires separate Muse Hub on macOS.",
+            "ja": "Homebrew で musescore をインストールします。brew を事前にインストールして設定する必要があります。 ローカルでの楽譜作成と保存にアカウントは不要です。MuseScore.com への公開やクラウド保存にはアカウントが必要で、サブスクリプションには別の条件があります。MuseSounds には別途 Muse Hub が必要です。",
+            "ko": "Homebrew로 musescore를 설치합니다. brew가 미리 설치되어 설정되어 있어야 합니다. 로컬 악보 작성과 저장에는 계정이 필요하지 않습니다. MuseScore.com에 게시하거나 클라우드에 저장하려면 계정이 필요하며 구독에는 별도의 조건이 적용됩니다. MuseSounds에는 별도의 Muse Hub가 필요합니다."
+          },
+          "sourceUrl": "https://musescore.org/",
+          "method": {
+            "type": "package_manager",
+            "manager": "brew",
+            "packageId": "musescore",
             "cask": true
           }
         }
@@ -837,6 +1363,790 @@
                 "install": "run_installer"
               }
             ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "nomacs Image Lounge",
+      "publisher": "nomacs contributors",
+      "category": "media",
+      "mark": "Ni",
+      "accent": "#6787a3",
+      "license": "GPL-3.0-or-later",
+      "homepage": "https://nomacs.org/",
+      "summary": {
+        "zh-CN": "跨平台图片查看器，支持多种格式、基本编辑、元数据和图像比较。",
+        "zh-TW": "跨平台圖片檢視器，支援多種格式、基本編輯、中繼資料和圖像比較。",
+        "en": "A cross-platform image viewer with broad format support, basic editing, metadata and image comparison.",
+        "ja": "多形式対応、基本編集、メタデータ表示、画像比較を備えるクロスプラットフォーム画像ビューアー。",
+        "ko": "다양한 형식, 기본 편집, 메타데이터 및 이미지 비교를 지원하는 크로스 플랫폼 이미지 뷰어."
+      },
+      "sourceRepository": "https://github.com/nomacs/nomacs",
+      "licenseUrl": "https://raw.githubusercontent.com/nomacs/nomacs/master/ImageLounge/src/main.cpp",
+      "id": "nomacs",
+      "variants": [
+        {
+          "id": "nomacs-linux-x86-64",
+          "os": "linux",
+          "architectures": [
+            "x86_64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "通过 Flatpak 从 Flathub 安装 org.nomacs.ImageLounge；需要已安装 Flatpak 并配置 Flathub remote。 当前 Flathub 应用 ref 仅验证 x86_64。编辑和保存会修改或写出用户选择的图像；安装不导入图片或更改文件关联。",
+            "zh-TW": "透過 Flatpak 從 Flathub 安裝 org.nomacs.ImageLounge；需要已安裝 Flatpak 並設定 Flathub remote。 目前 Flathub 應用程式 ref 僅驗證 x86_64。編輯和儲存會修改或寫出使用者選擇的圖像；安裝不匯入圖片或更改檔案關聯。",
+            "en": "Installs org.nomacs.ImageLounge from Flathub with Flatpak. Flatpak and the Flathub remote must already be configured. Only the x86_64 application ref is currently verified on Flathub. Editing and saving modify or write user-selected images. Installation imports no images and changes no file associations.",
+            "ja": "Flatpak で Flathub から org.nomacs.ImageLounge をインストールします。Flatpak と Flathub リモートを事前に設定する必要があります。 現在 Flathub で確認できるアプリ ref は x86_64 のみです。編集・保存は選択した画像を変更または書き出します。インストールで画像の読み込みやファイル関連付けの変更は行いません。",
+            "ko": "Flatpak으로 Flathub에서 org.nomacs.ImageLounge를 설치합니다. Flatpak과 Flathub 리모트가 미리 설정되어 있어야 합니다. 현재 Flathub에서는 x86_64 애플리케이션 ref만 확인했습니다. 편집 및 저장은 선택한 이미지를 수정하거나 새로 저장합니다. 설치 시 이미지를 가져오거나 파일 연결을 변경하지 않습니다."
+          },
+          "sourceUrl": "https://nomacs.org/",
+          "method": {
+            "type": "package_manager",
+            "manager": "flatpak",
+            "packageId": "org.nomacs.ImageLounge",
+            "source": "flathub"
+          }
+        }
+      ]
+    },
+    {
+      "id": "obs-studio",
+      "name": "OBS Studio",
+      "publisher": "OBS Project",
+      "category": "media",
+      "summary": {
+        "zh-CN": "自由开源录屏与直播工具，支持场景、来源和音视频混音。",
+        "zh-TW": "自由開源錄影與直播工具，支援場景、來源與影音混音。",
+        "en": "Free and open-source screen recording and live streaming with scenes, sources and audio/video mixing.",
+        "ja": "シーン、ソース、音声・映像ミキシングに対応する自由でオープンソースの画面録画・ライブ配信ツール。",
+        "ko": "장면, 소스 및 오디오/비디오 믹싱을 지원하는 자유 오픈 소스 화면 녹화 및 라이브 스트리밍 도구."
+      },
+      "homepage": "https://obsproject.com/download",
+      "mark": "OB",
+      "accent": "#dce1e8",
+      "sourceRepository": "https://github.com/obsproject/obs-studio",
+      "license": "GPL-2.0-or-later",
+      "licenseUrl": "https://raw.githubusercontent.com/obsproject/obs-studio/master/COPYING",
+      "variants": [
+        {
+          "id": "obs-studio-linux",
+          "os": "linux",
+          "architectures": [
+            "x86_64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "通过 Flatpak 从 Flathub 安装 com.obsproject.Studio；需要已安装 Flatpak 并配置 Flathub remote。",
+            "zh-TW": "透過 Flatpak 從 Flathub 安裝 com.obsproject.Studio；需要已安裝 Flatpak 並設定 Flathub remote。",
+            "en": "Installs com.obsproject.Studio from Flathub with Flatpak. Flatpak and the Flathub remote must already be configured.",
+            "ja": "Flatpak で Flathub から com.obsproject.Studio をインストールします。Flatpak と Flathub リモートを事前に設定する必要があります。",
+            "ko": "Flatpak으로 Flathub에서 com.obsproject.Studio를 설치합니다. Flatpak과 Flathub 리모트가 미리 설정되어 있어야 합니다."
+          },
+          "sourceUrl": "https://obsproject.com/download",
+          "method": {
+            "type": "package_manager",
+            "manager": "flatpak",
+            "packageId": "com.obsproject.Studio",
+            "source": "flathub"
+          }
+        },
+        {
+          "id": "obs-studio-windows",
+          "os": "windows",
+          "architectures": [
+            "x86_64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "通过 winget 安装 OBSProject.OBSStudio（winget 源）；需要已安装并配置该包管理器。",
+            "zh-TW": "透過 winget 安裝 OBSProject.OBSStudio（winget 來源）；需要已安裝並設定該套件管理器。",
+            "en": "Installs OBSProject.OBSStudio with winget from the winget source. The package manager must already be installed and configured.",
+            "ja": "winget で OBSProject.OBSStudio をインストールします（winget ソース）。パッケージマネージャーを事前にインストールして設定する必要があります。",
+            "ko": "winget로 OBSProject.OBSStudio를 설치합니다(winget 소스). 패키지 관리자가 미리 설치되어 설정되어 있어야 합니다."
+          },
+          "sourceUrl": "https://obsproject.com/download",
+          "method": {
+            "type": "package_manager",
+            "manager": "winget",
+            "packageId": "OBSProject.OBSStudio",
+            "source": "winget"
+          }
+        },
+        {
+          "id": "obs-studio-macos",
+          "os": "macos",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "通过 brew 安装 obs；需要已安装并配置该包管理器。",
+            "zh-TW": "透過 brew 安裝 obs；需要已安裝並設定該套件管理器。",
+            "en": "Installs obs with brew. The package manager must already be installed and configured.",
+            "ja": "brew で obs をインストールします。パッケージマネージャーを事前にインストールして設定する必要があります。",
+            "ko": "brew로 obs를 설치합니다. 패키지 관리자가 미리 설치되어 설정되어 있어야 합니다."
+          },
+          "sourceUrl": "https://obsproject.com/download",
+          "method": {
+            "type": "package_manager",
+            "manager": "brew",
+            "packageId": "obs",
+            "cask": true
+          }
+        }
+      ]
+    },
+    {
+      "name": "OpenMW",
+      "publisher": "OpenMW contributors",
+      "category": "media",
+      "mark": "OM",
+      "accent": "#6687a3",
+      "sourceRepository": "https://gitlab.com/OpenMW/openmw",
+      "license": "GPL-3.0-or-later",
+      "licenseUrl": "https://gitlab.com/OpenMW/openmw/-/raw/master/LICENSE",
+      "homepage": "https://openmw.org/",
+      "summary": {
+        "zh-CN": "开源 Morrowind 游戏引擎重实现，提供启动器、游戏引擎和内容文件管理。",
+        "zh-TW": "開源 Morrowind 遊戲引擎重實作，提供啟動器、遊戲引擎和內容檔案管理。",
+        "en": "An open-source Morrowind engine reimplementation with a launcher, game engine and content-file management.",
+        "ja": "ランチャー、ゲームエンジン、コンテンツファイル管理を備えるオープンソース Morrowind エンジン再実装。",
+        "ko": "런처, 게임 엔진 및 콘텐츠 파일 관리를 제공하는 오픈 소스 Morrowind 엔진 재구현."
+      },
+      "id": "openmw",
+      "variants": [
+        {
+          "id": "openmw-linux-x86-64",
+          "os": "linux",
+          "architectures": [
+            "x86_64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "通过 Flatpak 从 Flathub 安装 org.openmw.OpenMW；需要已安装 Flatpak 并配置 Flathub remote。 当前 Flathub 应用 ref 仅验证 x86_64。运行游戏需用户合法取得的原版 Morrowind 数据文件；安装不提供受版权保护的游戏内容或模组。",
+            "zh-TW": "透過 Flatpak 從 Flathub 安裝 org.openmw.OpenMW；需要已安裝 Flatpak 並設定 Flathub remote。 目前 Flathub 應用程式 ref 僅驗證 x86_64。執行遊戲需使用者合法取得的原版 Morrowind 資料檔案；安裝不提供受版權保護的遊戲內容或模組。",
+            "en": "Installs org.openmw.OpenMW from Flathub with Flatpak. Flatpak and the Flathub remote must already be configured. Only the x86_64 application ref is currently verified on Flathub. Playing requires legally obtained original Morrowind data files. Installation supplies neither copyrighted game content nor mods.",
+            "ja": "Flatpak で Flathub から org.openmw.OpenMW をインストールします。Flatpak と Flathub リモートを事前に設定する必要があります。 現在 Flathub で確認できるアプリ ref は x86_64 のみです。プレイには正規に入手した Morrowind オリジナルデータが必要です。インストールで著作権のあるゲーム内容や MOD は提供されません。",
+            "ko": "Flatpak으로 Flathub에서 org.openmw.OpenMW를 설치합니다. Flatpak과 Flathub 리모트가 미리 설정되어 있어야 합니다. 현재 Flathub에서는 x86_64 애플리케이션 ref만 확인했습니다. 플레이하려면 합법적으로 구한 원본 Morrowind 데이터 파일이 필요합니다. 설치 시 저작권이 있는 게임 콘텐츠나 모드는 제공되지 않습니다."
+          },
+          "sourceUrl": "https://openmw.org/",
+          "method": {
+            "type": "package_manager",
+            "manager": "flatpak",
+            "packageId": "org.openmw.OpenMW",
+            "source": "flathub"
+          }
+        }
+      ]
+    },
+    {
+      "name": "PicGo",
+      "publisher": "Molunerfinn",
+      "category": "media",
+      "mark": "P",
+      "accent": "#5b89a7",
+      "license": "MIT",
+      "homepage": "https://picgo.github.io/PicGo-Doc/",
+      "summary": {
+        "zh-CN": "图片上传与图床管理工具，支持剪贴板图片、插件和多种上传服务。",
+        "zh-TW": "圖片上傳與圖床管理工具，支援剪貼簿圖片、外掛和多種上傳服務。",
+        "en": "An image-upload and hosting client with clipboard images, plugins and multiple upload services.",
+        "ja": "クリップボード画像、プラグイン、複数のアップロードサービスに対応する画像アップロード・ホスティングツール。",
+        "ko": "클립보드 이미지, 플러그인 및 다양한 업로드 서비스를 지원하는 이미지 업로드 및 호스팅 도구."
+      },
+      "sourceRepository": "https://github.com/Molunerfinn/PicGo",
+      "licenseUrl": "https://raw.githubusercontent.com/Molunerfinn/PicGo/v3.0.4/LICENSE",
+      "id": "picgo",
+      "variants": [
+        {
+          "id": "picgo-macos",
+          "os": "macos",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "通过 Homebrew 安装 picgo；需要已安装并配置 brew。 需要 macOS 12 或更高版本，使用独立 Intel/ARM64 DMG。上传会向用户配置的图床发送图片及凭据；可选 PicGo Cloud 和插件服务需另行配置。",
+            "zh-TW": "透過 Homebrew 安裝 picgo；需要已安裝並設定 brew。 需要 macOS 12 或更高版本，使用獨立 Intel／ARM64 DMG。上傳會向使用者設定的圖床傳送圖片及憑證；可選 PicGo Cloud 和外掛服務需另行設定。",
+            "en": "Installs picgo with Homebrew. brew must already be installed and configured. Requires macOS 12 or later, with separate Intel/ARM64 DMGs. Uploading sends images and credentials to user-configured hosts. Optional PicGo Cloud and plugin services need separate configuration.",
+            "ja": "Homebrew で picgo をインストールします。brew を事前にインストールして設定する必要があります。 macOS 12 以降が必要で、Intel と ARM64 用に別の DMG があります。アップロードは設定したホストへ画像と認証情報を送信します。オプションの PicGo Cloud とプラグインサービスには個別設定が必要です。",
+            "ko": "Homebrew로 picgo를 설치합니다. brew가 미리 설치되어 설정되어 있어야 합니다. macOS 12 이상이 필요하며 별도의 Intel/ARM64 DMG를 사용합니다. 업로드는 사용자가 구성한 호스트로 이미지와 자격 증명을 전송합니다. 선택적 PicGo Cloud와 플러그인 서비스는 별도 구성이 필요합니다."
+          },
+          "sourceUrl": "https://picgo.github.io/PicGo-Doc/",
+          "method": {
+            "type": "package_manager",
+            "manager": "brew",
+            "packageId": "picgo",
+            "cask": true
+          }
+        }
+      ]
+    },
+    {
+      "name": "RawTherapee",
+      "publisher": "RawTherapee contributors",
+      "category": "media",
+      "mark": "RT",
+      "accent": "#6789a5",
+      "license": "GPL-3.0-or-later",
+      "homepage": "https://www.rawtherapee.com/",
+      "summary": {
+        "zh-CN": "RAW 照片显影与编辑器，提供非破坏性调整、批处理和色彩管理。",
+        "zh-TW": "RAW 照片顯影與編輯器，提供非破壞性調整、批次處理和色彩管理。",
+        "en": "A RAW photo developer and editor with non-destructive adjustments, batch processing and color management.",
+        "ja": "非破壊調整、バッチ処理、カラーマネジメントを備える RAW 写真現像・編集アプリケーション。",
+        "ko": "비파괴 조정, 일괄 처리 및 색상 관리를 제공하는 RAW 사진 현상 및 편집기."
+      },
+      "sourceRepository": "https://github.com/RawTherapee/RawTherapee",
+      "licenseUrl": "https://raw.githubusercontent.com/RawTherapee/RawTherapee/dev/rtengine/improccoordinator.cc",
+      "id": "rawtherapee",
+      "variants": [
+        {
+          "id": "rawtherapee-linux-x86-64",
+          "os": "linux",
+          "architectures": [
+            "x86_64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "通过 Flatpak 从 Flathub 安装 com.rawtherapee.RawTherapee；需要已安装 Flatpak 并配置 Flathub remote。 当前 Flathub 应用 ref 仅验证 x86_64。处理配置和导出会写入用户选择的位置；安装不导入照片或修改现有图像。",
+            "zh-TW": "透過 Flatpak 從 Flathub 安裝 com.rawtherapee.RawTherapee；需要已安裝 Flatpak 並設定 Flathub remote。 目前 Flathub 應用程式 ref 僅驗證 x86_64。處理設定和匯出會寫入使用者選擇的位置；安裝不匯入照片或修改現有圖像。",
+            "en": "Installs com.rawtherapee.RawTherapee from Flathub with Flatpak. Flatpak and the Flathub remote must already be configured. Only the x86_64 application ref is currently verified on Flathub. Processing profiles and exports are written to user-selected locations. Installation neither imports photos nor modifies existing images.",
+            "ja": "Flatpak で Flathub から com.rawtherapee.RawTherapee をインストールします。Flatpak と Flathub リモートを事前に設定する必要があります。 現在 Flathub で確認できるアプリ ref は x86_64 のみです。処理プロファイルと書き出しはユーザーが選択した場所に保存されます。インストールで写真の読み込みや既存画像の変更は行いません。",
+            "ko": "Flatpak으로 Flathub에서 com.rawtherapee.RawTherapee를 설치합니다. Flatpak과 Flathub 리모트가 미리 설정되어 있어야 합니다. 현재 Flathub에서는 x86_64 애플리케이션 ref만 확인했습니다. 처리 프로필과 내보내기 파일은 선택한 위치에 저장됩니다. 설치 시 사진을 가져오거나 기존 이미지를 수정하지 않습니다."
+          },
+          "sourceUrl": "https://www.rawtherapee.com/",
+          "method": {
+            "type": "package_manager",
+            "manager": "flatpak",
+            "packageId": "com.rawtherapee.RawTherapee",
+            "source": "flathub"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Recordly",
+      "publisher": "Recordly contributors",
+      "category": "media",
+      "mark": "R",
+      "accent": "#6285a6",
+      "license": "AGPL-3.0-only",
+      "homepage": "https://github.com/webadderallorg/Recordly",
+      "summary": {
+        "zh-CN": "桌面录屏工具，支持屏幕录制、摄像头与麦克风输入及本地视频保存。",
+        "zh-TW": "桌面螢幕錄製工具，支援螢幕錄製、攝影機與麥克風輸入及本機影片儲存。",
+        "en": "A desktop screen recorder with camera and microphone input and local video saving.",
+        "ja": "画面収録、カメラ・マイク入力、ローカル動画保存に対応するデスクトップスクリーンレコーダー。",
+        "ko": "화면 녹화, 영상 촬영 장치 및 마이크 입력, 로컬 비디오 저장을 지원하는 데스크톱 화면 녹화 도구."
+      },
+      "sourceRepository": "https://github.com/webadderallorg/Recordly",
+      "licenseUrl": "https://raw.githubusercontent.com/webadderallorg/Recordly/v1.4.0/LICENSE.md",
+      "id": "recordly",
+      "variants": [
+        {
+          "id": "recordly-macos",
+          "os": "macos",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "通过 Homebrew 安装 recordly；需要已安装并配置 brew。 需要 macOS 12 或更高版本，Intel 与 ARM64 使用不同 DMG。录屏需屏幕录制权限；摄像头和麦克风仅启用时需要权限。录制内容保存在本地，上传取决于用户操作。",
+            "zh-TW": "透過 Homebrew 安裝 recordly；需要已安裝並設定 brew。 需要 macOS 12 或更高版本，Intel 與 ARM64 使用不同 DMG。錄屏需螢幕錄製權限；攝影機和麥克風僅啟用時需要權限。錄製內容儲存在本機，上傳取決於使用者操作。",
+            "en": "Installs recordly with Homebrew. brew must already be installed and configured. Requires macOS 12 or later, with separate Intel and ARM64 DMGs. Recording needs Screen Recording permission; camera and microphone permissions apply only when enabled. Videos stay local unless the user uploads them.",
+            "ja": "Homebrew で recordly をインストールします。brew を事前にインストールして設定する必要があります。 macOS 12 以降が必要で、Intel と ARM64 用に別の DMG があります。画面収録には画面収録権限が必要で、カメラとマイクは有効時にのみ権限が必要です。動画はユーザーがアップロードしない限りローカルに保存されます。",
+            "ko": "Homebrew로 recordly를 설치합니다. brew가 미리 설치되어 설정되어 있어야 합니다. macOS 12 이상이 필요하며 Intel과 ARM64용 DMG가 다릅니다. 화면 녹화에는 화면 기록 권한이 필요하고 영상 촬영 장치와 마이크는 활성화할 때만 권한이 필요합니다. 사용자가 업로드하지 않는 한 동영상은 로컬에 저장됩니다."
+          },
+          "sourceUrl": "https://github.com/webadderallorg/Recordly",
+          "method": {
+            "type": "package_manager",
+            "manager": "brew",
+            "packageId": "recordly",
+            "cask": true
+          }
+        }
+      ]
+    },
+    {
+      "name": "Shotcut",
+      "publisher": "Meltytech",
+      "category": "media",
+      "mark": "S",
+      "accent": "#547c98",
+      "license": "GPL-3.0-or-later",
+      "homepage": "https://www.shotcut.org/",
+      "summary": {
+        "zh-CN": "跨平台视频编辑器，支持多轨时间线、音视频滤镜、转场和多种媒体格式。",
+        "zh-TW": "跨平台影片編輯器，支援多軌時間線、影音濾鏡、轉場和多種媒體格式。",
+        "en": "A cross-platform video editor with multitrack timelines, audio/video filters, transitions and broad format support.",
+        "ja": "マルチトラックタイムライン、音声・映像フィルター、トランジション、幅広い形式に対応するクロスプラットフォーム動画エディター。",
+        "ko": "멀티트랙 타임라인, 오디오/비디오 필터, 전환 및 다양한 형식을 지원하는 크로스 플랫폼 비디오 편집기."
+      },
+      "sourceRepository": "https://github.com/mltframework/shotcut",
+      "licenseUrl": "https://raw.githubusercontent.com/mltframework/shotcut/HEAD/COPYING",
+      "id": "shotcut",
+      "variants": [
+        {
+          "id": "shotcut-macos",
+          "os": "macos",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "通过 Homebrew 安装 shotcut；需要已安装并配置 brew。 需要 macOS 12 或更高版本。FFmpeg 提供格式支持；摄像头、麦克风、屏幕录制或网络串流仅在使用时需要相应权限。",
+            "zh-TW": "透過 Homebrew 安裝 shotcut；需要已安裝並設定 brew。 需要 macOS 12 或更高版本。FFmpeg 提供格式支援；攝影機、麥克風、螢幕錄製或網路串流僅在使用時需要相應權限。",
+            "en": "Installs shotcut with Homebrew. brew must already be installed and configured. Requires macOS 12 or later. FFmpeg provides format support; camera, microphone, screen recording or network streaming require relevant permissions only when used.",
+            "ja": "Homebrew で shotcut をインストールします。brew を事前にインストールして設定する必要があります。 macOS 12 以降が必要です。FFmpeg が形式をサポートし、カメラ、マイク、画面録画、ネットワーク配信は使用時にのみ対応する権限が必要です。",
+            "ko": "Homebrew로 shotcut를 설치합니다. brew가 미리 설치되어 설정되어 있어야 합니다. macOS 12 이상이 필요합니다. FFmpeg가 형식을 지원하며 영상 촬영 장치, 마이크, 화면 녹화 또는 네트워크 스트리밍은 사용할 때만 해당 권한이 필요합니다."
+          },
+          "sourceUrl": "https://www.shotcut.org/",
+          "method": {
+            "type": "package_manager",
+            "manager": "brew",
+            "packageId": "shotcut",
+            "cask": true
+          }
+        }
+      ]
+    },
+    {
+      "name": "Strawberry Music Player",
+      "publisher": "Strawberry contributors",
+      "category": "media",
+      "mark": "SM",
+      "accent": "#6686a4",
+      "license": "GPL-3.0-or-later",
+      "homepage": "https://www.strawberrymusicplayer.org/",
+      "summary": {
+        "zh-CN": "本地音乐收藏管理器和播放器，支持音频 CD、播放列表及可选流媒体服务。",
+        "zh-TW": "本機音樂收藏管理器和播放器，支援音訊 CD、播放清單及可選串流媒體服務。",
+        "en": "A local music collection manager and player with audio CD, playlist and optional streaming-service support.",
+        "ja": "オーディオ CD、プレイリスト、オプションのストリーミングサービスに対応するローカル音楽コレクション管理・再生アプリ。",
+        "ko": "오디오 CD, 재생 목록 및 선택적 스트리밍 서비스를 지원하는 로컬 음악 컬렉션 관리 및 재생 앱."
+      },
+      "sourceRepository": "https://github.com/strawberrymusicplayer/strawberry",
+      "licenseUrl": "https://raw.githubusercontent.com/strawberrymusicplayer/strawberry/master/src/main.cpp",
+      "id": "strawberry",
+      "variants": [
+        {
+          "id": "strawberry-linux-x86-64",
+          "os": "linux",
+          "architectures": [
+            "x86_64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "通过 Flatpak 从 Flathub 安装 org.strawberrymusicplayer.strawberry；需要已安装 Flatpak 并配置 Flathub remote。 当前 Flathub 应用 ref 仅验证 x86_64。在线元数据和流媒体功能需网络及相应服务；部分服务可能需要账号或订阅，安装不提供这些内容。",
+            "zh-TW": "透過 Flatpak 從 Flathub 安裝 org.strawberrymusicplayer.strawberry；需要已安裝 Flatpak 並設定 Flathub remote。 目前 Flathub 應用程式 ref 僅驗證 x86_64。線上中繼資料和串流媒體功能需網路及相應服務；部分服務可能需要帳號或訂閱，安裝不提供這些內容。",
+            "en": "Installs org.strawberrymusicplayer.strawberry from Flathub with Flatpak. Flatpak and the Flathub remote must already be configured. Only the x86_64 application ref is currently verified on Flathub. Online metadata and streaming require network access and their respective services; some may require accounts or subscriptions. Installation provides neither.",
+            "ja": "Flatpak で Flathub から org.strawberrymusicplayer.strawberry をインストールします。Flatpak と Flathub リモートを事前に設定する必要があります。 現在 Flathub で確認できるアプリ ref は x86_64 のみです。オンラインメタデータとストリーミングにはネットワークと各サービスが必要で、アカウントやサブスクリプションが必要な場合があります。インストールでこれらは提供されません。",
+            "ko": "Flatpak으로 Flathub에서 org.strawberrymusicplayer.strawberry를 설치합니다. Flatpak과 Flathub 리모트가 미리 설정되어 있어야 합니다. 현재 Flathub에서는 x86_64 애플리케이션 ref만 확인했습니다. 온라인 메타데이터와 스트리밍에는 네트워크와 해당 서비스가 필요하며 일부는 계정이나 구독이 필요할 수 있습니다. 설치 시 이를 제공하지 않습니다."
+          },
+          "sourceUrl": "https://www.strawberrymusicplayer.org/",
+          "method": {
+            "type": "package_manager",
+            "manager": "flatpak",
+            "packageId": "org.strawberrymusicplayer.strawberry",
+            "source": "flathub"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Termusic",
+      "publisher": "tramhao and contributors",
+      "category": "media",
+      "mark": "Te",
+      "accent": "#6587a4",
+      "license": "MIT AND GPL-3.0-or-later",
+      "homepage": "https://github.com/tramhao/termusic",
+      "summary": {
+        "zh-CN": "终端音乐与播客播放器，支持本地媒体库、播放列表和可选服务端。",
+        "zh-TW": "終端音樂與播客播放器，支援本機媒體庫、播放清單和可選伺服端。",
+        "en": "A terminal music and podcast player with a local library, playlists and an optional server component.",
+        "ja": "ローカルライブラリ、プレイリスト、オプションのサーバー機能を備えるターミナル音楽・ポッドキャストプレーヤー。",
+        "ko": "로컬 라이브러리, 재생 목록 및 선택적 서버 구성 요소를 갖춘 터미널 음악·팟캐스트 플레이어."
+      },
+      "sourceRepository": "https://github.com/tramhao/termusic",
+      "licenseUrl": "https://raw.githubusercontent.com/tramhao/termusic/master/LICENSE_MIT",
+      "id": "termusic",
+      "variants": [
+        {
+          "id": "termusic-macos",
+          "os": "macos",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "通过 Homebrew 安装 termusic；需要已安装并配置 brew。 Homebrew formula 仅提供本目录已验证的 macOS 架构，并含 Intel macOS bottle。组合许可含 MIT 与 GPL-3.0-or-later；播客功能联网，安装不扫描媒体或启动服务。",
+            "zh-TW": "透過 Homebrew 安裝 termusic；需要已安裝並設定 brew。 Homebrew formula 僅提供本目錄已驗證的 macOS 架構，並含 Intel macOS bottle。組合授權含 MIT 與 GPL-3.0-or-later；播客功能連網，安裝不掃描媒體或啟動服務。",
+            "en": "Installs termusic with Homebrew. brew must already be installed and configured. The Homebrew formula provides only the macOS architectures verified for this catalog, including an Intel-macOS bottle. The combined grant includes MIT and GPL-3.0-or-later. Podcasts use the network; installation scans no media and starts no server.",
+            "ja": "Homebrew で termusic をインストールします。brew を事前にインストールして設定する必要があります。 Homebrew formula はこのカタログで確認済みの macOS アーキテクチャのみを提供し、Intel macOS bottle もあります。組合せライセンスは MIT と GPL-3.0-or-later を含みます。ポッドキャストは通信を行いますが、インストール時にメディアスキャンやサーバー起動は行いません。",
+            "ko": "Homebrew로 termusic를 설치합니다. brew가 미리 설치되어 설정되어 있어야 합니다. Homebrew formula는 이 카탈로그에서 확인된 macOS 아키텍처만 제공하며 Intel macOS bottle도 포함합니다. 결합 라이선스에는 MIT와 GPL-3.0-or-later가 포함됩니다. 팟캐스트는 네트워크를 사용하지만 설치 시 미디어를 검색하거나 서버를 시작하지 않습니다."
+          },
+          "sourceUrl": "https://github.com/tramhao/termusic",
+          "method": {
+            "type": "package_manager",
+            "manager": "brew",
+            "packageId": "termusic",
+            "cask": false
+          }
+        }
+      ]
+    },
+    {
+      "id": "vlc",
+      "name": "VLC media player",
+      "publisher": "VideoLAN",
+      "category": "media",
+      "summary": {
+        "zh-CN": "自由开源多媒体播放器，支持常见音视频格式、字幕与网络流。",
+        "zh-TW": "自由開源多媒體播放器，支援常見影音格式、字幕與網路串流。",
+        "en": "A free and open-source multimedia player for common audio/video formats, subtitles and network streams.",
+        "ja": "一般的な音声・動画形式、字幕、ネットワークストリームに対応する自由でオープンソースのメディアプレーヤー。",
+        "ko": "일반적인 오디오/비디오 형식, 자막 및 네트워크 스트림을 지원하는 자유 오픈 소스 멀티미디어 플레이어."
+      },
+      "homepage": "https://www.videolan.org/vlc/",
+      "mark": "V",
+      "accent": "#ff8800",
+      "sourceRepository": "https://code.videolan.org/videolan/vlc",
+      "license": "GPL-2.0-or-later",
+      "licenseUrl": "https://code.videolan.org/videolan/vlc/-/raw/master/COPYING",
+      "variants": [
+        {
+          "id": "vlc-linux",
+          "os": "linux",
+          "architectures": [
+            "x86_64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "通过 Flatpak 从 Flathub 安装 org.videolan.VLC；需要已安装 Flatpak 并配置 Flathub remote。",
+            "zh-TW": "透過 Flatpak 從 Flathub 安裝 org.videolan.VLC；需要已安裝 Flatpak 並設定 Flathub remote。",
+            "en": "Installs org.videolan.VLC from Flathub with Flatpak. Flatpak and the Flathub remote must already be configured.",
+            "ja": "Flatpak で Flathub から org.videolan.VLC をインストールします。Flatpak と Flathub リモートを事前に設定する必要があります。",
+            "ko": "Flatpak으로 Flathub에서 org.videolan.VLC를 설치합니다. Flatpak과 Flathub 리모트가 미리 설정되어 있어야 합니다."
+          },
+          "sourceUrl": "https://www.videolan.org/vlc/",
+          "method": {
+            "type": "package_manager",
+            "manager": "flatpak",
+            "packageId": "org.videolan.VLC",
+            "source": "flathub"
+          }
+        },
+        {
+          "id": "vlc-windows",
+          "os": "windows",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "通过 winget 安装 VideoLAN.VLC（winget 源）；需要已安装并配置该包管理器。",
+            "zh-TW": "透過 winget 安裝 VideoLAN.VLC（winget 來源）；需要已安裝並設定該套件管理器。",
+            "en": "Installs VideoLAN.VLC with winget from the winget source. The package manager must already be installed and configured.",
+            "ja": "winget で VideoLAN.VLC をインストールします（winget ソース）。パッケージマネージャーを事前にインストールして設定する必要があります。",
+            "ko": "winget로 VideoLAN.VLC를 설치합니다(winget 소스). 패키지 관리자가 미리 설치되어 설정되어 있어야 합니다."
+          },
+          "sourceUrl": "https://www.videolan.org/vlc/",
+          "method": {
+            "type": "package_manager",
+            "manager": "winget",
+            "packageId": "VideoLAN.VLC",
+            "source": "winget"
+          }
+        },
+        {
+          "id": "vlc-macos",
+          "os": "macos",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "通过 brew 安装 vlc；需要已安装并配置该包管理器。",
+            "zh-TW": "透過 brew 安裝 vlc；需要已安裝並設定該套件管理器。",
+            "en": "Installs vlc with brew. The package manager must already be installed and configured.",
+            "ja": "brew で vlc をインストールします。パッケージマネージャーを事前にインストールして設定する必要があります。",
+            "ko": "brew로 vlc를 설치합니다. 패키지 관리자가 미리 설치되어 설정되어 있어야 합니다."
+          },
+          "sourceUrl": "https://www.videolan.org/vlc/",
+          "method": {
+            "type": "package_manager",
+            "manager": "brew",
+            "packageId": "vlc",
+            "cask": true
+          }
+        }
+      ]
+    },
+    {
+      "name": "Warzone 2100",
+      "publisher": "Warzone 2100 Project",
+      "category": "media",
+      "mark": "WZ",
+      "accent": "#6887a3",
+      "license": "GPL-2.0-or-later",
+      "homepage": "https://wz2100.net/",
+      "summary": {
+        "zh-CN": "开源即时战略游戏，包含战役、单人遭遇战、多人游戏和科技研究。",
+        "zh-TW": "開源即時戰略遊戲，包含戰役、單人遭遇戰、多人遊戲和科技研究。",
+        "en": "An open-source real-time strategy game with campaigns, skirmishes, multiplayer and technology research.",
+        "ja": "キャンペーン、シングルプレイのスカーミッシュ、マルチプレイ、技術研究を備えるオープンソース RTS。",
+        "ko": "캠페인, 싱글 스커미시, 멀티플레이 및 기술 연구를 제공하는 오픈 소스 실시간 전략 게임."
+      },
+      "sourceRepository": "https://github.com/Warzone2100/warzone2100",
+      "licenseUrl": "https://raw.githubusercontent.com/Warzone2100/warzone2100/master/src/main.cpp",
+      "id": "warzone2100",
+      "variants": [
+        {
+          "id": "warzone2100-linux-x86-64",
+          "os": "linux",
+          "architectures": [
+            "x86_64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "通过 Flatpak 从 Flathub 安装 net.wz2100.wz2100；需要已安装 Flatpak 并配置 Flathub remote。 当前 Flathub 应用 ref 仅验证 x86_64。多人游戏会连接所选服务器并交换游戏数据；附加地图或模组由用户选择，可能涉及各自内容和许可。",
+            "zh-TW": "透過 Flatpak 從 Flathub 安裝 net.wz2100.wz2100；需要已安裝 Flatpak 並設定 Flathub remote。 目前 Flathub 應用程式 ref 僅驗證 x86_64。多人遊戲會連線所選伺服器並交換遊戲資料；附加地圖或模組由使用者選擇，可能涉及各自內容和授權。",
+            "en": "Installs net.wz2100.wz2100 from Flathub with Flatpak. Flatpak and the Flathub remote must already be configured. Only the x86_64 application ref is currently verified on Flathub. Multiplayer connects to selected servers and exchanges game data. Additional maps or mods are user-selected and may have their own content and licenses.",
+            "ja": "Flatpak で Flathub から net.wz2100.wz2100 をインストールします。Flatpak と Flathub リモートを事前に設定する必要があります。 現在 Flathub で確認できるアプリ ref は x86_64 のみです。マルチプレイは選択したサーバーへ接続してゲームデータを交換します。追加マップや MOD はユーザーが選択し、独自のコンテンツやライセンスが適用される場合があります。",
+            "ko": "Flatpak으로 Flathub에서 net.wz2100.wz2100를 설치합니다. Flatpak과 Flathub 리모트가 미리 설정되어 있어야 합니다. 현재 Flathub에서는 x86_64 애플리케이션 ref만 확인했습니다. 멀티플레이는 선택한 서버에 연결해 게임 데이터를 교환합니다. 추가 지도나 모드는 사용자가 선택하며 별도의 콘텐츠와 라이선스가 적용될 수 있습니다."
+          },
+          "sourceUrl": "https://wz2100.net/",
+          "method": {
+            "type": "package_manager",
+            "manager": "flatpak",
+            "packageId": "net.wz2100.wz2100",
+            "source": "flathub"
+          }
+        }
+      ]
+    },
+    {
+      "name": "yt-dlp",
+      "publisher": "yt-dlp",
+      "category": "media",
+      "mark": "YT",
+      "accent": "#c94b4b",
+      "license": "Unlicense",
+      "homepage": "https://github.com/yt-dlp/yt-dlp#installation",
+      "summary": {
+        "zh-CN": "命令行音视频下载工具，支持大量网站、格式选择、字幕与元数据处理。",
+        "zh-TW": "命令列影音下載工具，支援大量網站、格式選擇、字幕與中繼資料處理。",
+        "en": "A command-line audio/video downloader supporting many sites, format selection, subtitles and metadata.",
+        "ja": "多数のサイトに対応し、形式選択、字幕、メタデータ処理を行えるコマンドライン音声・動画ダウンローダー。",
+        "ko": "다양한 사이트, 형식 선택, 자막 및 메타데이터 처리를 지원하는 명령줄 오디오/비디오 다운로더."
+      },
+      "sourceRepository": "https://github.com/yt-dlp/yt-dlp",
+      "licenseUrl": "https://raw.githubusercontent.com/yt-dlp/yt-dlp/HEAD/LICENSE",
+      "id": "yt-dlp",
+      "variants": [
+        {
+          "id": "yt-dlp-windows",
+          "os": "windows",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "通过 winget 安装 yt-dlp.yt-dlp（winget 源）；需要已安装并配置该包管理器。 这是命令行工具；媒体下载、格式转换和某些站点需要另行配置 FFmpeg 或其他依赖。请遵守站点条款与适用法律。",
+            "zh-TW": "透過 winget 安裝 yt-dlp.yt-dlp（winget 來源）；需要已安裝並設定該套件管理器。 這是命令列工具；媒體下載、格式轉換和某些網站需要另行設定 FFmpeg 或其他相依套件。請遵守網站條款與適用法律。",
+            "en": "Installs yt-dlp.yt-dlp with winget from the winget source. The package manager must already be installed and configured. This is a command-line tool. Media downloads, conversion and some sites require FFmpeg or other dependencies. Follow site terms and applicable law.",
+            "ja": "winget で yt-dlp.yt-dlp をインストールします（winget ソース）。パッケージマネージャーを事前にインストールして設定する必要があります。 コマンドラインツールです。メディアのダウンロード、変換、一部サイトには FFmpeg などの依存関係が必要です。サイトの規約と適用法を遵守してください。",
+            "ko": "winget로 yt-dlp.yt-dlp를 설치합니다(winget 소스). 패키지 관리자가 미리 설치되어 설정되어 있어야 합니다. 명령줄 도구입니다. 미디어 다운로드, 변환 및 일부 사이트에는 FFmpeg 등의 종속성이 필요합니다. 사이트 약관과 관련 법률을 준수하세요."
+          },
+          "sourceUrl": "https://github.com/yt-dlp/yt-dlp#installation",
+          "method": {
+            "type": "package_manager",
+            "manager": "winget",
+            "packageId": "yt-dlp.yt-dlp",
+            "source": "winget"
+          }
+        },
+        {
+          "id": "yt-dlp-macos",
+          "os": "macos",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "通过 Homebrew 安装 yt-dlp；需要已安装并配置 brew。 这是命令行工具；媒体下载、格式转换和某些站点需要另行配置 FFmpeg 或其他依赖。请遵守站点条款与适用法律。",
+            "zh-TW": "透過 Homebrew 安裝 yt-dlp；需要已安裝並設定 brew。 這是命令列工具；媒體下載、格式轉換和某些網站需要另行設定 FFmpeg 或其他相依套件。請遵守網站條款與適用法律。",
+            "en": "Installs yt-dlp with Homebrew. brew must already be installed and configured. This is a command-line tool. Media downloads, conversion and some sites require FFmpeg or other dependencies. Follow site terms and applicable law.",
+            "ja": "Homebrew で yt-dlp をインストールします。brew を事前にインストールして設定する必要があります。 コマンドラインツールです。メディアのダウンロード、変換、一部サイトには FFmpeg などの依存関係が必要です。サイトの規約と適用法を遵守してください。",
+            "ko": "Homebrew로 yt-dlp를 설치합니다. brew가 미리 설치되어 설정되어 있어야 합니다. 명령줄 도구입니다. 미디어 다운로드, 변환 및 일부 사이트에는 FFmpeg 등의 종속성이 필요합니다. 사이트 약관과 관련 법률을 준수하세요."
+          },
+          "sourceUrl": "https://github.com/yt-dlp/yt-dlp#installation",
+          "method": {
+            "type": "package_manager",
+            "manager": "brew",
+            "packageId": "yt-dlp",
+            "cask": false
+          }
+        },
+        {
+          "id": "yt-dlp-linux-x86-64",
+          "os": "linux",
+          "architectures": [
+            "x86_64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "下载、校验并解压匹配的正式稳定版 GitHub Release 到用户目录，创建 yt-dlp 启动链接；不修改系统 PATH。 这是命令行工具；媒体下载、格式转换和某些站点需要另行配置 FFmpeg 或其他依赖。请遵守站点条款与适用法律。",
+            "zh-TW": "下載、驗證並解壓符合的正式穩定版 GitHub Release 到使用者目錄，建立 yt-dlp 啟動連結；不修改系統 PATH。 這是命令列工具；媒體下載、格式轉換和某些網站需要另行設定 FFmpeg 或其他相依套件。請遵守網站條款與適用法律。",
+            "en": "Downloads, verifies and extracts the matching stable GitHub Release into the user directory and creates a yt-dlp launch link. System PATH is not modified. This is a command-line tool. Media downloads, conversion and some sites require FFmpeg or other dependencies. Follow site terms and applicable law.",
+            "ja": "一致する安定版 GitHub Release をダウンロード、検証し、ユーザーディレクトリに展開して yt-dlp の起動リンクを作成します。システム PATH は変更しません。 コマンドラインツールです。メディアのダウンロード、変換、一部サイトには FFmpeg などの依存関係が必要です。サイトの規約と適用法を遵守してください。",
+            "ko": "일치하는 안정 GitHub Release를 다운로드하고 검증한 후 사용자 디렉터리에 압축을 풀고 yt-dlp 실행 링크를 만듭니다. 시스템 PATH는 수정하지 않습니다. 명령줄 도구입니다. 미디어 다운로드, 변환 및 일부 사이트에는 FFmpeg 등의 종속성이 필요합니다. 사이트 약관과 관련 법률을 준수하세요."
+          },
+          "sourceUrl": "https://github.com/yt-dlp/yt-dlp#installation",
+          "method": {
+            "type": "github_release",
+            "repository": "yt-dlp/yt-dlp",
+            "packages": [
+              {
+                "format": "zip",
+                "assets": {
+                  "x86_64": "yt-dlp_linux.zip"
+                },
+                "install": {
+                  "kind": "archive",
+                  "executableByArch": {
+                    "x86_64": "yt-dlp_linux"
+                  },
+                  "stripComponents": 0,
+                  "linkName": "yt-dlp"
+                }
+              }
+            ]
+          },
+          "detection": {
+            "type": "command",
+            "program": "yt-dlp",
+            "args": [
+              "--version"
+            ]
+          }
+        },
+        {
+          "id": "yt-dlp-linux-aarch64",
+          "os": "linux",
+          "architectures": [
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "下载、校验并解压匹配的正式稳定版 GitHub Release 到用户目录，创建 yt-dlp 启动链接；不修改系统 PATH。 这是命令行工具；媒体下载、格式转换和某些站点需要另行配置 FFmpeg 或其他依赖。请遵守站点条款与适用法律。",
+            "zh-TW": "下載、驗證並解壓符合的正式穩定版 GitHub Release 到使用者目錄，建立 yt-dlp 啟動連結；不修改系統 PATH。 這是命令列工具；媒體下載、格式轉換和某些網站需要另行設定 FFmpeg 或其他相依套件。請遵守網站條款與適用法律。",
+            "en": "Downloads, verifies and extracts the matching stable GitHub Release into the user directory and creates a yt-dlp launch link. System PATH is not modified. This is a command-line tool. Media downloads, conversion and some sites require FFmpeg or other dependencies. Follow site terms and applicable law.",
+            "ja": "一致する安定版 GitHub Release をダウンロード、検証し、ユーザーディレクトリに展開して yt-dlp の起動リンクを作成します。システム PATH は変更しません。 コマンドラインツールです。メディアのダウンロード、変換、一部サイトには FFmpeg などの依存関係が必要です。サイトの規約と適用法を遵守してください。",
+            "ko": "일치하는 안정 GitHub Release를 다운로드하고 검증한 후 사용자 디렉터리에 압축을 풀고 yt-dlp 실행 링크를 만듭니다. 시스템 PATH는 수정하지 않습니다. 명령줄 도구입니다. 미디어 다운로드, 변환 및 일부 사이트에는 FFmpeg 등의 종속성이 필요합니다. 사이트 약관과 관련 법률을 준수하세요."
+          },
+          "sourceUrl": "https://github.com/yt-dlp/yt-dlp#installation",
+          "method": {
+            "type": "github_release",
+            "repository": "yt-dlp/yt-dlp",
+            "packages": [
+              {
+                "format": "zip",
+                "assets": {
+                  "aarch64": "yt-dlp_linux_aarch64.zip"
+                },
+                "install": {
+                  "kind": "archive",
+                  "executableByArch": {
+                    "aarch64": "yt-dlp_linux_aarch64"
+                  },
+                  "stripComponents": 0,
+                  "linkName": "yt-dlp"
+                }
+              }
+            ]
+          },
+          "detection": {
+            "type": "command",
+            "program": "yt-dlp",
+            "args": [
+              "--version"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "YouTube Music Desktop App",
+      "publisher": "YTMD contributors",
+      "category": "media",
+      "mark": "YM",
+      "accent": "#6787a3",
+      "license": "GPL-3.0-only",
+      "homepage": "https://ytmdesktop.app/",
+      "summary": {
+        "zh-CN": "YouTube Music 桌面客户端，提供媒体键、播放控制和桌面集成。",
+        "zh-TW": "YouTube Music 桌面用戶端，提供媒體鍵、播放控制和桌面整合。",
+        "en": "A YouTube Music desktop client with media keys, playback controls and desktop integration.",
+        "ja": "メディアキー、再生コントロール、デスクトップ統合を備える YouTube Music デスクトップクライアント。",
+        "ko": "미디어 키, 재생 제어 및 데스크톱 통합을 제공하는 YouTube Music 데스크톱 클라이언트."
+      },
+      "sourceRepository": "https://github.com/ytmdesktop/ytmdesktop",
+      "licenseUrl": "https://raw.githubusercontent.com/ytmdesktop/ytmdesktop/master/package.json",
+      "id": "ytmdesktop",
+      "variants": [
+        {
+          "id": "ytmdesktop-linux-x86-64",
+          "os": "linux",
+          "architectures": [
+            "x86_64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "通过 Flatpak 从 Flathub 安装 app.ytmdesktop.ytmdesktop；需要已安装 Flatpak 并配置 Flathub remote。 当前 Flathub 应用 ref 仅验证 x86_64。播放需连接 YouTube Music，部分功能需账号或订阅；服务内容和条款由 YouTube 管理，安装不登录账号。",
+            "zh-TW": "透過 Flatpak 從 Flathub 安裝 app.ytmdesktop.ytmdesktop；需要已安裝 Flatpak 並設定 Flathub remote。 目前 Flathub 應用程式 ref 僅驗證 x86_64。播放需連線 YouTube Music，部分功能需帳號或訂閱；服務內容和條款由 YouTube 管理，安裝不登入帳號。",
+            "en": "Installs app.ytmdesktop.ytmdesktop from Flathub with Flatpak. Flatpak and the Flathub remote must already be configured. Only the x86_64 application ref is currently verified on Flathub. Playback requires YouTube Music; some features require an account or subscription. YouTube controls service content and terms; installation signs in to no account.",
+            "ja": "Flatpak で Flathub から app.ytmdesktop.ytmdesktop をインストールします。Flatpak と Flathub リモートを事前に設定する必要があります。 現在 Flathub で確認できるアプリ ref は x86_64 のみです。再生には YouTube Music 接続が必要で、一部機能にはアカウントやサブスクリプションが必要です。サービス内容と規約は YouTube が管理し、インストール時にログインは行いません。",
+            "ko": "Flatpak으로 Flathub에서 app.ytmdesktop.ytmdesktop를 설치합니다. Flatpak과 Flathub 리모트가 미리 설정되어 있어야 합니다. 현재 Flathub에서는 x86_64 애플리케이션 ref만 확인했습니다. 재생에는 YouTube Music 연결이 필요하며 일부 기능은 계정 또는 구독이 필요합니다. 서비스 콘텐츠와 약관은 YouTube가 관리하며 설치 시 로그인하지 않습니다."
+          },
+          "sourceUrl": "https://ytmdesktop.app/",
+          "method": {
+            "type": "package_manager",
+            "manager": "flatpak",
+            "packageId": "app.ytmdesktop.ytmdesktop",
+            "source": "flathub"
           }
         }
       ]

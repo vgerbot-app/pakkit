@@ -2,7 +2,7 @@
 
 本分支维护开源软件分类目录 `catalog/`、拆分脚本 `scripts/split_catalog.py` 和本说明。每个软件必须具有规范源码仓库、当前有效且经 OSI 批准的 SPDX 许可证表达式，以及经维护者人工核对的许可证原文链接。Pakkit 启动时从本分支读取远程目录；目录中的脚本和安装包均来自软件官方来源，Pakkit 不托管安装包，也不因为脚本结束、安装器启动、文件下载或官网打开而宣称软件已安装。
 
-本批目录按逐条审核表收录 10 个分类、36 款软件、108 个安装变体；数量是本次验收结果，不是长期固定契约。
+当前目录经客户端校验包含 10 个分类、124 款软件、207 个安装变体；数量是本次验收结果，不是长期固定契约。
 
 ## 文件布局
 
@@ -16,7 +16,7 @@
 
 ## 顶层字段
 
-- `schemaVersion`：目录结构版本，目前必须为整数 `2`。旧客户端不兼容此契约，新客户端也不会接受旧版 `schemaVersion: 1` 目录；不提供旧目录兼容或部分回退。
+- `schemaVersion`：目录结构版本，目前必须为整数 `3`。客户端不接受旧版目录，也不提供旧目录兼容或部分回退。
 - `catalogVersion`：本次目录发布版本，用于界面和诊断。每批已验收条目发布时单独更新。
 - `homepage`：目录维护页面的 HTTPS 地址。
 - `submissionUrl`：预填软件提交内容所使用的 GitHub 新 Issue HTTPS 地址。
@@ -71,30 +71,41 @@
 
 ## 安装方法
 
-`method` 使用 `type` 区分三种形式：
+`method` 使用 `type` 区分四种形式：
 
-1. `script`：`shell` 为 `sh` 或 `powershell`，`command` 是未经 Pakkit 改写的完整官方命令。只采用官方安装文档明确给出的命令，并理解其提示和系统修改。需要用户回答提示时使用 `interactive: true`，在可见终端执行。包含 `sudo` 的命令必须同时设置 `interactive: true` 和 `requiresAdmin: true`。Pakkit 不静默提权。
-2. `artifact`：包含 HTTPS `url`、普通文件名 `fileName`、`action`，以及可选 `sha256`、`makeExecutable`。`action` 为 `run_installer`、`download_package` 或 `download_portable`。EXE、PKG、DMG 和 MSI 可运行安装器；DEB、RPM 只下载；AppImage 便携版使用 `download_portable` 和 `makeExecutable: true`。
-3. `official_page`：仅包含 HTTPS `url`，用于 Microsoft Store、Creative Cloud、可变 latest 下载、`releases/latest` 或不满足固定资产条件的条目。确认后只在系统浏览器打开页面，不报告下载或安装成功。
+1. `package_manager`：精确指定 `winget`、`brew`、`flatpak` 或 `npm`。winget 固定 `winget` 源，Flathub 固定 `flathub` remote，Homebrew 必须区分 formula 与 cask。客户端仅在真实支持的 OS 上使用对应管理器；包不存在或映射不确定时如实失败，不替换为相似名称的包。
+2. `github_release`：声明规范仓库和按格式、后端、架构区分的稳定 release 包。选择器必须在上游完整资产清单中恰好匹配一个资产，并具有 GitHub 提供的 SHA-256 digest。归档入口、strip、launcher、desktop entry 和 Linux 主机上下文必须与实际产物一致。
+3. `script`：`shell` 为 `sh` 或 `powershell`，`command` 是未经 Pakkit 改写的完整官方安装命令。只采用上游正式文档明确给出的命令，发布前审阅实际脚本。包含 `sudo` 时必须同时设置 `interactive: true` 和 `requiresAdmin: true`；不得隐藏提权、PATH 修改、账户或依赖要求。
+4. `portable`：固定版本 URL、普通文件名和 64 位小写 SHA-256。目前只用于经过客户端专门支持的 Rufus 固定变体，不能套用到其他应用。
 
-### 新增固定资产的发布门槛
+禁止 `official_page`、download-only 结果、浏览器安装和网页兜底。`homepage`、`sourceRepository`、`licenseUrl` 与 `sourceUrl` 仅供来源审阅，不是安装方法。
 
-- 新资产必须来自官方来源，使用稳定、带版本且可复核的 HTTPS URL；不使用会自动变化的 latest 地址代替版本固定。
-- 复核时下载准确资产，独立计算并填写 64 位小写 SHA-256。维护者计算的哈希用于变更检测，不替代官方来源和签名核验。
-- Windows 安装器和便携程序必须核验实际签名者与 PE 架构；MSI 还要核验安装包架构。无法完成这些检查时改用 `official_page` 或暂不发布。
-- 文件名不得为空、包含路径分隔符或 `..`。下载后强制校验已填写的 SHA-256；未填写时界面必须明确提示目录未提供哈希。
-- 便携版只下载，不自动运行、解压或宣称安装。未经专门实现和测试的 MSIX 使用官方页面或下载包语义，不冒充自动安装。
+### 安装产物的发布门槛
+
+- 包管理器 ID、来源、平台和架构必须由上游索引或项目安装文档验证；包管理器的版本解析不等于固定 release 的不可变摘要。
+- GitHub release 只接受正式稳定版。不得取第一个或模糊匹配资产，不得使用 checksum、签名、源码包、SBOM、调试符号或其他 OS／架构资产代替目标安装包。
+- Windows EXE／MSI 必须从实际文件核验完整 `expectedSigner`；EXE 还需验证 PE machine。PKG／DMG 使用真实支持的安装动作，安装器启动或打开不能报告为已安装。
+- Linux `github_release` 必须为每个声明架构覆盖 Apt、DNF、Zypper 和无系统包管理器上下文；缺适用产物时不得错装另一种包。
+- 下载、重定向、大小／摘要校验、原子 staging 和解包路径安全不得因目录条目而放宽。高风险工具只安装，不自动运行、解锁、挂载、写盘或接受额外协议。
 
 ## 添加或更新软件
 
 1. 核对规范厂商／项目身份、官方 HTTPS 首页、安装文档或规范仓库 Release，记录准确的名称、开发者、命令、下载地址和注意事项。排除第三方 Windows 构建、非官方重打包、网页／移动／服务器-only 项目、停止维护项目和不明镜像。
 2. 核对规范源码仓库与许可证原文，准确填写 `sourceRepository`、`license` 和 `licenseUrl`。许可证表达式中的每个 ID 都必须当前有效且经 OSI 批准，不接受 `LicenseRef`、弃用 ID、非 OSI 许可证或专有许可；无法确认所分发软件的完整许可范围时不收录。
 3. 选择现有分类，新增全局唯一软件 ID，并补齐五语言摘要和说明。
-4. 按实际支持的 OS 和架构拆分变体。只有满足上述固定资产门槛才使用 `artifact`；有明确官方命令才使用 `script`；其余使用 `official_page`。
+4. 按实际支持的 OS 和架构拆分变体。优先选择客户端已支持且能由权威数据验证的包管理器；稳定 release 必须具备完整、唯一且有 digest 的资产映射；只有上游明确维护的完整命令才使用 `script`。映射或产物证据不足时保留为 held，不创建网页或下载兜底。
 5. 如实设置权限与交互要求。只添加可靠的快速命令检测；无法可靠判断时省略 `detection`。
 6. 逐项复核许可原文、账号、稳定通道、资产哈希、Windows 签名者与架构，并在该批发版检查单记录结果。核验失败的条目保留为 held，不为凑数降低标准。
 7. 只提交本分支的 `catalog/`、拆分脚本和 `README.md`。Pakkit 的「提交软件」按钮只打开预填 GitHub Issue，不代表目录维护者已经审核，也不会直接修改本分支。
 
+
+## 来源审计
+
+- `scripts/audit_appsgit.py` 将 Appsgit 的 1,404 项发现快照与现有目录、Homebrew formula/cask（含架构 variations）和 Flathub 名称线索对照，输出逐项台账。候选映射只用于安排人工审阅，不是许可证、平台或安装验收结论。
+- `scripts/index_winget.py` 从 winget 稳定清单的精确上游仓库 URL 建立反向索引，使用 NUL 分隔的 Git 批处理协议，支持含空格路径。partial clone 缺失对象时的网络失败必须保留为未决，不能视为没有包。
+- `scripts/import_verified_apps.py` 仅包含逐项审阅后的应用定义、五语言说明和安装事实，不直接导入 Appsgit 描述或许可证。新增 cask 前必须核实架构，不能默认双架构。
+
+全部 1,404 项的处理结论应区分已存在、新增、许可排除、无支持安装方式、稳定通道暂缓与证据未决；未取证项目不能因网络失败而被排除。若完整目录将超过 4 MiB，必须先修改、验证并发布支持新容量方案的客户端，再发布目录，不得删除必需的五语言文案或许可元数据规避上限。
 ## 本地校验与发布顺序
 
 需要整体迁移单文件目录时，用脚本生成拆分文件：
@@ -120,4 +131,6 @@ PAKKIT_OFFICIAL_CATALOG_PATH=/path/to/catalog/index.json cargo test --locked rea
 
 该测试读取索引及其同目录的全部索引分类文件，检查合计大小，不访问网络；普通测试也不依赖本分支 checkout。独立 GitHub Actions 工作流会在 `opensource-catalog` 推送、拉取请求、定时或手动运行时 checkout `master` 与 `opensource-catalog`，用客户端解析器验证已发布目录。
 
-发布顺序必须为：先合并并发布支持 `schemaVersion: 2` 的客户端，再用该客户端验证并发布目录，最后确认远程索引和全部分类 JSON 与本地已验证内容一致，并用实际客户端刷新。不得先发布新目录，也不得为兼容旧客户端退回 schema 1。当前候选池不写入已发布目录；后续每批只发布已验收条目。
+设置 `PAKKIT_OFFICIAL_VERIFY_RELEASES=1` 后，同一测试还会访问 GitHub，验证所有 release 主机上下文的唯一资产、URL、格式和 digest。该测试不替代 winget、Flathub、Homebrew、npm 的索引检查，也不证明实际安装成功；Linux 上的测试不能证明 Windows 或 macOS 安装行为。
+
+发布顺序必须为：先合并并发布支持 `schemaVersion: 3` 的客户端，再用该客户端验证并发布目录，最后确认远程索引和全部分类 JSON 与本地已验证内容一致，并用实际客户端刷新。不得先发布新目录，也不得为兼容旧客户端退回旧 schema。当前候选池不写入已发布目录；后续每批只发布已验收条目。

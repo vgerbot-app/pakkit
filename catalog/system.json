@@ -1,27 +1,71 @@
 {
   "apps": [
     {
-      "id": "powertoys",
-      "name": "Microsoft PowerToys",
-      "publisher": "Microsoft",
+      "name": "AntiMicroX",
+      "publisher": "AntiMicroX contributors",
       "category": "system",
+      "mark": "AX",
+      "accent": "#6486a4",
+      "license": "GPL-3.0-or-later",
+      "homepage": "https://github.com/AntiMicroX/antimicrox",
       "summary": {
-        "zh-CN": "微软开源 Windows 增强工具集，包含窗口布局、批量重命名与快捷工具。",
-        "zh-TW": "微軟開源 Windows 增強工具集，包含視窗配置、批次重新命名與快捷工具。",
-        "en": "Microsoft’s open-source Windows utilities for window layouts, bulk renaming and quick tools.",
-        "ja": "ウィンドウレイアウト、一括名前変更、クイックツールを含む Microsoft のオープンソース Windows ユーティリティ集。",
-        "ko": "창 레이아웃, 일괄 이름 바꾸기 및 빠른 도구를 포함하는 Microsoft의 오픈 소스 Windows 유틸리티 모음."
+        "zh-CN": "Linux 游戏手柄映射工具，将手柄按钮和轴映射为键盘、鼠标等输入。",
+        "zh-TW": "Linux 遊戲手把映射工具，將手把按鈕和軸映射為鍵盤、滑鼠等輸入。",
+        "en": "A Linux gamepad mapper that translates buttons and axes into keyboard, mouse and other inputs.",
+        "ja": "ゲームパッドのボタンや軸をキーボード、マウス等の入力へ変換する Linux 用マッピングツール。",
+        "ko": "게임패드 버튼과 축을 키보드, 마우스 등의 입력으로 변환하는 Linux용 매핑 도구."
       },
-      "homepage": "https://github.com/microsoft/PowerToys/releases/latest",
-      "mark": "PT",
-      "accent": "#0078d4",
-      "sourceRepository": "https://github.com/microsoft/PowerToys",
-      "license": "MIT",
-      "licenseUrl": "https://raw.githubusercontent.com/microsoft/PowerToys/main/LICENSE",
+      "sourceRepository": "https://github.com/AntiMicroX/antimicrox",
+      "licenseUrl": "https://raw.githubusercontent.com/AntiMicroX/antimicrox/master/src/main.cpp",
+      "id": "antimicrox",
       "variants": [
         {
-          "id": "powertoys-windows",
-          "os": "windows",
+          "id": "antimicrox-linux-x86-64",
+          "os": "linux",
+          "architectures": [
+            "x86_64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "通过 Flatpak 从 Flathub 安装 io.github.antimicrox.antimicrox；需要已安装 Flatpak 并配置 Flathub remote。 当前 Flathub 应用 ref 仅验证 x86_64。启用映射会生成模拟输入并影响其他应用；设备访问需系统权限，安装不自动启用配置。",
+            "zh-TW": "透過 Flatpak 從 Flathub 安裝 io.github.antimicrox.antimicrox；需要已安裝 Flatpak 並設定 Flathub remote。 目前 Flathub 應用程式 ref 僅驗證 x86_64。啟用映射會產生模擬輸入並影響其他應用程式；裝置存取需系統權限，安裝不自動啟用設定。",
+            "en": "Installs io.github.antimicrox.antimicrox from Flathub with Flatpak. Flatpak and the Flathub remote must already be configured. Only the x86_64 application ref is currently verified on Flathub. Active mappings generate emulated input that affects other applications. Device access requires system permissions; installation enables no profile automatically.",
+            "ja": "Flatpak で Flathub から io.github.antimicrox.antimicrox をインストールします。Flatpak と Flathub リモートを事前に設定する必要があります。 現在 Flathub で確認できるアプリ ref は x86_64 のみです。マッピングを有効にすると他のアプリへ影響するエミュレート入力を生成します。デバイスアクセスにはシステム権限が必要で、インストール時にプロファイルは自動有効化されません。",
+            "ko": "Flatpak으로 Flathub에서 io.github.antimicrox.antimicrox를 설치합니다. Flatpak과 Flathub 리모트가 미리 설정되어 있어야 합니다. 현재 Flathub에서는 x86_64 애플리케이션 ref만 확인했습니다. 매핑을 활성화하면 다른 앱에 영향을 주는 가상 입력이 생성됩니다. 장치 접근에는 시스템 권한이 필요하며 설치 시 프로필이 자동으로 활성화되지 않습니다."
+          },
+          "sourceUrl": "https://github.com/AntiMicroX/antimicrox",
+          "method": {
+            "type": "package_manager",
+            "manager": "flatpak",
+            "packageId": "io.github.antimicrox.antimicrox",
+            "source": "flathub"
+          }
+        }
+      ]
+    },
+    {
+      "name": "balenaEtcher",
+      "publisher": "Balena",
+      "category": "system",
+      "mark": "BE",
+      "accent": "#527c9b",
+      "license": "Apache-2.0",
+      "homepage": "https://etcher.balena.io/",
+      "summary": {
+        "zh-CN": "将操作系统镜像写入 SD 卡和 USB 驱动器的桌面工具，提供写入校验。",
+        "zh-TW": "將作業系統映像寫入 SD 卡和 USB 磁碟機的桌面工具，提供寫入驗證。",
+        "en": "A desktop tool for writing operating-system images to SD cards and USB drives with validation.",
+        "ja": "OS イメージを SD カードや USB ドライブへ書き込み、検証するデスクトップツール。",
+        "ko": "운영체제 이미지를 SD 카드와 USB 드라이브에 기록하고 검증하는 데스크톱 도구."
+      },
+      "sourceRepository": "https://github.com/balena-io/etcher",
+      "licenseUrl": "https://raw.githubusercontent.com/balena-io/etcher/v2.1.9/LICENSE",
+      "id": "balenaetcher",
+      "variants": [
+        {
+          "id": "balenaetcher-macos",
+          "os": "macos",
           "architectures": [
             "x86_64",
             "aarch64"
@@ -29,85 +73,18 @@
           "requiresAdmin": false,
           "interactive": false,
           "note": {
-            "zh-CN": "通过 winget 安装 Microsoft.PowerToys（winget 源）；需要已安装并配置该包管理器。",
-            "zh-TW": "透過 winget 安裝 Microsoft.PowerToys（winget 來源）；需要已安裝並設定該套件管理器。",
-            "en": "Installs Microsoft.PowerToys with winget from the winget source. The package manager must already be installed and configured.",
-            "ja": "winget で Microsoft.PowerToys をインストールします（winget ソース）。パッケージマネージャーを事前にインストールして設定する必要があります。",
-            "ko": "winget로 Microsoft.PowerToys를 설치합니다(winget 소스). 패키지 관리자가 미리 설치되어 설정되어 있어야 합니다."
+            "zh-CN": "通过 Homebrew 安装 balenaetcher；需要已安装并配置 brew。 需要 macOS 13 或更高版本。写盘会提升权限并覆盖目标设备全部数据；安装不会启动应用、请求凭据、选择设备或开始写入。使用前必须核对设备并备份。",
+            "zh-TW": "透過 Homebrew 安裝 balenaetcher；需要已安裝並設定 brew。 需要 macOS 13 或更高版本。寫盤會提升權限並覆蓋目標裝置全部資料；安裝不會啟動應用程式、請求憑證、選擇裝置或開始寫入。使用前必須核對裝置並備份。",
+            "en": "Installs balenaetcher with Homebrew. brew must already be installed and configured. Requires macOS 13 or later. Flashing elevates privileges and overwrites the selected device. Installation does not launch the app, supply credentials, select a device or start flashing. Verify the target and back up first.",
+            "ja": "Homebrew で balenaetcher をインストールします。brew を事前にインストールして設定する必要があります。 macOS 13 以降が必要です。書き込みには権限昇格が必要で、選択したデバイスを上書きします。インストール時にアプリの起動、認証情報の入力、デバイス選択、書き込み開始は行いません。事前に対象を確認してバックアップしてください。",
+            "ko": "Homebrew로 balenaetcher를 설치합니다. brew가 미리 설치되어 설정되어 있어야 합니다. macOS 13 이상이 필요합니다. 플래싱은 권한을 상승시키고 선택한 장치를 덮어씁니다. 설치 시 앱을 실행하거나 자격 증명을 제공하거나 장치를 선택하거나 플래싱을 시작하지 않습니다. 대상을 확인하고 먼저 백업하세요."
           },
-          "sourceUrl": "https://github.com/microsoft/PowerToys/releases/latest",
+          "sourceUrl": "https://etcher.balena.io/",
           "method": {
             "type": "package_manager",
-            "manager": "winget",
-            "packageId": "Microsoft.PowerToys",
-            "source": "winget"
-          }
-        }
-      ]
-    },
-    {
-      "id": "rufus",
-      "name": "Rufus",
-      "publisher": "Akeo Consulting",
-      "category": "system",
-      "summary": {
-      "zh-CN": "开源 Windows 启动介质制作工具，可将可启动 ISO 写入 U 盘；本目录安装便携版但不自动运行。",
-      "zh-TW": "開源 Windows 啟動媒體製作工具，可將可啟動 ISO 寫入 USB 隨身碟；本目錄安裝便攜版但不自動執行。",
-      "en": "An open-source Windows utility for writing bootable ISOs to USB drives; this catalog installs the portable build without launching it.",
-      "ja": "起動可能な ISO を USB ドライブに書き込むオープンソースの Windows ツール。このカタログではポータブル版をインストールしますが、自動実行はしません。",
-      "ko": "부팅 가능한 ISO를 USB 드라이브에 쓰는 오픈 소스 Windows 도구로 이 카탈로그는 포터블 빌드를 설치하지만 자동 실행하지 않습니다."
-      },
-      "homepage": "https://rufus.ie/en/",
-      "mark": "R",
-      "accent": "#e2b93b",
-      "sourceRepository": "https://github.com/pbatard/rufus",
-      "license": "GPL-3.0-or-later",
-      "licenseUrl": "https://raw.githubusercontent.com/pbatard/rufus/master/LICENSE.txt",
-      "variants": [
-        {
-          "id": "rufus-windows-x86-64",
-          "os": "windows",
-          "architectures": [
-            "x86_64"
-          ],
-          "requiresAdmin": false,
-          "interactive": false,
-          "note": {
-            "zh-CN": "固定 4.15 便携版，下载并校验 SHA-256 后安装到用户目录，不自动运行或写入设备。使用时请谨慎选择目标磁盘。",
-            "zh-TW": "固定 4.15 便攜版，下載並驗證 SHA-256 後安裝到使用者目錄，不自動執行或寫入裝置。使用時請謹慎選擇目標磁碟。",
-            "en": "Pinned 4.15 portable build. Downloads, verifies SHA-256 and installs into the user directory without running it or writing a device. Select target disks carefully when using it.",
-            "ja": "4.15 ポータブル版に固定。ダウンロードと SHA-256 検証後にユーザーディレクトリへインストールし、自動実行やデバイスへの書き込みは行いません。使用時は書き込み先ディスクを慎重に選択してください。",
-            "ko": "4.15 포터블 빌드로 고정되며 다운로드와 SHA-256 검증 후 사용자 디렉터리에 설치합니다. 자동 실행하거나 장치에 쓰지 않습니다. 사용 시 대상 디스크를 신중하게 선택하세요."
-          },
-          "sourceUrl": "https://rufus.ie/en/",
-          "method": {
-            "type": "portable",
-            "url": "https://github.com/pbatard/rufus/releases/download/v4.15/rufus-4.15.exe",
-            "fileName": "rufus-4.15.exe",
-            "sha256": "84c8a437f8af89257524478489e5c85f1edf25f761d299e2bcde46ac0afbe106"
-          }
-        },
-        {
-          "id": "rufus-windows-aarch64",
-          "os": "windows",
-          "architectures": [
-            "aarch64"
-          ],
-          "requiresAdmin": false,
-          "interactive": false,
-          "note": {
-            "zh-CN": "固定 4.15 便携版，下载并校验 SHA-256 后安装到用户目录，不自动运行或写入设备。使用时请谨慎选择目标磁盘。",
-            "zh-TW": "固定 4.15 便攜版，下載並驗證 SHA-256 後安裝到使用者目錄，不自動執行或寫入裝置。使用時請謹慎選擇目標磁碟。",
-            "en": "Pinned 4.15 portable build. Downloads, verifies SHA-256 and installs into the user directory without running it or writing a device. Select target disks carefully when using it.",
-            "ja": "4.15 ポータブル版に固定。ダウンロードと SHA-256 検証後にユーザーディレクトリへインストールし、自動実行やデバイスへの書き込みは行いません。使用時は書き込み先ディスクを慎重に選択してください。",
-            "ko": "4.15 포터블 빌드로 고정되며 다운로드와 SHA-256 검증 후 사용자 디렉터리에 설치합니다. 자동 실행하거나 장치에 쓰지 않습니다. 사용 시 대상 디스크를 신중하게 선택하세요."
-          },
-          "sourceUrl": "https://rufus.ie/en/",
-          "method": {
-            "type": "portable",
-            "url": "https://github.com/pbatard/rufus/releases/download/v4.15/rufus-4.15_arm64.exe",
-            "fileName": "rufus-4.15_arm64.exe",
-            "sha256": "af01a2136db7391eb8a52de7001fd231f0731cd27e042318dc2743d87fa35c1c"
+            "manager": "brew",
+            "packageId": "balenaetcher",
+            "cask": true
           }
         }
       ]
@@ -204,6 +181,138 @@
           "detection": {
             "type": "command",
             "program": "btop",
+            "args": [
+              "--version"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Dua CLI",
+      "publisher": "Sebastian Thiel and contributors",
+      "category": "system",
+      "mark": "Du",
+      "accent": "#6487a4",
+      "license": "MIT",
+      "homepage": "https://github.com/Byron/dua-cli",
+      "summary": {
+        "zh-CN": "终端磁盘用量分析器，交互浏览目录大小并可选删除条目。",
+        "zh-TW": "終端磁碟用量分析器，互動瀏覽目錄大小並可選刪除項目。",
+        "en": "A terminal disk-usage analyzer for interactive directory-size browsing and optional entry deletion.",
+        "ja": "ディレクトリサイズを対話的に表示し、必要に応じて項目を削除できるターミナルディスク使用量分析ツール。",
+        "ko": "디렉터리 크기를 대화형으로 탐색하고 선택적으로 항목을 삭제하는 터미널 디스크 사용량 분석기."
+      },
+      "sourceRepository": "https://github.com/Byron/dua-cli",
+      "licenseUrl": "https://raw.githubusercontent.com/Byron/dua-cli/main/LICENSE",
+      "id": "dua-cli",
+      "variants": [
+        {
+          "id": "dua-cli-macos",
+          "os": "macos",
+          "architectures": [
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "通过 Homebrew 安装 dua-cli；需要已安装并配置 brew。 Homebrew 仅提供本目录已验证的 macOS arm64 bottle，未声明 Intel macOS。删除模式会永久移除所选文件，运行前检查路径，安装不扫描或删除文件。",
+            "zh-TW": "透過 Homebrew 安裝 dua-cli；需要已安裝並設定 brew。 Homebrew 僅提供本目錄已驗證的 macOS arm64 bottle，未宣告 Intel macOS。刪除模式會永久移除所選檔案，執行前檢查路徑，安裝不掃描或刪除檔案。",
+            "en": "Installs dua-cli with Homebrew. brew must already be installed and configured. Homebrew provides only the macOS arm64 bottle verified for this catalog; Intel macOS is not declared. Deletion mode permanently removes selected files. Check paths before use; installation scans or deletes nothing.",
+            "ja": "Homebrew で dua-cli をインストールします。brew を事前にインストールして設定する必要があります。 Homebrew はこのカタログで確認済みの macOS arm64 bottle のみを提供し、Intel macOS は対象外です。削除モードは選択ファイルを完全に削除します。事前にパスを確認してください。インストール時にスキャンや削除は行いません。",
+            "ko": "Homebrew로 dua-cli를 설치합니다. brew가 미리 설치되어 설정되어 있어야 합니다. Homebrew는 이 카탈로그에서 확인된 macOS arm64 bottle만 제공하며 Intel macOS는 선언하지 않습니다. 삭제 모드는 선택한 파일을 영구 삭제합니다. 실행 전 경로를 확인하세요. 설치 시 검색하거나 삭제하지 않습니다."
+          },
+          "sourceUrl": "https://github.com/Byron/dua-cli",
+          "method": {
+            "type": "package_manager",
+            "manager": "brew",
+            "packageId": "dua-cli",
+            "cask": false
+          }
+        },
+        {
+          "id": "dua-cli-linux-x86-64",
+          "os": "linux",
+          "architectures": [
+            "x86_64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "下载、校验并解压匹配的正式稳定版 GitHub Release 到用户目录，创建 dua 启动链接；不修改系统 PATH。 Linux 使用上游 musl 静态归档，不经过 Homebrew。删除模式会永久移除所选文件，运行前检查路径，安装不扫描或删除文件。",
+            "zh-TW": "下載、驗證並解壓符合的正式穩定版 GitHub Release 到使用者目錄，建立 dua 啟動連結；不修改系統 PATH。 Linux 使用上游 musl 靜態封存檔，不透過 Homebrew。刪除模式會永久移除所選檔案，執行前檢查路徑，安裝不掃描或刪除檔案。",
+            "en": "Downloads, verifies and extracts the matching stable GitHub Release into the user directory and creates a dua launch link. System PATH is not modified. Linux uses the upstream musl static archive, not Homebrew. Deletion mode permanently removes selected files. Check paths before use; installation scans or deletes nothing.",
+            "ja": "一致する安定版 GitHub Release をダウンロード、検証し、ユーザーディレクトリに展開して dua の起動リンクを作成します。システム PATH は変更しません。 Linux では Homebrew を使わず、上流の musl 静的アーカイブを使用します。削除モードは選択ファイルを完全に削除します。事前にパスを確認してください。インストール時にスキャンや削除は行いません。",
+            "ko": "일치하는 안정 GitHub Release를 다운로드하고 검증한 후 사용자 디렉터리에 압축을 풀고 dua 실행 링크를 만듭니다. 시스템 PATH는 수정하지 않습니다. Linux에서는 Homebrew가 아니라 업스트림 musl 정적 아카이브를 사용합니다. 삭제 모드는 선택한 파일을 영구 삭제합니다. 실행 전 경로를 확인하세요. 설치 시 검색하거나 삭제하지 않습니다."
+          },
+          "sourceUrl": "https://github.com/Byron/dua-cli",
+          "method": {
+            "type": "github_release",
+            "repository": "Byron/dua-cli",
+            "packages": [
+              {
+                "format": "tar_gz",
+                "assets": {
+                  "x86_64": "dua-v*-x86_64-unknown-linux-musl.tar.gz"
+                },
+                "install": {
+                  "kind": "archive",
+                  "executableByArch": {
+                    "x86_64": "dua"
+                  },
+                  "stripComponents": 1,
+                  "linkName": "dua"
+                }
+              }
+            ]
+          },
+          "detection": {
+            "type": "command",
+            "program": "dua",
+            "args": [
+              "--version"
+            ]
+          }
+        },
+        {
+          "id": "dua-cli-linux-aarch64",
+          "os": "linux",
+          "architectures": [
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "下载、校验并解压匹配的正式稳定版 GitHub Release 到用户目录，创建 dua 启动链接；不修改系统 PATH。 Linux 使用上游 musl 静态归档，不经过 Homebrew。删除模式会永久移除所选文件，运行前检查路径，安装不扫描或删除文件。",
+            "zh-TW": "下載、驗證並解壓符合的正式穩定版 GitHub Release 到使用者目錄，建立 dua 啟動連結；不修改系統 PATH。 Linux 使用上游 musl 靜態封存檔，不透過 Homebrew。刪除模式會永久移除所選檔案，執行前檢查路徑，安裝不掃描或刪除檔案。",
+            "en": "Downloads, verifies and extracts the matching stable GitHub Release into the user directory and creates a dua launch link. System PATH is not modified. Linux uses the upstream musl static archive, not Homebrew. Deletion mode permanently removes selected files. Check paths before use; installation scans or deletes nothing.",
+            "ja": "一致する安定版 GitHub Release をダウンロード、検証し、ユーザーディレクトリに展開して dua の起動リンクを作成します。システム PATH は変更しません。 Linux では Homebrew を使わず、上流の musl 静的アーカイブを使用します。削除モードは選択ファイルを完全に削除します。事前にパスを確認してください。インストール時にスキャンや削除は行いません。",
+            "ko": "일치하는 안정 GitHub Release를 다운로드하고 검증한 후 사용자 디렉터리에 압축을 풀고 dua 실행 링크를 만듭니다. 시스템 PATH는 수정하지 않습니다. Linux에서는 Homebrew가 아니라 업스트림 musl 정적 아카이브를 사용합니다. 삭제 모드는 선택한 파일을 영구 삭제합니다. 실행 전 경로를 확인하세요. 설치 시 검색하거나 삭제하지 않습니다."
+          },
+          "sourceUrl": "https://github.com/Byron/dua-cli",
+          "method": {
+            "type": "github_release",
+            "repository": "Byron/dua-cli",
+            "packages": [
+              {
+                "format": "tar_gz",
+                "assets": {
+                  "aarch64": "dua-v*-aarch64-unknown-linux-musl.tar.gz"
+                },
+                "install": {
+                  "kind": "archive",
+                  "executableByArch": {
+                    "aarch64": "dua"
+                  },
+                  "stripComponents": 1,
+                  "linkName": "dua"
+                }
+              }
+            ]
+          },
+          "detection": {
+            "type": "command",
+            "program": "dua",
             "args": [
               "--version"
             ]
@@ -369,109 +478,471 @@
       ]
     },
     {
-      "id": "ventoy",
-      "name": "Ventoy",
-      "publisher": "Ventoy",
+      "name": "Hammerspoon",
+      "publisher": "Hammerspoon contributors",
       "category": "system",
+      "mark": "H",
+      "accent": "#657fa8",
+      "license": "MIT",
+      "homepage": "https://www.hammerspoon.org/",
       "summary": {
-        "zh-CN": "开源多系统启动 U 盘制作工具，安装后可直接复制并选择启动 ISO、WIM、IMG 等镜像。",
-        "zh-TW": "開源多系統啟動 USB 隨身碟製作工具，安裝後可直接複製並選擇啟動 ISO、WIM、IMG 等映像。",
-        "en": "An open-source multiboot USB creator that lets you copy and boot ISO, WIM, IMG and other images after preparing the drive.",
-        "ja": "ドライブの準備後に ISO、WIM、IMG などのイメージをコピーして起動できるオープンソースのマルチブート USB 作成ツール。",
-        "ko": "드라이브를 준비한 후 ISO, WIM, IMG 등의 이미지를 복사하여 부팅할 수 있는 오픈 소스 멀티부팅 USB 제작 도구."
+        "zh-CN": "macOS Lua 自动化工具，可控制窗口、应用、输入事件和系统功能。",
+        "zh-TW": "macOS Lua 自動化工具，可控制視窗、應用程式、輸入事件和系統功能。",
+        "en": "A macOS Lua automation tool for windows, applications, input events and system functions.",
+        "ja": "ウィンドウ、アプリ、入力イベント、システム機能を制御する macOS Lua 自動化ツール。",
+        "ko": "창, 앱, 입력 이벤트 및 시스템 기능을 제어하는 macOS Lua 자동화 도구."
       },
-      "homepage": "https://www.ventoy.net/en/index.html",
-      "mark": "V",
-      "accent": "#287dbd",
-      "sourceRepository": "https://github.com/ventoy/Ventoy",
-      "license": "GPL-3.0-or-later",
-      "licenseUrl": "https://raw.githubusercontent.com/ventoy/Ventoy/master/License/gpl-3.0.txt",
+      "sourceRepository": "https://github.com/Hammerspoon/hammerspoon",
+      "licenseUrl": "https://raw.githubusercontent.com/Hammerspoon/hammerspoon/1.1.1/LICENSE",
+      "id": "hammerspoon",
       "variants": [
         {
-          "id": "ventoy-windows-x86-64",
-          "os": "windows",
-          "architectures": [
-            "x86_64"
-          ],
-          "requiresAdmin": false,
-          "interactive": true,
-          "note": {
-            "zh-CN": "通过官方包或归档安装，不自动运行写盘程序。警告：写入 Ventoy 会格式化目标磁盘并清除全部数据，请先备份并核对设备。",
-            "zh-TW": "透過官方套件或封存檔安裝，不自動執行寫碟程式。警告：寫入 Ventoy 會格式化目標磁碟並清除全部資料，請先備份並核對裝置。",
-            "en": "Installs from the official package or archive without launching the disk-writing program. WARNING: writing Ventoy formats the target disk and erases all data. Back up and verify the device first.",
-            "ja": "公式パッケージまたはアーカイブからインストールし、ディスク書き込みプログラムは自動実行しません。警告：Ventoy を書き込むと対象ディスクがフォーマットされ、全データが消去されます。事前にバックアップし、デバイスを確認してください。",
-            "ko": "공식 패키지 또는 아카이브로 설치하며 디스크 쓰기 프로그램을 자동 실행하지 않습니다. 경고: Ventoy를 쓰면 대상 디스크가 포맷되어 모든 데이터가 삭제됩니다. 먼저 백업하고 장치를 확인하세요."
-          },
-          "sourceUrl": "https://www.ventoy.net/en/doc_start.html",
-          "method": {
-            "type": "package_manager",
-            "manager": "winget",
-            "packageId": "Ventoy.Ventoy",
-            "source": "winget"
-          }
-        },
-        {
-          "id": "ventoy-windows-aarch64",
-          "os": "windows",
-          "architectures": [
-            "aarch64"
-          ],
-          "requiresAdmin": false,
-          "interactive": true,
-          "note": {
-            "zh-CN": "通过官方包或归档安装，不自动运行写盘程序。警告：写入 Ventoy 会格式化目标磁盘并清除全部数据，请先备份并核对设备。",
-            "zh-TW": "透過官方套件或封存檔安裝，不自動執行寫碟程式。警告：寫入 Ventoy 會格式化目標磁碟並清除全部資料，請先備份並核對裝置。",
-            "en": "Installs from the official package or archive without launching the disk-writing program. WARNING: writing Ventoy formats the target disk and erases all data. Back up and verify the device first.",
-            "ja": "公式パッケージまたはアーカイブからインストールし、ディスク書き込みプログラムは自動実行しません。警告：Ventoy を書き込むと対象ディスクがフォーマットされ、全データが消去されます。事前にバックアップし、デバイスを確認してください。",
-            "ko": "공식 패키지 또는 아카이브로 설치하며 디스크 쓰기 프로그램을 자동 실행하지 않습니다. 경고: Ventoy를 쓰면 대상 디스크가 포맷되어 모든 데이터가 삭제됩니다. 먼저 백업하고 장치를 확인하세요."
-          },
-          "sourceUrl": "https://www.ventoy.net/en/doc_start.html",
-          "method": {
-            "type": "package_manager",
-            "manager": "winget",
-            "packageId": "Ventoy.Ventoy",
-            "source": "winget"
-          }
-        },
-        {
-          "id": "ventoy-linux",
-          "os": "linux",
+          "id": "hammerspoon-macos",
+          "os": "macos",
           "architectures": [
             "x86_64",
             "aarch64"
           ],
           "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "通过 Homebrew 安装 hammerspoon；需要已安装并配置 brew。 需要 macOS 13 或更高版本和手动辅助功能授权。脚本/Spoons 可拦截输入、控制应用或执行命令，仅使用可信来源；崩溃上报默认开启，可在偏好设置关闭。",
+            "zh-TW": "透過 Homebrew 安裝 hammerspoon；需要已安裝並設定 brew。 需要 macOS 13 或更高版本和手動輔助使用授權。指令碼／Spoons 可攔截輸入、控制應用程式或執行命令，僅使用可信來源；當機回報預設開啟，可在偏好設定關閉。",
+            "en": "Installs hammerspoon with Homebrew. brew must already be installed and configured. Requires macOS 13 or later and manually granted Accessibility access. Scripts and Spoons can intercept input, control apps or execute commands; use trusted sources only. Crash reporting is enabled by default and can be disabled in Preferences.",
+            "ja": "Homebrew で hammerspoon をインストールします。brew を事前にインストールして設定する必要があります。 macOS 13 以降と手動でのアクセシビリティ許可が必要です。スクリプトと Spoon は入力の傍受、アプリ操作、コマンド実行が可能なため、信頼できるソースのみ使用してください。クラッシュレポートはデフォルトで有効で、設定で無効にできます。",
+            "ko": "Homebrew로 hammerspoon를 설치합니다. brew가 미리 설치되어 설정되어 있어야 합니다. macOS 13 이상과 수동 손쉬운 사용 권한이 필요합니다. 스크립트와 Spoon은 입력을 가로채거나 앱을 제어하거나 명령을 실행할 수 있으므로 신뢰할 수 있는 소스만 사용하세요. 충돌 보고는 기본적으로 활성화되어 있으며 설정에서 끌 수 있습니다."
+          },
+          "sourceUrl": "https://www.hammerspoon.org/",
+          "method": {
+            "type": "package_manager",
+            "manager": "brew",
+            "packageId": "hammerspoon",
+            "cask": true
+          }
+        }
+      ]
+    },
+    {
+      "name": "Karabiner-Elements",
+      "publisher": "Fumihiko Takayama",
+      "category": "system",
+      "mark": "KE",
+      "accent": "#6480a6",
+      "license": "Unlicense",
+      "homepage": "https://karabiner-elements.pqrs.org/",
+      "summary": {
+        "zh-CN": "macOS 键盘与指点设备自定义工具，支持复杂按键映射和设备级规则。",
+        "zh-TW": "macOS 鍵盤與指向裝置自訂工具，支援複雜按鍵映射和裝置級規則。",
+        "en": "A macOS keyboard and pointing-device customizer with complex key mappings and per-device rules.",
+        "ja": "複雑なキーマッピングとデバイスごとのルールに対応する macOS キーボード・ポインティングデバイスカスタマイズツール。",
+        "ko": "복잡한 키 매핑과 장치별 규칙을 지원하는 macOS 키보드 및 포인팅 장치 사용자 정의 도구."
+      },
+      "sourceRepository": "https://github.com/pqrs-org/Karabiner-Elements",
+      "licenseUrl": "https://raw.githubusercontent.com/pqrs-org/Karabiner-Elements/v16.3.0/LICENSE.md",
+      "id": "karabiner-elements",
+      "variants": [
+        {
+          "id": "karabiner-elements-macos",
+          "os": "macos",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": true,
           "interactive": true,
           "note": {
-            "zh-CN": "通过官方包或归档安装，不自动运行写盘程序。警告：写入 Ventoy 会格式化目标磁盘并清除全部数据，请先备份并核对设备。",
-            "zh-TW": "透過官方套件或封存檔安裝，不自動執行寫碟程式。警告：寫入 Ventoy 會格式化目標磁碟並清除全部資料，請先備份並核對裝置。",
-            "en": "Installs from the official package or archive without launching the disk-writing program. WARNING: writing Ventoy formats the target disk and erases all data. Back up and verify the device first.",
-            "ja": "公式パッケージまたはアーカイブからインストールし、ディスク書き込みプログラムは自動実行しません。警告：Ventoy を書き込むと対象ディスクがフォーマットされ、全データが消去されます。事前にバックアップし、デバイスを確認してください。",
-            "ko": "공식 패키지 또는 아카이브로 설치하며 디스크 쓰기 프로그램을 자동 실행하지 않습니다. 경고: Ventoy를 쓰면 대상 디스크가 포맷되어 모든 데이터가 삭제됩니다. 먼저 백업하고 장치를 확인하세요."
+            "zh-CN": "通过 Homebrew 安装 karabiner-elements；需要已安装并配置 brew。 管理员 PKG 安装，适用于 macOS 13 及更高版本的当前 cask。需手动批准后台服务、辅助功能、输入监控和驱动扩展；安装不代表驱动已激活或按键已重映射。",
+            "zh-TW": "透過 Homebrew 安裝 karabiner-elements；需要已安裝並設定 brew。 管理員 PKG 安裝，適用於 macOS 13 及更高版本的目前 cask。需手動批准背景服務、輔助使用、輸入監控和驅動程式擴充；安裝不代表驅動程式已啟用或按鍵已重新映射。",
+            "en": "Installs karabiner-elements with Homebrew. brew must already be installed and configured. Administrator PKG installation for the current cask on macOS 13 or later. Manually approve background services, Accessibility, Input Monitoring and the Driver Extension. Installation does not activate the driver or remap keys.",
+            "ja": "Homebrew で karabiner-elements をインストールします。brew を事前にインストールして設定する必要があります。 macOS 13 以降の現在の cask に対する管理者 PKG インストールです。バックグラウンドサービス、アクセシビリティ、入力監視、Driver Extension を手動で承認する必要があります。インストールしてもドライバーの有効化やキーの再割り当ては行われません。",
+            "ko": "Homebrew로 karabiner-elements를 설치합니다. brew가 미리 설치되어 설정되어 있어야 합니다. macOS 13 이상의 현재 cask에 대한 관리자 PKG 설치입니다. 백그라운드 서비스, 손쉬운 사용, 입력 모니터링 및 드라이버 확장을 수동으로 승인해야 합니다. 설치가 드라이버 활성화나 키 재매핑을 의미하지는 않습니다."
           },
-          "sourceUrl": "https://www.ventoy.net/en/doc_start.html",
+          "sourceUrl": "https://karabiner-elements.pqrs.org/",
           "method": {
-            "type": "github_release",
-            "repository": "ventoy/Ventoy",
-            "packages": [
-              {
-                "format": "tar_gz",
-                "assets": {
-                  "x86_64": "ventoy-*-linux.tar.gz",
-                  "aarch64": "ventoy-*-linux.tar.gz"
-                },
-                "install": {
-                  "kind": "archive",
-                  "executableByArch": {
-                    "x86_64": "VentoyGUI.x86_64",
-                    "aarch64": "VentoyGUI.aarch64"
-                  },
-                  "stripComponents": 1,
-                  "linkName": "ventoy",
-                  "desktopName": "Ventoy"
-                }
-              }
-            ]
+            "type": "package_manager",
+            "manager": "brew",
+            "packageId": "karabiner-elements",
+            "cask": true
+          }
+        }
+      ]
+    },
+    {
+      "name": "MonitorControl",
+      "publisher": "MonitorControl contributors",
+      "category": "system",
+      "mark": "MC",
+      "accent": "#6b8cc1",
+      "license": "MIT",
+      "homepage": "https://github.com/MonitorControl/MonitorControl",
+      "summary": {
+        "zh-CN": "macOS 外接显示器亮度和音量控制工具，支持 DDC 与软件调光。",
+        "zh-TW": "macOS 外接顯示器亮度和音量控制工具，支援 DDC 與軟體調光。",
+        "en": "A macOS external-display brightness and volume controller with DDC and software dimming.",
+        "ja": "DDC とソフトウェア調光に対応する macOS 外部ディスプレイの輝度・音量コントローラー。",
+        "ko": "DDC 및 소프트웨어 디밍을 지원하는 macOS 외부 디스플레이 밝기 및 음량 제어 도구."
+      },
+      "sourceRepository": "https://github.com/MonitorControl/MonitorControl",
+      "licenseUrl": "https://raw.githubusercontent.com/MonitorControl/MonitorControl/v4.4.0/License.txt",
+      "id": "monitorcontrol",
+      "variants": [
+        {
+          "id": "monitorcontrol-macos",
+          "os": "macos",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "通过 Homebrew 安装 monitorcontrol；需要已安装并配置 brew。 仅使用原生键盘亮度/媒体键时需要可选的辅助功能权限。DDC 支持取决于 Mac、GPU 和连接方式；DisplayLink 可能只支持软件调光。",
+            "zh-TW": "透過 Homebrew 安裝 monitorcontrol；需要已安裝並設定 brew。 僅使用原生鍵盤亮度／媒體鍵時需要可選的輔助使用權限。DDC 支援取決於 Mac、GPU 和連線方式；DisplayLink 可能只支援軟體調光。",
+            "en": "Installs monitorcontrol with Homebrew. brew must already be installed and configured. Accessibility permission is optional and only needed for native Apple keyboard brightness/media keys. DDC support depends on the Mac, GPU and connection; DisplayLink may support software dimming only.",
+            "ja": "Homebrew で monitorcontrol をインストールします。brew を事前にインストールして設定する必要があります。 アクセシビリティ権限はオプションで、Apple 純正キーボードの輝度・メディアキー使用時のみ必要です。DDC 対応は Mac、GPU、接続方法に依存し、DisplayLink ではソフトウェア調光のみの場合があります。",
+            "ko": "Homebrew로 monitorcontrol를 설치합니다. brew가 미리 설치되어 설정되어 있어야 합니다. 손쉬운 사용 권한은 선택 사항이며 Apple 기본 키보드의 밝기/미디어 키를 사용할 때만 필요합니다. DDC 지원은 Mac, GPU 및 연결 방식에 따라 다륾며 DisplayLink는 소프트웨어 디밍만 지원할 수 있습니다."
+          },
+          "sourceUrl": "https://github.com/MonitorControl/MonitorControl",
+          "method": {
+            "type": "package_manager",
+            "manager": "brew",
+            "packageId": "monitorcontrol",
+            "cask": true
+          }
+        }
+      ]
+    },
+    {
+      "name": "Piper",
+      "publisher": "libratbag contributors",
+      "category": "system",
+      "mark": "Pi",
+      "accent": "#6487a4",
+      "license": "GPL-2.0-or-later",
+      "homepage": "https://github.com/libratbag/piper",
+      "summary": {
+        "zh-CN": "libratbag 图形配置前端，用于受支持游戏鼠标的按键、DPI 和 LED 设置。",
+        "zh-TW": "libratbag 圖形設定前端，用於受支援遊戲滑鼠的按鍵、DPI 和 LED 設定。",
+        "en": "A graphical libratbag frontend for buttons, DPI and LED settings on supported gaming mice.",
+        "ja": "対応ゲーミングマウスのボタン、DPI、LED を設定する libratbag グラフィカルフロントエンド。",
+        "ko": "지원되는 게이밍 마우스의 버튼, DPI 및 LED를 설정하는 libratbag 그래픽 프런트엔드."
+      },
+      "sourceRepository": "https://github.com/libratbag/piper",
+      "licenseUrl": "https://raw.githubusercontent.com/libratbag/piper/master/COPYING",
+      "id": "piper",
+      "variants": [
+        {
+          "id": "piper-linux-x86-64",
+          "os": "linux",
+          "architectures": [
+            "x86_64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "通过 Flatpak 从 Flathub 安装 org.freedesktop.Piper；需要已安装 Flatpak 并配置 Flathub remote。 当前 Flathub 应用 ref 仅验证 x86_64。需系统安装并运行 ratbagd 及设备访问权限；写入配置会改变设备行为，安装不修改鼠标设置。",
+            "zh-TW": "透過 Flatpak 從 Flathub 安裝 org.freedesktop.Piper；需要已安裝 Flatpak 並設定 Flathub remote。 目前 Flathub 應用程式 ref 僅驗證 x86_64。需系統安裝並執行 ratbagd 及裝置存取權限；寫入設定會改變裝置行為，安裝不修改滑鼠設定。",
+            "en": "Installs org.freedesktop.Piper from Flathub with Flatpak. Flatpak and the Flathub remote must already be configured. Only the x86_64 application ref is currently verified on Flathub. System ratbagd and device-access permission are required. Applying settings changes device behavior; installation changes no mouse settings.",
+            "ja": "Flatpak で Flathub から org.freedesktop.Piper をインストールします。Flatpak と Flathub リモートを事前に設定する必要があります。 現在 Flathub で確認できるアプリ ref は x86_64 のみです。システムの ratbagd とデバイスアクセス権限が必要です。設定適用でデバイスの動作が変わりますが、インストール時にマウス設定は変更されません。",
+            "ko": "Flatpak으로 Flathub에서 org.freedesktop.Piper를 설치합니다. Flatpak과 Flathub 리모트가 미리 설정되어 있어야 합니다. 현재 Flathub에서는 x86_64 애플리케이션 ref만 확인했습니다. 시스템 ratbagd와 장치 접근 권한이 필요합니다. 설정 적용은 장치 동작을 변경하지만 설치 시 마우스 설정을 바꾸지 않습니다."
+          },
+          "sourceUrl": "https://github.com/libratbag/piper",
+          "method": {
+            "type": "package_manager",
+            "manager": "flatpak",
+            "packageId": "org.freedesktop.Piper",
+            "source": "flathub"
+          }
+        }
+      ]
+    },
+    {
+      "id": "powertoys",
+      "name": "Microsoft PowerToys",
+      "publisher": "Microsoft",
+      "category": "system",
+      "summary": {
+        "zh-CN": "微软开源 Windows 增强工具集，包含窗口布局、批量重命名与快捷工具。",
+        "zh-TW": "微軟開源 Windows 增強工具集，包含視窗配置、批次重新命名與快捷工具。",
+        "en": "Microsoft’s open-source Windows utilities for window layouts, bulk renaming and quick tools.",
+        "ja": "ウィンドウレイアウト、一括名前変更、クイックツールを含む Microsoft のオープンソース Windows ユーティリティ集。",
+        "ko": "창 레이아웃, 일괄 이름 바꾸기 및 빠른 도구를 포함하는 Microsoft의 오픈 소스 Windows 유틸리티 모음."
+      },
+      "homepage": "https://github.com/microsoft/PowerToys/releases/latest",
+      "mark": "PT",
+      "accent": "#0078d4",
+      "sourceRepository": "https://github.com/microsoft/PowerToys",
+      "license": "MIT",
+      "licenseUrl": "https://raw.githubusercontent.com/microsoft/PowerToys/main/LICENSE",
+      "variants": [
+        {
+          "id": "powertoys-windows",
+          "os": "windows",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "通过 winget 安装 Microsoft.PowerToys（winget 源）；需要已安装并配置该包管理器。",
+            "zh-TW": "透過 winget 安裝 Microsoft.PowerToys（winget 來源）；需要已安裝並設定該套件管理器。",
+            "en": "Installs Microsoft.PowerToys with winget from the winget source. The package manager must already be installed and configured.",
+            "ja": "winget で Microsoft.PowerToys をインストールします（winget ソース）。パッケージマネージャーを事前にインストールして設定する必要があります。",
+            "ko": "winget로 Microsoft.PowerToys를 설치합니다(winget 소스). 패키지 관리자가 미리 설치되어 설정되어 있어야 합니다."
+          },
+          "sourceUrl": "https://github.com/microsoft/PowerToys/releases/latest",
+          "method": {
+            "type": "package_manager",
+            "manager": "winget",
+            "packageId": "Microsoft.PowerToys",
+            "source": "winget"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Rectangle",
+      "publisher": "Ryan Hanson",
+      "category": "system",
+      "mark": "R",
+      "accent": "#5795d4",
+      "license": "MIT",
+      "homepage": "https://rectangleapp.com/",
+      "summary": {
+        "zh-CN": "macOS 窗口管理工具，使用快捷键或拖拽吸附调整窗口大小与位置。",
+        "zh-TW": "macOS 視窗管理工具，使用快捷鍵或拖曳吸附調整視窗大小與位置。",
+        "en": "A macOS window manager for resizing and positioning windows with shortcuts or drag-to-snap.",
+        "ja": "ショートカットやドラッグ＆スナップでウィンドウのサイズと位置を調整する macOS ウィンドウマネージャー。",
+        "ko": "단축키나 드래그 스냅으로 창 크기와 위치를 조정하는 macOS 창 관리 도구."
+      },
+      "sourceRepository": "https://github.com/rxhanson/Rectangle",
+      "licenseUrl": "https://raw.githubusercontent.com/rxhanson/Rectangle/HEAD/LICENSE",
+      "id": "rectangle",
+      "variants": [
+        {
+          "id": "rectangle-macos",
+          "os": "macos",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "通过 Homebrew 安装 rectangle；需要已安装并配置 brew。 需要 macOS 14 或更高版本。移动其他应用窗口前需在 macOS 隐私与安全设置中授予辅助功能权限。",
+            "zh-TW": "透過 Homebrew 安裝 rectangle；需要已安裝並設定 brew。 需要 macOS 14 或更高版本。移動其他應用程式視窗前需在 macOS 隱私與安全性設定中授予輔助使用權限。",
+            "en": "Installs rectangle with Homebrew. brew must already be installed and configured. Requires macOS 14 or later. Grant Accessibility permission in macOS Privacy & Security settings before controlling other apps' windows.",
+            "ja": "Homebrew で rectangle をインストールします。brew を事前にインストールして設定する必要があります。 macOS 14 以降が必要です。他のアプリのウィンドウを操作するには、macOS のプライバシーとセキュリティ設定でアクセシビリティ権限を許可してください。",
+            "ko": "Homebrew로 rectangle를 설치합니다. brew가 미리 설치되어 설정되어 있어야 합니다. macOS 14 이상이 필요합니다. 다른 앱의 창을 제어하려면 macOS 개인정보 보호 및 보안 설정에서 손쉬운 사용 권한을 허용해야 합니다."
+          },
+          "sourceUrl": "https://rectangleapp.com/",
+          "method": {
+            "type": "package_manager",
+            "manager": "brew",
+            "packageId": "rectangle",
+            "cask": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "rufus",
+      "name": "Rufus",
+      "publisher": "Akeo Consulting",
+      "category": "system",
+      "summary": {
+        "zh-CN": "开源 Windows 启动介质制作工具，可将可启动 ISO 写入 U 盘；本目录安装便携版但不自动运行。",
+        "zh-TW": "開源 Windows 啟動媒體製作工具，可將可啟動 ISO 寫入 USB 隨身碟；本目錄安裝便攜版但不自動執行。",
+        "en": "An open-source Windows utility for writing bootable ISOs to USB drives; this catalog installs the portable build without launching it.",
+        "ja": "起動可能な ISO を USB ドライブに書き込むオープンソースの Windows ツール。このカタログではポータブル版をインストールしますが、自動実行はしません。",
+        "ko": "부팅 가능한 ISO를 USB 드라이브에 쓰는 오픈 소스 Windows 도구로 이 카탈로그는 포터블 빌드를 설치하지만 자동 실행하지 않습니다."
+      },
+      "homepage": "https://rufus.ie/en/",
+      "mark": "R",
+      "accent": "#e2b93b",
+      "sourceRepository": "https://github.com/pbatard/rufus",
+      "license": "GPL-3.0-or-later",
+      "licenseUrl": "https://raw.githubusercontent.com/pbatard/rufus/master/LICENSE.txt",
+      "variants": [
+        {
+          "id": "rufus-windows-x86-64",
+          "os": "windows",
+          "architectures": [
+            "x86_64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "固定 4.15 便携版，下载并校验 SHA-256 后安装到用户目录，不自动运行或写入设备。使用时请谨慎选择目标磁盘。",
+            "zh-TW": "固定 4.15 便攜版，下載並驗證 SHA-256 後安裝到使用者目錄，不自動執行或寫入裝置。使用時請謹慎選擇目標磁碟。",
+            "en": "Pinned 4.15 portable build. Downloads, verifies SHA-256 and installs into the user directory without running it or writing a device. Select target disks carefully when using it.",
+            "ja": "4.15 ポータブル版に固定。ダウンロードと SHA-256 検証後にユーザーディレクトリへインストールし、自動実行やデバイスへの書き込みは行いません。使用時は書き込み先ディスクを慎重に選択してください。",
+            "ko": "4.15 포터블 빌드로 고정되며 다운로드와 SHA-256 검증 후 사용자 디렉터리에 설치합니다. 자동 실행하거나 장치에 쓰지 않습니다. 사용 시 대상 디스크를 신중하게 선택하세요."
+          },
+          "sourceUrl": "https://rufus.ie/en/",
+          "method": {
+            "type": "portable",
+            "url": "https://github.com/pbatard/rufus/releases/download/v4.15/rufus-4.15.exe",
+            "fileName": "rufus-4.15.exe",
+            "sha256": "84c8a437f8af89257524478489e5c85f1edf25f761d299e2bcde46ac0afbe106"
+          }
+        },
+        {
+          "id": "rufus-windows-aarch64",
+          "os": "windows",
+          "architectures": [
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "固定 4.15 便携版，下载并校验 SHA-256 后安装到用户目录，不自动运行或写入设备。使用时请谨慎选择目标磁盘。",
+            "zh-TW": "固定 4.15 便攜版，下載並驗證 SHA-256 後安裝到使用者目錄，不自動執行或寫入裝置。使用時請謹慎選擇目標磁碟。",
+            "en": "Pinned 4.15 portable build. Downloads, verifies SHA-256 and installs into the user directory without running it or writing a device. Select target disks carefully when using it.",
+            "ja": "4.15 ポータブル版に固定。ダウンロードと SHA-256 検証後にユーザーディレクトリへインストールし、自動実行やデバイスへの書き込みは行いません。使用時は書き込み先ディスクを慎重に選択してください。",
+            "ko": "4.15 포터블 빌드로 고정되며 다운로드와 SHA-256 검증 후 사용자 디렉터리에 설치합니다. 자동 실행하거나 장치에 쓰지 않습니다. 사용 시 대상 디스크를 신중하게 선택하세요."
+          },
+          "sourceUrl": "https://rufus.ie/en/",
+          "method": {
+            "type": "portable",
+            "url": "https://github.com/pbatard/rufus/releases/download/v4.15/rufus-4.15_arm64.exe",
+            "fileName": "rufus-4.15_arm64.exe",
+            "sha256": "af01a2136db7391eb8a52de7001fd231f0731cd27e042318dc2743d87fa35c1c"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Solaar",
+      "publisher": "Solaar contributors",
+      "category": "system",
+      "mark": "S",
+      "accent": "#6387a5",
+      "license": "GPL-2.0-only",
+      "homepage": "https://pwr-solaar.github.io/Solaar/",
+      "summary": {
+        "zh-CN": "Linux Logitech 设备管理器，查看状态、管理接收器配对并调整支持的设备功能。",
+        "zh-TW": "Linux Logitech 裝置管理器，檢視狀態、管理接收器配對並調整支援的裝置功能。",
+        "en": "A Linux Logitech device manager for status, receiver pairing and supported device settings.",
+        "ja": "状態表示、レシーバーのペアリング、対応デバイス設定を行う Linux 用 Logitech デバイスマネージャー。",
+        "ko": "상태 확인, 수신기 페어링 및 지원되는 장치 설정을 관리하는 Linux용 Logitech 장치 관리자."
+      },
+      "sourceRepository": "https://github.com/pwr-Solaar/Solaar",
+      "licenseUrl": "https://raw.githubusercontent.com/pwr-Solaar/Solaar/master/LICENSE.txt",
+      "id": "solaar",
+      "variants": [
+        {
+          "id": "solaar-linux-x86-64",
+          "os": "linux",
+          "architectures": [
+            "x86_64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "通过 Flatpak 从 Flathub 安装 io.github.pwr_solaar.solaar；需要已安装 Flatpak 并配置 Flathub remote。 当前 Flathub 应用 ref 仅验证 x86_64。设备访问需要系统 udev/Flatpak 权限；配对、取消配对或修改功能会改变设备状态，安装不自动执行这些操作。",
+            "zh-TW": "透過 Flatpak 從 Flathub 安裝 io.github.pwr_solaar.solaar；需要已安裝 Flatpak 並設定 Flathub remote。 目前 Flathub 應用程式 ref 僅驗證 x86_64。裝置存取需要系統 udev／Flatpak 權限；配對、取消配對或修改功能會改變裝置狀態，安裝不自動執行這些操作。",
+            "en": "Installs io.github.pwr_solaar.solaar from Flathub with Flatpak. Flatpak and the Flathub remote must already be configured. Only the x86_64 application ref is currently verified on Flathub. Device access requires system udev/Flatpak permissions. Pairing, unpairing and feature changes modify device state; installation performs none of these automatically.",
+            "ja": "Flatpak で Flathub から io.github.pwr_solaar.solaar をインストールします。Flatpak と Flathub リモートを事前に設定する必要があります。 現在 Flathub で確認できるアプリ ref は x86_64 のみです。デバイスアクセスにはシステムの udev／Flatpak 権限が必要です。ペアリング、解除、機能変更はデバイス状態を変更しますが、インストール時に自動実行されません。",
+            "ko": "Flatpak으로 Flathub에서 io.github.pwr_solaar.solaar를 설치합니다. Flatpak과 Flathub 리모트가 미리 설정되어 있어야 합니다. 현재 Flathub에서는 x86_64 애플리케이션 ref만 확인했습니다. 장치 접근에는 시스템 udev/Flatpak 권한이 필요합니다. 페어링, 해제 및 기능 변경은 장치 상태를 바꾸지만 설치 시 자동으로 수행되지 않습니다."
+          },
+          "sourceUrl": "https://pwr-solaar.github.io/Solaar/",
+          "method": {
+            "type": "package_manager",
+            "manager": "flatpak",
+            "packageId": "io.github.pwr_solaar.solaar",
+            "source": "flathub"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Spacedrive",
+      "publisher": "Spacedrive",
+      "category": "system",
+      "mark": "SD",
+      "accent": "#587da9",
+      "license": "Apache-2.0",
+      "homepage": "https://www.spacedrive.com/",
+      "summary": {
+        "zh-CN": "跨平台文件管理器，以统一资料库组织和搜索本地及连接存储中的文件。",
+        "zh-TW": "跨平台檔案管理器，以統一資料庫組織和搜尋本機及連接儲存中的檔案。",
+        "en": "A cross-platform file manager organizing and searching local and connected storage through a unified library.",
+        "ja": "統一ライブラリでローカルおよび接続ストレージ内のファイルを整理・検索するクロスプラットフォームファイルマネージャー。",
+        "ko": "통합 라이브러리로 로컬 및 연결된 저장소의 파일을 구성하고 검색하는 크로스 플랫폼 파일 관리자."
+      },
+      "sourceRepository": "https://github.com/spacedriveapp/spacedrive",
+      "licenseUrl": "https://raw.githubusercontent.com/spacedriveapp/spacedrive/0.4.3/LICENSE",
+      "id": "spacedrive",
+      "variants": [
+        {
+          "id": "spacedrive-macos",
+          "os": "macos",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "通过 Homebrew 安装 spacedrive；需要已安装并配置 brew。 macOS 使用独立 x86_64/aarch64 DMG。索引和预览会读取用户选择的位置；添加网络存储或使用可选同步时才访问对应服务。",
+            "zh-TW": "透過 Homebrew 安裝 spacedrive；需要已安裝並設定 brew。 macOS 使用獨立 x86_64／aarch64 DMG。索引和預覽會讀取使用者選擇的位置；新增網路儲存或使用可選同步時才存取對應服務。",
+            "en": "Installs spacedrive with Homebrew. brew must already be installed and configured. macOS uses separate x86_64 and aarch64 DMGs. Indexing and previews read user-selected locations; network storage or optional sync accesses those services only when configured.",
+            "ja": "Homebrew で spacedrive をインストールします。brew を事前にインストールして設定する必要があります。 macOS では x86_64 と aarch64 用の別 DMG を使用します。インデックスとプレビューはユーザーが選択した場所を読み取り、ネットワークストレージやオプション同期は設定時にのみアクセスします。",
+            "ko": "Homebrew로 spacedrive를 설치합니다. brew가 미리 설치되어 설정되어 있어야 합니다. macOS에서는 별도의 x86_64 및 aarch64 DMG를 사용합니다. 인덱싱과 미리 보기는 사용자가 선택한 위치를 읽으며 네트워크 저장소나 선택적 동기화는 구성할 때만 해당 서비스에 접근합니다."
+          },
+          "sourceUrl": "https://www.spacedrive.com/",
+          "method": {
+            "type": "package_manager",
+            "manager": "brew",
+            "packageId": "spacedrive",
+            "cask": true
+          }
+        }
+      ]
+    },
+    {
+      "name": "Stats",
+      "publisher": "Serhiy Mytrovtsiy",
+      "category": "system",
+      "mark": "S",
+      "accent": "#4a90d9",
+      "license": "MIT",
+      "homepage": "https://github.com/exelban/stats",
+      "summary": {
+        "zh-CN": "macOS 菜单栏系统监视器，显示 CPU、GPU、内存、磁盘、网络、电池和传感器信息。",
+        "zh-TW": "macOS 選單列系統監視器，顯示 CPU、GPU、記憶體、磁碟、網路、電池和感測器資訊。",
+        "en": "A macOS menu-bar system monitor for CPU, GPU, memory, disk, network, battery and sensor information.",
+        "ja": "CPU、GPU、メモリ、ディスク、ネットワーク、バッテリー、センサー情報を表示する macOS メニューバーのシステムモニター。",
+        "ko": "CPU, GPU, 메모리, 디스크, 네트워크, 배터리 및 센서 정보를 표시하는 macOS 메뉴 막대 시스템 모니터."
+      },
+      "sourceRepository": "https://github.com/exelban/stats",
+      "licenseUrl": "https://raw.githubusercontent.com/exelban/stats/HEAD/LICENSE",
+      "id": "stats",
+      "variants": [
+        {
+          "id": "stats-macos",
+          "os": "macos",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "通过 Homebrew 安装 stats；需要已安装并配置 brew。 需要 macOS 12 或更高版本。部分菜单栏、传感器或风扇功能需要额外授权；本安装不启用远程监控脚本。",
+            "zh-TW": "透過 Homebrew 安裝 stats；需要已安裝並設定 brew。 需要 macOS 12 或更高版本。部分選單列、感測器或風扇功能需要額外授權；此安裝不啟用遠端監控腳本。",
+            "en": "Installs stats with Homebrew. brew must already be installed and configured. Requires macOS 12 or later. Some menu-bar, sensor or fan features require additional authorization; this installation does not enable the remote-monitoring script.",
+            "ja": "Homebrew で stats をインストールします。brew を事前にインストールして設定する必要があります。 macOS 12 以降が必要です。メニューバー、センサー、ファンの一部機能には追加の許可が必要です。このインストールではリモート監視スクリプトを有効にしません。",
+            "ko": "Homebrew로 stats를 설치합니다. brew가 미리 설치되어 설정되어 있어야 합니다. macOS 12 이상이 필요합니다. 일부 메뉴 막대, 센서 또는 팬 기능에는 추가 권한이 필요합니다. 이 설치는 원격 모니터링 스크립트를 활성화하지 않습니다."
+          },
+          "sourceUrl": "https://github.com/exelban/stats",
+          "method": {
+            "type": "package_manager",
+            "manager": "brew",
+            "packageId": "stats",
+            "cask": true
           }
         }
       ]
@@ -610,6 +1081,159 @@
             "program": "syncthing",
             "args": [
               "--version"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "UTM",
+      "publisher": "UTM contributors",
+      "category": "system",
+      "mark": "U",
+      "accent": "#527ac3",
+      "license": "Apache-2.0",
+      "homepage": "https://mac.getutm.app/",
+      "summary": {
+        "zh-CN": "macOS 虚拟机与系统模拟工具，支持 Apple Virtualization 和 QEMU 后端。",
+        "zh-TW": "macOS 虛擬機器與系統模擬工具，支援 Apple Virtualization 和 QEMU 後端。",
+        "en": "A macOS virtual-machine and system-emulation tool using Apple Virtualization and QEMU backends.",
+        "ja": "Apple Virtualization と QEMU バックエンドを使用する macOS 仮想マシン・システムエミュレーションツール。",
+        "ko": "Apple Virtualization 및 QEMU 백엔드를 사용하는 macOS 가상 머신 및 시스템 에뮬레이션 도구."
+      },
+      "sourceRepository": "https://github.com/utmapp/UTM",
+      "licenseUrl": "https://raw.githubusercontent.com/utmapp/UTM/v5.0.8/LICENSE",
+      "id": "utm",
+      "variants": [
+        {
+          "id": "utm-macos",
+          "os": "macos",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "通过 Homebrew 安装 utm；需要已安装并配置 brew。 需要 macOS 12 或更高版本。Apple Virtualization 需要 Apple Silicon；QEMU 可用于两种架构。安装不会创建或启动虚拟机、下载系统镜像或直通 USB 设备。",
+            "zh-TW": "透過 Homebrew 安裝 utm；需要已安裝並設定 brew。 需要 macOS 12 或更高版本。Apple Virtualization 需要 Apple Silicon；QEMU 可用於兩種架構。安裝不會建立或啟動虛擬機器、下載系統映像或直通 USB 裝置。",
+            "en": "Installs utm with Homebrew. brew must already be installed and configured. Requires macOS 12 or later. Apple Virtualization requires Apple Silicon; QEMU is available on both architectures. Installation does not create/start VMs, download guest images or pass through USB devices.",
+            "ja": "Homebrew で utm をインストールします。brew を事前にインストールして設定する必要があります。 macOS 12 以降が必要です。Apple Virtualization には Apple Silicon が必要で、QEMU は両アーキテクチャで利用できます。インストール時に VM の作成・起動、ゲストイメージのダウンロード、USB パススルーは行いません。",
+            "ko": "Homebrew로 utm를 설치합니다. brew가 미리 설치되어 설정되어 있어야 합니다. macOS 12 이상이 필요합니다. Apple Virtualization에는 Apple Silicon이 필요하며 QEMU는 두 아키텍처에서 사용할 수 있습니다. 설치 시 VM을 생성/시작하거나 게스트 이미지를 다운로드하거나 USB 장치를 패스스루하지 않습니다."
+          },
+          "sourceUrl": "https://mac.getutm.app/",
+          "method": {
+            "type": "package_manager",
+            "manager": "brew",
+            "packageId": "utm",
+            "cask": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "ventoy",
+      "name": "Ventoy",
+      "publisher": "Ventoy",
+      "category": "system",
+      "summary": {
+        "zh-CN": "开源多系统启动 U 盘制作工具，安装后可直接复制并选择启动 ISO、WIM、IMG 等镜像。",
+        "zh-TW": "開源多系統啟動 USB 隨身碟製作工具，安裝後可直接複製並選擇啟動 ISO、WIM、IMG 等映像。",
+        "en": "An open-source multiboot USB creator that lets you copy and boot ISO, WIM, IMG and other images after preparing the drive.",
+        "ja": "ドライブの準備後に ISO、WIM、IMG などのイメージをコピーして起動できるオープンソースのマルチブート USB 作成ツール。",
+        "ko": "드라이브를 준비한 후 ISO, WIM, IMG 등의 이미지를 복사하여 부팅할 수 있는 오픈 소스 멀티부팅 USB 제작 도구."
+      },
+      "homepage": "https://www.ventoy.net/en/index.html",
+      "mark": "V",
+      "accent": "#287dbd",
+      "sourceRepository": "https://github.com/ventoy/Ventoy",
+      "license": "GPL-3.0-or-later",
+      "licenseUrl": "https://raw.githubusercontent.com/ventoy/Ventoy/master/License/gpl-3.0.txt",
+      "variants": [
+        {
+          "id": "ventoy-windows-x86-64",
+          "os": "windows",
+          "architectures": [
+            "x86_64"
+          ],
+          "requiresAdmin": false,
+          "interactive": true,
+          "note": {
+            "zh-CN": "通过官方包或归档安装，不自动运行写盘程序。警告：写入 Ventoy 会格式化目标磁盘并清除全部数据，请先备份并核对设备。",
+            "zh-TW": "透過官方套件或封存檔安裝，不自動執行寫碟程式。警告：寫入 Ventoy 會格式化目標磁碟並清除全部資料，請先備份並核對裝置。",
+            "en": "Installs from the official package or archive without launching the disk-writing program. WARNING: writing Ventoy formats the target disk and erases all data. Back up and verify the device first.",
+            "ja": "公式パッケージまたはアーカイブからインストールし、ディスク書き込みプログラムは自動実行しません。警告：Ventoy を書き込むと対象ディスクがフォーマットされ、全データが消去されます。事前にバックアップし、デバイスを確認してください。",
+            "ko": "공식 패키지 또는 아카이브로 설치하며 디스크 쓰기 프로그램을 자동 실행하지 않습니다. 경고: Ventoy를 쓰면 대상 디스크가 포맷되어 모든 데이터가 삭제됩니다. 먼저 백업하고 장치를 확인하세요."
+          },
+          "sourceUrl": "https://www.ventoy.net/en/doc_start.html",
+          "method": {
+            "type": "package_manager",
+            "manager": "winget",
+            "packageId": "Ventoy.Ventoy",
+            "source": "winget"
+          }
+        },
+        {
+          "id": "ventoy-windows-aarch64",
+          "os": "windows",
+          "architectures": [
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": true,
+          "note": {
+            "zh-CN": "通过官方包或归档安装，不自动运行写盘程序。警告：写入 Ventoy 会格式化目标磁盘并清除全部数据，请先备份并核对设备。",
+            "zh-TW": "透過官方套件或封存檔安裝，不自動執行寫碟程式。警告：寫入 Ventoy 會格式化目標磁碟並清除全部資料，請先備份並核對裝置。",
+            "en": "Installs from the official package or archive without launching the disk-writing program. WARNING: writing Ventoy formats the target disk and erases all data. Back up and verify the device first.",
+            "ja": "公式パッケージまたはアーカイブからインストールし、ディスク書き込みプログラムは自動実行しません。警告：Ventoy を書き込むと対象ディスクがフォーマットされ、全データが消去されます。事前にバックアップし、デバイスを確認してください。",
+            "ko": "공식 패키지 또는 아카이브로 설치하며 디스크 쓰기 프로그램을 자동 실행하지 않습니다. 경고: Ventoy를 쓰면 대상 디스크가 포맷되어 모든 데이터가 삭제됩니다. 먼저 백업하고 장치를 확인하세요."
+          },
+          "sourceUrl": "https://www.ventoy.net/en/doc_start.html",
+          "method": {
+            "type": "package_manager",
+            "manager": "winget",
+            "packageId": "Ventoy.Ventoy",
+            "source": "winget"
+          }
+        },
+        {
+          "id": "ventoy-linux",
+          "os": "linux",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": true,
+          "note": {
+            "zh-CN": "通过官方包或归档安装，不自动运行写盘程序。警告：写入 Ventoy 会格式化目标磁盘并清除全部数据，请先备份并核对设备。",
+            "zh-TW": "透過官方套件或封存檔安裝，不自動執行寫碟程式。警告：寫入 Ventoy 會格式化目標磁碟並清除全部資料，請先備份並核對裝置。",
+            "en": "Installs from the official package or archive without launching the disk-writing program. WARNING: writing Ventoy formats the target disk and erases all data. Back up and verify the device first.",
+            "ja": "公式パッケージまたはアーカイブからインストールし、ディスク書き込みプログラムは自動実行しません。警告：Ventoy を書き込むと対象ディスクがフォーマットされ、全データが消去されます。事前にバックアップし、デバイスを確認してください。",
+            "ko": "공식 패키지 또는 아카이브로 설치하며 디스크 쓰기 프로그램을 자동 실행하지 않습니다. 경고: Ventoy를 쓰면 대상 디스크가 포맷되어 모든 데이터가 삭제됩니다. 먼저 백업하고 장치를 확인하세요."
+          },
+          "sourceUrl": "https://www.ventoy.net/en/doc_start.html",
+          "method": {
+            "type": "github_release",
+            "repository": "ventoy/Ventoy",
+            "packages": [
+              {
+                "format": "tar_gz",
+                "assets": {
+                  "x86_64": "ventoy-*-linux.tar.gz",
+                  "aarch64": "ventoy-*-linux.tar.gz"
+                },
+                "install": {
+                  "kind": "archive",
+                  "executableByArch": {
+                    "x86_64": "VentoyGUI.x86_64",
+                    "aarch64": "VentoyGUI.aarch64"
+                  },
+                  "stripComponents": 1,
+                  "linkName": "ventoy",
+                  "desktopName": "Ventoy"
+                }
+              }
             ]
           }
         }

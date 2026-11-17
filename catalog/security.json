@@ -1,99 +1,6 @@
 {
   "apps": [
     {
-      "id": "keepassxc",
-      "name": "KeePassXC",
-      "publisher": "KeePassXC Team",
-      "category": "security",
-      "summary": {
-        "zh-CN": "自由开源的本地密码管理器，使用加密数据库保存凭据和密钥。",
-        "zh-TW": "自由開源的本機密碼管理器，使用加密資料庫保存憑證與金鑰。",
-        "en": "A free and open-source local password manager storing credentials and keys in an encrypted database.",
-        "ja": "資格情報とキーを暗号化データベースに保存する自由でオープンソースのローカルパスワードマネージャー。",
-        "ko": "자격 증명과 키를 암호화된 데이터베이스에 저장하는 자유 오픈 소스 로컬 암호 관리자."
-      },
-      "homepage": "https://keepassxc.org/download/",
-      "mark": "K",
-      "accent": "#6cac4d",
-      "sourceRepository": "https://github.com/keepassxreboot/keepassxc",
-      "license": "GPL-2.0-only OR GPL-3.0-only",
-      "licenseUrl": "https://raw.githubusercontent.com/keepassxreboot/keepassxc/develop/COPYING",
-      "variants": [
-        {
-          "id": "keepassxc-linux",
-          "os": "linux",
-          "architectures": [
-            "x86_64",
-            "aarch64"
-          ],
-          "requiresAdmin": false,
-          "interactive": false,
-          "note": {
-            "zh-CN": "通过 Flatpak 从 Flathub 安装 org.keepassxc.KeePassXC；需要已安装 Flatpak 并配置 Flathub remote。",
-            "zh-TW": "透過 Flatpak 從 Flathub 安裝 org.keepassxc.KeePassXC；需要已安裝 Flatpak 並設定 Flathub remote。",
-            "en": "Installs org.keepassxc.KeePassXC from Flathub with Flatpak. Flatpak and the Flathub remote must already be configured.",
-            "ja": "Flatpak で Flathub から org.keepassxc.KeePassXC をインストールします。Flatpak と Flathub リモートを事前に設定する必要があります。",
-            "ko": "Flatpak으로 Flathub에서 org.keepassxc.KeePassXC를 설치합니다. Flatpak과 Flathub 리모트가 미리 설정되어 있어야 합니다."
-          },
-          "sourceUrl": "https://keepassxc.org/download/",
-          "method": {
-            "type": "package_manager",
-            "manager": "flatpak",
-            "packageId": "org.keepassxc.KeePassXC",
-            "source": "flathub"
-          }
-        },
-        {
-          "id": "keepassxc-windows",
-          "os": "windows",
-          "architectures": [
-            "x86_64",
-            "aarch64"
-          ],
-          "requiresAdmin": false,
-          "interactive": false,
-          "note": {
-            "zh-CN": "通过 winget 安装 KeePassXCTeam.KeePassXC（winget 源）；需要已安装并配置该包管理器。",
-            "zh-TW": "透過 winget 安裝 KeePassXCTeam.KeePassXC（winget 來源）；需要已安裝並設定該套件管理器。",
-            "en": "Installs KeePassXCTeam.KeePassXC with winget from the winget source. The package manager must already be installed and configured.",
-            "ja": "winget で KeePassXCTeam.KeePassXC をインストールします（winget ソース）。パッケージマネージャーを事前にインストールして設定する必要があります。",
-            "ko": "winget로 KeePassXCTeam.KeePassXC를 설치합니다(winget 소스). 패키지 관리자가 미리 설치되어 설정되어 있어야 합니다."
-          },
-          "sourceUrl": "https://keepassxc.org/download/",
-          "method": {
-            "type": "package_manager",
-            "manager": "winget",
-            "packageId": "KeePassXCTeam.KeePassXC",
-            "source": "winget"
-          }
-        },
-        {
-          "id": "keepassxc-macos",
-          "os": "macos",
-          "architectures": [
-            "x86_64",
-            "aarch64"
-          ],
-          "requiresAdmin": false,
-          "interactive": false,
-          "note": {
-            "zh-CN": "通过 brew 安装 keepassxc；需要已安装并配置该包管理器。",
-            "zh-TW": "透過 brew 安裝 keepassxc；需要已安裝並設定該套件管理器。",
-            "en": "Installs keepassxc with brew. The package manager must already be installed and configured.",
-            "ja": "brew で keepassxc をインストールします。パッケージマネージャーを事前にインストールして設定する必要があります。",
-            "ko": "brew로 keepassxc를 설치합니다. 패키지 관리자가 미리 설치되어 설정되어 있어야 합니다."
-          },
-          "sourceUrl": "https://keepassxc.org/download/",
-          "method": {
-            "type": "package_manager",
-            "manager": "brew",
-            "packageId": "keepassxc",
-            "cask": true
-          }
-        }
-      ]
-    },
-    {
       "id": "bitwarden-desktop",
       "name": "Bitwarden Desktop",
       "publisher": "Bitwarden",
@@ -181,6 +88,143 @@
             "type": "package_manager",
             "manager": "brew",
             "packageId": "bitwarden",
+            "cask": true
+          }
+        }
+      ]
+    },
+    {
+      "name": "Cryptomator",
+      "publisher": "Skymatic GmbH",
+      "category": "security",
+      "mark": "C",
+      "accent": "#49b286",
+      "license": "GPL-3.0-only",
+      "homepage": "https://cryptomator.org/",
+      "summary": {
+        "zh-CN": "客户端文件加密工具，为云存储和本地文件创建可解锁的加密保险库。",
+        "zh-TW": "用戶端檔案加密工具，為雲端儲存和本機檔案建立可解鎖的加密保險庫。",
+        "en": "Client-side file encryption for creating unlockable encrypted vaults for cloud storage and local files.",
+        "ja": "クラウドストレージとローカルファイル用のロック解除可能な暗号化ボールトを作成するクライアント側ファイル暗号化ツール。",
+        "ko": "클우드 저장소와 로컬 파일용으로 잠금 해제 가능한 암호화 볼트를 생성하는 클라이언트 측 파일 암호화 도구."
+      },
+      "sourceRepository": "https://github.com/cryptomator/cryptomator",
+      "licenseUrl": "https://raw.githubusercontent.com/cryptomator/cryptomator/HEAD/LICENSE.txt",
+      "id": "cryptomator",
+      "variants": [
+        {
+          "id": "cryptomator-windows",
+          "os": "windows",
+          "architectures": [
+            "x86_64"
+          ],
+          "requiresAdmin": true,
+          "interactive": false,
+          "note": {
+            "zh-CN": "通过 winget 安装 Cryptomator.Cryptomator（winget 源）；需要已安装并配置该包管理器。 Windows 仅提供 x86_64 机器范围 MSI，需要 Windows 10 1809 或更高版本和管理员安装。WinFsp 挂载模式需单独组件；安装不会自动解锁或挂载保险库。",
+            "zh-TW": "透過 winget 安裝 Cryptomator.Cryptomator（winget 來源）；需要已安裝並設定該套件管理器。 Windows 僅提供 x86_64 機器範圍 MSI，需要 Windows 10 1809 或更高版本和管理員安裝。WinFsp 掛載模式需單獨元件；安裝不會自動解鎖或掛載保險庫。",
+            "en": "Installs Cryptomator.Cryptomator with winget from the winget source. The package manager must already be installed and configured. Windows provides only an x86_64 machine-scope MSI, requiring Windows 10 1809 or later and administrator installation. WinFsp mounting needs a separate component; installation does not unlock or mount vaults.",
+            "ja": "winget で Cryptomator.Cryptomator をインストールします（winget ソース）。パッケージマネージャーを事前にインストールして設定する必要があります。 Windows では x86_64 のマシンスコープ MSI のみを提供し、Windows 10 1809 以降と管理者インストールが必要です。WinFsp マウントには別コンポーネントが必要で、インストール時にボールトを解除またはマウントしません。",
+            "ko": "winget로 Cryptomator.Cryptomator를 설치합니다(winget 소스). 패키지 관리자가 미리 설치되어 설정되어 있어야 합니다. Windows에서는 x86_64 머신 범위 MSI만 제공하며 Windows 10 1809 이상과 관리자 설치가 필요합니다. WinFsp 마운트에는 별도 구성 요소가 필요하며 설치 시 볼트를 잠금 해제하거나 마운트하지 않습니다."
+          },
+          "sourceUrl": "https://cryptomator.org/",
+          "method": {
+            "type": "package_manager",
+            "manager": "winget",
+            "packageId": "Cryptomator.Cryptomator",
+            "source": "winget"
+          }
+        },
+        {
+          "id": "cryptomator-macos",
+          "os": "macos",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "通过 Homebrew 安装 cryptomator；需要已安装并配置 brew。 挂载为虚拟驱动器时，Windows 的 WinFsp、macOS 的 macFUSE 或 Linux 的 FUSE3 可能需单独安装授权；安装不会自动解锁或挂载保险库。",
+            "zh-TW": "透過 Homebrew 安裝 cryptomator；需要已安裝並設定 brew。 掛載為虛擬磁碟機時，Windows 的 WinFsp、macOS 的 macFUSE 或 Linux 的 FUSE3 可能需單獨安裝授權；安裝不會自動解鎖或掛載保險庫。",
+            "en": "Installs cryptomator with Homebrew. brew must already be installed and configured. Virtual-drive mounting may require separately installed and authorized WinFsp on Windows, macFUSE on macOS or FUSE3 on Linux. Installation does not unlock or mount vaults.",
+            "ja": "Homebrew で cryptomator をインストールします。brew を事前にインストールして設定する必要があります。 仮想ドライブとしてマウントする場合、Windows の WinFsp、macOS の macFUSE、Linux の FUSE3 を個別にインストール・許可する必要があります。インストール時にボールトを解除またはマウントしません。",
+            "ko": "Homebrew로 cryptomator를 설치합니다. brew가 미리 설치되어 설정되어 있어야 합니다. 가상 드라이브로 마운트하려면 Windows의 WinFsp, macOS의 macFUSE 또는 Linux의 FUSE3를 별도로 설치하고 승인해야 할 수 있습니다. 설치 시 볼트를 잠금 해제하거나 마운트하지 않습니다."
+          },
+          "sourceUrl": "https://cryptomator.org/",
+          "method": {
+            "type": "package_manager",
+            "manager": "brew",
+            "packageId": "cryptomator",
+            "cask": true
+          }
+        }
+      ]
+    },
+    {
+      "name": "KeePassXC",
+      "publisher": "KeePassXC Team",
+      "category": "security",
+      "mark": "K",
+      "accent": "#6bac4d",
+      "license": "GPL-2.0-only OR GPL-3.0-only",
+      "homepage": "https://keepassxc.org/",
+      "summary": {
+        "zh-CN": "本地密码数据库管理器，支持自动输入、浏览器集成、硬件密钥与 TOTP。",
+        "zh-TW": "本機密碼資料庫管理器，支援自動輸入、瀏覽器整合、硬體金鑰與 TOTP。",
+        "en": "A local password-database manager with Auto-Type, browser integration, hardware keys and TOTP.",
+        "ja": "自動入力、ブラウザー連携、ハードウェアキー、TOTP に対応するローカルパスワードデータベースマネージャー。",
+        "ko": "자동 입력, 브라우저 통합, 하드웨어 키 및 TOTP를 지원하는 로컬 암호 데이터베이스 관리자."
+      },
+      "sourceRepository": "https://github.com/keepassxreboot/keepassxc",
+      "licenseUrl": "https://raw.githubusercontent.com/keepassxreboot/keepassxc/HEAD/COPYING",
+      "id": "keepassxc",
+      "variants": [
+        {
+          "id": "keepassxc-windows",
+          "os": "windows",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": true,
+          "interactive": false,
+          "note": {
+            "zh-CN": "通过 winget 安装 KeePassXCTeam.KeePassXC（winget 源）；需要已安装并配置该包管理器。 Windows 使用机器范围 MSI，需要管理员安装，并按架构安装相应 Visual C++ 运行库。浏览器、SSH Agent 与自动输入集成需另行授权；安装不会解锁数据库。",
+            "zh-TW": "透過 winget 安裝 KeePassXCTeam.KeePassXC（winget 來源）；需要已安裝並設定該套件管理器。 Windows 使用機器範圍 MSI，需要管理員安裝，並按架構安裝相應 Visual C++ 執行階段程式庫。瀏覽器、SSH Agent 與自動輸入整合需另行授權；安裝不會解鎖資料庫。",
+            "en": "Installs KeePassXCTeam.KeePassXC with winget from the winget source. The package manager must already be installed and configured. Windows uses a machine-scope MSI requiring administrator installation and the architecture-matching Visual C++ runtime. Browser, SSH Agent and Auto-Type integrations need separate authorization; installation does not unlock databases.",
+            "ja": "winget で KeePassXCTeam.KeePassXC をインストールします（winget ソース）。パッケージマネージャーを事前にインストールして設定する必要があります。 Windows では管理者によるマシンスコープ MSI インストールと、アーキテクチャに対応する Visual C++ ランタイムが必要です。ブラウザー、SSH Agent、自動入力連携は個別の許可が必要で、インストール時にデータベースを解除しません。",
+            "ko": "winget로 KeePassXCTeam.KeePassXC를 설치합니다(winget 소스). 패키지 관리자가 미리 설치되어 설정되어 있어야 합니다. Windows에서는 관리자 권한의 머신 범위 MSI 설치와 아키텍처에 맞는 Visual C++ 런타임이 필요합니다. 브라우저, SSH Agent 및 자동 입력 통합에는 별도의 권한이 필요하며 설치 시 데이터베이스를 잠금 해제하지 않습니다."
+          },
+          "sourceUrl": "https://keepassxc.org/",
+          "method": {
+            "type": "package_manager",
+            "manager": "winget",
+            "packageId": "KeePassXCTeam.KeePassXC",
+            "source": "winget"
+          }
+        },
+        {
+          "id": "keepassxc-macos",
+          "os": "macos",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "通过 Homebrew 安装 keepassxc；需要已安装并配置 brew。 macOS 需要 12 或更高版本。浏览器、SSH Agent、自动输入与安全密钥集成需另行配置授权；安装不会解锁数据库或处理凭据。",
+            "zh-TW": "透過 Homebrew 安裝 keepassxc；需要已安裝並設定 brew。 macOS 需要 12 或更高版本。瀏覽器、SSH Agent、自動輸入與安全金鑰整合需另行設定授權；安裝不會解鎖資料庫或處理憑證。",
+            "en": "Installs keepassxc with Homebrew. brew must already be installed and configured. macOS requires version 12 or later. Browser, SSH Agent, Auto-Type and security-key integrations require separate configuration and authorization; installation does not unlock databases or process credentials.",
+            "ja": "Homebrew で keepassxc をインストールします。brew を事前にインストールして設定する必要があります。 macOS 12 以降が必要です。ブラウザー、SSH Agent、自動入力、セキュリティキー連携には個別の設定と許可が必要です。インストール時にデータベースを解除したり認証情報を処理したりしません。",
+            "ko": "Homebrew로 keepassxc를 설치합니다. brew가 미리 설치되어 설정되어 있어야 합니다. macOS 12 이상이 필요합니다. 브라우저, SSH Agent, 자동 입력 및 보안 키 통합에는 별도의 구성과 권한이 필요합니다. 설치 시 데이터베이스를 잠금 해제하거나 자격 증명을 처리하지 않습니다."
+          },
+          "sourceUrl": "https://keepassxc.org/",
+          "method": {
+            "type": "package_manager",
+            "manager": "brew",
+            "packageId": "keepassxc",
             "cask": true
           }
         }

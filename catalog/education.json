@@ -1,6 +1,141 @@
 {
   "apps": [
     {
+      "name": "Anki",
+      "publisher": "Anki contributors",
+      "category": "education",
+      "mark": "A",
+      "accent": "#6687bc",
+      "license": "AGPL-3.0-or-later",
+      "homepage": "https://apps.ankiweb.net/",
+      "summary": {
+        "zh-CN": "间隔重复记忆与卡片学习工具，支持牌组、多媒体卡片和学习进度管理。",
+        "zh-TW": "間隔重複記憶與卡片學習工具，支援牌組、多媒體卡片和學習進度管理。",
+        "en": "A spaced-repetition flashcard application with decks, multimedia cards and learning-progress management.",
+        "ja": "デッキ、マルチメディアカード、学習進捗管理に対応する間隔反復フラッシュカードアプリ。",
+        "ko": "덱, 멀티미디어 카드 및 학습 진행 관리를 지원하는 간격 반복 플래시카드 애플리케이션."
+      },
+      "sourceRepository": "https://github.com/ankitects/anki",
+      "licenseUrl": "https://raw.githubusercontent.com/ankitects/anki/26.09.4/LICENSE",
+      "id": "anki",
+      "variants": [
+        {
+          "id": "anki-macos",
+          "os": "macos",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "通过 Homebrew 安装 anki；需要已安装并配置 brew。 当前 cask 面向 macOS 13 或更高版本，Intel 与 Apple Silicon 使用不同 DMG。本地学习不要求账号；可选 AnkiWeb 同步需免费账号和联网。",
+            "zh-TW": "透過 Homebrew 安裝 anki；需要已安裝並設定 brew。 目前 cask 面向 macOS 13 或更高版本，Intel 與 Apple Silicon 使用不同 DMG。本機學習不要求帳號；可選 AnkiWeb 同步需免費帳號和連線。",
+            "en": "Installs anki with Homebrew. brew must already be installed and configured. The current cask targets macOS 13 or later, with separate Intel and Apple Silicon DMGs. Local study requires no account; optional AnkiWeb sync requires a free account and network access.",
+            "ja": "Homebrew で anki をインストールします。brew を事前にインストールして設定する必要があります。 現在の cask は macOS 13 以降が対象で、Intel と Apple Silicon 用に別の DMG があります。ローカル学習にアカウントは不要で、オプションの AnkiWeb 同期には無料アカウントとネットワークが必要です。",
+            "ko": "Homebrew로 anki를 설치합니다. brew가 미리 설치되어 설정되어 있어야 합니다. 현재 cask는 macOS 13 이상을 대상으로 하며 Intel과 Apple Silicon용 DMG가 다릅니다. 로컬 학습에는 계정이 필요하지 않으며 선택적 AnkiWeb 동기화는 비용 없이 계정을 만들어 사용할 수 있고 네트워크가 필요합니다."
+          },
+          "sourceUrl": "https://apps.ankiweb.net/",
+          "method": {
+            "type": "package_manager",
+            "manager": "brew",
+            "packageId": "anki",
+            "cask": true
+          }
+        }
+      ]
+    },
+    {
+      "name": "FreeCAD",
+      "publisher": "FreeCAD contributors",
+      "category": "education",
+      "mark": "FC",
+      "accent": "#5579a4",
+      "license": "LGPL-2.0-or-later",
+      "homepage": "https://www.freecad.org/",
+      "summary": {
+        "zh-CN": "开源参数化三维 CAD 建模工具，适用于机械设计、工程制图与可定制建模工作流。",
+        "zh-TW": "開源參數化三維 CAD 建模工具，適用於機械設計、工程製圖與可自訂建模工作流程。",
+        "en": "An open-source parametric 3D CAD modeler for mechanical design, engineering drawings and customizable workflows.",
+        "ja": "機械設計、工学図面、カスタマイズ可能なワークフローに対応するオープンソースのパラメトリック 3D CAD モデラー。",
+        "ko": "기계 설계, 엔지니어링 도면 및 사용자 정의 작업 흐름을 지원하는 오픈 소스 파라메트릭 3D CAD 모델러."
+      },
+      "sourceRepository": "https://github.com/FreeCAD/FreeCAD",
+      "licenseUrl": "https://raw.githubusercontent.com/FreeCAD/FreeCAD/1.1.4/src/Doc/LICENSE.html",
+      "id": "freecad",
+      "variants": [
+        {
+          "id": "freecad-macos",
+          "os": "macos",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "通过 Homebrew 安装 freecad；需要已安装并配置 brew。 核心安装与使用不要求账号或订阅。应用按 LGPL2+ 分发；随附第三方库与素材另有独立许可证声明。",
+            "zh-TW": "透過 Homebrew 安裝 freecad；需要已安裝並設定 brew。 核心安裝與使用不要求帳號或訂閱。應用程式按 LGPL2+ 分發；隨附第三方函式庫與素材另有獨立授權聲明。",
+            "en": "Installs freecad with Homebrew. brew must already be installed and configured. Core installation and use require no account or subscription. The application uses LGPL2+; bundled third-party libraries and assets have separate notices.",
+            "ja": "Homebrew で freecad をインストールします。brew を事前にインストールして設定する必要があります。 基本的なインストールと使用にアカウントやサブスクリプションは不要です。アプリは LGPL2+ で配布され、同梱の第三者ライブラリと素材には別の通知があります。",
+            "ko": "Homebrew로 freecad를 설치합니다. brew가 미리 설치되어 설정되어 있어야 합니다. 기본 설치와 사용에 계정이나 구독이 필요하지 않습니다. 애플리케이션은 LGPL2+로 배포되며, 번들 타사 라이브러리와 자산에는 별도의 고지가 적용됩니다."
+          },
+          "sourceUrl": "https://www.freecad.org/",
+          "method": {
+            "type": "package_manager",
+            "manager": "brew",
+            "packageId": "freecad",
+            "cask": true
+          }
+        }
+      ]
+    },
+    {
+      "name": "Readest",
+      "publisher": "Readest contributors",
+      "category": "education",
+      "mark": "R",
+      "accent": "#5e88a7",
+      "license": "AGPL-3.0-or-later",
+      "homepage": "https://readest.com/",
+      "summary": {
+        "zh-CN": "跨平台电子书阅读器，支持书库、排版设置、标注与阅读进度。",
+        "zh-TW": "跨平台電子書閱讀器，支援書庫、排版設定、標註與閱讀進度。",
+        "en": "A cross-platform ebook reader with a library, layout settings, annotations and reading progress.",
+        "ja": "ライブラリ、レイアウト設定、注釈、読書進捗に対応するクロスプラットフォーム電子書籍リーダー。",
+        "ko": "서재, 레이아웃 설정, 주석 및 읽기 진행을 지원하는 크로스 플랫폼 전자책 리더."
+      },
+      "sourceRepository": "https://github.com/readest/readest",
+      "licenseUrl": "https://raw.githubusercontent.com/readest/readest/v0.12.20/LICENSE",
+      "id": "readest",
+      "variants": [
+        {
+          "id": "readest-macos",
+          "os": "macos",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "通过 Homebrew 安装 readest；需要已安装并配置 brew。 需要 macOS 12 或更高版本，通用 DMG 覆盖 Intel 与 ARM64。本地阅读不要求账号；可选云同步、在线书源或 AI 功能会访问对应服务，账号和费用取决于配置。",
+            "zh-TW": "透過 Homebrew 安裝 readest；需要已安裝並設定 brew。 需要 macOS 12 或更高版本，通用 DMG 涵蓋 Intel 與 ARM64。本機閱讀不要求帳號；可選雲端同步、線上書源或 AI 功能會存取對應服務，帳號和費用取決於設定。",
+            "en": "Installs readest with Homebrew. brew must already be installed and configured. Requires macOS 12 or later. The universal DMG covers Intel and ARM64. Local reading needs no account; optional sync, online sources or AI features access their configured services, with account and cost requirements depending on configuration.",
+            "ja": "Homebrew で readest をインストールします。brew を事前にインストールして設定する必要があります。 macOS 12 以降が必要で、ユニバーサル DMG が Intel と ARM64 に対応します。ローカル読書にアカウントは不要です。オプションの同期、オンライン書源、AI 機能は設定したサービスにアクセスし、アカウントや料金は設定によります。",
+            "ko": "Homebrew로 readest를 설치합니다. brew가 미리 설치되어 설정되어 있어야 합니다. macOS 12 이상이 필요하며 유니버설 DMG가 Intel과 ARM64를 지원합니다. 로컬 읽기에는 계정이 필요하지 않습니다. 선택적 동기화, 온라인 서점 또는 AI 기능은 구성된 서비스에 접근하며 계정과 비용은 구성에 따라 다릅니다."
+          },
+          "sourceUrl": "https://readest.com/",
+          "method": {
+            "type": "package_manager",
+            "manager": "brew",
+            "packageId": "readest",
+            "cask": true
+          }
+        }
+      ]
+    },
+    {
       "id": "stellarium",
       "name": "Stellarium",
       "publisher": "Stellarium Team",

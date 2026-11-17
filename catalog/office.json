@@ -1,6 +1,209 @@
 {
   "apps": [
     {
+      "name": "AppFlowy",
+      "publisher": "AppFlowy",
+      "category": "office",
+      "mark": "A",
+      "accent": "#7359a8",
+      "license": "AGPL-3.0-only",
+      "homepage": "https://www.appflowy.io/",
+      "summary": {
+        "zh-CN": "开源文档与项目工作空间，支持笔记、看板、数据库和本地数据管理。",
+        "zh-TW": "開源文件與專案工作空間，支援筆記、看板、資料庫和本機資料管理。",
+        "en": "An open-source document and project workspace with notes, kanban boards, databases and local data control.",
+        "ja": "ノート、かんばんボード、データベース、ローカルデータ管理に対応するオープンソースの文書・プロジェクトワークスペース。",
+        "ko": "노트, 칸반 보드, 데이터베이스 및 로컬 데이터 관리를 지원하는 오픈 소스 문서 및 프로젝트 작업 공간."
+      },
+      "sourceRepository": "https://github.com/AppFlowy-IO/AppFlowy",
+      "licenseUrl": "https://raw.githubusercontent.com/AppFlowy-IO/AppFlowy/HEAD/LICENSE",
+      "id": "appflowy",
+      "variants": [
+        {
+          "id": "appflowy-macos",
+          "os": "macos",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "通过 Homebrew 安装 appflowy；需要已安装并配置 brew。 需要 macOS 12 或更高版本。本地功能与云端同步、协作、AI 服务不同；后几项可能需要账号、网络或订阅。",
+            "zh-TW": "透過 Homebrew 安裝 appflowy；需要已安裝並設定 brew。 需要 macOS 12 或更高版本。本機功能與雲端同步、協作、AI 服務不同；後幾項可能需要帳號、網路或訂閱。",
+            "en": "Installs appflowy with Homebrew. brew must already be installed and configured. Requires macOS 12 or later. Local features are separate from cloud sync, collaboration and AI services, which may require accounts, network access or subscriptions.",
+            "ja": "Homebrew で appflowy をインストールします。brew を事前にインストールして設定する必要があります。 macOS 12 以降が必要です。ローカル機能とクラウド同期、共同作業、AI サービスは別で、後者にはアカウント、ネットワーク、サブスクリプションが必要な場合があります。",
+            "ko": "Homebrew로 appflowy를 설치합니다. brew가 미리 설치되어 설정되어 있어야 합니다. macOS 12 이상이 필요합니다. 로컬 기능과 클라우드 동기화, 공동 작업 및 AI 서비스는 별개이며, 후자는 계정, 네트워크 또는 구독이 필요할 수 있습니다."
+          },
+          "sourceUrl": "https://www.appflowy.io/",
+          "method": {
+            "type": "package_manager",
+            "manager": "brew",
+            "packageId": "appflowy",
+            "cask": true
+          }
+        }
+      ]
+    },
+    {
+      "name": "draw.io",
+      "publisher": "JGraph",
+      "category": "office",
+      "mark": "D",
+      "accent": "#f08705",
+      "license": "GPL-3.0-only",
+      "homepage": "https://www.diagrams.net/",
+      "summary": {
+        "zh-CN": "桌面流程图和图表编辑器，支持 UML、网络图、思维导图及本地文件。",
+        "zh-TW": "桌面流程圖與圖表編輯器，支援 UML、網路圖、心智圖及本機檔案。",
+        "en": "A desktop diagram editor for flowcharts, UML, network diagrams, mind maps and local files.",
+        "ja": "フローチャート、UML、ネットワーク図、マインドマップ、ローカルファイルに対応するデスクトップ図表エディター。",
+        "ko": "순서도, UML, 네트워크 다이어그램, 마인드맵 및 로컬 파일을 지원하는 데스크톱 다이어그램 편집기."
+      },
+      "sourceRepository": "https://github.com/jgraph/drawio-desktop",
+      "licenseUrl": "https://raw.githubusercontent.com/jgraph/drawio-desktop/HEAD/LICENSE",
+      "id": "draw-io-desktop",
+      "variants": [
+        {
+          "id": "draw-io-desktop-windows",
+          "os": "windows",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "通过 winget 安装 JGraph.Draw（winget 源）；需要已安装并配置该包管理器。 桌面版默认在本地编辑图表；外部图片、更新检查和云存储功能可能发起网络连接。",
+            "zh-TW": "透過 winget 安裝 JGraph.Draw（winget 來源）；需要已安裝並設定該套件管理器。 桌面版預設在本機編輯圖表；外部圖片、更新檢查和雲端儲存功能可能發起網路連線。",
+            "en": "Installs JGraph.Draw with winget from the winget source. The package manager must already be installed and configured. The desktop app edits diagrams locally by default. External images, update checks and cloud storage may make network connections.",
+            "ja": "winget で JGraph.Draw をインストールします（winget ソース）。パッケージマネージャーを事前にインストールして設定する必要があります。 デスクトップ版はデフォルトでローカルに図を編集します。外部画像、更新確認、クラウドストレージではネットワーク接続が発生する場合があります。",
+            "ko": "winget로 JGraph.Draw를 설치합니다(winget 소스). 패키지 관리자가 미리 설치되어 설정되어 있어야 합니다. 데스크톱 앱은 기본적으로 다이어그램을 로컬에서 편집합니다. 외부 이미지, 업데이트 확인 및 클라우드 저장소 사용 시 네트워크에 연결할 수 있습니다."
+          },
+          "sourceUrl": "https://www.diagrams.net/",
+          "method": {
+            "type": "package_manager",
+            "manager": "winget",
+            "packageId": "JGraph.Draw",
+            "source": "winget"
+          }
+        },
+        {
+          "id": "draw-io-desktop-macos",
+          "os": "macos",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "通过 Homebrew 安装 drawio；需要已安装并配置 brew。 桌面版默认在本地编辑图表；外部图片、更新检查和云存储功能可能发起网络连接。",
+            "zh-TW": "透過 Homebrew 安裝 drawio；需要已安裝並設定 brew。 桌面版預設在本機編輯圖表；外部圖片、更新檢查和雲端儲存功能可能發起網路連線。",
+            "en": "Installs drawio with Homebrew. brew must already be installed and configured. The desktop app edits diagrams locally by default. External images, update checks and cloud storage may make network connections.",
+            "ja": "Homebrew で drawio をインストールします。brew を事前にインストールして設定する必要があります。 デスクトップ版はデフォルトでローカルに図を編集します。外部画像、更新確認、クラウドストレージではネットワーク接続が発生する場合があります。",
+            "ko": "Homebrew로 drawio를 설치합니다. brew가 미리 설치되어 설정되어 있어야 합니다. 데스크톱 앱은 기본적으로 다이어그램을 로컬에서 편집합니다. 외부 이미지, 업데이트 확인 및 클라우드 저장소 사용 시 네트워크에 연결할 수 있습니다."
+          },
+          "sourceUrl": "https://www.diagrams.net/",
+          "method": {
+            "type": "package_manager",
+            "manager": "brew",
+            "packageId": "drawio",
+            "cask": true
+          }
+        }
+      ]
+    },
+    {
+      "name": "ghostwriter",
+      "publisher": "KDE and ghostwriter contributors",
+      "category": "office",
+      "mark": "Gw",
+      "accent": "#6487a5",
+      "sourceRepository": "https://invent.kde.org/office/ghostwriter",
+      "license": "GPL-3.0-or-later",
+      "licenseUrl": "https://invent.kde.org/office/ghostwriter/-/raw/master/LICENSES/GPL-3.0-or-later.txt",
+      "homepage": "https://ghostwriter.kde.org/",
+      "summary": {
+        "zh-CN": "KDE Markdown 编辑器，提供专注写作、实时预览、主题和文档导航。",
+        "zh-TW": "KDE Markdown 編輯器，提供專注寫作、即時預覽、主題和文件導覽。",
+        "en": "A KDE Markdown editor with distraction-free writing, live preview, themes and document navigation.",
+        "ja": "集中執筆、ライブプレビュー、テーマ、文書ナビゲーションを備える KDE Markdown エディター。",
+        "ko": "집중 작성, 실시간 미리 보기, 테마 및 문서 탐색을 제공하는 KDE Markdown 편집기."
+      },
+      "id": "ghostwriter",
+      "variants": [
+        {
+          "id": "ghostwriter-linux-x86-64",
+          "os": "linux",
+          "architectures": [
+            "x86_64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "通过 Flatpak 从 Flathub 安装 org.kde.ghostwriter；需要已安装 Flatpak 并配置 Flathub remote。 当前 Flathub 应用 ref 仅验证 x86_64。编辑和保存会写入用户选择的 Markdown 文档；预览插件和导出可能使用本地工具，安装不打开或修改文档。",
+            "zh-TW": "透過 Flatpak 從 Flathub 安裝 org.kde.ghostwriter；需要已安裝 Flatpak 並設定 Flathub remote。 目前 Flathub 應用程式 ref 僅驗證 x86_64。編輯和儲存會寫入使用者選擇的 Markdown 文件；預覽外掛和匯出可能使用本機工具，安裝不開啟或修改文件。",
+            "en": "Installs org.kde.ghostwriter from Flathub with Flatpak. Flatpak and the Flathub remote must already be configured. Only the x86_64 application ref is currently verified on Flathub. Editing saves user-selected Markdown documents. Preview plugins and exports may use local tools; installation opens or modifies no documents.",
+            "ja": "Flatpak で Flathub から org.kde.ghostwriter をインストールします。Flatpak と Flathub リモートを事前に設定する必要があります。 現在 Flathub で確認できるアプリ ref は x86_64 のみです。編集・保存は選択した Markdown 文書へ書き込みます。プレビューやエクスポートはローカルツールを使う場合がありますが、インストール時に文書は変更されません。",
+            "ko": "Flatpak으로 Flathub에서 org.kde.ghostwriter를 설치합니다. Flatpak과 Flathub 리모트가 미리 설정되어 있어야 합니다. 현재 Flathub에서는 x86_64 애플리케이션 ref만 확인했습니다. 편집 및 저장은 선택한 Markdown 문서에 기록합니다. 미리 보기와 파일 생성에는 로컬 도구가 사용될 수 있으며 설치 시 문서를 열거나 수정하지 않습니다."
+          },
+          "sourceUrl": "https://ghostwriter.kde.org/",
+          "method": {
+            "type": "package_manager",
+            "manager": "flatpak",
+            "packageId": "org.kde.ghostwriter",
+            "source": "flathub"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Joplin",
+      "publisher": "Joplin",
+      "category": "office",
+      "mark": "J",
+      "accent": "#356da0",
+      "license": "AGPL-3.0-or-later",
+      "homepage": "https://joplinapp.org/",
+      "summary": {
+        "zh-CN": "支持 Markdown、笔记本、待办事项与端到端加密同步的开源笔记应用。",
+        "zh-TW": "支援 Markdown、筆記本、待辦事項與端對端加密同步的開源筆記應用程式。",
+        "en": "An open-source note-taking app with Markdown, notebooks, to-dos and end-to-end encrypted synchronization.",
+        "ja": "Markdown、ノートブック、ToDo、エンドツーエンド暗号化同期に対応するオープンソースのノートアプリ。",
+        "ko": "Markdown, 노트북, 할 일 및 종단 간 암호화 동기화를 지원하는 오픈 소스 노트 애플리케이션."
+      },
+      "sourceRepository": "https://github.com/laurent22/joplin",
+      "licenseUrl": "https://raw.githubusercontent.com/laurent22/joplin/HEAD/LICENSE",
+      "id": "joplin",
+      "variants": [
+        {
+          "id": "joplin-macos",
+          "os": "macos",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "通过 Homebrew 安装 joplin；需要已安装并配置 brew。 本地笔记无需账号；使用 Joplin Cloud、Nextcloud、Dropbox、OneDrive 等同步服务时需要相应账号，部分服务可能收费。",
+            "zh-TW": "透過 Homebrew 安裝 joplin；需要已安裝並設定 brew。 本機筆記無需帳號；使用 Joplin Cloud、Nextcloud、Dropbox、OneDrive 等同步服務時需要相應帳號，部分服務可能收費。",
+            "en": "Installs joplin with Homebrew. brew must already be installed and configured. Local notes require no account. Joplin Cloud, Nextcloud, Dropbox, OneDrive and other sync services require their own accounts; some may charge fees.",
+            "ja": "Homebrew で joplin をインストールします。brew を事前にインストールして設定する必要があります。 ローカルノートにアカウントは不要です。Joplin Cloud、Nextcloud、Dropbox、OneDrive などの同期サービスには各アカウントが必要で、有料の場合があります。",
+            "ko": "Homebrew로 joplin를 설치합니다. brew가 미리 설치되어 설정되어 있어야 합니다. 로컬 노트에는 계정이 필요하지 않습니다. Joplin Cloud, Nextcloud, Dropbox, OneDrive 등의 동기화 서비스에는 각 계정이 필요하며 일부는 유료입니다."
+          },
+          "sourceUrl": "https://joplinapp.org/",
+          "method": {
+            "type": "package_manager",
+            "manager": "brew",
+            "packageId": "joplin",
+            "cask": true
+          }
+        }
+      ]
+    },
+    {
       "id": "libreoffice",
       "name": "LibreOffice",
       "publisher": "The Document Foundation",
@@ -88,6 +291,542 @@
             "type": "package_manager",
             "manager": "brew",
             "packageId": "libreoffice",
+            "cask": true
+          }
+        }
+      ]
+    },
+    {
+      "name": "Notesnook",
+      "publisher": "Streetwriters",
+      "category": "office",
+      "mark": "N",
+      "accent": "#5c8da9",
+      "license": "GPL-3.0-or-later",
+      "homepage": "https://notesnook.com/",
+      "summary": {
+        "zh-CN": "注重隐私的笔记应用，支持笔记本、标签、搜索、加密同步和本地编辑。",
+        "zh-TW": "注重隱私的筆記應用程式，支援筆記本、標籤、搜尋、加密同步和本機編輯。",
+        "en": "A privacy-focused notes app with notebooks, tags, search, encrypted sync and local editing.",
+        "ja": "ノートブック、タグ、検索、暗号化同期、ローカル編集に対応するプライバシー重視のノートアプリ。",
+        "ko": "노트북, 태그, 검색, 암호화 동기화 및 로컬 편집을 지원하는 개인정보 보호 중심 노트 앱."
+      },
+      "sourceRepository": "https://github.com/streetwriters/notesnook",
+      "licenseUrl": "https://raw.githubusercontent.com/streetwriters/notesnook/v3.4.13/LICENSE",
+      "id": "notesnook",
+      "variants": [
+        {
+          "id": "notesnook-macos",
+          "os": "macos",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "通过 Homebrew 安装 notesnook；需要已安装并配置 brew。 本地笔记不要求账号；附件上传需登录，账号同步免费。更高存储空间、离线附件等功能可能需要付费计划。",
+            "zh-TW": "透過 Homebrew 安裝 notesnook；需要已安裝並設定 brew。 本機筆記不要求帳號；附件上傳需登入，帳號同步免費。更高儲存空間、離線附件等功能可能需要付費方案。",
+            "en": "Installs notesnook with Homebrew. brew must already be installed and configured. Local notes require no account. Attachment upload requires login; account sync is free. Additional storage, offline attachments and other features may require a paid plan.",
+            "ja": "Homebrew で notesnook をインストールします。brew を事前にインストールして設定する必要があります。 ローカルノートにアカウントは不要です。添付ファイルのアップロードにはログインが必要で、アカウント同期は無料です。追加ストレージやオフライン添付などには有料プランが必要な場合があります。",
+            "ko": "Homebrew로 notesnook를 설치합니다. brew가 미리 설치되어 설정되어 있어야 합니다. 로컬 노트에는 계정이 필요하지 않습니다. 첨부 파일 업로드에는 로그인이 필요하며 계정 동기화는 비용 없이 사용할 수 있습니다. 추가 저장 공간, 오프라인 첨부 파일 등의 기능에는 유료 요금제가 필요할 수 있습니다."
+          },
+          "sourceUrl": "https://notesnook.com/",
+          "method": {
+            "type": "package_manager",
+            "manager": "brew",
+            "packageId": "notesnook",
+            "cask": true
+          }
+        }
+      ]
+    },
+    {
+      "name": "PDF Arranger",
+      "publisher": "PDF Arranger contributors",
+      "category": "office",
+      "mark": "PA",
+      "accent": "#6687a4",
+      "license": "GPL-3.0-or-later",
+      "homepage": "https://github.com/pdfarranger/pdfarranger",
+      "summary": {
+        "zh-CN": "PDF 页面整理工具，支持合并、拆分、旋转、裁剪和重新排列页面。",
+        "zh-TW": "PDF 頁面整理工具，支援合併、拆分、旋轉、裁剪和重新排列頁面。",
+        "en": "A PDF page organizer for merging, splitting, rotating, cropping and rearranging pages.",
+        "ja": "PDF ページの結合、分割、回転、切り抜き、並べ替えを行うページ整理ツール。",
+        "ko": "PDF 페이지를 병합, 분할, 회전, 자르기 및 재배열하는 페이지 정리 도구."
+      },
+      "sourceRepository": "https://github.com/pdfarranger/pdfarranger",
+      "licenseUrl": "https://raw.githubusercontent.com/pdfarranger/pdfarranger/master/COPYING",
+      "id": "pdf-arranger",
+      "variants": [
+        {
+          "id": "pdf-arranger-linux-x86-64",
+          "os": "linux",
+          "architectures": [
+            "x86_64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "通过 Flatpak 从 Flathub 安装 com.github.jeromerobert.pdfarranger；需要已安装 Flatpak 并配置 Flathub remote。 当前 Flathub 应用 ref 仅验证 x86_64。保存会创建或覆盖用户选择的 PDF；加密/特殊文档能力取决于内容和支持库，安装不修改文档。",
+            "zh-TW": "透過 Flatpak 從 Flathub 安裝 com.github.jeromerobert.pdfarranger；需要已安裝 Flatpak 並設定 Flathub remote。 目前 Flathub 應用程式 ref 僅驗證 x86_64。儲存會建立或覆蓋使用者選擇的 PDF；加密／特殊文件能力取決於內容和支援函式庫，安裝不修改文件。",
+            "en": "Installs com.github.jeromerobert.pdfarranger from Flathub with Flatpak. Flatpak and the Flathub remote must already be configured. Only the x86_64 application ref is currently verified on Flathub. Saving creates or overwrites a selected PDF. Encrypted and unusual-document support depends on content and supporting libraries; installation changes no documents.",
+            "ja": "Flatpak で Flathub から com.github.jeromerobert.pdfarranger をインストールします。Flatpak と Flathub リモートを事前に設定する必要があります。 現在 Flathub で確認できるアプリ ref は x86_64 のみです。保存は選択した PDF を作成または上書きします。暗号化・特殊文書の対応は内容とライブラリに依存し、インストールで文書は変更されません。",
+            "ko": "Flatpak으로 Flathub에서 com.github.jeromerobert.pdfarranger를 설치합니다. Flatpak과 Flathub 리모트가 미리 설정되어 있어야 합니다. 현재 Flathub에서는 x86_64 애플리케이션 ref만 확인했습니다. 저장은 선택한 PDF를 만들거나 덮어씁니다. 암호화 및 특수 문서 지원은 내용과 지원 라이브러리에 따라 달라지며 설치 시 문서를 변경하지 않습니다."
+          },
+          "sourceUrl": "https://github.com/pdfarranger/pdfarranger",
+          "method": {
+            "type": "package_manager",
+            "manager": "flatpak",
+            "packageId": "com.github.jeromerobert.pdfarranger",
+            "source": "flathub"
+          }
+        }
+      ]
+    },
+    {
+      "name": "QOwnNotes",
+      "publisher": "Patrizio Bekerle and contributors",
+      "category": "office",
+      "mark": "QO",
+      "accent": "#6487a4",
+      "license": "GPL-2.0-or-later",
+      "homepage": "https://www.qownnotes.org/",
+      "summary": {
+        "zh-CN": "纯文本 Markdown 笔记应用，支持本地文件、标签、待办和可选 Nextcloud 集成。",
+        "zh-TW": "純文字 Markdown 筆記應用程式，支援本機檔案、標籤、待辦和可選 Nextcloud 整合。",
+        "en": "A plain-text Markdown notes app with local files, tags, tasks and optional Nextcloud integration.",
+        "ja": "ローカルファイル、タグ、タスク、オプションの Nextcloud 統合を備えるプレーンテキスト Markdown ノートアプリ。",
+        "ko": "로컬 파일, 태그, 작업 및 선택적 Nextcloud 통합을 지원하는 일반 텍스트 Markdown 노트 앱."
+      },
+      "sourceRepository": "https://github.com/pbek/QOwnNotes",
+      "licenseUrl": "https://raw.githubusercontent.com/pbek/QOwnNotes/main/LICENSE",
+      "id": "qownnotes",
+      "variants": [
+        {
+          "id": "qownnotes-linux-x86-64",
+          "os": "linux",
+          "architectures": [
+            "x86_64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "通过 Flatpak 从 Flathub 安装 org.qownnotes.QOwnNotes；需要已安装 Flatpak 并配置 Flathub remote。 当前 Flathub 应用 ref 仅验证 x86_64。笔记以文件保存；可选 Nextcloud/同步功能会连接用户配置的服务并传输笔记，安装不启用同步。",
+            "zh-TW": "透過 Flatpak 從 Flathub 安裝 org.qownnotes.QOwnNotes；需要已安裝 Flatpak 並設定 Flathub remote。 目前 Flathub 應用程式 ref 僅驗證 x86_64。筆記以檔案儲存；可選 Nextcloud／同步功能會連線使用者設定的服務並傳輸筆記，安裝不啟用同步。",
+            "en": "Installs org.qownnotes.QOwnNotes from Flathub with Flatpak. Flatpak and the Flathub remote must already be configured. Only the x86_64 application ref is currently verified on Flathub. Notes are stored as files. Optional Nextcloud/synchronization features contact configured services and transfer notes; installation enables no synchronization.",
+            "ja": "Flatpak で Flathub から org.qownnotes.QOwnNotes をインストールします。Flatpak と Flathub リモートを事前に設定する必要があります。 現在 Flathub で確認できるアプリ ref は x86_64 のみです。ノートはファイルとして保存されます。オプションの Nextcloud／同期は設定したサービスへノートを送信しますが、インストール時に同期は有効化されません。",
+            "ko": "Flatpak으로 Flathub에서 org.qownnotes.QOwnNotes를 설치합니다. Flatpak과 Flathub 리모트가 미리 설정되어 있어야 합니다. 현재 Flathub에서는 x86_64 애플리케이션 ref만 확인했습니다. 노트는 파일로 저장됩니다. 선택적 Nextcloud/동기화 기능은 구성된 서비스와 노트를 주고받으며 설치 시 동기화를 활성화하지 않습니다."
+          },
+          "sourceUrl": "https://www.qownnotes.org/",
+          "method": {
+            "type": "package_manager",
+            "manager": "flatpak",
+            "packageId": "org.qownnotes.QOwnNotes",
+            "source": "flathub"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Saber",
+      "publisher": "Adil Hanney and contributors",
+      "category": "office",
+      "mark": "Sa",
+      "accent": "#6487a4",
+      "license": "GPL-3.0-only",
+      "homepage": "https://github.com/saber-notes/saber",
+      "summary": {
+        "zh-CN": "手写笔记应用，支持压感笔、画布、文档整理和本地或同步使用。",
+        "zh-TW": "手寫筆記應用程式，支援壓感筆、畫布、文件整理和本機或同步使用。",
+        "en": "A handwritten-notes app with stylus input, canvases, document organization and local or synchronized use.",
+        "ja": "スタイラス入力、キャンバス、文書整理、ローカルまたは同期利用に対応する手書きノートアプリ。",
+        "ko": "스타일러스 입력, 캔버스, 문서 정리 및 로컬 또는 동기화 사용을 지원하는 필기 노트 앱."
+      },
+      "sourceRepository": "https://github.com/saber-notes/saber",
+      "licenseUrl": "https://raw.githubusercontent.com/saber-notes/saber/main/LICENSE",
+      "id": "saber",
+      "variants": [
+        {
+          "id": "saber-linux-x86-64",
+          "os": "linux",
+          "architectures": [
+            "x86_64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "通过 Flatpak 从 Flathub 安装 com.adilhanney.saber；需要已安装 Flatpak 并配置 Flathub remote。 当前 Flathub 应用 ref 仅验证 x86_64。笔记保存在用户配置的位置；可选同步需要网络及对应服务/账号，安装不自动上传笔记。",
+            "zh-TW": "透過 Flatpak 從 Flathub 安裝 com.adilhanney.saber；需要已安裝 Flatpak 並設定 Flathub remote。 目前 Flathub 應用程式 ref 僅驗證 x86_64。筆記儲存在使用者設定的位置；可選同步需要網路及對應服務／帳號，安裝不自動上傳筆記。",
+            "en": "Installs com.adilhanney.saber from Flathub with Flatpak. Flatpak and the Flathub remote must already be configured. Only the x86_64 application ref is currently verified on Flathub. Notes are stored in the configured location. Optional synchronization requires network access and the corresponding service/account; installation uploads no notes.",
+            "ja": "Flatpak で Flathub から com.adilhanney.saber をインストールします。Flatpak と Flathub リモートを事前に設定する必要があります。 現在 Flathub で確認できるアプリ ref は x86_64 のみです。ノートは設定した場所に保存されます。オプションの同期にはネットワークと対応サービス／アカウントが必要で、インストール時にノートは送信されません。",
+            "ko": "Flatpak으로 Flathub에서 com.adilhanney.saber를 설치합니다. Flatpak과 Flathub 리모트가 미리 설정되어 있어야 합니다. 현재 Flathub에서는 x86_64 애플리케이션 ref만 확인했습니다. 노트는 구성된 위치에 저장됩니다. 선택적 동기화에는 네트워크와 해당 서비스/계정이 필요하며 설치 시 노트를 업로드하지 않습니다."
+          },
+          "sourceUrl": "https://github.com/saber-notes/saber",
+          "method": {
+            "type": "package_manager",
+            "manager": "flatpak",
+            "packageId": "com.adilhanney.saber",
+            "source": "flathub"
+          }
+        }
+      ]
+    },
+    {
+      "name": "SiYuan",
+      "publisher": "Yunnan Liandi Technology Co., Ltd.",
+      "category": "office",
+      "mark": "SY",
+      "accent": "#5684ab",
+      "license": "AGPL-3.0-or-later",
+      "homepage": "https://b3log.org/siyuan/en/",
+      "summary": {
+        "zh-CN": "重视隐私的本地优先个人知识管理工具，支持块级引用、双向链接和文档组织。",
+        "zh-TW": "重視隱私的本機優先個人知識管理工具，支援區塊級參照、雙向連結和文件組織。",
+        "en": "A privacy-focused, local-first personal knowledge manager with block references, backlinks and document organization.",
+        "ja": "ブロック参照、バックリンク、文書整理に対応するプライバシー重視のローカルファースト個人ナレッジマネージャー。",
+        "ko": "블록 참조, 백링크 및 문서 구성을 지원하는 개인정보 보호 중심의 로컬 우선 개인 지식 관리 도구."
+      },
+      "sourceRepository": "https://github.com/siyuan-note/siyuan",
+      "licenseUrl": "https://raw.githubusercontent.com/siyuan-note/siyuan/v3.8.10/LICENSE",
+      "id": "siyuan",
+      "variants": [
+        {
+          "id": "siyuan-macos",
+          "os": "macos",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "通过 Homebrew 安装 siyuan；需要已安装并配置 brew。 需要 macOS 12 或更高版本。本地基本功能免费；官方同步、会员功能需要账号/订阅，第三方 S3 或 WebDAV 存储需自行配置并可能付费。",
+            "zh-TW": "透過 Homebrew 安裝 siyuan；需要已安裝並設定 brew。 需要 macOS 12 或更高版本。本機基本功能免費；官方同步、會員功能需要帳號／訂閱，第三方 S3 或 WebDAV 儲存需自行設定並可能付費。",
+            "en": "Installs siyuan with Homebrew. brew must already be installed and configured. Requires macOS 12 or later. Basic local features are free. Official sync and member features require an account/subscription; third-party S3 or WebDAV storage must be configured separately and may cost money.",
+            "ja": "Homebrew で siyuan をインストールします。brew を事前にインストールして設定する必要があります。 macOS 12 以降が必要です。基本的なローカル機能は無料です。公式同期とメンバー機能にはアカウント・サブスクリプションが必要で、第三者の S3 や WebDAV ストレージは別途設定・契約が必要です。",
+            "ko": "Homebrew로 siyuan를 설치합니다. brew가 미리 설치되어 설정되어 있어야 합니다. macOS 12 이상이 필요합니다. 기본 로컬 기능은 비용 없이 사용할 수 있으며 공식 동기화와 멤버 기능에는 계정/구독이 필요합니다. 타사 S3 또는 WebDAV 저장소는 별도로 구성해야 하며 비용이 발생할 수 있습니다."
+          },
+          "sourceUrl": "https://b3log.org/siyuan/en/",
+          "method": {
+            "type": "package_manager",
+            "manager": "brew",
+            "packageId": "siyuan",
+            "cask": true
+          }
+        }
+      ]
+    },
+    {
+      "name": "Standard Notes",
+      "publisher": "Standard Notes",
+      "category": "office",
+      "mark": "SN",
+      "accent": "#5279a6",
+      "license": "AGPL-3.0-only",
+      "homepage": "https://standardnotes.com/",
+      "summary": {
+        "zh-CN": "支持端到端加密同步的笔记应用，可离线使用并通过扩展增加编辑功能。",
+        "zh-TW": "支援端對端加密同步的筆記應用程式，可離線使用並透過擴充增加編輯功能。",
+        "en": "A notes app with end-to-end encrypted sync, offline use and extensible editing features.",
+        "ja": "エンドツーエンド暗号化同期、オフライン使用、拡張可能な編集機能に対応するノートアプリ。",
+        "ko": "종단 간 암호화 동기화, 오프라인 사용 및 확장 가능한 편집 기능을 지원하는 노트 앱."
+      },
+      "sourceRepository": "https://github.com/standardnotes/app",
+      "licenseUrl": "https://raw.githubusercontent.com/standardnotes/app/@standardnotes/desktop@3.202.11/LICENSE",
+      "id": "standard-notes",
+      "variants": [
+        {
+          "id": "standard-notes-macos",
+          "os": "macos",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "通过 Homebrew 安装 standard-notes；需要已安装并配置 brew。 可不注册账号完全离线使用，但数据不会跨设备同步。免费账号提供加密同步；更多笔记类型、历史和加密存储可能需要付费订阅。",
+            "zh-TW": "透過 Homebrew 安裝 standard-notes；需要已安裝並設定 brew。 可不註冊帳號完全離線使用，但資料不會跨裝置同步。免費帳號提供加密同步；更多筆記類型、歷史和加密儲存可能需要付費訂閱。",
+            "en": "Installs standard-notes with Homebrew. brew must already be installed and configured. Fully offline use works without an account, but data does not sync across devices. A free account provides encrypted sync; additional note types, history and encrypted storage may require a paid subscription.",
+            "ja": "Homebrew で standard-notes をインストールします。brew を事前にインストールして設定する必要があります。 アカウントなしで完全オフライン利用が可能ですが、データはデバイス間で同期されません。無料アカウントで暗号化同期ができ、追加のノート形式、履歴、暗号化ストレージには有料プランが必要な場合があります。",
+            "ko": "Homebrew로 standard-notes를 설치합니다. brew가 미리 설치되어 설정되어 있어야 합니다. 계정 없이 완전한 오프라인 사용이 가능하지만 데이터는 장치 간 동기화되지 않습니다. 비용 없이 만든 계정으로 암호화 동기화를 사용할 수 있으며 추가 노트 유형, 기록 및 암호화 저장소에는 유료 구독이 필요할 수 있습니다."
+          },
+          "sourceUrl": "https://standardnotes.com/",
+          "method": {
+            "type": "package_manager",
+            "manager": "brew",
+            "packageId": "standard-notes",
+            "cask": true
+          }
+        }
+      ]
+    },
+    {
+      "name": "Stretchly",
+      "publisher": "Jan Hovancik and contributors",
+      "category": "office",
+      "mark": "St",
+      "accent": "#6487a4",
+      "license": "BSD-2-Clause",
+      "homepage": "https://hovancik.net/stretchly/",
+      "summary": {
+        "zh-CN": "休息提醒应用，按可配置计划提示短暂休息和较长休息。",
+        "zh-TW": "休息提醒應用程式，依可設定計畫提示短暫休息和較長休息。",
+        "en": "A break reminder that prompts short and longer breaks on a configurable schedule.",
+        "ja": "設定可能なスケジュールで短い休憩と長い休憩を通知する休憩リマインダー。",
+        "ko": "설정 가능한 일정에 따라 짧은 휴식과 긴 휴식을 알려 주는 휴식 알림 앱."
+      },
+      "sourceRepository": "https://github.com/hovancik/stretchly",
+      "licenseUrl": "https://raw.githubusercontent.com/hovancik/stretchly/master/LICENSE",
+      "id": "stretchly",
+      "variants": [
+        {
+          "id": "stretchly-linux-x86-64",
+          "os": "linux",
+          "architectures": [
+            "x86_64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "通过 Flatpak 从 Flathub 安装 net.hovancik.Stretchly；需要已安装 Flatpak 并配置 Flathub remote。 当前 Flathub 应用 ref 仅验证 x86_64。提醒可显示全屏休息界面并影响当前操作；开机启动和休息计划由用户设置，安装不自动跳过提醒。",
+            "zh-TW": "透過 Flatpak 從 Flathub 安裝 net.hovancik.Stretchly；需要已安裝 Flatpak 並設定 Flathub remote。 目前 Flathub 應用程式 ref 僅驗證 x86_64。提醒可顯示全螢幕休息介面並影響目前操作；開機啟動和休息計畫由使用者設定，安裝不自動跳過提醒。",
+            "en": "Installs net.hovancik.Stretchly from Flathub with Flatpak. Flatpak and the Flathub remote must already be configured. Only the x86_64 application ref is currently verified on Flathub. Reminders can show full-screen breaks and interrupt current activity. Autostart and schedules are user-controlled; installation does not skip breaks.",
+            "ja": "Flatpak で Flathub から net.hovancik.Stretchly をインストールします。Flatpak と Flathub リモートを事前に設定する必要があります。 現在 Flathub で確認できるアプリ ref は x86_64 のみです。全画面の休憩表示で操作中の作業が中断される場合があります。自動起動とスケジュールはユーザー設定で、インストール時に休憩はスキップされません。",
+            "ko": "Flatpak으로 Flathub에서 net.hovancik.Stretchly를 설치합니다. Flatpak과 Flathub 리모트가 미리 설정되어 있어야 합니다. 현재 Flathub에서는 x86_64 애플리케이션 ref만 확인했습니다. 전체 화면 휴식 알림이 현재 작업을 방해할 수 있습니다. 자동 시작과 일정은 사용자가 설정하며 설치 시 휴식을 걸러내지 않습니다."
+          },
+          "sourceUrl": "https://hovancik.net/stretchly/",
+          "method": {
+            "type": "package_manager",
+            "manager": "flatpak",
+            "packageId": "net.hovancik.Stretchly",
+            "source": "flathub"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Super Productivity",
+      "publisher": "Johannes Millan",
+      "category": "office",
+      "mark": "SP",
+      "accent": "#537fba",
+      "license": "MIT",
+      "homepage": "https://super-productivity.com/",
+      "summary": {
+        "zh-CN": "本地优先的任务与时间管理工具，支持待办事项、时间跟踪、日历和第三方项目集成。",
+        "zh-TW": "本機優先的任務與時間管理工具，支援待辦事項、時間追蹤、日曆和第三方專案整合。",
+        "en": "A local-first task and time manager with to-dos, time tracking, calendars and third-party project integrations.",
+        "ja": "ToDo、時間追跡、カレンダー、第三者プロジェクト連携を備えるローカルファーストのタスク・時間管理ツール。",
+        "ko": "할 일, 시간 추적, 캘린더 및 타사 프로젝트 통합을 지원하는 로컬 우선 작업 및 시간 관리 도구."
+      },
+      "sourceRepository": "https://github.com/super-productivity/super-productivity",
+      "licenseUrl": "https://raw.githubusercontent.com/super-productivity/super-productivity/v20.0.0/LICENSE",
+      "id": "super-productivity",
+      "variants": [
+        {
+          "id": "super-productivity-macos",
+          "os": "macos",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "通过 Homebrew 安装 super-productivity；需要已安装并配置 brew。 需要 macOS 13 或更高版本。核心离线功能不要求账号；第三方集成和同步会使用各自凭据并可能回写状态。SuperSync 仍是 beta，不作为核心依赖。",
+            "zh-TW": "透過 Homebrew 安裝 super-productivity；需要已安裝並設定 brew。 需要 macOS 13 或更高版本。核心離線功能不要求帳號；第三方整合和同步會使用各自憑證並可能回寫狀態。SuperSync 仍是 beta，不作為核心依賴。",
+            "en": "Installs super-productivity with Homebrew. brew must already be installed and configured. Requires macOS 13 or later. Core offline features require no account. Third-party integrations and sync use their own credentials and may write status back. SuperSync remains beta and is not a core dependency.",
+            "ja": "Homebrew で super-productivity をインストールします。brew を事前にインストールして設定する必要があります。 macOS 13 以降が必要です。コアのオフライン機能にアカウントは不要です。第三者連携と同期はそれぞれの認証情報を使用し、状態を書き戻す場合があります。SuperSync は beta で、コアの依存ではありません。",
+            "ko": "Homebrew로 super-productivity를 설치합니다. brew가 미리 설치되어 설정되어 있어야 합니다. macOS 13 이상이 필요합니다. 핵심 오프라인 기능에는 계정이 필요하지 않습니다. 타사 통합 및 동기화는 각 서비스의 자격 증명을 사용하며 상태를 다시 기록할 수 있습니다. SuperSync는 베타이며 핵심 종속성이 아닙니다."
+          },
+          "sourceUrl": "https://super-productivity.com/",
+          "method": {
+            "type": "package_manager",
+            "manager": "brew",
+            "packageId": "super-productivity",
+            "cask": true
+          }
+        }
+      ]
+    },
+    {
+      "name": "TagSpaces Lite",
+      "publisher": "TagSpaces",
+      "category": "office",
+      "mark": "TS",
+      "accent": "#65899b",
+      "license": "AGPL-3.0-only",
+      "homepage": "https://www.tagspaces.org/",
+      "summary": {
+        "zh-CN": "离线文件组织与标记工具，通过标签和预览管理本地文档、图片及其他文件。",
+        "zh-TW": "離線檔案組織與標記工具，透過標籤和預覽管理本機文件、圖片及其他檔案。",
+        "en": "An offline file organizer and tagging tool for local documents, images and other files with previews.",
+        "ja": "タグとプレビューでローカルの文書、画像、その他のファイルを整理するオフラインファイル管理・タグ付けツール。",
+        "ko": "태그와 미리 보기로 로컬 문서, 이미지 및 기타 파일을 관리하는 오프라인 파일 구성 및 태깅 도구."
+      },
+      "sourceRepository": "https://github.com/tagspaces/tagspaces",
+      "licenseUrl": "https://raw.githubusercontent.com/tagspaces/tagspaces/v6.14.3/LICENSE.txt",
+      "id": "tagspaces",
+      "variants": [
+        {
+          "id": "tagspaces-macos",
+          "os": "macos",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "通过 Homebrew 安装 tagspaces；需要已安装并配置 brew。 需要 macOS 13 或更高版本。此变体是仅含 AGPL 核心的 Lite，不含 TagSpaces Pro 专有模块；本地使用不要求账号或云服务。",
+            "zh-TW": "透過 Homebrew 安裝 tagspaces；需要已安裝並設定 brew。 需要 macOS 13 或更高版本。此變體是僅含 AGPL 核心的 Lite，不含 TagSpaces Pro 專有模組；本機使用不要求帳號或雲端服務。",
+            "en": "Installs tagspaces with Homebrew. brew must already be installed and configured. Requires macOS 13 or later. This is the Lite build containing only the AGPL core, not proprietary TagSpaces Pro modules. Local use requires no account or cloud service.",
+            "ja": "Homebrew で tagspaces をインストールします。brew を事前にインストールして設定する必要があります。 macOS 13 以降が必要です。これは AGPL コアのみを含む Lite ビルドで、独自の TagSpaces Pro モジュールは含みません。ローカル使用にアカウントやクラウドサービスは不要です。",
+            "ko": "Homebrew로 tagspaces를 설치합니다. brew가 미리 설치되어 설정되어 있어야 합니다. macOS 13 이상이 필요합니다. 이것은 AGPL 코어만 포함하는 Lite 빌드이며 독점 TagSpaces Pro 모듈은 포함하지 않습니다. 로컬 사용에 계정이나 클라우드 서비스가 필요하지 않습니다."
+          },
+          "sourceUrl": "https://www.tagspaces.org/",
+          "method": {
+            "type": "package_manager",
+            "manager": "brew",
+            "packageId": "tagspaces",
+            "cask": true
+          }
+        }
+      ]
+    },
+    {
+      "name": "Taskwarrior",
+      "publisher": "Gothenburg Bit Factory and contributors",
+      "category": "office",
+      "mark": "Tw",
+      "accent": "#6587a4",
+      "license": "MIT",
+      "homepage": "https://taskwarrior.org/",
+      "summary": {
+        "zh-CN": "命令行任务管理器，支持项目、标签、优先级、到期日和本地任务数据。",
+        "zh-TW": "命令列任務管理器，支援專案、標籤、優先順序、到期日和本機任務資料。",
+        "en": "A command-line task manager with projects, tags, priorities, due dates and local task data.",
+        "ja": "プロジェクト、タグ、優先度、期限、ローカルタスクデータを扱うコマンドラインタスクマネージャー。",
+        "ko": "프로젝트, 태그, 우선순위, 마감일 및 로컬 작업 데이터를 지원하는 명령줄 작업 관리자."
+      },
+      "sourceRepository": "https://github.com/GothenburgBitFactory/taskwarrior",
+      "licenseUrl": "https://raw.githubusercontent.com/GothenburgBitFactory/taskwarrior/develop/LICENSE",
+      "id": "taskwarrior",
+      "variants": [
+        {
+          "id": "taskwarrior-macos",
+          "os": "macos",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "通过 Homebrew 安装 task；需要已安装并配置 brew。 Homebrew 包名为 task，仅提供本目录已验证的 macOS 架构。任务写入本地数据目录；可选同步需另行配置服务，安装不创建任务或启用同步。",
+            "zh-TW": "透過 Homebrew 安裝 task；需要已安裝並設定 brew。 Homebrew 套件名為 task，僅提供本目錄已驗證的 macOS 架構。任務寫入本機資料目錄；可選同步需另行設定服務，安裝不建立任務或啟用同步。",
+            "en": "Installs task with Homebrew. brew must already be installed and configured. The Homebrew package is named task and provides only the macOS architectures verified for this catalog. Tasks are written to a local data directory. Optional sync requires separate service configuration; installation creates no tasks and enables no sync.",
+            "ja": "Homebrew で task をインストールします。brew を事前にインストールして設定する必要があります。 Homebrew パッケージ名は task で、このカタログで確認済みの macOS アーキテクチャのみを提供します。タスクはローカルデータに保存されます。同期には別途設定が必要で、インストール時にタスク作成や同期有効化は行いません。",
+            "ko": "Homebrew로 task를 설치합니다. brew가 미리 설치되어 설정되어 있어야 합니다. Homebrew 패키지 이름은 task이며 이 카탈로그에서 확인된 macOS 아키텍처만 제공합니다. 작업은 로컬 데이터 디렉터리에 저장됩니다. 선택적 동기화에는 별도 서비스 구성이 필요하며 설치 시 작업을 만들거나 동기화를 켜지 않습니다."
+          },
+          "sourceUrl": "https://taskwarrior.org/",
+          "method": {
+            "type": "package_manager",
+            "manager": "brew",
+            "packageId": "task",
+            "cask": false
+          }
+        }
+      ]
+    },
+    {
+      "name": "Trilium Notes",
+      "publisher": "TriliumNext contributors",
+      "category": "office",
+      "mark": "T",
+      "accent": "#5a879f",
+      "license": "AGPL-3.0-or-later",
+      "homepage": "https://triliumnext.org/",
+      "summary": {
+        "zh-CN": "分层知识库与笔记应用，支持树状组织、富文本、搜索、脚本和本地数据。",
+        "zh-TW": "分層知識庫與筆記應用程式，支援樹狀組織、富文字、搜尋、指令碼和本機資料。",
+        "en": "A hierarchical notes and knowledge-base app with rich text, search, scripting and local data.",
+        "ja": "階層整理、リッチテキスト、検索、スクリプト、ローカルデータに対応するノート・ナレッジベースアプリ。",
+        "ko": "계층 구조, 서식 있는 텍스트, 검색, 스크립팅 및 로컬 데이터를 지원하는 노트 및 지식 관리 앱."
+      },
+      "sourceRepository": "https://github.com/TriliumNext/Trilium",
+      "licenseUrl": "https://raw.githubusercontent.com/TriliumNext/Trilium/v0.107.0/LICENSE",
+      "id": "trilium",
+      "variants": [
+        {
+          "id": "trilium-macos",
+          "os": "macos",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "通过 Homebrew 安装 trilium-notes；需要已安装并配置 brew。 需要 macOS 13 或更高版本，使用独立 Intel/ARM64 DMG。本地笔记不要求账号；可选同步服务器和脚本自动化需用户配置，脚本只应来自可信来源。",
+            "zh-TW": "透過 Homebrew 安裝 trilium-notes；需要已安裝並設定 brew。 需要 macOS 13 或更高版本，使用獨立 Intel／ARM64 DMG。本機筆記不要求帳號；可選同步伺服器和指令碼自動化需使用者設定，指令碼只應來自可信來源。",
+            "en": "Installs trilium-notes with Homebrew. brew must already be installed and configured. Requires macOS 13 or later and uses separate Intel/ARM64 DMGs. Local notes need no account. Optional sync servers and scripting require configuration; scripts must come from trusted sources.",
+            "ja": "Homebrew で trilium-notes をインストールします。brew を事前にインストールして設定する必要があります。 macOS 13 以降が必要で、Intel と ARM64 用の別 DMG を使用します。ローカルノートにアカウントは不要です。オプションの同期サーバーとスクリプトには設定が必要で、信頼できるソースのスクリプトのみ使用してください。",
+            "ko": "Homebrew로 trilium-notes를 설치합니다. brew가 미리 설치되어 설정되어 있어야 합니다. macOS 13 이상이 필요하며 별도의 Intel/ARM64 DMG를 사용합니다. 로컬 노트에는 계정이 필요하지 않습니다. 선택적 동기화 서버와 스크립팅은 구성이 필요하며 신뢰할 수 있는 소스의 스크립트만 사용해야 합니다."
+          },
+          "sourceUrl": "https://triliumnext.org/",
+          "method": {
+            "type": "package_manager",
+            "manager": "brew",
+            "packageId": "trilium-notes",
+            "cask": true
+          }
+        }
+      ]
+    },
+    {
+      "name": "Zettlr",
+      "publisher": "Zettlr contributors",
+      "category": "office",
+      "mark": "Z",
+      "accent": "#4f8c83",
+      "license": "GPL-3.0-only",
+      "homepage": "https://www.zettlr.com/",
+      "summary": {
+        "zh-CN": "面向写作与知识管理的 Markdown 编辑器，支持文献引用、项目组织和文档导出。",
+        "zh-TW": "面向寫作與知識管理的 Markdown 編輯器，支援文獻引用、專案組織和文件匯出。",
+        "en": "A Markdown editor for writing and knowledge management with citations, project organization and document export.",
+        "ja": "文献引用、プロジェクト整理、文書エクスポートに対応する執筆・ナレッジ管理向け Markdown エディター。",
+        "ko": "문헌 인용, 프로젝트 구성 및 문서를 다른 형식으로 저장하는 기능을 지원하는 글쓰기 및 지식 관리용 Markdown 편집기."
+      },
+      "sourceRepository": "https://github.com/Zettlr/Zettlr",
+      "licenseUrl": "https://raw.githubusercontent.com/Zettlr/Zettlr/v4.10.0/LICENSE",
+      "id": "zettlr",
+      "variants": [
+        {
+          "id": "zettlr-macos",
+          "os": "macos",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "通过 Homebrew 安装 zettlr；需要已安装并配置 brew。 需要 macOS 13 或更高版本。本地写作不要求账号或订阅；Pandoc 和 LaTeX 是相应导出流程的可选外部依赖。",
+            "zh-TW": "透過 Homebrew 安裝 zettlr；需要已安裝並設定 brew。 需要 macOS 13 或更高版本。本機寫作不要求帳號或訂閱；Pandoc 和 LaTeX 是相應匯出流程的可選外部依賴。",
+            "en": "Installs zettlr with Homebrew. brew must already be installed and configured. Requires macOS 13 or later. Local writing requires no account or subscription. Pandoc and LaTeX are optional external dependencies for their export workflows.",
+            "ja": "Homebrew で zettlr をインストールします。brew を事前にインストールして設定する必要があります。 macOS 13 以降が必要です。ローカル執筆にアカウントやサブスクリプションは不要です。Pandoc と LaTeX は対応するエクスポート用のオプションの外部依存です。",
+            "ko": "Homebrew로 zettlr를 설치합니다. brew가 미리 설치되어 설정되어 있어야 합니다. macOS 13 이상이 필요합니다. 로컬 글쓰기에는 계정이나 구독이 필요하지 않습니다. Pandoc과 LaTeX는 해당 형식으로 저장할 때 선택적으로 필요한 외부 도구입니다."
+          },
+          "sourceUrl": "https://www.zettlr.com/",
+          "method": {
+            "type": "package_manager",
+            "manager": "brew",
+            "packageId": "zettlr",
             "cask": true
           }
         }
