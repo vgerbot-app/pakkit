@@ -160,6 +160,50 @@
       ]
     },
     {
+      "name": "Beutl",
+      "publisher": "Yuto Terada and contributors",
+      "category": "media",
+      "mark": "Bt",
+      "accent": "#537fa3",
+      "license": "MIT",
+      "homepage": "https://beutl.beditor.net/",
+      "summary": {
+        "zh-CN": "跨平台视频编辑与合成桌面软件，提供基于时间线的媒体制作工作流。",
+        "zh-TW": "跨平台影片編輯與合成桌面軟體，提供基於時間軸的媒體製作工作流程。",
+        "en": "A cross-platform desktop video editing and compositing application with a timeline-based media production workflow.",
+        "ja": "タイムラインベースのメディア制作ワークフローを備えた、クロスプラットフォームのデスクトップ動画編集・コンポジットアプリケーション。",
+        "ko": "타임라인 기반 미디어 제작 워크플로를 제공하는 크로스 플랫폼 데스크톱 비디오 편집 및 합성 애플리케이션."
+      },
+      "sourceRepository": "https://github.com/b-editor/beutl",
+      "licenseUrl": "https://raw.githubusercontent.com/b-editor/beutl/main/LICENSE",
+      "id": "beutl",
+      "variants": [
+        {
+          "id": "beutl-macos",
+          "os": "macos",
+          "architectures": [
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "通过 Homebrew 安装 beutl；需要已安装并配置 brew。 需要 macOS 12 或更高版本。本目录仅声明已验证的 Apple Silicon Homebrew 路由；虽然 Beutl.app 含 x86_64 Mach-O，但强制依赖 ffmpeg@6 没有 Intel macOS bottle，因此不声明 x86_64，也不推断 Rosetta 或源码构建可用。cask 会安装 GPL-3.0-or-later 的 ffmpeg@6；其 arm64 bottle 已验证 digest，ffmpeg、ffprobe、ffplay 均为 arm64 Mach-O，94 个运行时 formula 均有 Apple Silicon 或架构无关 bottle。安装只复制 Beutl.app，不启动应用或打开项目。",
+            "zh-TW": "透過 Homebrew 安裝 beutl；需要已安裝並設定 brew。 需要 macOS 12 或更高版本。本目錄僅宣告已驗證的 Apple Silicon Homebrew 路由；雖然 Beutl.app 含 x86_64 Mach-O，但強制相依 ffmpeg@6 沒有 Intel macOS bottle，因此不宣告 x86_64，也不推斷 Rosetta 或原始碼建置可用。cask 會安裝 GPL-3.0-or-later 的 ffmpeg@6；其 arm64 bottle 已驗證 digest，ffmpeg、ffprobe、ffplay 均為 arm64 Mach-O，94 個執行階段 formula 均有 Apple Silicon 或架構無關 bottle。安裝只複製 Beutl.app，不啟動應用程式或開啟專案。",
+            "en": "Installs beutl with Homebrew. brew must already be installed and configured. Requires macOS 12 or later. This catalog declares only the verified Apple Silicon Homebrew route. Although Beutl.app contains an x86_64 Mach-O, the required ffmpeg@6 formula has no Intel macOS bottle, so x86_64 is not declared and Rosetta or source-build operation is not inferred. The cask installs ffmpeg@6 under GPL-3.0-or-later; its arm64 bottle digest is verified, ffmpeg, ffprobe and ffplay are arm64 Mach-O files, and all 94 runtime formulas have Apple Silicon or architecture-independent bottles. Installation only copies Beutl.app and launches no app or project.",
+            "ja": "Homebrew で beutl をインストールします。brew を事前にインストールして設定する必要があります。 macOS 12 以降が必要です。このカタログでは検証済みの Apple Silicon 向け Homebrew ルートのみを宣言します。Beutl.app に x86_64 Mach-O が含まれていても、必須依存の ffmpeg@6 に Intel macOS bottle がないため x86_64 は宣言せず、Rosetta やソースビルドでの動作も推測しません。cask は GPL-3.0-or-later の ffmpeg@6 をインストールします。arm64 bottle のダイジェストは検証済みで、ffmpeg、ffprobe、ffplay はすべて arm64 Mach-O、94 個の実行時 formula には Apple Silicon またはアーキテクチャ非依存 bottle があります。インストールでは Beutl.app をコピーするだけで、アプリやプロジェクトは起動しません。",
+            "ko": "Homebrew로 beutl를 설치합니다. brew가 미리 설치되어 설정되어 있어야 합니다. macOS 12 이상이 필요합니다. 이 카탈로그는 검증된 Apple Silicon Homebrew 경로만 선언합니다. Beutl.app에 x86_64 Mach-O가 포함되어 있지만 필수 종속성인 ffmpeg@6에 Intel macOS bottle이 없으므로 x86_64를 선언하지 않고 Rosetta나 소스 빌드 동작을 추정하지 않습니다. cask는 GPL-3.0-or-later 라이선스의 ffmpeg@6를 설치합니다. arm64 bottle 다이제스트가 검증되었고 ffmpeg, ffprobe, ffplay는 모두 arm64 Mach-O이며 94개 런타임 formula는 모두 Apple Silicon 또는 아키텍처 독립 bottle을 제공합니다. 설치는 Beutl.app 복사만 수행하고 앱이나 프로젝트를 시작하지 않습니다."
+          },
+          "sourceUrl": "https://beutl.beditor.net/",
+          "method": {
+            "type": "package_manager",
+            "manager": "brew",
+            "packageId": "beutl",
+            "cask": true
+          }
+        }
+      ]
+    },
+    {
       "name": "Blanket",
       "publisher": "Rafael Mardojai CM and contributors",
       "category": "media",

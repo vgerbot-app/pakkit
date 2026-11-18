@@ -46,6 +46,50 @@
       ]
     },
     {
+      "name": "Croc",
+      "publisher": "Zack and contributors",
+      "category": "tools",
+      "mark": "Cr",
+      "accent": "#6587a4",
+      "license": "MIT",
+      "homepage": "https://github.com/schollz/croc",
+      "summary": {
+        "zh-CN": "端到端加密的命令行文件与文件夹传输工具，支持中继、断点续传和多文件传输。",
+        "zh-TW": "端對端加密的命令列檔案與資料夾傳輸工具，支援中繼、斷點續傳和多檔案傳輸。",
+        "en": "An end-to-end encrypted command-line tool for transferring files and folders, with relay support, resumable transfers and multiple files.",
+        "ja": "中継、再開可能な転送、複数ファイル転送をサポートする、エンドツーエンド暗号化のコマンドラインファイル・フォルダー転送ツール。",
+        "ko": "중계, 재개 가능한 전송 및 다중 파일 전송을 지원하는 엔드투엔드 암호화 명령줄 파일·폴더 전송 도구."
+      },
+      "sourceRepository": "https://github.com/schollz/croc",
+      "licenseUrl": "https://raw.githubusercontent.com/schollz/croc/main/LICENSE",
+      "id": "croc",
+      "variants": [
+        {
+          "id": "croc-macos",
+          "os": "macos",
+          "architectures": [
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "通过 Homebrew 安装 croc；需要已安装并配置 brew。 Homebrew 仅提供本目录已验证的 macOS arm64 bottle，未声明 Intel macOS。发送或接收仅在用户显式运行命令时发生，会访问所选文件并建立网络连接；安装不传输文件、不启动常驻服务。",
+            "zh-TW": "透過 Homebrew 安裝 croc；需要已安裝並設定 brew。 Homebrew 僅提供本目錄已驗證的 macOS arm64 bottle，未宣告 Intel macOS。傳送或接收僅在使用者明確執行命令時發生，會存取所選檔案並建立網路連線；安裝不傳輸檔案、不啟動常駐服務。",
+            "en": "Installs croc with Homebrew. brew must already be installed and configured. Homebrew provides only the macOS arm64 bottle verified for this catalog; Intel macOS is not declared. Sending or receiving occurs only when the user runs an explicit command, accesses selected files and opens network connections; installation transfers no files and starts no persistent service.",
+            "ja": "Homebrew で croc をインストールします。brew を事前にインストールして設定する必要があります。 Homebrew はこのカタログで確認済みの macOS arm64 bottle のみを提供し、Intel macOS は対象外です。送信または受信はユーザーが明示的にコマンドを実行した場合のみ発生し、選択したファイルへのアクセスとネットワーク接続を行います。インストール時にファイル転送や常駐サービスの起動は行いません。",
+            "ko": "Homebrew로 croc를 설치합니다. brew가 미리 설치되어 설정되어 있어야 합니다. Homebrew는 이 카탈로그에서 확인된 macOS arm64 bottle만 제공하며 Intel macOS는 선언하지 않습니다. 전송 또는 수신은 사용자가 명시적으로 명령을 실행할 때만 발생하고 선택한 파일에 접근하며 네트워크 연결을 만듭니다. 설치 시 파일을 전송하거나 상시 서비스를 시작하지 않습니다."
+          },
+          "sourceUrl": "https://github.com/schollz/croc",
+          "method": {
+            "type": "package_manager",
+            "manager": "brew",
+            "packageId": "croc",
+            "cask": false
+          }
+        }
+      ]
+    },
+    {
       "name": "Espanso",
       "publisher": "Federico Terzi",
       "category": "tools",
@@ -85,6 +129,51 @@
             "type": "package_manager",
             "manager": "brew",
             "packageId": "espanso",
+            "cask": true
+          }
+        }
+      ]
+    },
+    {
+      "name": "Flycut",
+      "publisher": "General Arcade and contributors",
+      "category": "tools",
+      "mark": "Fc",
+      "accent": "#6886a4",
+      "license": "MIT",
+      "homepage": "https://github.com/TermiT/Flycut",
+      "summary": {
+        "zh-CN": "简洁的开源 macOS 剪贴板管理器，记录复制历史，并通过快捷键搜索、选择和重新粘贴文本。",
+        "zh-TW": "簡潔的開源 macOS 剪貼簿管理器，記錄複製歷史，並透過快捷鍵搜尋、選擇和重新貼上文字。",
+        "en": "A clean open-source macOS clipboard manager that keeps copy history and lets you search, select and paste text again with hotkeys.",
+        "ja": "コピー履歴を保存し、ホットキーで検索・選択して再貼り付けできる、シンプルなオープンソースの macOS クリップボードマネージャー。",
+        "ko": "복사 기록을 저장하고 단축키로 검색·선택하여 다시 붙여넣을 수 있는 깔끔한 오픈 소스 macOS 클립보드 관리자."
+      },
+      "sourceRepository": "https://github.com/TermiT/Flycut",
+      "licenseUrl": "https://raw.githubusercontent.com/TermiT/Flycut/master/license.txt",
+      "id": "flycut",
+      "variants": [
+        {
+          "id": "flycut-macos",
+          "os": "macos",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "通过 Homebrew 安装 flycut；需要已安装并配置 brew。 本条目对应稳定版 1.9.6，GitHub 的 /releases/tags/1.9.6 与 /releases/latest 返回同一非草稿、非预发布对象。Homebrew cask 无 formula 依赖、冲突或 caveat，只将 Flycut.app 复制到应用程序目录，zap 仅在卸载清理时移除偏好设置。ZIP 的 SHA-256 摘要已与 cask 核对，归档顶层只有 Flycut.app；3 个符号链接均为框架内部相对路径，无绝对路径或越界目标。主程序、CloudKit framework 和 LoginItem helper 共 3 个 Mach-O 均为含 x86_64 与 arm64 的 universal binary，Info.plist 声明最低 macOS 10.10。应用是 LSUIElement 后台工具；首次启动后，向其他应用粘贴历史内容需要用户在系统设置授予辅助功能权限，plist 的 NSAppleEventsUsageDescription 仅说明用于粘贴，源码通过 CGEvent 合成 Cmd-V。安装不会启动应用、请求权限、注册登录项或读取剪贴板。登录启动默认关闭，只能由用户在偏好设置中启用；iCloud/CloudKit 设置与剪贴记录同步也默认关闭，用户启用后才会访问 Apple CloudKit。源码和工程没有 Sparkle、appcast 或通用 URL 加载代码，cask 未声明自动更新。剪贴板历史可能包含敏感信息，可暂停跟踪、清除历史或配置密码项跳过。",
+            "zh-TW": "透過 Homebrew 安裝 flycut；需要已安裝並設定 brew。 本條目對應穩定版 1.9.6，GitHub 的 /releases/tags/1.9.6 與 /releases/latest 傳回同一非草稿、非預先發布物件。Homebrew cask 無 formula 相依性、衝突或 caveat，只將 Flycut.app 複製到應用程式目錄，zap 僅在解除安裝清理時移除偏好設定。ZIP 的 SHA-256 摘要已與 cask 核對，封存檔頂層只有 Flycut.app；3 個符號連結均為框架內部相對路徑，無絕對路徑或越界目標。主程式、CloudKit framework 和 LoginItem helper 共 3 個 Mach-O 均為含 x86_64 與 arm64 的 universal binary，Info.plist 宣告最低 macOS 10.10。應用是 LSUIElement 背景工具；首次啟動後，向其他應用程式貼上歷史內容需要使用者在系統設定授予輔助使用權限，plist 的 NSAppleEventsUsageDescription 僅說明用於貼上，原始碼透過 CGEvent 合成 Cmd-V。安裝不會啟動應用程式、請求權限、註冊登入項目或讀取剪貼簿。登入啟動預設關閉，只能由使用者在偏好設定中啟用；iCloud/CloudKit 設定與剪貼記錄同步也預設關閉，使用者啟用後才會存取 Apple CloudKit。原始碼和專案沒有 Sparkle、appcast 或通用 URL 載入程式碼，cask 未宣告自動更新。剪貼簿歷史可能包含敏感資訊，可暫停追蹤、清除歷史或設定密碼項目略過。",
+            "en": "Installs flycut with Homebrew. brew must already be installed and configured. This entry corresponds to stable 1.9.6; GitHub's /releases/tags/1.9.6 and /releases/latest return the same non-draft, non-prerelease object. The Homebrew cask has no formula dependency, conflict or caveat; it only copies Flycut.app into Applications, and zap removes preferences only during uninstall cleanup. The ZIP SHA-256 digest matches the cask, the archive contains only Flycut.app at its top level, and all 3 symlinks are framework-internal relative paths with no absolute or archive-outside targets. The primary executable, CloudKit framework and LoginItem helper—all 3 Mach-O files—are universal binaries containing x86_64 and arm64; Info.plist declares macOS 10.10 as the minimum. The app is an LSUIElement background utility. After first launch, pasting history into other apps requires the user to grant Accessibility in System Settings; NSAppleEventsUsageDescription states only that Apple events are used for pasting, while source code synthesizes Cmd-V through CGEvent. Installation does not launch the app, request permission, register a login item or read the clipboard. Launch-at-login is off by default and can only be enabled by the user in preferences; iCloud/CloudKit settings and clippings sync are also off by default and use Apple CloudKit only after the user enables them. The source and project contain no Sparkle, appcast or generic URL-loading code, and the cask does not declare automatic updates. Clipboard history can contain sensitive data; tracking can be paused, history cleared, and password items configured to be skipped.",
+            "ja": "Homebrew で flycut をインストールします。brew を事前にインストールして設定する必要があります。 このエントリは安定版 1.9.6 に対応し、GitHub の /releases/tags/1.9.6 と /releases/latest は同一のドラフトでもプレリリースでもないオブジェクトを返します。Homebrew cask に formula 依存関係、競合、caveat はなく、Flycut.app をアプリケーションフォルダへコピーするだけです。zap はアンインストール時のクリーンアップでのみ環境設定を削除します。ZIP の SHA-256 ダイジェストは cask と一致し、アーカイブ最上位には Flycut.app のみが含まれます。3 個のシンボリックリンクはすべてフレームワーク内部の相対パスで、絶対パスやアーカイブ外を指すターゲットはありません。主要実行ファイル、CloudKit フレームワーク、LoginItem helper の全 3 個の Mach-O は x86_64 と arm64 を含む universal binary で、Info.plist の最低システム要件は macOS 10.10 です。アプリは LSUIElement のバックグラウンドユーティリティです。初回起動後、ほかのアプリへ履歴を貼り付けるには、ユーザーがシステム設定でアクセシビリティ権限を許可する必要があります。NSAppleEventsUsageDescription は貼り付け用途だけを示し、ソースコードは CGEvent で Cmd-V を合成します。インストール時にアプリの起動、権限要求、ログイン項目の登録、クリップボードの読み取りは行われません。ログイン時起動は既定で無効で、ユーザーが環境設定で有効にした場合のみ登録されます。iCloud/CloudKit の設定とクリッピング同期も既定で無効で、ユーザーが有効にした後にのみ Apple CloudKit へアクセスします。ソースとプロジェクトに Sparkle、appcast、汎用 URL 読み込みコードはなく、cask も自動更新を宣言していません。クリップボード履歴には機密情報が含まれる可能性があるため、追跡の一時停止、履歴の消去、パスワード項目のスキップ設定ができます。",
+            "ko": "Homebrew로 flycut를 설치합니다. brew가 미리 설치되어 설정되어 있어야 합니다. 이 항목은 안정 1.9.6에 해당하며 GitHub의 /releases/tags/1.9.6과 /releases/latest는 초안도 사전 릴리스도 아닌 동일한 객체를 반환합니다. Homebrew cask에는 formula 종속성, 충돌, caveat가 없고 Flycut.app을 응용 프로그램 폴더로 복사만 하며, zap은 제거 정리 시에만 환경설정을 삭제합니다. ZIP SHA-256 다이제스트는 cask와 일치하고 아카이브 최상위에는 Flycut.app만 있습니다. 3개 심볼릭 링크는 모두 프레임워크 내부 상대 경로이며 절대 경로나 아카이브 외부 대상은 없습니다. 주 실행 파일, CloudKit 프레임워크, LoginItem helper 등 Mach-O 3개는 모두 x86_64와 arm64를 포함하는 universal binary이고 Info.plist 최소 시스템 버전은 macOS 10.10입니다. 앱은 LSUIElement 백그라운드 유틸리티입니다. 첫 실행 후 다른 앱에 기록을 붙여넣으려면 사용자가 시스템 설정에서 손쉬운 사용 권한을 부여해야 합니다. NSAppleEventsUsageDescription은 붙여넣기 용도만 설명하고 소스 코드는 CGEvent로 Cmd-V를 합성합니다. 설치 시 앱을 시작하거나 권한을 요청하거나 로그인 항목을 등록하거나 클립보드를 읽지 않습니다. 로그인 시 시작은 기본적으로 꺼져 있고 사용자가 환경설정에서 활성화할 때만 등록됩니다. iCloud/CloudKit 설정 및 클리핑 동기화도 기본적으로 꺼져 있으며 사용자가 활성화한 후에만 Apple CloudKit에 접근합니다. 소스와 프로젝트에 Sparkle, appcast, 일반 URL 로딩 코드가 없고 cask도 자동 업데이트를 선언하지 않습니다. 클립보드 기록에는 민감한 정보가 포함될 수 있으므로 추적 일시정지, 기록 삭제, 비밀번호 항목 건너뛰기를 구성할 수 있습니다."
+          },
+          "sourceUrl": "https://github.com/TermiT/Flycut",
+          "method": {
+            "type": "package_manager",
+            "manager": "brew",
+            "packageId": "flycut",
             "cask": true
           }
         }

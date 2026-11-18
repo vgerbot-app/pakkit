@@ -159,6 +159,51 @@
       ]
     },
     {
+      "name": "Glow",
+      "publisher": "Charmbracelet, Inc. and contributors",
+      "category": "office",
+      "mark": "Gl",
+      "accent": "#6587a4",
+      "license": "MIT",
+      "homepage": "https://github.com/charmbracelet/glow",
+      "summary": {
+        "zh-CN": "命令行 Markdown 阅读与渲染工具，可在终端中格式化展示 Markdown 输入。",
+        "zh-TW": "命令列 Markdown 閱讀與渲染工具，可在終端機中格式化展示 Markdown 輸入。",
+        "en": "A command-line Markdown reader and renderer that formats Markdown input in the terminal.",
+        "ja": "ターミナルで Markdown 入力を整形表示するコマンドライン Markdown リーダー兼レンダラー。",
+        "ko": "터미널에서 Markdown 입력을 서식에 맞춰 표시하는 명령줄 Markdown 리더 및 렌더러."
+      },
+      "sourceRepository": "https://github.com/charmbracelet/glow",
+      "licenseUrl": "https://raw.githubusercontent.com/charmbracelet/glow/main/LICENSE",
+      "id": "glow",
+      "variants": [
+        {
+          "id": "glow-macos",
+          "os": "macos",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "通过 Homebrew 安装 glow；需要已安装并配置 brew。 Homebrew formula 提供本目录已验证的 Apple Silicon 与 Intel macOS bottle。渲染只读取用户指定的 Markdown 输入；安装不打开文档、不修改内容。",
+            "zh-TW": "透過 Homebrew 安裝 glow；需要已安裝並設定 brew。 Homebrew formula 提供本目錄已驗證的 Apple Silicon 與 Intel macOS bottle。渲染只讀取使用者指定的 Markdown 輸入；安裝不開啟文件、不修改內容。",
+            "en": "Installs glow with Homebrew. brew must already be installed and configured. The Homebrew formula provides the Apple Silicon and Intel macOS bottles verified for this catalog. Rendering reads only the Markdown input selected by the user; installation opens no document and modifies no content.",
+            "ja": "Homebrew で glow をインストールします。brew を事前にインストールして設定する必要があります。 Homebrew formula は、このカタログで確認済みの Apple Silicon と Intel macOS bottle を提供します。レンダリングはユーザーが指定した Markdown 入力のみを読み取り、インストール時にドキュメントを開かず内容も変更しません。",
+            "ko": "Homebrew로 glow를 설치합니다. brew가 미리 설치되어 설정되어 있어야 합니다. Homebrew formula는 이 카탈로그에서 확인된 Apple Silicon 및 Intel macOS bottle을 제공합니다. 렌더링은 사용자가 지정한 Markdown 입력만 읽으며, 설치 시 문서를 열거나 내용을 수정하지 않습니다."
+          },
+          "sourceUrl": "https://github.com/charmbracelet/glow",
+          "method": {
+            "type": "package_manager",
+            "manager": "brew",
+            "packageId": "glow",
+            "cask": false
+          }
+        }
+      ]
+    },
+    {
       "name": "Joplin",
       "publisher": "Joplin",
       "category": "office",
@@ -514,6 +559,51 @@
             "manager": "brew",
             "packageId": "siyuan",
             "cask": true
+          }
+        }
+      ]
+    },
+    {
+      "name": "Slides",
+      "publisher": "Maas Lalani and contributors",
+      "category": "office",
+      "mark": "Sl",
+      "accent": "#6587a4",
+      "license": "MIT",
+      "homepage": "https://maaslalani.com/slides/",
+      "summary": {
+        "zh-CN": "终端演示工具，使用 Markdown 编写幻灯片并在终端中展示。",
+        "zh-TW": "終端簡報工具，使用 Markdown 編寫投影片並在終端機中展示。",
+        "en": "A terminal presentation tool for writing slides in Markdown and presenting them in the terminal.",
+        "ja": "Markdown でスライドを作成し、ターミナルで発表するためのターミナルプレゼンテーションツール。",
+        "ko": "Markdown으로 슬라이드를 작성하고 터미널에서 발표하는 터미널 프레젠테이션 도구."
+      },
+      "sourceRepository": "https://github.com/maaslalani/slides",
+      "licenseUrl": "https://raw.githubusercontent.com/maaslalani/slides/main/LICENSE",
+      "id": "slides",
+      "variants": [
+        {
+          "id": "slides-macos",
+          "os": "macos",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "通过 Homebrew 安装 slides；需要已安装并配置 brew。 Homebrew formula 提供本目录已验证的 Apple Silicon 与 Intel macOS bottle。使用时打开用户指定的本地 Markdown 演示文件；安装不打开演示、不修改文件。",
+            "zh-TW": "透過 Homebrew 安裝 slides；需要已安裝並設定 brew。 Homebrew formula 提供本目錄已驗證的 Apple Silicon 與 Intel macOS bottle。使用時開啟使用者指定的本機 Markdown 簡報檔；安裝不開啟簡報、不修改檔案。",
+            "en": "Installs slides with Homebrew. brew must already be installed and configured. The Homebrew formula provides the Apple Silicon and Intel macOS bottles verified for this catalog. Usage opens a user-selected local Markdown presentation; installation opens no presentation and modifies no files.",
+            "ja": "Homebrew で slides をインストールします。brew を事前にインストールして設定する必要があります。 Homebrew formula は、このカタログで確認済みの Apple Silicon と Intel macOS bottle を提供します。使用時にユーザーが選択したローカル Markdown プレゼンテーションを開きます。インストール時にプレゼンテーションを開かず、ファイルも変更しません。",
+            "ko": "Homebrew로 slides를 설치합니다. brew가 미리 설치되어 설정되어 있어야 합니다. Homebrew formula는 이 카탈로그에서 확인된 Apple Silicon 및 Intel macOS bottle을 제공합니다. 사용 시 사용자가 선택한 로컬 Markdown 프레젠테이션을 열며, 설치 시 프레젠테이션을 열거나 파일을 수정하지 않습니다."
+          },
+          "sourceUrl": "https://maaslalani.com/slides/",
+          "method": {
+            "type": "package_manager",
+            "manager": "brew",
+            "packageId": "slides",
+            "cask": false
           }
         }
       ]

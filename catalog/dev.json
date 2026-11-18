@@ -313,6 +313,75 @@
       ]
     },
     {
+      "name": "CC Switch",
+      "publisher": "Jason Young",
+      "category": "dev",
+      "mark": "Cw",
+      "accent": "#f97316",
+      "license": "MIT",
+      "homepage": "https://ccswitch.io/",
+      "summary": {
+        "zh-CN": "面向 Claude Code、Codex、Gemini CLI 等 AI 编程工具的图形配置、路由和用量管理应用。",
+        "zh-TW": "面向 Claude Code、Codex、Gemini CLI 等 AI 編程工具的圖形設定、路由和用量管理應用程式。",
+        "en": "A graphical configuration, routing and usage-management app for AI coding tools such as Claude Code, Codex and Gemini CLI.",
+        "ja": "Claude Code、Codex、Gemini CLI などの AI コーディングツール向けの、グラフィカルな設定・ルーティング・使用量管理アプリ。",
+        "ko": "Claude Code, Codex, Gemini CLI 등 AI 코딩 도구를 위한 그래픽 구성, 라우팅 및 사용량 관리 앱."
+      },
+      "sourceRepository": "https://github.com/farion1231/cc-switch",
+      "licenseUrl": "https://raw.githubusercontent.com/farion1231/cc-switch/v4.0.34/LICENSE",
+      "id": "cc-switch",
+      "variants": [
+        {
+          "id": "cc-switch-windows",
+          "os": "windows",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "通过 winget 安装 farion1231.CC-Switch（winget 源）；需要已安装并配置该包管理器。 Windows 路由使用精确 winget 包 farion1231.CC-Switch；当前评审清单 4.0.25 包含 x64 与 arm64 两个 per-user WiX MSI，InstallScope=perUser、InstallPrivileges=limited，默认装入 %LocalAppData%\\Programs\\CC Switch，不需要管理员。winget 是动态包管理器路由，因此其版本可滞后于已评审的 macOS cask v4.0.34。MSI 写入 HKCU 协议、开始菜单快捷方式和可选桌面快捷方式；交互式退出对话框的启动复选框只在 UI 安装路径出现，winget 静默安装不执行该启动动作，也不注册登录项。应用级自动更新默认关闭，更新包验签后暂存内存并等待用户确认。ccswitch:// 配置导入需要前端确认；本地路由默认关闭并使用 127.0.0.1:15721。读写 AI 编程 CLI 配置、启动终端或执行受管 CLI 安装脚本都来自用户操作，不是 winget 安装期动作。清单审查未发现常见第三方分析 SDK，但应用保留本地用量统计与可选同步。",
+            "zh-TW": "透過 winget 安裝 farion1231.CC-Switch（winget 來源）；需要已安裝並設定該套件管理器。 Windows 路由使用精確 winget 套件 farion1231.CC-Switch；目前評審清單 4.0.25 包含 x64 與 arm64 兩個 per-user WiX MSI，InstallScope=perUser、InstallPrivileges=limited，預設安裝至 %LocalAppData%\\Programs\\CC Switch，不需要系統管理員。winget 是動態套件管理器路由，因此其版本可落後於已評審的 macOS cask v4.0.34。MSI 寫入 HKCU 協定、開始功能表捷徑和可選桌面捷徑；互動式結束對話框的啟動核取方塊只在 UI 安裝路徑出現，winget 靜默安裝不執行該啟動動作，也不註冊登入項目。應用層級自動更新預設關閉，更新包驗簽後暫存於記憶體並等待使用者確認。ccswitch:// 設定匯入需要前端確認；本機路由預設關閉並使用 127.0.0.1:15721。讀寫 AI 編程 CLI 設定、啟動終端機或執行受管 CLI 安裝指令碼都來自使用者操作，不是 winget 安裝期動作。清單審查未發現常見第三方分析 SDK，但應用保留本機用量統計與可選同步。",
+            "en": "Installs farion1231.CC-Switch with winget from the winget source. The package manager must already be installed and configured. The Windows route uses the exact winget package farion1231.CC-Switch. The reviewed 4.0.25 manifest contains x64 and arm64 per-user WiX MSIs with InstallScope=perUser and InstallPrivileges=limited, installed by default under %LocalAppData%\\Programs\\CC Switch without administrator rights. Winget is a dynamic package-manager route, so its version can lag the reviewed macOS cask v4.0.34. The MSI writes an HKCU protocol handler, Start Menu shortcuts and an optional desktop shortcut. The launch checkbox on the interactive exit dialog belongs only to the UI installation path; a silent winget installation does not run that launch action and registers no login item. App-level automatic update download is off by default; verified update packages are retained in memory and installation waits for user confirmation. ccswitch:// configuration imports require frontend confirmation, while local routing is disabled by default and uses 127.0.0.1:15721. Reading or writing AI coding CLI configuration, opening terminals and running managed CLI install scripts are user-triggered features, not winget install-time actions. Manifest review found no common third-party analytics SDK, but the app retains local usage statistics and optional sync.",
+            "ja": "winget で farion1231.CC-Switch をインストールします（winget ソース）。パッケージマネージャーを事前にインストールして設定する必要があります。 Windows ルートは正確な winget パッケージ farion1231.CC-Switch を使用します。レビュー済みの 4.0.25 マニフェストには、x64 と arm64 の per-user WiX MSI が含まれ、InstallScope=perUser、InstallPrivileges=limited、既定インストール先は %LocalAppData%\\Programs\\CC Switch で、管理者権限は不要です。winget は動的なパッケージマネージャールートなので、そのバージョンはレビュー済み macOS cask v4.0.34 より古い場合があります。MSI は HKCU プロトコルハンドラー、スタートメニューショートカット、任意のデスクトップショートカットを書き込みます。対話インストールの終了ダイアログにある起動チェックボックスは UI 経路だけのもので、winget のサイレントインストールではその起動アクションを実行せず、ログイン項目も登録しません。アプリの自動更新ダウンロードは既定でオフであり、検証済み更新はメモリーに保持され、インストールはユーザー確認を待ちます。ccswitch:// 設定インポートにはフロントエンドの確認が必要で、ローカルルーティングは既定で無効、127.0.0.1:15721 を使用します。AI コーディング CLI 設定の読み書き、ターミナル起動、管理 CLI インストールスクリプトの実行は、winget のインストール時動作ではなく、ユーザーが起動する機能です。マニフェスト審査では一般的なサードパーティ分析 SDK は見つかりませんでしたが、アプリにはローカル使用量統計と任意同期があります。",
+            "ko": "winget로 farion1231.CC-Switch를 설치합니다(winget 소스). 패키지 관리자가 미리 설치되어 설정되어 있어야 합니다. Windows 경로는 정확한 winget 패키지 farion1231.CC-Switch을 사용합니다. 검토된 4.0.25 매니페스트에는 x64 및 arm64 per-user WiX MSI가 포함되고 InstallScope=perUser, InstallPrivileges=limited이며 기본 위치는 %LocalAppData%\\Programs\\CC Switch이고 관리자 권한이 필요 없습니다. winget은 동적 패키지 관리자 경로이므로 버전이 검토된 macOS cask v4.0.34보다 뒤처질 수 있습니다. MSI는 HKCU 프로토콜 처리기, 시작 메뉴 바로 가기, 선택적 바탕 화면 바로 가기를 작성합니다. 대화형 종료 대화상자의 시작 체크박스는 UI 설치 경로에만 속하며 winget 자동 설치는 해당 시작 동작을 실행하지 않고 로그인 항목도 등록하지 않습니다. 앱 수준 자동 업데이트 다운로드는 기본적으로 꺼져 있고, 검증된 업데이트 패키지는 메모리에 보관되며 설치는 사용자 확인을 기다립니다. ccswitch:// 구성 가져오기는 프런트엔드 확인이 필요하고 로컬 라우팅은 기본적으로 비활성화되며 127.0.0.1:15721을 사용합니다. AI 코딩 CLI 구성 읽기/쓰기, 터미널 열기, 관리 CLI 설치 스크립트 실행은 winget 설치 시 동작이 아니라 사용자가 트리거하는 기능입니다. 매니페스트 검토에서 일반적인 서드파티 분석 SDK는 발견되지 않았지만 앱에는 로컬 사용량 통계와 선택 동기화가 유지됩니다."
+          },
+          "sourceUrl": "https://ccswitch.io/",
+          "method": {
+            "type": "package_manager",
+            "manager": "winget",
+            "packageId": "farion1231.CC-Switch",
+            "source": "winget"
+          }
+        },
+        {
+          "id": "cc-switch-macos",
+          "os": "macos",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "通过 Homebrew 安装 cc-switch；需要已安装并配置 brew。 本条目对应稳定版 v4.0.34；GitHub release 为非草稿、非预发布，4.0.4 是 4.0 系列首个稳定版。Homebrew cask 的 DMG SHA-256 已与 GitHub 资产核对，镜像内只有 CC Switch.app、Applications 拖放链接和背景资源；cask 无 formula 依赖、冲突或 caveat，只复制 App，zap 路径仅在卸载清理时使用。主程序是含 x86_64 与 arm64 的 universal Mach-O，两个切片均启用 hardened runtime，标识符为 com.ccswitch.desktop，Developer ID Application 证书属于 Jason Young (R8UR22V2F9)，并含 s8ch v1 notarization ticket 容器与 g8tk trailer；Linux 本地解析不宣称在线 Gatekeeper 评估结果。需要 macOS 12 或更高版本。应用管理 Claude Code、Codex、Gemini CLI、OpenCode 等工具的用户配置，会读写 ~/.cc-switch 及各工具配置目录；本地路由默认关闭，默认监听 127.0.0.1:15721。ccswitch:// 导入先进入待确认队列；图标抓取仅允许默认端口的公网 HTTPS 并拒绝回环、内网和凭据 URL，普通外部链接则限制为 HTTP/HTTPS/mailto 且拒绝 javascript:、file:、data: 与自定义协议。终端、shell、osascript 与受管 CLI 安装/更新均由用户在界面触发；登录项和更新下载默认关闭，复制 cask 不会启用，Tauri 更新经 minisign 验签、暂存于内存且安装仍需用户确认。Info.plist 仅声明本地网络用途，未声明相机或麦克风用途。清单审查未发现常见第三方分析 SDK；应用本身提供本地用量/成本统计和可选同步，因此不表述为完全无遥测。",
+            "zh-TW": "透過 Homebrew 安裝 cc-switch；需要已安裝並設定 brew。 本條目對應穩定版 v4.0.34；GitHub release 為非草稿、非預先發布，4.0.4 是 4.0 系列首個穩定版。Homebrew cask 的 DMG SHA-256 已與 GitHub 資產核對，映像檔內只有 CC Switch.app、Applications 拖放連結和背景資源；cask 無 formula 相依性、衝突或 caveat，只複製 App，zap 路徑僅在解除安裝清理時使用。主程式是含 x86_64 與 arm64 的 universal Mach-O，兩個切片均啟用 hardened runtime，識別碼為 com.ccswitch.desktop，Developer ID Application 憑證屬於 Jason Young (R8UR22V2F9)，並含 s8ch v1 notarization ticket 容器與 g8tk trailer；Linux 本機解析不宣稱線上 Gatekeeper 評估結果。需要 macOS 12 或更新版本。應用程式管理 Claude Code、Codex、Gemini CLI、OpenCode 等工具的使用者設定，會讀寫 ~/.cc-switch 及各工具設定目錄；本機路由預設關閉，預設監聽 127.0.0.1:15721。ccswitch:// 匯入先進入待確認佇列；圖示擷取僅允許預設連接埠的公網 HTTPS 並拒絕回環、內網和憑證 URL，一般外部連結則限制為 HTTP/HTTPS/mailto 且拒絕 javascript:、file:、data: 與自訂協定。終端機、shell、osascript 與受管 CLI 安裝/更新皆由使用者在介面觸發；登入項目和更新下載預設關閉，複製 cask 不會啟用，Tauri 更新經 minisign 驗簽、暫存於記憶體且安裝仍需使用者確認。Info.plist 僅宣告本機網路用途，未宣告相機或麥克風用途。清單審查未發現常見第三方分析 SDK；應用本身提供本機用量/成本統計和可選同步，因此不表述為完全無遙測。",
+            "en": "Installs cc-switch with Homebrew. brew must already be installed and configured. This entry corresponds to stable v4.0.34; the GitHub release is neither a draft nor a prerelease, and v4.0.4 is documented as the first stable 4.0 release. The Homebrew cask DMG SHA-256 matches the GitHub asset; the image contains only CC Switch.app, an Applications drag-install link and background assets. The cask has no formula dependency, conflict or caveat, only copies the app, and uses zap paths solely for uninstall cleanup. The primary executable is a universal Mach-O containing x86_64 and arm64; both slices use the hardened runtime, identifier com.ccswitch.desktop, a Developer ID Application certificate for Jason Young (R8UR22V2F9), an s8ch version-1 notarization ticket container and a g8tk trailer. Local Linux parsing does not claim an online Gatekeeper verdict. macOS 12 or newer is required. The app manages user configuration for Claude Code, Codex, Gemini CLI, OpenCode and similar tools, reading and writing ~/.cc-switch and tool-specific configuration directories. Local routing is disabled by default and defaults to loopback 127.0.0.1:15721. ccswitch:// imports enter a pending confirmation queue; icon fetching permits only public HTTPS URLs on default ports and rejects loopback, intranet and credential URLs, while ordinary external links are restricted to HTTP/HTTPS/mailto and reject javascript:, file:, data: and custom schemes. Terminal, shell, osascript and managed CLI install/update paths are user-triggered app features. Login-item creation and update download are off by default and are not enabled by copying the cask; Tauri updates are minisign-verified, retained in memory and installed only after user confirmation. Info.plist declares local-network usage only and no camera or microphone usage. Manifest review found no common third-party analytics SDK; the app still provides local usage/cost statistics and optional sync, so it is not described as having no telemetry at all.",
+            "ja": "Homebrew で cc-switch をインストールします。brew を事前にインストールして設定する必要があります。 このエントリは安定版 v4.0.34 に対応します。GitHub リリースはドラフトでもプレリリースでもなく、v4.0.4 は 4.0 系初の安定リリースとして文書化されています。Homebrew cask の DMG SHA-256 は GitHub アセットと一致し、イメージには CC Switch.app、Applications へのドラッグインストール用リンク、背景素材だけが含まれます。cask に formula 依存、競合、caveat はなく、アプリのコピーだけを行い、zap パスはアンインストール時のクリーンアップ専用です。主要実行ファイルは x86_64 と arm64 を含む universal Mach-O で、両スライスとも Hardened Runtime を有効化し、識別子は com.ccswitch.desktop、Developer ID Application 証明書は Jason Young (R8UR22V2F9)、s8ch バージョン 1 の公証チケットコンテナと g8tk トレーラーを含みます。Linux 上のローカル解析では、オンラインの Gatekeeper 判定は主張しません。macOS 12 以降が必要です。アプリは Claude Code、Codex、Gemini CLI、OpenCode などのユーザー設定を管理し、~/.cc-switch および各ツールの設定ディレクトリを読み書きします。ローカルルーティングは既定で無効、リッスンアドレスは既定でループバック 127.0.0.1:15721 です。ccswitch:// インポートは確認待ちキューに入ります。アイコン取得は既定ポートのパブリック HTTPS だけを許可してループバック、イントラネット、認証情報付き URL を拒否し、通常の外部リンクは HTTP/HTTPS/mailto に制限され、javascript:、file:、data:、カスタムスキームは拒否されます。ターミナル、シェル、osascript、管理対象 CLI のインストール/更新は、すべてユーザーが UI から起動する機能です。ログイン項目と更新ダウンロードは既定でオフであり、cask のコピーでは有効化されません。Tauri 更新は minisign で検証され、メモリーに保持され、インストールはユーザー確認後に限られます。Info.plist にはローカルネットワーク用途だけが宣言され、カメラやマイクの用途文字列はありません。マニフェスト審査では一般的なサードパーティ分析 SDK は見つかりませんでしたが、アプリ自体はローカルの使用量/コスト統計と任意同期を備えるため、一切のテレメトリーがないとは表現しません。",
+            "ko": "Homebrew로 cc-switch를 설치합니다. brew가 미리 설치되어 설정되어 있어야 합니다. 이 항목은 안정 v4.0.34에 해당합니다. GitHub 릴리스는 초안도 사전 릴리스도 아니며, v4.0.4는 4.0 계열의 첫 안정 릴리스로 문서화되어 있습니다. Homebrew cask DMG SHA-256은 GitHub 자산과 일치하고 이미지에는 CC Switch.app, Applications 드래그 설치 링크, 배경 자산만 포함됩니다. cask에는 formula 종속, 충돌, caveat가 없고 앱 복사만 수행하며 zap 경로는 제거 정리에만 사용됩니다. 주 실행 파일은 x86_64와 arm64를 포함하는 universal Mach-O입니다. 두 슬라이스 모두 Hardened Runtime을 사용하고 식별자는 com.ccswitch.desktop이며, Developer ID Application 인증서는 Jason Young (R8UR22V2F9)이고 s8ch 버전 1 공증 티켓 컨테이너와 g8tk 트레일러를 포함합니다. Linux 로컬 파싱은 온라인 Gatekeeper 평가 결과를 주장하지 않습니다. macOS 12 이상이 필요합니다. 앱은 Claude Code, Codex, Gemini CLI, OpenCode 등 도구의 사용자 구성을 관리하고 ~/.cc-switch 및 도구별 구성 디렉터리를 읽고 씁니다. 로컬 라우팅은 기본적으로 비활성화되고 기본 수신 주소는 루프백 127.0.0.1:15721입니다. ccswitch:// 가져오기는 확인 대기 큐에 들어갑니다. 아이콘 가져오기는 기본 포트의 공개 HTTPS만 허용하고 루프백, 인트라넷, 자격 증명 URL을 거부하며, 일반 외부 링크는 HTTP/HTTPS/mailto로 제한되고 javascript:, file:, data: 및 사용자 지정 스킴은 거부됩니다. 터미널, 셸, osascript, 관리 CLI 설치/업데이트 경로는 모두 사용자가 UI에서 트리거하는 기능입니다. 로그인 항목 생성과 업데이트 다운로드는 기본적으로 꺼져 있고 cask 복사로 활성화되지 않습니다. Tauri 업데이트는 minisign 서명을 검증하고 메모리에 보관하며 사용자 확인 후에만 설치됩니다. Info.plist에는 로컬 네트워크 사용만 선언되어 있고 카메라나 마이크 사용 문자열은 없습니다. 매니페스트 검토에서 일반적인 서드파티 분석 SDK는 발견되지 않았지만, 앱 자체는 로컬 사용량/비용 통계와 선택 동기화를 제공하므로 텔레메트리가 전혀 없다고 설명하지 않습니다."
+          },
+          "sourceUrl": "https://ccswitch.io/",
+          "method": {
+            "type": "package_manager",
+            "manager": "brew",
+            "packageId": "cc-switch",
+            "cask": true
+          }
+        }
+      ]
+    },
+    {
       "id": "codex-cli",
       "name": "Codex CLI",
       "publisher": "OpenAI",
@@ -1094,6 +1163,50 @@
       ]
     },
     {
+      "name": "Helix",
+      "publisher": "Blaž Hrastnik and contributors",
+      "category": "dev",
+      "mark": "Hx",
+      "accent": "#6587a4",
+      "license": "MPL-2.0",
+      "homepage": "https://helix-editor.com",
+      "summary": {
+        "zh-CN": "模态终端文本编辑器，内置多光标、语法高亮、语言服务器与树形结构解析支持。",
+        "zh-TW": "模態終端機文字編輯器，內建多游標、語法突顯、語言伺服器與樹狀結構解析支援。",
+        "en": "A modal terminal text editor with built-in multiple cursors, syntax highlighting, language servers and tree-sitter support.",
+        "ja": "複数カーソル、構文ハイライト、言語サーバー、Tree-sitter を組み込んだモーダルなターミナルテキストエディター。",
+        "ko": "다중 커서, 구문 강조, 언어 서버 및 Tree-sitter 지원을 내장한 모달 터미널 텍스트 편집기."
+      },
+      "sourceRepository": "https://github.com/helix-editor/helix",
+      "licenseUrl": "https://raw.githubusercontent.com/helix-editor/helix/master/LICENSE",
+      "id": "helix",
+      "variants": [
+        {
+          "id": "helix-macos",
+          "os": "macos",
+          "architectures": [
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "通过 Homebrew 安装 helix；需要已安装并配置 brew。 Homebrew 仅提供本目录已验证的 macOS arm64 bottle，未声明 Intel macOS。仅在用户保存时修改所打开的文件；安装不启动编辑器、不读取或写入文档。",
+            "zh-TW": "透過 Homebrew 安裝 helix；需要已安裝並設定 brew。 Homebrew 僅提供本目錄已驗證的 macOS arm64 bottle，未宣告 Intel macOS。僅在使用者儲存時修改所開啟的檔案；安裝不啟動編輯器、不讀取或寫入文件。",
+            "en": "Installs helix with Homebrew. brew must already be installed and configured. Homebrew provides only the macOS arm64 bottle verified for this catalog; Intel macOS is not declared. Files are changed only when the user saves; installation starts no editor and reads or writes no documents.",
+            "ja": "Homebrew で helix をインストールします。brew を事前にインストールして設定する必要があります。 Homebrew はこのカタログで確認済みの macOS arm64 bottle のみを提供し、Intel macOS は対象外です。ファイルが変更されるのはユーザーが保存した場合のみで、インストール時にエディターは起動せず、ドキュメントの読み書きも行いません。",
+            "ko": "Homebrew로 helix를 설치합니다. brew가 미리 설치되어 설정되어 있어야 합니다. Homebrew는 이 카탈로그에서 확인된 macOS arm64 bottle만 제공하며 Intel macOS는 선언하지 않습니다. 사용자가 저장할 때만 연 파일을 변경하며, 설치 시 편집기를 시작하거나 문서를 읽고 쓰지 않습니다."
+          },
+          "sourceUrl": "https://helix-editor.com",
+          "method": {
+            "type": "package_manager",
+            "manager": "brew",
+            "packageId": "helix",
+            "cask": false
+          }
+        }
+      ]
+    },
+    {
       "name": "Insomnia",
       "publisher": "Kong",
       "category": "dev",
@@ -1224,6 +1337,51 @@
             "manager": "brew",
             "packageId": "lapce",
             "cask": true
+          }
+        }
+      ]
+    },
+    {
+      "name": "Lazydocker",
+      "publisher": "Jesse Duffield and contributors",
+      "category": "dev",
+      "mark": "Ld",
+      "accent": "#6587a4",
+      "license": "MIT",
+      "homepage": "https://github.com/jesseduffield/lazydocker",
+      "summary": {
+        "zh-CN": "Docker 终端管理界面，用于查看容器、镜像、卷、日志并执行常用 Docker 操作。",
+        "zh-TW": "Docker 終端機管理介面，用於檢視容器、映像檔、磁碟區、記錄並執行常用 Docker 操作。",
+        "en": "A terminal UI for Docker to inspect containers, images, volumes and logs and run common Docker operations.",
+        "ja": "コンテナー、イメージ、ボリューム、ログを確認し、一般的な Docker 操作を実行するためのターミナル UI。",
+        "ko": "컨테이너, 이미지, 볼륨, 로그를 살펴보고 일반적인 Docker 작업을 실행하는 터미널 UI."
+      },
+      "sourceRepository": "https://github.com/jesseduffield/lazydocker",
+      "licenseUrl": "https://raw.githubusercontent.com/jesseduffield/lazydocker/master/LICENSE",
+      "id": "lazydocker",
+      "variants": [
+        {
+          "id": "lazydocker-macos",
+          "os": "macos",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "通过 Homebrew 安装 lazydocker；需要已安装并配置 brew。 Homebrew formula 提供本目录已验证的 Apple Silicon 与 Intel macOS bottle。使用时需要可访问的 Docker 守护进程和上下文；安装不启动 Docker、不更改容器或镜像。",
+            "zh-TW": "透過 Homebrew 安裝 lazydocker；需要已安裝並設定 brew。 Homebrew formula 提供本目錄已驗證的 Apple Silicon 與 Intel macOS bottle。使用時需要可存取的 Docker 守護程序和內容；安裝不啟動 Docker、不變更容器或映像檔。",
+            "en": "Installs lazydocker with Homebrew. brew must already be installed and configured. The Homebrew formula provides the Apple Silicon and Intel macOS bottles verified for this catalog. Usage requires an accessible Docker daemon and context; installation starts no Docker engine and changes no containers or images.",
+            "ja": "Homebrew で lazydocker をインストールします。brew を事前にインストールして設定する必要があります。 Homebrew formula は、このカタログで確認済みの Apple Silicon と Intel macOS bottle を提供します。使用にはアクセス可能な Docker デーモンとコンテキストが必要で、インストール時に Docker は起動せず、コンテナーやイメージも変更しません。",
+            "ko": "Homebrew로 lazydocker를 설치합니다. brew가 미리 설치되어 설정되어 있어야 합니다. Homebrew formula는 이 카탈로그에서 확인된 Apple Silicon 및 Intel macOS bottle을 제공합니다. 사용하려면 접근 가능한 Docker 데몬과 컨텍스트가 필요하며, 설치 시 Docker를 시작하거나 컨테이너 또는 이미지를 변경하지 않습니다."
+          },
+          "sourceUrl": "https://github.com/jesseduffield/lazydocker",
+          "method": {
+            "type": "package_manager",
+            "manager": "brew",
+            "packageId": "lazydocker",
+            "cask": false
           }
         }
       ]
@@ -1403,6 +1561,51 @@
       ]
     },
     {
+      "name": "Micro",
+      "publisher": "Zachary Yedidia and contributors",
+      "category": "dev",
+      "mark": "Mi",
+      "accent": "#6587a4",
+      "license": "MIT",
+      "homepage": "https://github.com/micro-editor/micro",
+      "summary": {
+        "zh-CN": "现代终端文本编辑器，提供常用快捷键、语法高亮、多缓冲和插件支持。",
+        "zh-TW": "現代終端機文字編輯器，提供常用快捷鍵、語法突顯、多緩衝區和外掛支援。",
+        "en": "A modern terminal text editor with familiar shortcuts, syntax highlighting, multiple buffers and plugins.",
+        "ja": "使い慣れたショートカット、構文ハイライト、複数バッファー、プラグインを備えたモダンなターミナルテキストエディター。",
+        "ko": "익숙한 단축키, 구문 강조, 다중 버퍼 및 플러그인을 지원하는 현대적인 터미널 텍스트 편집기."
+      },
+      "sourceRepository": "https://github.com/micro-editor/micro",
+      "licenseUrl": "https://raw.githubusercontent.com/micro-editor/micro/master/LICENSE",
+      "id": "micro",
+      "variants": [
+        {
+          "id": "micro-macos",
+          "os": "macos",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "通过 Homebrew 安装 micro；需要已安装并配置 brew。 Homebrew formula 提供本目录已验证的 Apple Silicon 与 Intel macOS bottle。仅在用户保存时修改所打开的文件；安装不启动编辑器、不读取或写入文档。",
+            "zh-TW": "透過 Homebrew 安裝 micro；需要已安裝並設定 brew。 Homebrew formula 提供本目錄已驗證的 Apple Silicon 與 Intel macOS bottle。僅在使用者儲存時修改所開啟的檔案；安裝不啟動編輯器、不讀取或寫入文件。",
+            "en": "Installs micro with Homebrew. brew must already be installed and configured. The Homebrew formula provides the Apple Silicon and Intel macOS bottles verified for this catalog. Files are changed only when the user saves; installation starts no editor and reads or writes no documents.",
+            "ja": "Homebrew で micro をインストールします。brew を事前にインストールして設定する必要があります。 Homebrew formula は、このカタログで確認済みの Apple Silicon と Intel macOS bottle を提供します。ファイルが変更されるのはユーザーが保存した場合のみで、インストール時にエディターは起動せず、ドキュメントの読み書きも行いません。",
+            "ko": "Homebrew로 micro를 설치합니다. brew가 미리 설치되어 설정되어 있어야 합니다. Homebrew formula는 이 카탈로그에서 확인된 Apple Silicon 및 Intel macOS bottle을 제공합니다. 사용자가 저장할 때만 연 파일을 변경하며, 설치 시 편집기를 시작하거나 문서를 읽고 쓰지 않습니다."
+          },
+          "sourceUrl": "https://github.com/micro-editor/micro",
+          "method": {
+            "type": "package_manager",
+            "manager": "brew",
+            "packageId": "micro",
+            "cask": false
+          }
+        }
+      ]
+    },
+    {
       "name": "Mockoon",
       "publisher": "Mockoon",
       "category": "dev",
@@ -1443,6 +1646,50 @@
             "manager": "brew",
             "packageId": "mockoon",
             "cask": true
+          }
+        }
+      ]
+    },
+    {
+      "name": "Nushell",
+      "publisher": "The Nushell Project Developers",
+      "category": "dev",
+      "mark": "Nu",
+      "accent": "#6587a4",
+      "license": "MIT",
+      "homepage": "https://www.nushell.sh",
+      "summary": {
+        "zh-CN": "结构化命令行 Shell，使用表格、管道和插件处理系统数据与外部命令输出。",
+        "zh-TW": "結構化命令列 Shell，使用表格、管道和外掛處理系統資料與外部命令輸出。",
+        "en": "A structured command-line shell that uses tables, pipelines and plugins to work with system data and external command output.",
+        "ja": "テーブル、パイプライン、プラグインを使ってシステムデータや外部コマンドの出力を扱う構造化コマンドラインシェル。",
+        "ko": "테이블, 파이프라인 및 플러그인으로 시스템 데이터와 외부 명령 출력을 다루는 구조화된 명령줄 셸."
+      },
+      "sourceRepository": "https://github.com/nushell/nushell",
+      "licenseUrl": "https://raw.githubusercontent.com/nushell/nushell/main/LICENSE",
+      "id": "nushell",
+      "variants": [
+        {
+          "id": "nushell-macos",
+          "os": "macos",
+          "architectures": [
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "通过 Homebrew 安装 nushell；需要已安装并配置 brew。 Homebrew 仅提供本目录已验证的 macOS arm64 bottle，未声明 Intel macOS；formula 含 openssl@4 运行时依赖，并使用 macOS 提供的 curl。文件与网络访问仅在用户启动 nu 并执行命令时发生；安装不更改默认 Shell、不执行命令。",
+            "zh-TW": "透過 Homebrew 安裝 nushell；需要已安裝並設定 brew。 Homebrew 僅提供本目錄已驗證的 macOS arm64 bottle，未宣告 Intel macOS；formula 含 openssl@4 執行階段相依性，並使用 macOS 提供的 curl。檔案與網路存取僅在使用者啟動 nu 並執行命令時發生；安裝不變更預設 Shell、不執行命令。",
+            "en": "Installs nushell with Homebrew. brew must already be installed and configured. Homebrew provides only the macOS arm64 bottle verified for this catalog; Intel macOS is not declared. The formula has an openssl@4 runtime dependency and uses curl provided by macOS. File and network access occurs only when the user starts nu and runs commands; installation changes no default shell and executes no commands.",
+            "ja": "Homebrew で nushell をインストールします。brew を事前にインストールして設定する必要があります。 Homebrew はこのカタログで確認済みの macOS arm64 bottle のみを提供し、Intel macOS は対象外です。formula には実行時依存関係として openssl@4 があり、macOS が提供する curl を使用します。ファイルやネットワークへのアクセスはユーザーが nu を起動してコマンドを実行した場合のみ発生し、インストール時に既定シェルを変更せずコマンドも実行しません。",
+            "ko": "Homebrew로 nushell를 설치합니다. brew가 미리 설치되어 설정되어 있어야 합니다. Homebrew는 이 카탈로그에서 확인된 macOS arm64 bottle만 제공하며 Intel macOS는 선언하지 않습니다. formula에는 openssl@4 런타임 종속성이 있고 macOS가 제공하는 curl을 사용합니다. 파일 및 네트워크 접근은 사용자가 nu를 시작하고 명령을 실행할 때만 발생하며, 설치 시 기본 셸을 바꾸거나 명령을 실행하지 않습니다."
+          },
+          "sourceUrl": "https://www.nushell.sh",
+          "method": {
+            "type": "package_manager",
+            "manager": "brew",
+            "packageId": "nushell",
+            "cask": false
           }
         }
       ]
@@ -2282,6 +2529,51 @@
       ]
     },
     {
+      "name": "WailBrew",
+      "publisher": "Nico Wickersheim and contributors",
+      "category": "dev",
+      "mark": "Wl",
+      "accent": "#6387a4",
+      "license": "MIT",
+      "homepage": "https://github.com/wickenico/WailBrew",
+      "summary": {
+        "zh-CN": "开源 Homebrew 图形界面，使用 Wails、Go 和 React 管理 formula、cask、tap、服务、清理和 Brewfile。",
+        "zh-TW": "開源 Homebrew 圖形介面，使用 Wails、Go 和 React 管理 formula、cask、tap、服務、清理和 Brewfile。",
+        "en": "An open-source graphical Homebrew interface built with Wails, Go and React for formulae, casks, taps, services, cleanup and Brewfiles.",
+        "ja": "Wails、Go、React で構築された、formula、cask、tap、サービス、クリーンアップ、Brewfile を管理するオープンソースの Homebrew GUI。",
+        "ko": "Wails, Go, React로 구축된 오픈 소스 Homebrew 그래픽 인터페이스로 formula, cask, tap, 서비스, 정리 및 Brewfile을 관리합니다."
+      },
+      "sourceRepository": "https://github.com/wickenico/WailBrew",
+      "licenseUrl": "https://raw.githubusercontent.com/wickenico/WailBrew/main/LICENSE",
+      "id": "wailbrew",
+      "variants": [
+        {
+          "id": "wailbrew-macos",
+          "os": "macos",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "通过 Homebrew 安装 wailbrew；需要已安装并配置 brew。 本条目对应稳定版 v0.14.3，GitHub 标签发布与 latest 指向同一非草稿、非预发布对象；ZIP 摘要同时匹配 cask 和 GitHub 资产摘要，归档顶层只有 WailBrew.app，无符号链接或越界路径。唯一真实 Mach-O 是含 x86_64 与 arm64 的 universal binary；cask 元数据声明支持 macOS 11 Big Sur 及更新版本。cask 无 formula 依赖、冲突或 caveat，安装只复制 WailBrew.app，不启动应用、不请求权限、不注册登录项；zap 路径仅在卸载清理时使用。WailBrew 是已有 Homebrew 的前端，不会替用户安装 Homebrew。启动后会执行 brew update 及已装 formula、cask、tap、outdated、leaves 查询；安装、卸载、升级、tap/untap/trust、服务、doctor、cleanup 和 Brewfile 操作都来自显式 GUI 动作，生产命令使用 argv 数组而不是 shell 拼接。brew services start 只会把用户选择的 Homebrew 服务注册到 launchd，不会注册 WailBrew 自身。需要 sudo 时才通过模式 0700 的临时 askpass 脚本和 osascript 提示；NoQuarantine 默认关闭，启用后才会用 xattr 移除隔离属性，AutoRelaunch 默认开启但只影响升级中的 cask 应用。配置默认位于 ~/.config/wailbrew/config.json，并兼容 ~/.wailbrew/config.json 与 WAILBREW_CONFIG_FILE。Info.plist 无摄像头、麦克风等用途字符串，签名 SuperBlob 无 entitlement 槽；两个架构切片均开启 hardened runtime，嵌入式 CMS 叶证书主体为 Developer ID Application: Nico Wickersheim (2MC8SWF35Z)，但 Linux 无法运行 macOS spctl 或 stapler 在线评估。更新检查只运行 brew info --cask --json=v2 wailbrew，没有 Sparkle、appcast 或直接 GitHub API 自更新；发布页只能由用户手动打开。包详情会按需请求 formulae.brew.sh 公共安装统计，brew vulns 仅在用户安全扫描时访问 OSV.dev，代理测试和外部链接也都是显式操作；源码未发现生产遥测依赖。",
+            "zh-TW": "透過 Homebrew 安裝 wailbrew；需要已安裝並設定 brew。 本條目對應穩定版 v0.14.3，GitHub 標籤發布與 latest 指向同一非草稿、非預先發布物件；ZIP 摘要同時符合 cask 和 GitHub 資產摘要，封存檔頂層只有 WailBrew.app，無符號連結或越界路徑。唯一真實 Mach-O 是含 x86_64 與 arm64 的 universal binary；cask 中繼資料宣告支援 macOS 11 Big Sur 與更新版本。cask 無 formula 相依性、衝突或 caveat，安裝只複製 WailBrew.app，不啟動應用程式、不請求權限、不註冊登入項目；zap 路徑僅在解除安裝清理時使用。WailBrew 是既有 Homebrew 的前端，不會替使用者安裝 Homebrew。啟動後會執行 brew update 及已安裝 formula、cask、tap、outdated、leaves 查詢；安裝、解除安裝、升級、tap/untap/trust、服務、doctor、cleanup 和 Brewfile 操作都來自明確 GUI 動作，生產命令使用 argv 陣列而不是 shell 串接。brew services start 只會把使用者選擇的 Homebrew 服務註冊到 launchd，不會註冊 WailBrew 本身。需要 sudo 時才透過模式 0700 的暫存 askpass 指令碼和 osascript 提示；NoQuarantine 預設關閉，啟用後才會用 xattr 移除隔離屬性，AutoRelaunch 預設開啟但只影響升級中的 cask 應用程式。設定預設位於 ~/.config/wailbrew/config.json，並相容 ~/.wailbrew/config.json 與 WAILBREW_CONFIG_FILE。Info.plist 無攝影機、麥克風等用途字串，簽章 SuperBlob 無 entitlement 槽；兩個架構切片均開啟 hardened runtime，內嵌 CMS 葉憑證主體為 Developer ID Application: Nico Wickersheim (2MC8SWF35Z)，但 Linux 無法執行 macOS spctl 或 stapler 線上評估。更新檢查只執行 brew info --cask --json=v2 wailbrew，沒有 Sparkle、appcast 或直接 GitHub API 自更新；發布頁只能由使用者手動開啟。套件詳情會依要求請求 formulae.brew.sh 公共安裝統計，brew vulns 僅在使用者安全掃描時存取 OSV.dev，代理測試和外部連結也都是明確操作；原始碼未發現生產遙測相依性。",
+            "en": "Installs wailbrew with Homebrew. brew must already be installed and configured. This entry corresponds to stable v0.14.3; the GitHub tag release and latest endpoint resolve to the same non-draft, non-prerelease object. The ZIP digest matches both the cask and GitHub asset digest, and the archive contains only WailBrew.app at its top level, with no symlinks or archive-outside paths. Its only real Mach-O is a universal binary containing x86_64 and arm64; cask metadata declares macOS 11 Big Sur and newer. The cask has no formula dependency, conflict or caveat. Installation only copies WailBrew.app; it does not launch the app, request permissions or register a login item, and zap paths are used only during uninstall cleanup. WailBrew is a front-end for an existing Homebrew installation and does not install Homebrew itself. After launch it runs brew update plus installed formula, cask, tap, outdated and leaves queries; install, uninstall, upgrade, tap/untap/trust, service, doctor, cleanup and Brewfile actions are explicit GUI operations, and production commands use argv arrays rather than shell concatenation. brew services start registers only the selected Homebrew service with launchd, not WailBrew itself. A mode-0700 temporary askpass script and osascript prompt are used only when sudo is required. NoQuarantine defaults off and uses xattr only when enabled; AutoRelaunch defaults on but affects only cask apps during upgrade. Config defaults to ~/.config/wailbrew/config.json, with legacy ~/.wailbrew/config.json and WAILBREW_CONFIG_FILE support. Info.plist has no camera, microphone or other usage strings, and the signature SuperBlob has no entitlement slot. Both architecture slices enable the hardened runtime; the embedded CMS leaf subject is Developer ID Application: Nico Wickersheim (2MC8SWF35Z), while Linux cannot perform macOS spctl or stapler online assessment. Update checks run only brew info --cask --json=v2 wailbrew; there is no Sparkle, appcast or direct GitHub API self-updater, and the release page opens only through manual user action. Package details fetch public formulae.brew.sh install statistics on demand, brew vulns reaches OSV.dev only during an explicit security scan, proxy tests and external links are explicit actions, and no production telemetry dependency was found in source.",
+            "ja": "Homebrew で wailbrew をインストールします。brew を事前にインストールして設定する必要があります。 このエントリは安定版 v0.14.3 に対応し、GitHub のタグリリースと latest エンドポイントはドラフトでもプレリリースでもない同一オブジェクトを返します。ZIP ダイジェストは cask と GitHub アセットの両方に一致し、アーカイブ最上位には WailBrew.app のみが含まれ、シンボリックリンクやアーカイブ外を指すパスはありません。唯一の実 Mach-O は x86_64 と arm64 を含む universal binary で、cask メタデータは macOS 11 Big Sur 以降を宣言しています。cask に formula 依存関係、競合、caveat はなく、インストールは WailBrew.app のコピーだけで、アプリの起動、権限要求、ログイン項目の登録は行いません。zap パスはアンインストール時のクリーンアップでのみ使用されます。WailBrew は既存 Homebrew のフロントエンドであり、Homebrew 自体をインストールしません。起動後は brew update に加え、インストール済み formula、cask、tap、outdated、leaves のクエリを実行します。インストール、アンインストール、アップグレード、tap/untap/trust、サービス、doctor、cleanup、Brewfile の操作はすべて明示的な GUI 操作で、本番コマンドはシェル連結ではなく argv 配列を使用します。brew services start は選択した Homebrew サービスだけを launchd に登録し、WailBrew 自体は登録しません。sudo が必要な場合に限り、モード 0700 の一時 askpass スクリプトと osascript プロンプトを使用します。NoQuarantine は既定で無効で、有効時のみ xattr で隔離属性を削除します。AutoRelaunch は既定で有効ですが、アップグレード中の cask アプリにのみ影響します。設定は既定で ~/.config/wailbrew/config.json にあり、従来の ~/.wailbrew/config.json と WAILBREW_CONFIG_FILE もサポートします。Info.plist にカメラ、マイクなどの用途文字列はなく、署名 SuperBlob に entitlement スロットもありません。両アーキテクチャスライスで hardened runtime が有効で、埋め込み CMS のリーフ主体は Developer ID Application: Nico Wickersheim (2MC8SWF35Z) ですが、Linux では macOS の spctl や stapler オンライン評価は実行できません。更新確認は brew info --cask --json=v2 wailbrew を実行するだけで、Sparkle、appcast、直接 GitHub API を使う自己更新機能はなく、リリースページは手動操作でのみ開きます。パッケージ詳細は必要時に formulae.brew.sh の公開インストール統計を取得し、brew vulns は明示的なセキュリティスキャン時のみ OSV.dev に到達します。プロキシテストと外部リンクも明示的操作であり、ソースから本番テレメトリ依存は見つかりませんでした。",
+            "ko": "Homebrew로 wailbrew를 설치합니다. brew가 미리 설치되어 설정되어 있어야 합니다. 이 항목은 안정 v0.14.3에 해당하며 GitHub 태그 릴리스와 latest 엔드포인트는 초안도 사전 릴리스도 아닌 동일한 객체를 반환합니다. ZIP 다이제스트는 cask와 GitHub 자산 다이제스트 모두에 일치하고 아카이브 최상위에는 WailBrew.app만 있으며 심볼릭 링크나 아카이브 외부 경로가 없습니다. 유일한 실제 Mach-O는 x86_64와 arm64를 포함하는 universal binary이고 cask 메타데이터는 macOS 11 Big Sur 이상을 선언합니다. cask에는 formula 종속성, 충돌, caveat가 없고 설치는 WailBrew.app 복사만 수행하며 앱 시작, 권한 요청, 로그인 항목 등록을 하지 않습니다. zap 경로는 제거 정리 시에만 사용됩니다. WailBrew는 기존 Homebrew의 프런트엔드이며 Homebrew 자체를 설치하지 않습니다. 실행 후 brew update와 설치된 formula, cask, tap, outdated, leaves 쿼리를 실행합니다. 설치, 제거, 업그레이드, tap/untap/trust, 서비스, doctor, cleanup, Brewfile 작업은 모두 명시적 GUI 동작이고 프로덕션 명령은 셸 연결이 아닌 argv 배열을 사용합니다. brew services start는 선택한 Homebrew 서비스만 launchd에 등록하며 WailBrew 자체를 등록하지 않습니다. sudo가 필요할 때만 모드 0700 임시 askpass 스크립트와 osascript 프롬프트를 사용합니다. NoQuarantine은 기본적으로 꺼져 있고 활성화할 때만 xattr으로 격리 속성을 제거합니다. AutoRelaunch는 기본적으로 켜져 있지만 업그레이드 중인 cask 앱에만 영향을 줍니다. 설정은 기본적으로 ~/.config/wailbrew/config.json에 저장되고 기존 ~/.wailbrew/config.json 및 WAILBREW_CONFIG_FILE을 지원합니다. Info.plist에는 카메라, 마이크 등 사용 문자열이 없고 서명 SuperBlob에는 entitlement 슬롯이 없습니다. 두 아키텍처 슬라이스 모두 hardened runtime이 활성화되어 있고 내장 CMS 리프 주체는 Developer ID Application: Nico Wickersheim (2MC8SWF35Z)이지만 Linux에서는 macOS spctl이나 stapler 온라인 평가를 실행할 수 없습니다. 업데이트 확인은 brew info --cask --json=v2 wailbrew만 실행하고 Sparkle, appcast, 직접 GitHub API 자동 업데이트는 없으며 릴리스 페이지는 사용자의 수동 동작으로만 열립니다. 패키지 세부 정보는 요청 시 formulae.brew.sh 공개 설치 통계를 가져오고 brew vulns는 명시적 보안 검사 시에만 OSV.dev에 접근하며 프록시 테스트와 외부 링크도 명시적 동작입니다. 소스에서 프로덕션 텔레메트리 의존성은 발견되지 않았습니다."
+          },
+          "sourceUrl": "https://github.com/wickenico/WailBrew",
+          "method": {
+            "type": "package_manager",
+            "manager": "brew",
+            "packageId": "wailbrew",
+            "cask": true
+          }
+        }
+      ]
+    },
+    {
       "name": "WezTerm",
       "publisher": "Wez Furlong",
       "category": "dev",
@@ -2531,6 +2823,50 @@
             "args": [
               "--version"
             ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Zellij",
+      "publisher": "Aram Drevekenin and contributors",
+      "category": "dev",
+      "mark": "Ze",
+      "accent": "#6587a4",
+      "license": "MIT",
+      "homepage": "https://zellij.dev",
+      "summary": {
+        "zh-CN": "可插件扩展的终端工作区与复用器，提供窗格、标签页、布局和会话管理。",
+        "zh-TW": "可外掛擴充的終端機工作區與複用器，提供窗格、分頁、版面和工作階段管理。",
+        "en": "A pluggable terminal workspace and multiplexer with panes, tabs, layouts and session management.",
+        "ja": "ペイン、タブ、レイアウト、セッション管理を備えた、プラグイン拡張可能なターミナルワークスペース兼マルチプレクサー。",
+        "ko": "플러그인으로 확장 가능한 터미널 작업 공간 및 멀티플렉서로, 창, 탭, 레이아웃과 세션 관리를 제공합니다."
+      },
+      "sourceRepository": "https://github.com/zellij-org/zellij",
+      "licenseUrl": "https://raw.githubusercontent.com/zellij-org/zellij/main/LICENSE.md",
+      "id": "zellij",
+      "variants": [
+        {
+          "id": "zellij-macos",
+          "os": "macos",
+          "architectures": [
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "通过 Homebrew 安装 zellij；需要已安装并配置 brew。 Homebrew 仅提供本目录已验证的 macOS arm64 bottle，未声明 Intel macOS；formula 未声明第三方 formula 依赖，但使用 macOS 提供的 curl。会话、窗格和布局仅在用户启动 zellij 后创建，运行状态写入用户配置目录。formula 另声明可选的 brew services 入口 zellij web，只有用户显式启用才运行；安装不注册或启动服务、不修改终端配置。",
+            "zh-TW": "透過 Homebrew 安裝 zellij；需要已安裝並設定 brew。 Homebrew 僅提供本目錄已驗證的 macOS arm64 bottle，未宣告 Intel macOS；formula 未宣告第三方 formula 相依性，但使用 macOS 提供的 curl。工作階段、窗格和版面僅在使用者啟動 zellij 後建立，執行狀態寫入使用者設定目錄。formula 另宣告可選的 brew services 入口 zellij web，只有使用者明確啟用才執行；安裝不註冊或啟動服務、不修改終端機設定。",
+            "en": "Installs zellij with Homebrew. brew must already be installed and configured. Homebrew provides only the macOS arm64 bottle verified for this catalog; Intel macOS is not declared. The formula declares no third-party formula dependencies but uses curl provided by macOS. Sessions, panes and layouts are created only after the user starts zellij, with runtime state written under the user configuration directory. The formula also declares an optional brew services entry for zellij web, which runs only when the user explicitly enables it; installation registers or starts no service and changes no terminal configuration.",
+            "ja": "Homebrew で zellij をインストールします。brew を事前にインストールして設定する必要があります。 Homebrew はこのカタログで確認済みの macOS arm64 bottle のみを提供し、Intel macOS は対象外です。formula はサードパーティーの formula 依存関係を宣言していませんが、macOS が提供する curl を使用します。セッション、ペイン、レイアウトはユーザーが zellij を起動した後にのみ作成され、実行状態はユーザー設定ディレクトリに書き込まれます。formula には brew services のオプション入口 zellij web も宣言されていますが、実行されるのはユーザーが明示的に有効化した場合のみです。インストール時にサービスの登録や起動、ターミナル設定の変更は行いません。",
+            "ko": "Homebrew로 zellij를 설치합니다. brew가 미리 설치되어 설정되어 있어야 합니다. Homebrew는 이 카탈로그에서 확인된 macOS arm64 bottle만 제공하며 Intel macOS는 선언하지 않습니다. formula는 타사 formula 종속성을 선언하지 않지만 macOS가 제공하는 curl을 사용합니다. 세션, 창 및 레이아웃은 사용자가 zellij를 시작한 후에만 만들어지고 런타임 상태는 사용자 구성 디렉터리에 기록됩니다. formula에는 brew services의 선택적 zellij web 진입점도 선언되어 있지만 사용자가 명시적으로 활성화할 때만 실행됩니다. 설치 시 서비스를 등록하거나 시작하지 않으며 터미널 구성을 수정하지 않습니다."
+          },
+          "sourceUrl": "https://zellij.dev",
+          "method": {
+            "type": "package_manager",
+            "manager": "brew",
+            "packageId": "zellij",
+            "cask": false
           }
         }
       ]

@@ -31,15 +31,36 @@ def github_repository(value: object) -> str | None:
 
 
 def source_apps() -> list[dict]:
-    apps = [
-        app
+    documents = [
+        json.loads((CACHE / f"appsgit-page-{page}.json").read_text())
         for page in range(1, 16)
-        for app in json.loads(
-            (CACHE / f"appsgit-page-{page}.json").read_text()
-        )["data"]
     ]
-    if len(apps) != 1404 or len({app["slug"] for app in apps}) != len(apps):
-        raise ValueError("The AppsGit discovery snapshot is incomplete")
+    if len(documents) != 15:
+        raise ValueError("The AppsGit discovery snapshot must contain 15 pages")
+
+    totals = set()
+    apps: list[dict] = []
+    for page, document in enumerate(documents, start=1):
+        rows = document.get("data")
+        pagination = document.get("pagination")
+        if not isinstance(rows, list) or not isinstance(pagination, dict):
+            raise ValueError(f"AppsGit page {page} has no data array or pagination")
+        if (
+            pagination.get("page") != page
+            or pagination.get("perPage") != 100
+            or pagination.get("totalPages") != 15
+        ):
+            raise ValueError(f"AppsGit page {page} has unexpected pagination: {pagination}")
+        totals.add(pagination.get("total"))
+        apps.extend(rows)
+
+    if len(totals) != 1:
+        raise ValueError("AppsGit pages report inconsistent total counts")
+    expected = totals.pop()
+    if not isinstance(expected, int) or len(apps) != expected:
+        raise ValueError(f"The AppsGit discovery snapshot is incomplete: rows={len(apps)} total={expected}")
+    if len({app["slug"] for app in apps}) != len(apps):
+        raise ValueError("The AppsGit discovery snapshot contains duplicate slugs")
     return apps
 
 

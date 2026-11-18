@@ -211,6 +211,15 @@ FORMULA_ARCHITECTURES: dict[str, dict[str, list[str]]] = {
     "dua-cli": {"macos": ["aarch64"]},
     "gowall": {"macos": ["aarch64"]},
     "termusic": {"macos": ["x86_64", "aarch64"]},
+    "slides": {"macos": ["x86_64", "aarch64"]},
+    "micro": {"macos": ["x86_64", "aarch64"]},
+    "glow": {"macos": ["x86_64", "aarch64"]},
+    "restic": {"macos": ["x86_64", "aarch64"]},
+    "helix": {"macos": ["aarch64"]},
+    "nushell": {"macos": ["aarch64"]},
+    "croc": {"macos": ["aarch64"]},
+    "zellij": {"macos": ["aarch64"]},
+    "lazydocker": {"macos": ["x86_64", "aarch64"]},
 }
 
 
@@ -221,7 +230,7 @@ def formula_arches(app_id: str, package: dict, os: str) -> list[str]:
     files = package["bottle"]["stable"]["files"]
     keys = {
         ("macos", "x86_64"): ("sequoia", "sonoma"),
-        ("macos", "aarch64"): ("arm64_tahoe", "arm64_sequoia"),
+        ("macos", "aarch64"): ("arm64_golden_gate", "arm64_tahoe", "arm64_sequoia"),
         ("linux", "x86_64"): ("x86_64_linux",),
         ("linux", "aarch64"): ("arm64_linux",),
     }
@@ -291,6 +300,15 @@ CASK_ARCHITECTURES = {
     "picgo": ["x86_64", "aarch64"],
     "switchhosts": ["x86_64", "aarch64"],
     "readest": ["x86_64", "aarch64"],
+    "amical": ["x86_64", "aarch64"],
+    "beutl": ["aarch64"],
+    "buzz": ["x86_64", "aarch64"],
+    "keycastr": ["x86_64", "aarch64"],
+    "flycut": ["x86_64", "aarch64"],
+    "cc-switch": ["x86_64", "aarch64"],
+    "wailbrew": ["x86_64", "aarch64"],
+    "open-design": ["x86_64", "aarch64"],
+    "hidden": ["x86_64", "aarch64"],
 }
 
 
@@ -606,6 +624,52 @@ REVIEWED = {
             "en": "Requires macOS 12 or later. Local features are separate from cloud sync, collaboration and AI services, which may require accounts, network access or subscriptions.",
             "ja": "macOS 12 以降が必要です。ローカル機能とクラウド同期、共同作業、AI サービスは別で、後者にはアカウント、ネットワーク、サブスクリプションが必要な場合があります。",
             "ko": "macOS 12 이상이 필요합니다. 로컬 기능과 클라우드 동기화, 공동 작업 및 AI 서비스는 별개이며, 후자는 계정, 네트워크 또는 구독이 필요할 수 있습니다.",
+        },
+    },
+    "cc-switch": {
+        "name": "CC Switch", "publisher": "Jason Young", "category": "dev", "mark": "Cw", "accent": "#f97316",
+        "repo": "farion1231/cc-switch", "license": "MIT", "licenseFile": "LICENSE", "licenseRef": "v4.0.34/LICENSE",
+        "homepage": "https://ccswitch.io/", "cask": "cc-switch", "caskArchitectures": ["x86_64", "aarch64"],
+        "winget": "farion1231.CC-Switch",
+        "summary": {
+            "zh-CN": "面向 Claude Code、Codex、Gemini CLI 等 AI 编程工具的图形配置、路由和用量管理应用。",
+            "zh-TW": "面向 Claude Code、Codex、Gemini CLI 等 AI 編程工具的圖形設定、路由和用量管理應用程式。",
+            "en": "A graphical configuration, routing and usage-management app for AI coding tools such as Claude Code, Codex and Gemini CLI.",
+            "ja": "Claude Code、Codex、Gemini CLI などの AI コーディングツール向けの、グラフィカルな設定・ルーティング・使用量管理アプリ。",
+            "ko": "Claude Code, Codex, Gemini CLI 등 AI 코딩 도구를 위한 그래픽 구성, 라우팅 및 사용량 관리 앱.",
+        },
+        "extra": {
+            "zh-CN": "本条目对应稳定版 v4.0.34；GitHub release 为非草稿、非预发布，4.0.4 是 4.0 系列首个稳定版。Homebrew cask 的 DMG SHA-256 已与 GitHub 资产核对，镜像内只有 CC Switch.app、Applications 拖放链接和背景资源；cask 无 formula 依赖、冲突或 caveat，只复制 App，zap 路径仅在卸载清理时使用。主程序是含 x86_64 与 arm64 的 universal Mach-O，两个切片均启用 hardened runtime，标识符为 com.ccswitch.desktop，Developer ID Application 证书属于 Jason Young (R8UR22V2F9)，并含 s8ch v1 notarization ticket 容器与 g8tk trailer；Linux 本地解析不宣称在线 Gatekeeper 评估结果。需要 macOS 12 或更高版本。应用管理 Claude Code、Codex、Gemini CLI、OpenCode 等工具的用户配置，会读写 ~/.cc-switch 及各工具配置目录；本地路由默认关闭，默认监听 127.0.0.1:15721。ccswitch:// 导入先进入待确认队列；图标抓取仅允许默认端口的公网 HTTPS 并拒绝回环、内网和凭据 URL，普通外部链接则限制为 HTTP/HTTPS/mailto 且拒绝 javascript:、file:、data: 与自定义协议。终端、shell、osascript 与受管 CLI 安装/更新均由用户在界面触发；登录项和更新下载默认关闭，复制 cask 不会启用，Tauri 更新经 minisign 验签、暂存于内存且安装仍需用户确认。Info.plist 仅声明本地网络用途，未声明相机或麦克风用途。清单审查未发现常见第三方分析 SDK；应用本身提供本地用量/成本统计和可选同步，因此不表述为完全无遥测。",
+            "zh-TW": "本條目對應穩定版 v4.0.34；GitHub release 為非草稿、非預先發布，4.0.4 是 4.0 系列首個穩定版。Homebrew cask 的 DMG SHA-256 已與 GitHub 資產核對，映像檔內只有 CC Switch.app、Applications 拖放連結和背景資源；cask 無 formula 相依性、衝突或 caveat，只複製 App，zap 路徑僅在解除安裝清理時使用。主程式是含 x86_64 與 arm64 的 universal Mach-O，兩個切片均啟用 hardened runtime，識別碼為 com.ccswitch.desktop，Developer ID Application 憑證屬於 Jason Young (R8UR22V2F9)，並含 s8ch v1 notarization ticket 容器與 g8tk trailer；Linux 本機解析不宣稱線上 Gatekeeper 評估結果。需要 macOS 12 或更新版本。應用程式管理 Claude Code、Codex、Gemini CLI、OpenCode 等工具的使用者設定，會讀寫 ~/.cc-switch 及各工具設定目錄；本機路由預設關閉，預設監聽 127.0.0.1:15721。ccswitch:// 匯入先進入待確認佇列；圖示擷取僅允許預設連接埠的公網 HTTPS 並拒絕回環、內網和憑證 URL，一般外部連結則限制為 HTTP/HTTPS/mailto 且拒絕 javascript:、file:、data: 與自訂協定。終端機、shell、osascript 與受管 CLI 安裝/更新皆由使用者在介面觸發；登入項目和更新下載預設關閉，複製 cask 不會啟用，Tauri 更新經 minisign 驗簽、暫存於記憶體且安裝仍需使用者確認。Info.plist 僅宣告本機網路用途，未宣告相機或麥克風用途。清單審查未發現常見第三方分析 SDK；應用本身提供本機用量/成本統計和可選同步，因此不表述為完全無遙測。",
+            "en": "This entry corresponds to stable v4.0.34; the GitHub release is neither a draft nor a prerelease, and v4.0.4 is documented as the first stable 4.0 release. The Homebrew cask DMG SHA-256 matches the GitHub asset; the image contains only CC Switch.app, an Applications drag-install link and background assets. The cask has no formula dependency, conflict or caveat, only copies the app, and uses zap paths solely for uninstall cleanup. The primary executable is a universal Mach-O containing x86_64 and arm64; both slices use the hardened runtime, identifier com.ccswitch.desktop, a Developer ID Application certificate for Jason Young (R8UR22V2F9), an s8ch version-1 notarization ticket container and a g8tk trailer. Local Linux parsing does not claim an online Gatekeeper verdict. macOS 12 or newer is required. The app manages user configuration for Claude Code, Codex, Gemini CLI, OpenCode and similar tools, reading and writing ~/.cc-switch and tool-specific configuration directories. Local routing is disabled by default and defaults to loopback 127.0.0.1:15721. ccswitch:// imports enter a pending confirmation queue; icon fetching permits only public HTTPS URLs on default ports and rejects loopback, intranet and credential URLs, while ordinary external links are restricted to HTTP/HTTPS/mailto and reject javascript:, file:, data: and custom schemes. Terminal, shell, osascript and managed CLI install/update paths are user-triggered app features. Login-item creation and update download are off by default and are not enabled by copying the cask; Tauri updates are minisign-verified, retained in memory and installed only after user confirmation. Info.plist declares local-network usage only and no camera or microphone usage. Manifest review found no common third-party analytics SDK; the app still provides local usage/cost statistics and optional sync, so it is not described as having no telemetry at all.",
+            "ja": "このエントリは安定版 v4.0.34 に対応します。GitHub リリースはドラフトでもプレリリースでもなく、v4.0.4 は 4.0 系初の安定リリースとして文書化されています。Homebrew cask の DMG SHA-256 は GitHub アセットと一致し、イメージには CC Switch.app、Applications へのドラッグインストール用リンク、背景素材だけが含まれます。cask に formula 依存、競合、caveat はなく、アプリのコピーだけを行い、zap パスはアンインストール時のクリーンアップ専用です。主要実行ファイルは x86_64 と arm64 を含む universal Mach-O で、両スライスとも Hardened Runtime を有効化し、識別子は com.ccswitch.desktop、Developer ID Application 証明書は Jason Young (R8UR22V2F9)、s8ch バージョン 1 の公証チケットコンテナと g8tk トレーラーを含みます。Linux 上のローカル解析では、オンラインの Gatekeeper 判定は主張しません。macOS 12 以降が必要です。アプリは Claude Code、Codex、Gemini CLI、OpenCode などのユーザー設定を管理し、~/.cc-switch および各ツールの設定ディレクトリを読み書きします。ローカルルーティングは既定で無効、リッスンアドレスは既定でループバック 127.0.0.1:15721 です。ccswitch:// インポートは確認待ちキューに入ります。アイコン取得は既定ポートのパブリック HTTPS だけを許可してループバック、イントラネット、認証情報付き URL を拒否し、通常の外部リンクは HTTP/HTTPS/mailto に制限され、javascript:、file:、data:、カスタムスキームは拒否されます。ターミナル、シェル、osascript、管理対象 CLI のインストール/更新は、すべてユーザーが UI から起動する機能です。ログイン項目と更新ダウンロードは既定でオフであり、cask のコピーでは有効化されません。Tauri 更新は minisign で検証され、メモリーに保持され、インストールはユーザー確認後に限られます。Info.plist にはローカルネットワーク用途だけが宣言され、カメラやマイクの用途文字列はありません。マニフェスト審査では一般的なサードパーティ分析 SDK は見つかりませんでしたが、アプリ自体はローカルの使用量/コスト統計と任意同期を備えるため、一切のテレメトリーがないとは表現しません。",
+            "ko": "이 항목은 안정 v4.0.34에 해당합니다. GitHub 릴리스는 초안도 사전 릴리스도 아니며, v4.0.4는 4.0 계열의 첫 안정 릴리스로 문서화되어 있습니다. Homebrew cask DMG SHA-256은 GitHub 자산과 일치하고 이미지에는 CC Switch.app, Applications 드래그 설치 링크, 배경 자산만 포함됩니다. cask에는 formula 종속, 충돌, caveat가 없고 앱 복사만 수행하며 zap 경로는 제거 정리에만 사용됩니다. 주 실행 파일은 x86_64와 arm64를 포함하는 universal Mach-O입니다. 두 슬라이스 모두 Hardened Runtime을 사용하고 식별자는 com.ccswitch.desktop이며, Developer ID Application 인증서는 Jason Young (R8UR22V2F9)이고 s8ch 버전 1 공증 티켓 컨테이너와 g8tk 트레일러를 포함합니다. Linux 로컬 파싱은 온라인 Gatekeeper 평가 결과를 주장하지 않습니다. macOS 12 이상이 필요합니다. 앱은 Claude Code, Codex, Gemini CLI, OpenCode 등 도구의 사용자 구성을 관리하고 ~/.cc-switch 및 도구별 구성 디렉터리를 읽고 씁니다. 로컬 라우팅은 기본적으로 비활성화되고 기본 수신 주소는 루프백 127.0.0.1:15721입니다. ccswitch:// 가져오기는 확인 대기 큐에 들어갑니다. 아이콘 가져오기는 기본 포트의 공개 HTTPS만 허용하고 루프백, 인트라넷, 자격 증명 URL을 거부하며, 일반 외부 링크는 HTTP/HTTPS/mailto로 제한되고 javascript:, file:, data: 및 사용자 지정 스킴은 거부됩니다. 터미널, 셸, osascript, 관리 CLI 설치/업데이트 경로는 모두 사용자가 UI에서 트리거하는 기능입니다. 로그인 항목 생성과 업데이트 다운로드는 기본적으로 꺼져 있고 cask 복사로 활성화되지 않습니다. Tauri 업데이트는 minisign 서명을 검증하고 메모리에 보관하며 사용자 확인 후에만 설치됩니다. Info.plist에는 로컬 네트워크 사용만 선언되어 있고 카메라나 마이크 사용 문자열은 없습니다. 매니페스트 검토에서 일반적인 서드파티 분석 SDK는 발견되지 않았지만, 앱 자체는 로컬 사용량/비용 통계와 선택 동기화를 제공하므로 텔레메트리가 전혀 없다고 설명하지 않습니다.",
+        },
+        "windowsExtra": {
+            "zh-CN": "Windows 路由使用精确 winget 包 farion1231.CC-Switch；当前评审清单 4.0.25 包含 x64 与 arm64 两个 per-user WiX MSI，InstallScope=perUser、InstallPrivileges=limited，默认装入 %LocalAppData%\\Programs\\CC Switch，不需要管理员。winget 是动态包管理器路由，因此其版本可滞后于已评审的 macOS cask v4.0.34。MSI 写入 HKCU 协议、开始菜单快捷方式和可选桌面快捷方式；交互式退出对话框的启动复选框只在 UI 安装路径出现，winget 静默安装不执行该启动动作，也不注册登录项。应用级自动更新默认关闭，更新包验签后暂存内存并等待用户确认。ccswitch:// 配置导入需要前端确认；本地路由默认关闭并使用 127.0.0.1:15721。读写 AI 编程 CLI 配置、启动终端或执行受管 CLI 安装脚本都来自用户操作，不是 winget 安装期动作。清单审查未发现常见第三方分析 SDK，但应用保留本地用量统计与可选同步。",
+            "zh-TW": "Windows 路由使用精確 winget 套件 farion1231.CC-Switch；目前評審清單 4.0.25 包含 x64 與 arm64 兩個 per-user WiX MSI，InstallScope=perUser、InstallPrivileges=limited，預設安裝至 %LocalAppData%\\Programs\\CC Switch，不需要系統管理員。winget 是動態套件管理器路由，因此其版本可落後於已評審的 macOS cask v4.0.34。MSI 寫入 HKCU 協定、開始功能表捷徑和可選桌面捷徑；互動式結束對話框的啟動核取方塊只在 UI 安裝路徑出現，winget 靜默安裝不執行該啟動動作，也不註冊登入項目。應用層級自動更新預設關閉，更新包驗簽後暫存於記憶體並等待使用者確認。ccswitch:// 設定匯入需要前端確認；本機路由預設關閉並使用 127.0.0.1:15721。讀寫 AI 編程 CLI 設定、啟動終端機或執行受管 CLI 安裝指令碼都來自使用者操作，不是 winget 安裝期動作。清單審查未發現常見第三方分析 SDK，但應用保留本機用量統計與可選同步。",
+            "en": "The Windows route uses the exact winget package farion1231.CC-Switch. The reviewed 4.0.25 manifest contains x64 and arm64 per-user WiX MSIs with InstallScope=perUser and InstallPrivileges=limited, installed by default under %LocalAppData%\\Programs\\CC Switch without administrator rights. Winget is a dynamic package-manager route, so its version can lag the reviewed macOS cask v4.0.34. The MSI writes an HKCU protocol handler, Start Menu shortcuts and an optional desktop shortcut. The launch checkbox on the interactive exit dialog belongs only to the UI installation path; a silent winget installation does not run that launch action and registers no login item. App-level automatic update download is off by default; verified update packages are retained in memory and installation waits for user confirmation. ccswitch:// configuration imports require frontend confirmation, while local routing is disabled by default and uses 127.0.0.1:15721. Reading or writing AI coding CLI configuration, opening terminals and running managed CLI install scripts are user-triggered features, not winget install-time actions. Manifest review found no common third-party analytics SDK, but the app retains local usage statistics and optional sync.",
+            "ja": "Windows ルートは正確な winget パッケージ farion1231.CC-Switch を使用します。レビュー済みの 4.0.25 マニフェストには、x64 と arm64 の per-user WiX MSI が含まれ、InstallScope=perUser、InstallPrivileges=limited、既定インストール先は %LocalAppData%\\Programs\\CC Switch で、管理者権限は不要です。winget は動的なパッケージマネージャールートなので、そのバージョンはレビュー済み macOS cask v4.0.34 より古い場合があります。MSI は HKCU プロトコルハンドラー、スタートメニューショートカット、任意のデスクトップショートカットを書き込みます。対話インストールの終了ダイアログにある起動チェックボックスは UI 経路だけのもので、winget のサイレントインストールではその起動アクションを実行せず、ログイン項目も登録しません。アプリの自動更新ダウンロードは既定でオフであり、検証済み更新はメモリーに保持され、インストールはユーザー確認を待ちます。ccswitch:// 設定インポートにはフロントエンドの確認が必要で、ローカルルーティングは既定で無効、127.0.0.1:15721 を使用します。AI コーディング CLI 設定の読み書き、ターミナル起動、管理 CLI インストールスクリプトの実行は、winget のインストール時動作ではなく、ユーザーが起動する機能です。マニフェスト審査では一般的なサードパーティ分析 SDK は見つかりませんでしたが、アプリにはローカル使用量統計と任意同期があります。",
+            "ko": "Windows 경로는 정확한 winget 패키지 farion1231.CC-Switch을 사용합니다. 검토된 4.0.25 매니페스트에는 x64 및 arm64 per-user WiX MSI가 포함되고 InstallScope=perUser, InstallPrivileges=limited이며 기본 위치는 %LocalAppData%\\Programs\\CC Switch이고 관리자 권한이 필요 없습니다. winget은 동적 패키지 관리자 경로이므로 버전이 검토된 macOS cask v4.0.34보다 뒤처질 수 있습니다. MSI는 HKCU 프로토콜 처리기, 시작 메뉴 바로 가기, 선택적 바탕 화면 바로 가기를 작성합니다. 대화형 종료 대화상자의 시작 체크박스는 UI 설치 경로에만 속하며 winget 자동 설치는 해당 시작 동작을 실행하지 않고 로그인 항목도 등록하지 않습니다. 앱 수준 자동 업데이트 다운로드는 기본적으로 꺼져 있고, 검증된 업데이트 패키지는 메모리에 보관되며 설치는 사용자 확인을 기다립니다. ccswitch:// 구성 가져오기는 프런트엔드 확인이 필요하고 로컬 라우팅은 기본적으로 비활성화되며 127.0.0.1:15721을 사용합니다. AI 코딩 CLI 구성 읽기/쓰기, 터미널 열기, 관리 CLI 설치 스크립트 실행은 winget 설치 시 동작이 아니라 사용자가 트리거하는 기능입니다. 매니페스트 검토에서 일반적인 서드파티 분석 SDK는 발견되지 않았지만 앱에는 로컬 사용량 통계와 선택 동기화가 유지됩니다.",
+        },
+    },
+    "open-design": {
+        "name": "Open Design", "publisher": "nexu-io", "category": "ai", "mark": "OD", "accent": "#7c5cff",
+        "repo": "nexu-io/open-design", "license": "Apache-2.0", "licenseFile": "LICENSE", "licenseRef": "open-design-v0.27.1/LICENSE",
+        "homepage": "https://open-design.ai/", "cask": "open-design", "caskArchitectures": ["x86_64", "aarch64"],
+        "summary": {
+            "zh-CN": "本地优先的协作式 AI 设计代理工作空间，借助本机或自选编码代理生成原型、幻灯片、图像和视频，并管理设计系统、插件与技能。",
+            "zh-TW": "本地優先的協作式 AI 設計代理工作空間，藉由本機或自選編碼代理生成原型、簡報、影像和影片，並管理設計系統、外掛與技能。",
+            "en": "A local-first collaborative AI design-agent workspace for prototypes, slides, images and video, using local or user-selected coding agents with design systems, plugins and skills.",
+            "ja": "ローカルファーストの協調型 AI デザインエージェントワークスペースです。ローカルまたはユーザーが選択したコーディングエージェントを使い、プロトタイプ、スライド、画像、動画を作成し、デザインシステム、プラグイン、スキルを管理します。",
+            "ko": "로컬 우선의 협업형 AI 디자인 에이전트 워크스페이스로, 로컬 또는 사용자가 선택한 코딩 에이전트로 프로토타입, 슬라이드, 이미지, 영상을 만들고 디자인 시스템, 플러그인, 스킬을 관리합니다.",
+        },
+        "extra": {
+            "zh-CN": "本条目评审稳定标签 open-design-v0.27.1；GitHub release 为非草稿、非预发布，稳定通道标识为 io.open-design.desktop，稳定提升流程会拒绝草稿、预发布和回退版本。Homebrew cask open-design 当前未停用或弃用，无 formula 依赖、冲突、caveat、安装脚本或 postflight，只把 Open Design.app 复制到 /Applications，zap 路径仅用于卸载清理；需要 macOS 12 或更高版本。两个 DMG 是分别构建的瘦包：arm64 镜像内 19 个 Mach-O 全部为 arm64，x64 镜像内 19 个全部为 x86_64，架构判断来自 Mach-O 头而非文件名；cask 摘要与 GitHub 资产一致。全部 Mach-O 均含 LC_CODE_SIGNATURE、启用 hardened runtime、Team ID 为 236R69AWW2，Developer ID Application 叶子证书为 Wei Huang (236R69AWW2)。7 个可执行文件包含 XML 与 DER entitlement，两者内容一致，只有 com.apple.security.cs.allow-jit、com.apple.security.cs.allow-unsigned-executable-memory 和 com.apple.security.cs.disable-library-validation 三个 true 键。App 内含 s8ch v1 notarization ticket 容器和 g8tk trailer；g8tk 中 8 个 CodeDirectory hash 覆盖主要 framework 与 Helper，Linux 本地解析不宣称在线 Gatekeeper 评估结果。Info.plist 声明摄像头、麦克风、音频采集和蓝牙使用说明，并注册 opendesign 方案，但未发现屏幕录制使用说明；这些 TCC 字符串不等于安装时已授权，嵌入 entitlement 也没有相机、麦克风或 sandbox 键。打包版会通过内置 Electron Helper 的 Node 模式启动受监督的本地 daemon 与 web sidecar，使用临时本地端口、子进程环境 allowlist 和受限重启；默认数据、缓存、日志、runtime、更新和 Electron 会话位于 Electron userData/namespaces/<namespace>/ 下。外部 opendesign:// 只接受固定的 workspace/invite/continue 与无负载 workspace/open，邀请继续仅向本地 daemon 发送 nonce；内部 od://app 仅代理到本地 web sidecar，子窗口限制为 od、blob 与 about:blank，内嵌浏览器允许 HTTP(S)/about:blank 并拒绝 file、javascript、data 导航。打包版默认启用自定义更新器，稳定元数据位于 releases.open-design.ai，自动检查和自动下载开启、自动打开关闭，稳定通道每 6 小时轮询；cask 的 auto_updates 与该运行时行为一致。官方构建包含可在首跑横幅和 Settings → Privacy 中关闭的 PostHog 产品分析/质量追踪，以及在配置遥测目标时始终启用、经过脱敏且有边界的安全可靠性遥测；BYOK 密钥和生成文件内容不作为遥测收集，崩溃 minidump 默认留在本机，仅在用户主动导出支持包时提供。本条目只收录 macOS Homebrew cask；没有精确 winget ID 或 Flathub ref，0.27.1 也没有 Linux 预构建产物，源码运行不是受支持安装路由；同版 Windows x64 EXE 尚未通过本目录要求的签名 Windows 路由核验，因此不创建 Windows 变体。",
+            "zh-TW": "本條目評審穩定標籤 open-design-v0.27.1；GitHub release 為非草稿、非預先發布，穩定通道識別碼為 io.open-design.desktop，穩定提升流程會拒絕草稿、預發布和回溯版本。Homebrew cask open-design 目前未停用或棄用，無 formula 相依性、衝突、caveat、安裝指令碼或 postflight，只把 Open Design.app 複製到 /Applications，zap 路徑僅用於解除安裝清理；需要 macOS 12 或更新版本。兩個 DMG 是分別建置的瘦包：arm64 映像檔內 19 個 Mach-O 全部為 arm64，x64 映像檔內 19 個全部為 x86_64，架構判斷來自 Mach-O 標頭而非檔名；cask 摘要與 GitHub 資產一致。所有 Mach-O 均含 LC_CODE_SIGNATURE、啟用 hardened runtime、Team ID 為 236R69AWW2，Developer ID Application 葉子憑證為 Wei Huang (236R69AWW2)。7 個可執行檔包含 XML 與 DER entitlement，兩者內容一致，只有 com.apple.security.cs.allow-jit、com.apple.security.cs.allow-unsigned-executable-memory 和 com.apple.security.cs.disable-library-validation 三個 true 鍵。App 內含 s8ch v1 notarization ticket 容器與 g8tk trailer；g8tk 中 8 個 CodeDirectory hash 覆蓋主要 framework 與 Helper，Linux 本機解析不宣稱線上 Gatekeeper 評估結果。Info.plist 宣告攝影機、麥克風、音訊擷取和藍牙使用說明，並註冊 opendesign 方案，但未發現螢幕錄製使用說明；這些 TCC 字串不等於安裝時已授權，嵌入 entitlement 也沒有攝影機、麥克風或 sandbox 鍵。打包版會透過內建 Electron Helper 的 Node 模式啟動受監督的本機 daemon 與 web sidecar，使用暫時本機連接埠、子程序環境 allowlist 與受限重啟；預設資料、快取、記錄、runtime、更新和 Electron 工作階段位於 Electron userData/namespaces/<namespace>/ 下。外部 opendesign:// 只接受固定的 workspace/invite/continue 與無承載 workspace/open，邀請繼續僅向本機 daemon 傳送 nonce；內部 od://app 僅代理到本機 web sidecar，子視窗限制為 od、blob 與 about:blank，內嵌瀏覽器允許 HTTP(S)/about:blank 並拒絕 file、javascript、data 導覽。打包版預設啟用自訂更新程式，穩定中繼資料位於 releases.open-design.ai，自動檢查和自動下載開啟、自動開啟關閉，穩定通道每 6 小時輪詢；cask 的 auto_updates 與該執行階段行為一致。官方建置包含可在首跑橫幅和 Settings → Privacy 中關閉的 PostHog 產品分析/品質追蹤，以及在設定遙測目標時始終啟用、經過脱敏且有邊界的安全可靠性遙測；BYOK 金鑰和生成檔案內容不作為遙測收集，崩潰 minidump 預設留在本機，僅在使用者主動匯出支援包時提供。本條目只收錄 macOS Homebrew cask；沒有精確 winget ID 或 Flathub ref，0.27.1 也沒有 Linux 預建構產物，原始碼執行不是受支援安裝路由；同版 Windows x64 EXE 尚未通過本目錄要求的簽章 Windows 路由核驗，因此不建立 Windows 變體。",
+            "en": "This entry reviews the stable tag open-design-v0.27.1. The GitHub release is neither a draft nor a prerelease, the stable identity is io.open-design.desktop, and the stable-promotion workflow rejects drafts, prereleases and regressed versions. The active, non-deprecated Homebrew cask open-design has no formula dependency, conflict, caveat, installer script or postflight; it only copies Open Design.app to /Applications, while zap paths are uninstall cleanup. macOS 12 or newer is required. The two DMGs are separate thin builds: all 19 Mach-O files in the arm64 image are arm64 and all 19 in the x64 image are x86_64, based on Mach-O headers rather than filenames; cask digests match the GitHub assets. Every Mach-O has LC_CODE_SIGNATURE, hardened runtime, Team ID 236R69AWW2 and Developer ID Application leaf certificate Wei Huang (236R69AWW2). Seven executables carry identical XML and DER entitlements containing only com.apple.security.cs.allow-jit, com.apple.security.cs.allow-unsigned-executable-memory and com.apple.security.cs.disable-library-validation set to true. The app contains an s8ch version-1 notarization ticket container and a g8tk trailer; eight CodeDirectory hashes in g8tk cover the main frameworks and helpers. Local Linux parsing does not claim an online Gatekeeper verdict. Info.plist declares camera, microphone, audio-capture and Bluetooth usage strings and registers the opendesign scheme, but no screen-capture usage string was found. Those TCC strings are not installation-time grants, and the embedded entitlements contain no camera, microphone or sandbox key. Packaged builds start supervised local daemon and web sidecars through the bundled Electron Helper in Node mode, using ephemeral local ports, a child-process environment allowlist and bounded restarts. Default data, cache, logs, runtime, update and Electron session paths live under Electron userData/namespaces/<namespace>/. External opendesign:// links accept only the fixed workspace/invite/continue shape or payload-free workspace/open; invite continuation POSTs only the nonce to the local daemon. The internal od://app scheme is proxied only to the local web sidecar; child windows are limited to od, blob and about:blank, while the embedded browser allows HTTP(S)/about:blank and rejects file, javascript and data navigation. Packaged builds enable the custom updater by default, with stable metadata on releases.open-design.ai, auto-check and auto-download enabled, auto-open disabled and a six-hour stable poll interval; the cask's auto_updates setting is consistent with this runtime. Official builds include opt-out PostHog product analytics and quality traces via the first-run banner and Settings → Privacy, plus always-enabled bounded and scrubbed safety/reliability telemetry when a telemetry destination is configured. BYOK keys and generated artifact contents are not collected as telemetry; crash minidumps remain local unless the user initiates a support bundle. This entry contains only the macOS Homebrew cask. There is no exact winget ID or Flathub ref, no prebuilt Linux artifact in 0.27.1, and source-only execution is not a supported install route. The co-released Windows x64 EXE has not passed the catalog's signed Windows-route verification, so no Windows variant is created.",
+            "ja": "このエントリは安定タグ open-design-v0.27.1 を審査しています。GitHub リリースはドラフトでもプレリリースでもなく、安定版 ID は io.open-design.desktop で、安定版昇格ワークフローはドラフト、プレリリース、バージョン退行を拒否します。有効で廃止されていない Homebrew cask open-design に formula 依存、競合、caveat、インストーラースクリプト、postflight はなく、Open Design.app を /Applications にコピーするだけです。zap パスはアンインストール時のクリーンアップ専用で、macOS 12 以降が必要です。2 つの DMG は別々の thin ビルドで、arm64 イメージの 19 個の Mach-O はすべて arm64、x64 イメージの 19 個はすべて x86_64 です。判定はファイル名ではなく Mach-O ヘッダーに基づき、cask のダイジェストは GitHub アセットと一致します。すべての Mach-O に LC_CODE_SIGNATURE と Hardened Runtime があり、Team ID は 236R69AWW2、Developer ID Application のリーフ証明書は Wei Huang (236R69AWW2) です。7 つの実行可能ファイルには XML と DER の同一の entitlement があり、true のキーは com.apple.security.cs.allow-jit、com.apple.security.cs.allow-unsigned-executable-memory、com.apple.security.cs.disable-library-validation の 3 つだけです。アプリには s8ch バージョン 1 の公証チケットコンテナと g8tk トレーラーが含まれ、g8tk 内の 8 個の CodeDirectory ハッシュが主要 framework と Helper を対象にしています。Linux 上のローカル解析ではオンラインの Gatekeeper 判定を主張しません。Info.plist にはカメラ、マイク、オーディオキャプチャ、Bluetooth の利用目的文字列と opendesign スキーム登録がありますが、画面収集の利用目的文字列はありません。これらの TCC 文字列はインストール時の許可を意味せず、埋め込み entitlement にもカメラ、マイク、sandbox キーはありません。パッケージ版は同梱 Electron Helper を Node モードで使い、監督下のローカル daemon と web sidecar を起動します。ローカルの一時ポート、子プロセス環境の allowlist、制限付き再起動を使用し、既定のデータ、キャッシュ、ログ、ランタイム、更新、Electron セッションは Electron userData/namespaces/<namespace>/ 配下です。外部 opendesign:// は固定の workspace/invite/continue 形式、またはペイロードを持たない workspace/open だけを受け入れ、招待の継続は nonce だけをローカル daemon に POST します。内部 od://app はローカル web sidecar だけにプロキシされ、子ウィンドウは od、blob、about:blank に制限され、埋め込みブラウザーは HTTP(S)/about:blank を許可して file、javascript、data ナビゲーションを拒否します。パッケージ版のカスタム更新機能は既定で有効で、安定メタデータは releases.open-design.ai、自動チェックと自動ダウンロードはオン、自動オープンはオフ、安定チャネルのポーリング間隔は 6 時間です。cask の auto_updates はこの動作と整合します。公式ビルドには、初回起動バナーと Settings → Privacy で無効にできる PostHog 製品分析・品質トレースと、テレメトリ送信先が設定されたビルドで常時有効な、境界付きでスクラブ済みの安全性・信頼性テレメトリがあります。BYOK キーと生成ファイルの内容はテレメトリとして収集されず、クラッシュ minidump はユーザーがサポートバンドルを開始しない限りローカルに残ります。このエントリは macOS Homebrew cask のみです。正確な winget ID と Flathub ref はなく、0.27.1 に Linux の事前ビルド成果物はなく、ソースからの実行はサポートされるインストール経路ではありません。同時リリースの Windows x64 EXE は、カタログが要求する署名済み Windows 経路の検証を終えていないため Windows 変体を作成しません。",
+            "ko": "이 항목은 안정 태그 open-design-v0.27.1을 검토했습니다. GitHub 릴리스는 초안도 사전 릴리스도 아니고 안정 채널 ID는 io.open-design.desktop이며, 안정 승급 워크플로는 초안, 사전 릴리스, 버전 회귀를 거부합니다. 활성 상태이고 폐기되지 않은 Homebrew cask open-design에는 formula 종속, 충돌, caveat, 설치 스크립트, postflight가 없고 Open Design.app을 /Applications로 복사만 합니다. zap 경로는 제거 정리 전용이며 macOS 12 이상이 필요합니다. 두 DMG는 별도의 thin 빌드로, arm64 이미지의 Mach-O 19개는 모두 arm64이고 x64 이미지의 19개는 모두 x86_64입니다. 아키텍처는 파일 이름이 아니라 Mach-O 헤더로 판단했고 cask 다이제스트는 GitHub 자산과 일치합니다. 모든 Mach-O에 LC_CODE_SIGNATURE와 Hardened Runtime이 있고 Team ID는 236R69AWW2, Developer ID Application 리프 인증서는 Wei Huang (236R69AWW2)입니다. 실행 파일 7개에는 XML과 DER로 동일한 entitlement가 들어 있고 true 키는 com.apple.security.cs.allow-jit, com.apple.security.cs.allow-unsigned-executable-memory, com.apple.security.cs.disable-library-validation 세 개뿐입니다. 앱에는 s8ch 버전 1 공증 티켓 컨테이너와 g8tk 트레일러가 포함되고, g8tk의 CodeDirectory 해시 8개가 주요 framework와 Helper를 커버합니다. Linux 로컬 파싱은 온라인 Gatekeeper 평가 결과를 주장하지 않습니다. Info.plist에는 카메라, 마이크, 오디오 캡처, Bluetooth 사용 설명 문자열과 opendesign 스킴 등록이 있지만 화면 녹화 사용 설명은 없습니다. 이 TCC 문자열이 설치 시점 권한 부여를 의미하지는 않으며, 임베디드 entitlement에도 카메라, 마이크, sandbox 키가 없습니다. 패키지 빌드는 번들된 Electron Helper를 Node 모드로 사용해 감독되는 로컬 daemon과 web sidecar를 시작하고 임시 로컬 포트, 자식 프로세스 환경 allowlist, 제한된 재시작을 사용합니다. 기본 데이터, 캐시, 로그, 런타임, 업데이트, Electron 세션 경로는 Electron userData/namespaces/<namespace>/ 아래에 있습니다. 외부 opendesign://는 고정된 workspace/invite/continue 형식 또는 페이로드 없는 workspace/open만 허용하고, 초대 계속은 nonce만 로컬 daemon에 POST합니다. 내부 od://app 스킴은 로컬 web sidecar로만 프록시되고, 자식 창은 od, blob, about:blank로 제한되며 임베디드 브라우저는 HTTP(S)/about:blank를 허용하고 file, javascript, data 탐색을 거부합니다. 패키지 빌드의 사용자 지정 업데이터는 기본적으로 활성화되고 안정 메타데이터는 releases.open-design.ai에 있으며, 자동 확인과 자동 다운로드는 켜지고 자동 열기는 꺼지며 안정 채널 폴링 주기는 6시간입니다. cask의 auto_updates 설정은 이 런타임 동작과 일치합니다. 공식 빌드에는 첫 실행 배너와 Settings → Privacy에서 끌 수 있는 PostHog 제품 분석 및 품질 추적과, 원격 텔레메트리 대상이 구성된 빌드에서 항상 활성화되고 제한·마스킹된 안전 및 신뢰성 텔레메트리가 있습니다. BYOK 키와 생성한 아티팩트 내용은 텔레메트리로 수집되지 않고, 크래시 minidump는 사용자가 지원 번들 내보내기를 시작하기 전까지 로컬에 남습니다. 이 항목에는 macOS Homebrew cask만 포함됩니다. 정확한 winget ID나 Flathub ref가 없고 0.27.1에는 Linux 사전 빌드 자산이 없으며, 소스 실행은 지원되는 설치 경로가 아닙니다. 함께 릴리스된 Windows x64 EXE는 카탈로그 요구 사항인 서명 Windows 경로 검증을 통과하지 않았으므로 Windows 변형을 만들지 않습니다.",
         },
     },
     "cherry-studio": {
@@ -2035,8 +2099,323 @@ REVIEWED = {
             "ko": "Homebrew formula는 이 카탈로그에서 확인된 macOS 아키텍처만 제공하며 Intel macOS bottle도 포함합니다. 결합 라이선스에는 MIT와 GPL-3.0-or-later가 포함됩니다. 팟캐스트는 네트워크를 사용하지만 설치 시 미디어를 검색하거나 서버를 시작하지 않습니다.",
         },
     },
-}
+    "slides": {
+        "name": "Slides", "publisher": "Maas Lalani and contributors", "category": "office", "mark": "Sl", "accent": "#6587a4",
+        "repo": "maaslalani/slides", "license": "MIT", "licenseFile": "LICENSE", "licenseRef": "main/LICENSE",
+        "homepage": "https://maaslalani.com/slides/", "formula": "slides",
+        "summary": {
+            "zh-CN": "终端演示工具，使用 Markdown 编写幻灯片并在终端中展示。",
+            "zh-TW": "終端簡報工具，使用 Markdown 編寫投影片並在終端機中展示。",
+            "en": "A terminal presentation tool for writing slides in Markdown and presenting them in the terminal.",
+            "ja": "Markdown でスライドを作成し、ターミナルで発表するためのターミナルプレゼンテーションツール。",
+            "ko": "Markdown으로 슬라이드를 작성하고 터미널에서 발표하는 터미널 프레젠테이션 도구.",
+        },
+        "extra": {
+            "zh-CN": "Homebrew formula 提供本目录已验证的 Apple Silicon 与 Intel macOS bottle。使用时打开用户指定的本地 Markdown 演示文件；安装不打开演示、不修改文件。",
+            "zh-TW": "Homebrew formula 提供本目錄已驗證的 Apple Silicon 與 Intel macOS bottle。使用時開啟使用者指定的本機 Markdown 簡報檔；安裝不開啟簡報、不修改檔案。",
+            "en": "The Homebrew formula provides the Apple Silicon and Intel macOS bottles verified for this catalog. Usage opens a user-selected local Markdown presentation; installation opens no presentation and modifies no files.",
+            "ja": "Homebrew formula は、このカタログで確認済みの Apple Silicon と Intel macOS bottle を提供します。使用時にユーザーが選択したローカル Markdown プレゼンテーションを開きます。インストール時にプレゼンテーションを開かず、ファイルも変更しません。",
+            "ko": "Homebrew formula는 이 카탈로그에서 확인된 Apple Silicon 및 Intel macOS bottle을 제공합니다. 사용 시 사용자가 선택한 로컬 Markdown 프레젠테이션을 열며, 설치 시 프레젠테이션을 열거나 파일을 수정하지 않습니다.",
+        },
+    },
+    "micro": {
+        "name": "Micro", "publisher": "Zachary Yedidia and contributors", "category": "dev", "mark": "Mi", "accent": "#6587a4",
+        "repo": "micro-editor/micro", "license": "MIT", "licenseFile": "LICENSE", "licenseRef": "master/LICENSE",
+        "homepage": "https://github.com/micro-editor/micro", "formula": "micro",
+        "summary": {
+            "zh-CN": "现代终端文本编辑器，提供常用快捷键、语法高亮、多缓冲和插件支持。",
+            "zh-TW": "現代終端機文字編輯器，提供常用快捷鍵、語法突顯、多緩衝區和外掛支援。",
+            "en": "A modern terminal text editor with familiar shortcuts, syntax highlighting, multiple buffers and plugins.",
+            "ja": "使い慣れたショートカット、構文ハイライト、複数バッファー、プラグインを備えたモダンなターミナルテキストエディター。",
+            "ko": "익숙한 단축키, 구문 강조, 다중 버퍼 및 플러그인을 지원하는 현대적인 터미널 텍스트 편집기.",
+        },
+        "extra": {
+            "zh-CN": "Homebrew formula 提供本目录已验证的 Apple Silicon 与 Intel macOS bottle。仅在用户保存时修改所打开的文件；安装不启动编辑器、不读取或写入文档。",
+            "zh-TW": "Homebrew formula 提供本目錄已驗證的 Apple Silicon 與 Intel macOS bottle。僅在使用者儲存時修改所開啟的檔案；安裝不啟動編輯器、不讀取或寫入文件。",
+            "en": "The Homebrew formula provides the Apple Silicon and Intel macOS bottles verified for this catalog. Files are changed only when the user saves; installation starts no editor and reads or writes no documents.",
+            "ja": "Homebrew formula は、このカタログで確認済みの Apple Silicon と Intel macOS bottle を提供します。ファイルが変更されるのはユーザーが保存した場合のみで、インストール時にエディターは起動せず、ドキュメントの読み書きも行いません。",
+            "ko": "Homebrew formula는 이 카탈로그에서 확인된 Apple Silicon 및 Intel macOS bottle을 제공합니다. 사용자가 저장할 때만 연 파일을 변경하며, 설치 시 편집기를 시작하거나 문서를 읽고 쓰지 않습니다.",
+        },
+    },
+    "glow": {
+        "name": "Glow", "publisher": "Charmbracelet, Inc. and contributors", "category": "office", "mark": "Gl", "accent": "#6587a4",
+        "repo": "charmbracelet/glow", "license": "MIT", "licenseFile": "LICENSE", "licenseRef": "main/LICENSE",
+        "homepage": "https://github.com/charmbracelet/glow", "formula": "glow",
+        "summary": {
+            "zh-CN": "命令行 Markdown 阅读与渲染工具，可在终端中格式化展示 Markdown 输入。",
+            "zh-TW": "命令列 Markdown 閱讀與渲染工具，可在終端機中格式化展示 Markdown 輸入。",
+            "en": "A command-line Markdown reader and renderer that formats Markdown input in the terminal.",
+            "ja": "ターミナルで Markdown 入力を整形表示するコマンドライン Markdown リーダー兼レンダラー。",
+            "ko": "터미널에서 Markdown 입력을 서식에 맞춰 표시하는 명령줄 Markdown 리더 및 렌더러.",
+        },
+        "extra": {
+            "zh-CN": "Homebrew formula 提供本目录已验证的 Apple Silicon 与 Intel macOS bottle。渲染只读取用户指定的 Markdown 输入；安装不打开文档、不修改内容。",
+            "zh-TW": "Homebrew formula 提供本目錄已驗證的 Apple Silicon 與 Intel macOS bottle。渲染只讀取使用者指定的 Markdown 輸入；安裝不開啟文件、不修改內容。",
+            "en": "The Homebrew formula provides the Apple Silicon and Intel macOS bottles verified for this catalog. Rendering reads only the Markdown input selected by the user; installation opens no document and modifies no content.",
+            "ja": "Homebrew formula は、このカタログで確認済みの Apple Silicon と Intel macOS bottle を提供します。レンダリングはユーザーが指定した Markdown 入力のみを読み取り、インストール時にドキュメントを開かず内容も変更しません。",
+            "ko": "Homebrew formula는 이 카탈로그에서 확인된 Apple Silicon 및 Intel macOS bottle을 제공합니다. 렌더링은 사용자가 지정한 Markdown 입력만 읽으며, 설치 시 문서를 열거나 내용을 수정하지 않습니다.",
+        },
+    },
+    "restic": {
+        "name": "restic", "publisher": "Alexander Neumann and restic contributors", "category": "system", "mark": "Re", "accent": "#6587a4",
+        "repo": "restic/restic", "license": "BSD-2-Clause", "licenseFile": "LICENSE", "licenseRef": "master/LICENSE",
+        "homepage": "https://restic.net/", "formula": "restic",
+        "summary": {
+            "zh-CN": "快速、安全的命令行备份程序，支持去重、加密、校验和本地或远程备份仓库。",
+            "zh-TW": "快速、安全的命令列備份程式，支援去重、加密、校驗和本機或遠端備份儲存庫。",
+            "en": "A fast, secure command-line backup program with deduplication, encryption, verification and local or remote backup repositories.",
+            "ja": "重複排除、暗号化、検証、ローカルまたはリモートのバックアップリポジトリを備えた、高速で安全なコマンドラインバックアッププログラム。",
+            "ko": "중복 제거, 암호화, 검증, 로컬 또는 원격 백업 리포지토리를 지원하는 빠르고 안전한 명령줄 백업 프로그램.",
+        },
+        "extra": {
+            "zh-CN": "Homebrew formula 提供本目录已验证的 Apple Silicon 与 Intel macOS bottle。备份、恢复或仓库访问仅在用户显式执行命令时发生；安装不创建备份、不连接仓库。",
+            "zh-TW": "Homebrew formula 提供本目錄已驗證的 Apple Silicon 與 Intel macOS bottle。備份、還原或儲存庫存取僅在使用者明確執行命令時發生；安裝不建立備份、不連線儲存庫。",
+            "en": "The Homebrew formula provides the Apple Silicon and Intel macOS bottles verified for this catalog. Backup, restore or repository access occurs only when the user runs an explicit command; installation creates no backup and connects to no repository.",
+            "ja": "Homebrew formula は、このカタログで確認済みの Apple Silicon と Intel macOS bottle を提供します。バックアップ、復元、リポジトリへの接続はユーザーが明示的にコマンドを実行した場合のみ発生し、インストール時にバックアップは作成されずリポジトリにも接続しません。",
+            "ko": "Homebrew formula는 이 카탈로그에서 확인된 Apple Silicon 및 Intel macOS bottle을 제공합니다. 백업, 복원 또는 리포지토리 접근은 사용자가 명시적으로 명령을 실행할 때만 발생하며, 설치 시 백업을 만들거나 리포지토리에 연결하지 않습니다.",
+        },
+    },
+    "lazydocker": {
+        "name": "Lazydocker", "publisher": "Jesse Duffield and contributors", "category": "dev", "mark": "Ld", "accent": "#6587a4",
+        "repo": "jesseduffield/lazydocker", "license": "MIT", "licenseFile": "LICENSE", "licenseRef": "master/LICENSE",
+        "homepage": "https://github.com/jesseduffield/lazydocker", "formula": "lazydocker",
+        "summary": {
+            "zh-CN": "Docker 终端管理界面，用于查看容器、镜像、卷、日志并执行常用 Docker 操作。",
+            "zh-TW": "Docker 終端機管理介面，用於檢視容器、映像檔、磁碟區、記錄並執行常用 Docker 操作。",
+            "en": "A terminal UI for Docker to inspect containers, images, volumes and logs and run common Docker operations.",
+            "ja": "コンテナー、イメージ、ボリューム、ログを確認し、一般的な Docker 操作を実行するためのターミナル UI。",
+            "ko": "컨테이너, 이미지, 볼륨, 로그를 살펴보고 일반적인 Docker 작업을 실행하는 터미널 UI.",
+        },
+        "extra": {
+            "zh-CN": "Homebrew formula 提供本目录已验证的 Apple Silicon 与 Intel macOS bottle。使用时需要可访问的 Docker 守护进程和上下文；安装不启动 Docker、不更改容器或镜像。",
+            "zh-TW": "Homebrew formula 提供本目錄已驗證的 Apple Silicon 與 Intel macOS bottle。使用時需要可存取的 Docker 守護程序和內容；安裝不啟動 Docker、不變更容器或映像檔。",
+            "en": "The Homebrew formula provides the Apple Silicon and Intel macOS bottles verified for this catalog. Usage requires an accessible Docker daemon and context; installation starts no Docker engine and changes no containers or images.",
+            "ja": "Homebrew formula は、このカタログで確認済みの Apple Silicon と Intel macOS bottle を提供します。使用にはアクセス可能な Docker デーモンとコンテキストが必要で、インストール時に Docker は起動せず、コンテナーやイメージも変更しません。",
+            "ko": "Homebrew formula는 이 카탈로그에서 확인된 Apple Silicon 및 Intel macOS bottle을 제공합니다. 사용하려면 접근 가능한 Docker 데몬과 컨텍스트가 필요하며, 설치 시 Docker를 시작하거나 컨테이너 또는 이미지를 변경하지 않습니다.",
+        },
+    },
 
+    "helix": {
+        "name": "Helix", "publisher": "Blaž Hrastnik and contributors", "category": "dev", "mark": "Hx", "accent": "#6587a4",
+        "repo": "helix-editor/helix", "license": "MPL-2.0", "licenseFile": "LICENSE", "licenseRef": "master/LICENSE",
+        "homepage": "https://helix-editor.com", "formula": "helix",
+        "summary": {
+            "zh-CN": "模态终端文本编辑器，内置多光标、语法高亮、语言服务器与树形结构解析支持。",
+            "zh-TW": "模態終端機文字編輯器，內建多游標、語法突顯、語言伺服器與樹狀結構解析支援。",
+            "en": "A modal terminal text editor with built-in multiple cursors, syntax highlighting, language servers and tree-sitter support.",
+            "ja": "複数カーソル、構文ハイライト、言語サーバー、Tree-sitter を組み込んだモーダルなターミナルテキストエディター。",
+            "ko": "다중 커서, 구문 강조, 언어 서버 및 Tree-sitter 지원을 내장한 모달 터미널 텍스트 편집기.",
+        },
+        "extra": {
+            "zh-CN": "Homebrew 仅提供本目录已验证的 macOS arm64 bottle，未声明 Intel macOS。仅在用户保存时修改所打开的文件；安装不启动编辑器、不读取或写入文档。",
+            "zh-TW": "Homebrew 僅提供本目錄已驗證的 macOS arm64 bottle，未宣告 Intel macOS。僅在使用者儲存時修改所開啟的檔案；安裝不啟動編輯器、不讀取或寫入文件。",
+            "en": "Homebrew provides only the macOS arm64 bottle verified for this catalog; Intel macOS is not declared. Files are changed only when the user saves; installation starts no editor and reads or writes no documents.",
+            "ja": "Homebrew はこのカタログで確認済みの macOS arm64 bottle のみを提供し、Intel macOS は対象外です。ファイルが変更されるのはユーザーが保存した場合のみで、インストール時にエディターは起動せず、ドキュメントの読み書きも行いません。",
+            "ko": "Homebrew는 이 카탈로그에서 확인된 macOS arm64 bottle만 제공하며 Intel macOS는 선언하지 않습니다. 사용자가 저장할 때만 연 파일을 변경하며, 설치 시 편집기를 시작하거나 문서를 읽고 쓰지 않습니다.",
+        },
+    },
+    "nushell": {
+        "name": "Nushell", "publisher": "The Nushell Project Developers", "category": "dev", "mark": "Nu", "accent": "#6587a4",
+        "repo": "nushell/nushell", "license": "MIT", "licenseFile": "LICENSE", "licenseRef": "main/LICENSE",
+        "homepage": "https://www.nushell.sh", "formula": "nushell",
+        "summary": {
+            "zh-CN": "结构化命令行 Shell，使用表格、管道和插件处理系统数据与外部命令输出。",
+            "zh-TW": "結構化命令列 Shell，使用表格、管道和外掛處理系統資料與外部命令輸出。",
+            "en": "A structured command-line shell that uses tables, pipelines and plugins to work with system data and external command output.",
+            "ja": "テーブル、パイプライン、プラグインを使ってシステムデータや外部コマンドの出力を扱う構造化コマンドラインシェル。",
+            "ko": "테이블, 파이프라인 및 플러그인으로 시스템 데이터와 외부 명령 출력을 다루는 구조화된 명령줄 셸.",
+        },
+        "extra": {
+            "zh-CN": "Homebrew 仅提供本目录已验证的 macOS arm64 bottle，未声明 Intel macOS；formula 含 openssl@4 运行时依赖，并使用 macOS 提供的 curl。文件与网络访问仅在用户启动 nu 并执行命令时发生；安装不更改默认 Shell、不执行命令。",
+            "zh-TW": "Homebrew 僅提供本目錄已驗證的 macOS arm64 bottle，未宣告 Intel macOS；formula 含 openssl@4 執行階段相依性，並使用 macOS 提供的 curl。檔案與網路存取僅在使用者啟動 nu 並執行命令時發生；安裝不變更預設 Shell、不執行命令。",
+            "en": "Homebrew provides only the macOS arm64 bottle verified for this catalog; Intel macOS is not declared. The formula has an openssl@4 runtime dependency and uses curl provided by macOS. File and network access occurs only when the user starts nu and runs commands; installation changes no default shell and executes no commands.",
+            "ja": "Homebrew はこのカタログで確認済みの macOS arm64 bottle のみを提供し、Intel macOS は対象外です。formula には実行時依存関係として openssl@4 があり、macOS が提供する curl を使用します。ファイルやネットワークへのアクセスはユーザーが nu を起動してコマンドを実行した場合のみ発生し、インストール時に既定シェルを変更せずコマンドも実行しません。",
+            "ko": "Homebrew는 이 카탈로그에서 확인된 macOS arm64 bottle만 제공하며 Intel macOS는 선언하지 않습니다. formula에는 openssl@4 런타임 종속성이 있고 macOS가 제공하는 curl을 사용합니다. 파일 및 네트워크 접근은 사용자가 nu를 시작하고 명령을 실행할 때만 발생하며, 설치 시 기본 셸을 바꾸거나 명령을 실행하지 않습니다.",
+        },
+    },
+    "croc": {
+        "name": "Croc", "publisher": "Zack and contributors", "category": "tools", "mark": "Cr", "accent": "#6587a4",
+        "repo": "schollz/croc", "license": "MIT", "licenseFile": "LICENSE", "licenseRef": "main/LICENSE",
+        "homepage": "https://github.com/schollz/croc", "formula": "croc",
+        "summary": {
+            "zh-CN": "端到端加密的命令行文件与文件夹传输工具，支持中继、断点续传和多文件传输。",
+            "zh-TW": "端對端加密的命令列檔案與資料夾傳輸工具，支援中繼、斷點續傳和多檔案傳輸。",
+            "en": "An end-to-end encrypted command-line tool for transferring files and folders, with relay support, resumable transfers and multiple files.",
+            "ja": "中継、再開可能な転送、複数ファイル転送をサポートする、エンドツーエンド暗号化のコマンドラインファイル・フォルダー転送ツール。",
+            "ko": "중계, 재개 가능한 전송 및 다중 파일 전송을 지원하는 엔드투엔드 암호화 명령줄 파일·폴더 전송 도구.",
+        },
+        "extra": {
+            "zh-CN": "Homebrew 仅提供本目录已验证的 macOS arm64 bottle，未声明 Intel macOS。发送或接收仅在用户显式运行命令时发生，会访问所选文件并建立网络连接；安装不传输文件、不启动常驻服务。",
+            "zh-TW": "Homebrew 僅提供本目錄已驗證的 macOS arm64 bottle，未宣告 Intel macOS。傳送或接收僅在使用者明確執行命令時發生，會存取所選檔案並建立網路連線；安裝不傳輸檔案、不啟動常駐服務。",
+            "en": "Homebrew provides only the macOS arm64 bottle verified for this catalog; Intel macOS is not declared. Sending or receiving occurs only when the user runs an explicit command, accesses selected files and opens network connections; installation transfers no files and starts no persistent service.",
+            "ja": "Homebrew はこのカタログで確認済みの macOS arm64 bottle のみを提供し、Intel macOS は対象外です。送信または受信はユーザーが明示的にコマンドを実行した場合のみ発生し、選択したファイルへのアクセスとネットワーク接続を行います。インストール時にファイル転送や常駐サービスの起動は行いません。",
+            "ko": "Homebrew는 이 카탈로그에서 확인된 macOS arm64 bottle만 제공하며 Intel macOS는 선언하지 않습니다. 전송 또는 수신은 사용자가 명시적으로 명령을 실행할 때만 발생하고 선택한 파일에 접근하며 네트워크 연결을 만듭니다. 설치 시 파일을 전송하거나 상시 서비스를 시작하지 않습니다.",
+        },
+    },
+    "zellij": {
+        "name": "Zellij", "publisher": "Aram Drevekenin and contributors", "category": "dev", "mark": "Ze", "accent": "#6587a4",
+        "repo": "zellij-org/zellij", "license": "MIT", "licenseFile": "LICENSE.md", "licenseRef": "main/LICENSE.md",
+        "homepage": "https://zellij.dev", "formula": "zellij",
+        "summary": {
+            "zh-CN": "可插件扩展的终端工作区与复用器，提供窗格、标签页、布局和会话管理。",
+            "zh-TW": "可外掛擴充的終端機工作區與複用器，提供窗格、分頁、版面和工作階段管理。",
+            "en": "A pluggable terminal workspace and multiplexer with panes, tabs, layouts and session management.",
+            "ja": "ペイン、タブ、レイアウト、セッション管理を備えた、プラグイン拡張可能なターミナルワークスペース兼マルチプレクサー。",
+            "ko": "플러그인으로 확장 가능한 터미널 작업 공간 및 멀티플렉서로, 창, 탭, 레이아웃과 세션 관리를 제공합니다.",
+        },
+        "extra": {
+            "zh-CN": "Homebrew 仅提供本目录已验证的 macOS arm64 bottle，未声明 Intel macOS；formula 未声明第三方 formula 依赖，但使用 macOS 提供的 curl。会话、窗格和布局仅在用户启动 zellij 后创建，运行状态写入用户配置目录。formula 另声明可选的 brew services 入口 zellij web，只有用户显式启用才运行；安装不注册或启动服务、不修改终端配置。",
+            "zh-TW": "Homebrew 僅提供本目錄已驗證的 macOS arm64 bottle，未宣告 Intel macOS；formula 未宣告第三方 formula 相依性，但使用 macOS 提供的 curl。工作階段、窗格和版面僅在使用者啟動 zellij 後建立，執行狀態寫入使用者設定目錄。formula 另宣告可選的 brew services 入口 zellij web，只有使用者明確啟用才執行；安裝不註冊或啟動服務、不修改終端機設定。",
+            "en": "Homebrew provides only the macOS arm64 bottle verified for this catalog; Intel macOS is not declared. The formula declares no third-party formula dependencies but uses curl provided by macOS. Sessions, panes and layouts are created only after the user starts zellij, with runtime state written under the user configuration directory. The formula also declares an optional brew services entry for zellij web, which runs only when the user explicitly enables it; installation registers or starts no service and changes no terminal configuration.",
+            "ja": "Homebrew はこのカタログで確認済みの macOS arm64 bottle のみを提供し、Intel macOS は対象外です。formula はサードパーティーの formula 依存関係を宣言していませんが、macOS が提供する curl を使用します。セッション、ペイン、レイアウトはユーザーが zellij を起動した後にのみ作成され、実行状態はユーザー設定ディレクトリに書き込まれます。formula には brew services のオプション入口 zellij web も宣言されていますが、実行されるのはユーザーが明示的に有効化した場合のみです。インストール時にサービスの登録や起動、ターミナル設定の変更は行いません。",
+            "ko": "Homebrew는 이 카탈로그에서 확인된 macOS arm64 bottle만 제공하며 Intel macOS는 선언하지 않습니다. formula는 타사 formula 종속성을 선언하지 않지만 macOS가 제공하는 curl을 사용합니다. 세션, 창 및 레이아웃은 사용자가 zellij를 시작한 후에만 만들어지고 런타임 상태는 사용자 구성 디렉터리에 기록됩니다. formula에는 brew services의 선택적 zellij web 진입점도 선언되어 있지만 사용자가 명시적으로 활성화할 때만 실행됩니다. 설치 시 서비스를 등록하거나 시작하지 않으며 터미널 구성을 수정하지 않습니다.",
+        },
+    },
+
+    "amical": {
+        "name": "Amical", "publisher": "Naomi Chopra, Haritabh Singh and contributors", "category": "ai", "mark": "Ac", "accent": "#6f76c8",
+        "repo": "amicalhq/amical", "license": "MIT", "licenseFile": "LICENSE", "licenseRef": "main/LICENSE",
+        "homepage": "https://amical.ai/", "cask": "amical", "caskArchitectures": ["x86_64", "aarch64"],
+        "summary": {
+            "zh-CN": "本地优先的 AI 听写与语音转文字桌面应用，使用开源模型并支持离线处理。",
+            "zh-TW": "本地優先的 AI 聽寫與語音轉文字桌面應用程式，使用開源模型並支援離線處理。",
+            "en": "A local-first AI dictation and speech-to-text desktop app using open-source models with offline processing.",
+            "ja": "オープンソースモデルを使用し、オフライン処理に対応するローカルファーストの AI ディクテーション・音声テキスト化デスクトップアプリ。",
+            "ko": "오픈 소스 모델을 사용하고 오프라인 처리를 지원하는 로컬 우선 AI 받아쓰기 및 음성-텍스트 데스크톱 앱.",
+        },
+        "extra": {
+            "zh-CN": "需要 macOS 13 或更高版本；Intel 与 Apple Silicon 使用不同 DMG，Homebrew cask 只复制 Amical.app 到应用程序目录。cask 声明 auto_updates: true，应用可能自行管理更新。应用包声明麦克风用途字符串用于录音转写，并声明摄像头用途字符串；权限只在系统提示且用户授权后使用。安装不启动应用、不请求权限、不录音或下载模型。",
+            "zh-TW": "需要 macOS 13 或更高版本；Intel 與 Apple Silicon 使用不同 DMG，Homebrew cask 只複製 Amical.app 到應用程式目錄。cask 宣告 auto_updates: true，應用可能自行管理更新。應用套件宣告麥克風用途字串用於錄音轉寫，並宣告攝影機用途字串；權限只在系統提示且使用者授權後使用。安裝不啟動應用程式、不請求權限、不錄音或下載模型。",
+            "en": "Requires macOS 13 or later. Intel and Apple Silicon use separate DMGs; the Homebrew cask only copies Amical.app into Applications. The cask declares auto_updates: true, so the app may manage its own updates. The bundle declares a microphone usage string for recording transcription and a camera usage string; permissions are used only after a system prompt and user authorization. Installation launches no app, requests no permissions, records no audio and downloads no models.",
+            "ja": "macOS 13 以降が必要です。Intel と Apple Silicon では別々の DMG を使用し、Homebrew cask は Amical.app をアプリケーションフォルダへコピーするだけです。cask は auto_updates: true を宣言しているため、アプリが更新を独自管理する場合があります。バンドルには録音・文字起こし用のマイク用途文字列とカメラ用途文字列が宣言されており、権限はシステムのプロンプトでユーザーが許可した場合にのみ使用されます。インストール時にアプリの起動、権限要求、録音、モデルのダウンロードは行われません。",
+            "ko": "macOS 13 이상이 필요합니다. Intel과 Apple Silicon은 별도 DMG를 사용하며 Homebrew cask는 Amical.app을 응용 프로그램 폴더로 복사만 합니다. cask는 auto_updates: true를 선언하므로 앱이 업데이트를 자체 관리할 수 있습니다. 번들에는 녹음 전사용 마이크 사용 문자열과 카메라 사용 문자열이 선언되어 있고, 권한은 시스템 프롬프트에서 사용자가 허용한 경우에만 사용됩니다. 설치 시 앱을 시작하거나 권한을 요청하거나 오디오를 녹음하거나 모델을 다운로드하지 않습니다.",
+        },
+    },
+    "beutl": {
+        "name": "Beutl", "publisher": "Yuto Terada and contributors", "category": "media", "mark": "Bt", "accent": "#537fa3",
+        "repo": "b-editor/beutl", "license": "MIT", "licenseFile": "LICENSE", "licenseRef": "main/LICENSE",
+        "homepage": "https://beutl.beditor.net/", "cask": "beutl", "caskArchitectures": ["aarch64"],
+        "summary": {
+            "zh-CN": "跨平台视频编辑与合成桌面软件，提供基于时间线的媒体制作工作流。",
+            "zh-TW": "跨平台影片編輯與合成桌面軟體，提供基於時間軸的媒體製作工作流程。",
+            "en": "A cross-platform desktop video editing and compositing application with a timeline-based media production workflow.",
+            "ja": "タイムラインベースのメディア制作ワークフローを備えた、クロスプラットフォームのデスクトップ動画編集・コンポジットアプリケーション。",
+            "ko": "타임라인 기반 미디어 제작 워크플로를 제공하는 크로스 플랫폼 데스크톱 비디오 편집 및 합성 애플리케이션.",
+        },
+        "extra": {
+            "zh-CN": "需要 macOS 12 或更高版本。本目录仅声明已验证的 Apple Silicon Homebrew 路由；虽然 Beutl.app 含 x86_64 Mach-O，但强制依赖 ffmpeg@6 没有 Intel macOS bottle，因此不声明 x86_64，也不推断 Rosetta 或源码构建可用。cask 会安装 GPL-3.0-or-later 的 ffmpeg@6；其 arm64 bottle 已验证 digest，ffmpeg、ffprobe、ffplay 均为 arm64 Mach-O，94 个运行时 formula 均有 Apple Silicon 或架构无关 bottle。安装只复制 Beutl.app，不启动应用或打开项目。",
+            "zh-TW": "需要 macOS 12 或更高版本。本目錄僅宣告已驗證的 Apple Silicon Homebrew 路由；雖然 Beutl.app 含 x86_64 Mach-O，但強制相依 ffmpeg@6 沒有 Intel macOS bottle，因此不宣告 x86_64，也不推斷 Rosetta 或原始碼建置可用。cask 會安裝 GPL-3.0-or-later 的 ffmpeg@6；其 arm64 bottle 已驗證 digest，ffmpeg、ffprobe、ffplay 均為 arm64 Mach-O，94 個執行階段 formula 均有 Apple Silicon 或架構無關 bottle。安裝只複製 Beutl.app，不啟動應用程式或開啟專案。",
+            "en": "Requires macOS 12 or later. This catalog declares only the verified Apple Silicon Homebrew route. Although Beutl.app contains an x86_64 Mach-O, the required ffmpeg@6 formula has no Intel macOS bottle, so x86_64 is not declared and Rosetta or source-build operation is not inferred. The cask installs ffmpeg@6 under GPL-3.0-or-later; its arm64 bottle digest is verified, ffmpeg, ffprobe and ffplay are arm64 Mach-O files, and all 94 runtime formulas have Apple Silicon or architecture-independent bottles. Installation only copies Beutl.app and launches no app or project.",
+            "ja": "macOS 12 以降が必要です。このカタログでは検証済みの Apple Silicon 向け Homebrew ルートのみを宣言します。Beutl.app に x86_64 Mach-O が含まれていても、必須依存の ffmpeg@6 に Intel macOS bottle がないため x86_64 は宣言せず、Rosetta やソースビルドでの動作も推測しません。cask は GPL-3.0-or-later の ffmpeg@6 をインストールします。arm64 bottle のダイジェストは検証済みで、ffmpeg、ffprobe、ffplay はすべて arm64 Mach-O、94 個の実行時 formula には Apple Silicon またはアーキテクチャ非依存 bottle があります。インストールでは Beutl.app をコピーするだけで、アプリやプロジェクトは起動しません。",
+            "ko": "macOS 12 이상이 필요합니다. 이 카탈로그는 검증된 Apple Silicon Homebrew 경로만 선언합니다. Beutl.app에 x86_64 Mach-O가 포함되어 있지만 필수 종속성인 ffmpeg@6에 Intel macOS bottle이 없으므로 x86_64를 선언하지 않고 Rosetta나 소스 빌드 동작을 추정하지 않습니다. cask는 GPL-3.0-or-later 라이선스의 ffmpeg@6를 설치합니다. arm64 bottle 다이제스트가 검증되었고 ffmpeg, ffprobe, ffplay는 모두 arm64 Mach-O이며 94개 런타임 formula는 모두 Apple Silicon 또는 아키텍처 독립 bottle을 제공합니다. 설치는 Beutl.app 복사만 수행하고 앱이나 프로젝트를 시작하지 않습니다.",
+        },
+    },
+
+    "buzz": {
+        "name": "Buzz", "publisher": "Chidi Williams and contributors", "category": "ai", "mark": "Bz", "accent": "#5f83b6",
+        "repo": "chidiwilliams/buzz", "license": "MIT", "licenseFile": "LICENSE", "licenseRef": "main/LICENSE",
+        "homepage": "https://github.com/chidiwilliams/buzz", "cask": "buzz", "caskArchitectures": ["x86_64", "aarch64"],
+        "summary": {
+            "zh-CN": "本地离线音频转录与翻译桌面应用，基于 Whisper，支持媒体文件、麦克风实时转录和字幕导出。",
+            "zh-TW": "本地離線音訊轉錄與翻譯桌面應用程式，基於 Whisper，支援媒體檔案、麥克風即時轉錄和字幕匯出。",
+            "en": "A local desktop audio transcription and translation app powered by Whisper, with media files, live microphone transcription and subtitle export.",
+            "ja": "Whisper を活用し、メディアファイル、マイクのリアルタイム文字起こし、字幕エクスポートに対応するローカルの音声文字起こし・翻訳デスクトップアプリ。",
+            "ko": "Whisper 기반의 로컬 오디오 전사 및 번역 데스크톱 앱으로, 미디어 파일, 마이크 실시간 전사, 자막 내보내기를 지원합니다.",
+        },
+        "extra": {
+            "zh-CN": "本条目对应稳定版 v1.4.5；Apple Silicon 与 Intel 使用不同 DMG，两者 SHA-256 摘要与主程序 Mach-O 架构均已验证。cask 无 formula 依赖且只复制 Buzz.app 到应用程序目录，并声明 auto_updates: true，应用可能自行管理更新；cask 与 Info.plist 均未声明最低 macOS 版本。上游 README 说明 1.4.5 是最后一个支持 Intel Mac 的版本，因此 x86_64 仅代表此已验证版本，不推断未来版本。应用包声明麦克风用途字符串，实时转录只在用户启动并授权后使用麦克风；本地文件转录可离线执行，YouTube 链接或 Hugging Face Transformer 模型可能需要联网或额外模型。安装不启动应用、不请求麦克风权限、不录音、不访问媒体或下载模型。",
+            "zh-TW": "本條目對應穩定版 v1.4.5；Apple Silicon 與 Intel 使用不同 DMG，兩者 SHA-256 摘要與主程式 Mach-O 架構均已驗證。cask 無 formula 相依性且只複製 Buzz.app 到應用程式目錄，並宣告 auto_updates: true，應用可能自行管理更新；cask 與 Info.plist 均未宣告最低 macOS 版本。上游 README 說明 1.4.5 是最後一個支援 Intel Mac 的版本，因此 x86_64 僅代表此已驗證版本，不推斷未來版本。應用套件宣告麥克風用途字串，即時轉錄只在使用者啟動並授權後使用麥克風；本機檔案轉錄可離線執行，YouTube 連結或 Hugging Face Transformer 模型可能需要連網或額外模型。安裝不啟動應用程式、不請求麥克風權限、不錄音、不存取媒體或下載模型。",
+            "en": "This entry corresponds to stable v1.4.5. Apple Silicon and Intel use separate DMGs; both SHA-256 digests and primary Mach-O architectures are verified. The cask has no formula dependency and only copies Buzz.app into Applications. It declares auto_updates: true, so the app may manage its own updates; neither the cask nor Info.plist declares a minimum macOS version. The upstream README states that 1.4.5 is the last release supporting Intel Macs, so x86_64 applies only to this verified release and is not inferred for future releases. The bundle declares a microphone usage string; live transcription uses the microphone only after the user starts it and grants permission. Local-file transcription can run offline, while YouTube links or Hugging Face Transformer models may require network access or additional models. Installation launches no app, requests no microphone permission, records no audio, accesses no media and downloads no models.",
+            "ja": "このエントリは安定版 v1.4.5 に対応します。Apple Silicon と Intel は別々の DMG を使用し、両方の SHA-256 ダイジェストと主要 Mach-O のアーキテクチャを検証済みです。cask に formula 依存関係はなく、Buzz.app をアプリケーションフォルダへコピーするだけです。auto_updates: true が宣言されているため、アプリが更新を独自管理する場合があります。cask と Info.plist のいずれにも最低 macOS バージョンの宣言はありません。上流 README では 1.4.5 が Intel Mac をサポートする最後のリリースと説明されているため、x86_64 はこの検証済みリリースにのみ適用され、将来のリリースには推測しません。バンドルにはマイク用途文字列が宣言されており、リアルタイム文字起こしはユーザーが開始して許可した後にのみマイクを使用します。ローカルファイルの文字起こしはオフラインで実行できますが、YouTube リンクや Hugging Face Transformer モデルはネットワーク接続または追加モデルが必要になる場合があります。インストール時にアプリの起動、マイク権限の要求、録音、メディアへのアクセス、モデルのダウンロードは行われません。",
+            "ko": "이 항목은 안정 v1.4.5에 해당합니다. Apple Silicon과 Intel은 별도 DMG를 사용하며 두 SHA-256 다이제스트와 기본 Mach-O 아키텍처를 모두 검증했습니다. cask에는 formula 종속성이 없고 Buzz.app을 응용 프로그램 폴더로 복사만 합니다. auto_updates: true를 선언하므로 앱이 업데이트를 자체 관리할 수 있으며, cask와 Info.plist 어디에도 최소 macOS 버전이 선언되어 있지 않습니다. 업스트림 README는 1.4.5가 Intel Mac을 지원하는 마지막 릴리스라고 설명하므로 x86_64는 이 검증된 릴리스에만 적용되고 향후 릴리스에 대해 추정하지 않습니다. 번들에는 마이크 사용 문자열이 선언되어 있고 실시간 전사는 사용자가 시작하고 권한을 부여한 후에만 마이크를 사용합니다. 로컬 파일 전사는 오프라인으로 실행할 수 있지만 YouTube 링크나 Hugging Face Transformer 모델은 네트워크 접근 또는 추가 모델이 필요할 수 있습니다. 설치 시 앱을 시작하거나 마이크 권한을 요청하거나 오디오를 녹음하거나 미디어에 접근하거나 모델을 다운로드하지 않습니다.",
+        },
+    },
+    "hidden": {
+        "name": "Hidden Bar",
+        "publisher": "Dwarves Foundation",
+        "category": "system",
+        "mark": "HB",
+        "accent": "#6387a4",
+        "repo": "consolelabs/hidden",
+        "license": "MIT",
+        "licenseFile": "LICENSE",
+        "licenseRef": "v1.13.0/LICENSE",
+        "homepage": "https://github.com/consolelabs/hidden",
+        "cask": "hiddenbar",
+        "caskArchitectures": ["x86_64", "aarch64"],
+        "summary": {
+            "zh-CN": "macOS 菜单栏图标隐藏工具，可折叠、搜索和分组管理其他应用的菜单栏项目。",
+            "zh-TW": "macOS 選單列圖示隱藏工具，可摺疊、搜尋和分組管理其他應用程式的選單列項目。",
+            "en": "A macOS menu-bar utility for hiding, revealing, searching and organizing other apps' menu-bar items.",
+            "ja": "ほかのアプリのメニューバー項目を非表示、表示、検索、整理できる macOS メニューバーユーティリティ。",
+            "ko": "다른 앱의 메뉴 막대 항목을 숨기고 표시하며 검색·정리할 수 있는 macOS 메뉴 막대 유틸리티.",
+        },
+        "extra": {
+            "zh-CN": "本条目对应稳定版 v1.13.0；GitHub 标签发布为非草稿、非预发布，/releases/latest 解析到同一发布 ID 446937244，appcast 条目没有 beta 或 dev channel。Homebrew cask hiddenbar 处于有效状态，无 formula 依赖、冲突或 caveat；安装只将 Hidden Bar.app 复制到 /Applications，不启动应用、不请求权限、不注册登录项；uninstall/zap 仅退出应用、反授权旧 LauncherApplication 记录并清理卸载数据。ZIP SHA-256 a811717d84faba478ea66caa224f3360a9e5d844a7a50fa09009f32d78131a44 同时匹配 cask 与 GitHub 资产。按 Mach-O 头验证，6 个唯一真实 Mach-O 均为含 x86_64 与 arm64 的 fat 文件，共 12 个切片；所有切片都包含 LC_CODE_SIGNATURE、启用 hardened runtime，签名者均为 Developer ID Application: Dwarves Foundation Company Limited (W777S7V8TN)。应用包内可静态解析到 s8ch v1 stapled ticket 容器和 g8tk trailer；这只是本地证据，不在 Linux 上声称在线 Gatekeeper 验收结果。最低系统为 macOS 13；主程序是 LSUIElement，bundle ID 为 com.dwarvesv.minimalbar，直接构建没有沙盒 entitlement，嵌入的 entitlement 字典为空。读取和隐藏菜单栏项目所需的 Accessibility 是首次启动并使用相关功能后的用户授权，缺失时才打开系统设置，安装阶段不会提示；Info.plist 没有摄像头、麦克风、屏幕录制或 AppleEvents 用途字符串，产品和源码均说明只读取菜单栏项目，不读取屏幕内容。登录项默认关闭，用户启用后通过 SMAppService.mainApp 注册主程序；旧 com.dwarvesv.LauncherApplication helper 已不随包提供，只会在升级时一次性反授权。GitHub/Homebrew 直接构建包含 Sparkle 2.10.1，通过 HTTPS 获取 GitHub appcast 并以 EdDSA 公钥 C7MH2NS46vKD4nNh9i4BmFzXLSAbP2jM5qZcaPw9u3w= 校验，系统画像发送保持关闭且不发送个人信息；Homebrew 安装本身不检查或下载更新，应用启动后才初始化 Sparkle 的计划或手动更新机制。未发现受支持的上游 Linux 或 Windows 包及制品，因此仅声明 macOS brew cask 路由。",
+            "zh-TW": "本條目對應穩定版 v1.13.0；GitHub 標籤發布為非草稿、非預先發布，/releases/latest 解析到同一發布 ID 446937244，appcast 條目沒有 beta 或 dev channel。Homebrew cask hiddenbar 處於有效狀態，無 formula 相依性、衝突或 caveat；安裝只將 Hidden Bar.app 複製到 /Applications，不啟動應用程式、不請求權限、不註冊登入項目；uninstall/zap 僅結束應用程式、反授權舊 LauncherApplication 記錄並清理解除安裝資料。ZIP SHA-256 a811717d84faba478ea66caa224f3360a9e5d844a7a50fa09009f32d78131a44 同時符合 cask 與 GitHub 資產。依 Mach-O 標頭驗證，6 個唯一真實 Mach-O 均為含 x86_64 與 arm64 的 fat 檔案，共 12 個切片；所有切片都包含 LC_CODE_SIGNATURE、啟用 hardened runtime，簽署者均為 Developer ID Application: Dwarves Foundation Company Limited (W777S7V8TN)。應用程式包內可靜態解析到 s8ch v1 stapled ticket 容器和 g8tk trailer；這只是本機證據，不在 Linux 上宣稱線上 Gatekeeper 驗收結果。最低系統為 macOS 13；主程式是 LSUIElement，bundle ID 為 com.dwarvesv.minimalbar，直接建置沒有沙盒 entitlement，嵌入的 entitlement 字典為空。讀取和隱藏選單列項目所需的 Accessibility 是首次啟動並使用相關功能後的使用者授權，缺失時才開啟系統設定，安裝階段不會提示；Info.plist 沒有攝影機、麥克風、螢幕錄製或 AppleEvents 用途字串，產品和原始碼均說明只讀取選單列項目，不讀取螢幕內容。登入項目預設關閉，使用者啟用後透過 SMAppService.mainApp 註冊主程式；舊 com.dwarvesv.LauncherApplication helper 已不隨包提供，只會在升級時一次性反授權。GitHub/Homebrew 直接建置包含 Sparkle 2.10.1，透過 HTTPS 取得 GitHub appcast 並以 EdDSA 公開金鑰 C7MH2NS46vKD4nNh9i4BmFzXLSAbP2jM5qZcaPw9u3w= 校驗，系統設定檔傳送保持關閉且不傳送個人資訊；Homebrew 安裝本身不檢查或下載更新，應用程式啟動後才初始化 Sparkle 的計劃或手動更新機制。未發現受支援的上游 Linux 或 Windows 套件及製品，因此僅宣告 macOS brew cask 路由。",
+            "en": "This entry corresponds to stable v1.13.0. The GitHub tag release is non-draft and non-prerelease, /releases/latest resolves to the same release ID 446937244, and the appcast items have no beta or dev channel. The active Homebrew cask hiddenbar has no formula dependency, conflict or caveat. Installation only copies Hidden Bar.app into /Applications; it does not launch the app, request permissions or register a login item. Uninstall/zap only quits the app, deauthorizes the legacy LauncherApplication record and removes uninstall cleanup data. The ZIP SHA-256 a811717d84faba478ea66caa224f3360a9e5d844a7a50fa09009f32d78131a44 matches both the cask and GitHub asset. Mach-O headers prove that all 6 unique real Mach-O files are fat binaries containing x86_64 and arm64, for 12 slices total. Every slice contains LC_CODE_SIGNATURE, enables hardened runtime and is signed by Developer ID Application: Dwarves Foundation Company Limited (W777S7V8TN). The bundle contains a statically parseable s8ch v1 stapled-ticket container and g8tk trailer; this is local evidence, not an online Gatekeeper verdict obtained from Linux. It requires macOS 13 or newer. The main app is an LSUIElement with bundle ID com.dwarvesv.minimalbar; the direct build has no sandbox entitlement and its embedded entitlement dictionaries are empty. Accessibility for reading and hiding menu-bar items is a user grant after first launch and use, and System Settings opens only when that permission is missing; installation itself does not prompt. The Info.plist has no camera, microphone, screen-recording or AppleEvents usage strings, and both the product and source state that it reads menu-bar items but never screen contents. Start-at-login is off by default; when the user enables it, SMAppService.mainApp registers the main app. The legacy com.dwarvesv.LauncherApplication helper is no longer bundled and is only deauthorized once as migration cleanup. The GitHub/Homebrew direct build includes Sparkle 2.10.1, fetches a GitHub appcast over HTTPS, verifies it against EdDSA public key C7MH2NS46vKD4nNh9i4BmFzXLSAbP2jM5qZcaPw9u3w=, keeps system profiling disabled and sends no personal information. Homebrew installation itself checks for or downloads no update; Sparkle's scheduled or manual update behavior is initialized only after the app launches. No supported upstream Linux or Windows package or artifact exists, so only the macOS brew cask route is declared.",
+            "ja": "このエントリは安定版 v1.13.0 に対応します。GitHub タグリリースはドラフトでもプレリリースでもなく、/releases/latest は同じリリース ID 446937244 を返し、appcast 項目に beta や dev チャネルはありません。有効な Homebrew cask hiddenbar に formula 依存関係、競合、caveat はありません。インストールは Hidden Bar.app を /Applications にコピーするだけで、アプリの起動、権限要求、ログイン項目の登録は行いません。uninstall/zap はアプリの終了、従来の LauncherApplication レコードの認証取り消し、アンインストール用クリーンアップデータの削除だけを行います。ZIP の SHA-256 a811717d84faba478ea66caa224f3360a9e5d844a7a50fa09009f32d78131a44 は cask と GitHub アセットの両方に一致します。Mach-O ヘッダーにより、6 個の一意な実 Mach-O はすべて x86_64 と arm64 を含む fat バイナリで、合計 12 スライスであることを確認済みです。すべてのスライスに LC_CODE_SIGNATURE があり、hardened runtime が有効で、署名者は Developer ID Application: Dwarves Foundation Company Limited (W777S7V8TN) です。アプリバンドルからは s8ch v1 stapled ticket コンテナと g8tk trailer を静的解析できます。これはローカル証拠であり、Linux からオンラインの Gatekeeper 判定を主張するものではありません。要件は macOS 13 以降です。メインアプリは LSUIElement、バンドル ID は com.dwarvesv.minimalbar で、直接ビルドにはサンドボックス entitlement がなく、埋め込み entitlement 辞書は空です。メニューバー項目の読み取りと非表示に必要な Accessibility は、初回起動後に機能を使う際のユーザー許可であり、権限がない場合にだけシステム設定を開きます。インストール時には要求しません。Info.plist にカメラ、マイク、画面収録、AppleEvents の用途文字列はなく、製品とソースはメニューバー項目を読むだけで画面内容は読まないと明記しています。ログイン時起動は既定で無効で、ユーザーが有効にした場合のみ SMAppService.mainApp がメインアプリを登録します。従来の com.dwarvesv.LauncherApplication ヘルパーは同梱されておらず、アップグレード時の移行クリーンアップで一度だけ認証を取り消します。GitHub/Homebrew の直接ビルドには Sparkle 2.10.1 が含まれ、HTTPS で GitHub appcast を取得し、EdDSA 公開鍵 C7MH2NS46vKD4nNh9i4BmFzXLSAbP2jM5qZcaPw9u3w= で検証します。システムプロファイル送信は無効で、個人情報も送信しません。Homebrew のインストール自体が更新確認やダウンロードを行うことはなく、Sparkle の定期または手動更新機能が初期化されるのはアプリ起動後です。サポートされる上流の Linux または Windows パッケージや成果物はないため、macOS の brew cask ルートのみを宣言します。",
+            "ko": "이 항목은 안정 v1.13.0에 해당합니다. GitHub 태그 릴리스는 초안도 사전 릴리스도 아니고 /releases/latest는 동일한 릴리스 ID 446937244를 반환하며 appcast 항목에는 beta나 dev 채널이 없습니다. 활성 Homebrew cask hiddenbar에는 formula 종속성, 충돌, caveat가 없습니다. 설치는 Hidden Bar.app을 /Applications로 복사만 하고 앱 시작, 권한 요청, 로그인 항목 등록을 하지 않습니다. uninstall/zap은 앱 종료, 기존 LauncherApplication 기록 인증 해제, 제거 정리 데이터 삭제만 수행합니다. ZIP SHA-256 a811717d84faba478ea66caa224f3360a9e5d844a7a50fa09009f32d78131a44는 cask와 GitHub 자산 모두에 일치합니다. Mach-O 헤더 검증 결과 고유한 실제 Mach-O 6개는 모두 x86_64와 arm64를 포함하는 fat 바이너리이고 총 슬라이스는 12개입니다. 모든 슬라이스는 LC_CODE_SIGNATURE를 포함하고 hardened runtime이 활성화되어 있으며 Developer ID Application: Dwarves Foundation Company Limited (W777S7V8TN)으로 서명되었습니다. 앱 번들에서는 s8ch v1 stapled ticket 컨테이너와 g8tk trailer를 정적으로 분석할 수 있습니다. 이는 로컬 증거일 뿐 Linux에서 온라인 Gatekeeper 판정을 주장하지 않습니다. macOS 13 이상이 필요합니다. 주 앱은 LSUIElement이고 번들 ID는 com.dwarvesv.minimalbar이며 직접 빌드에는 샌드박스 entitlement가 없고 임베드된 entitlement 사전은 비어 있습니다. 메뉴 막대 항목을 읽고 숨기는 Accessibility는 첫 실행 후 관련 기능을 사용할 때 사용자가 부여하는 권한이며, 권한이 없을 때만 시스템 설정을 엽니다. 설치 단계에서는 프롬프트가 없습니다. Info.plist에는 카메라, 마이크, 화면 녹화, AppleEvents 사용 문자열이 없고 제품과 소스는 메뉴 막대 항목만 읽으며 화면 내용은 읽지 않는다고 명시합니다. 로그인 시 시작은 기본적으로 꺼져 있고 사용자가 활성화하면 SMAppService.mainApp이 주 앱을 등록합니다. 기존 com.dwarvesv.LauncherApplication 헬퍼는 더 이상 번들에 포함되지 않으며 업그레이드 마이그레이션 정리에서 한 번만 인증이 해제됩니다. GitHub/Homebrew 직접 빌드는 Sparkle 2.10.1을 포함하고 HTTPS로 GitHub appcast를 가져온 뒤 EdDSA 공개 키 C7MH2NS46vKD4nNh9i4BmFzXLSAbP2jM5qZcaPw9u3w=로 검증합니다. 시스템 프로파일 전송은 비활성화되어 있고 개인정보를 보내지 않습니다. Homebrew 설치 자체는 업데이트 확인이나 다운로드를 수행하지 않으며, Sparkle의 예약 또는 수동 업데이트 동작은 앱이 시작한 뒤에야 초기화됩니다. 지원되는 상류 Linux 또는 Windows 패키지나 산출물이 없으므로 macOS brew cask 경로만 선언합니다.",
+        },
+    },
+    "keycastr": {
+        "name": "KeyCastr", "publisher": "KeyCastr contributors", "category": "system", "mark": "Kc", "accent": "#6d83a6",
+        "repo": "keycastr/keycastr", "license": "BSD-3-Clause", "licenseFile": "LICENSE.md", "licenseRef": "main/LICENSE.md",
+        "homepage": "https://github.com/keycastr/keycastr", "cask": "keycastr", "caskArchitectures": ["x86_64", "aarch64"],
+        "summary": {
+            "zh-CN": "开源按键可视化工具，在录屏、演示或协作时显示键盘输入和可选的鼠标点击。",
+            "zh-TW": "開源按鍵視覺化工具，在錄屏、演示或協作時顯示鍵盤輸入和可選的滑鼠點擊。",
+            "en": "An open-source keystroke visualizer for showing keyboard input and optional mouse clicks during screencasts, presentations and collaboration.",
+            "ja": "画面収録、プレゼンテーション、共同作業でキー入力と任意のマウスクリックを表示する、オープンソースのキーストローク可視化ツール。",
+            "ko": "화면 녹화, 발표, 협업 중 키보드 입력과 선택적 마우스 클릭을 표시하는 오픈 소스 키 입력 시각화 도구.",
+        },
+        "extra": {
+            "zh-CN": "本条目对应稳定版 v0.11.1。Homebrew cask 无 formula 依赖、冲突或 caveat，只将 KeyCastr.app 复制到应用程序目录，zap 仅在卸载清理时移除 HTTPStorage 和偏好设置。ZIP 的 SHA-256 摘要已与 cask 核对，归档顶层只有 KeyCastr.app；13 个符号链接均为框架内部相对路径，无绝对路径或越界目标。主程序及全部 11 个 Mach-O 均为含 x86_64 与 arm64 的 universal binary，Info.plist 与 Sparkle appcast 均声明最低 macOS 10.13。应用是 LSUIElement 后台界面工具，读取按键或鼠标事件需要用户首次运行后在系统设置授予输入监控或辅助功能权限；Info.plist 没有摄像头、麦克风等用途字符串。cask 声明 auto_updates: true，应用内置 Sparkle，更新源为 keycastr.github.io/appcast.xml；README 说明 Sparkle 是其唯一网络机制。安装不启动应用、不请求权限、不捕获输入、不检查或下载更新。",
+            "zh-TW": "本條目對應穩定版 v0.11.1。Homebrew cask 無 formula 相依性、衝突或 caveat，只將 KeyCastr.app 複製到應用程式目錄，zap 僅在解除安裝清理時移除 HTTPStorage 和偏好設定。ZIP 的 SHA-256 摘要已與 cask 核對，封存檔頂層只有 KeyCastr.app；13 個符號連結均為框架內部相對路徑，無絕對路徑或越界目標。主程式及全部 11 個 Mach-O 均為含 x86_64 與 arm64 的 universal binary，Info.plist 與 Sparkle appcast 均宣告最低 macOS 10.13。應用是 LSUIElement 背景介面工具，讀取按鍵或滑鼠事件需要使用者首次執行後在系統設定授予輸入監控或輔助功能權限；Info.plist 沒有攝影機、麥克風等用途字串。cask 宣告 auto_updates: true，應用內建 Sparkle，更新來源為 keycastr.github.io/appcast.xml；README 說明 Sparkle 是其唯一網路機制。安裝不啟動應用程式、不請求權限、不擷取輸入、不檢查或下載更新。",
+            "en": "This entry corresponds to stable v0.11.1. The Homebrew cask has no formula dependency, conflict or caveat; it only copies KeyCastr.app into Applications, and zap removes HTTP storage and preferences only during uninstall cleanup. The ZIP SHA-256 digest matches the cask, and the archive contains only KeyCastr.app at its top level. All 13 symlinks are framework-internal relative paths, with no absolute or archive-outside targets. The primary executable and all 11 Mach-O files are universal binaries containing x86_64 and arm64; both Info.plist and the Sparkle appcast declare macOS 10.13 as the minimum system version. The app is an LSUIElement background-interface utility. Reading keystroke or mouse events requires Input Monitoring or Accessibility permission granted by the user after first launch; the plist contains no camera, microphone or other usage strings. The cask declares auto_updates: true, and the bundled Sparkle updater uses keycastr.github.io/appcast.xml; the README states that Sparkle is its only networking mechanism. Installation launches no app, requests no permission, captures no input and checks for or downloads no update.",
+            "ja": "このエントリは安定版 v0.11.1 に対応します。Homebrew cask に formula 依存関係、競合、caveat はなく、KeyCastr.app をアプリケーションフォルダへコピーするだけです。zap はアンインストール時のクリーンアップでのみ HTTP ストレージと設定を削除します。ZIP の SHA-256 ダイジェストは cask と一致し、アーカイブの最上位には KeyCastr.app のみが含まれます。13 個のシンボリックリンクはすべてフレームワーク内部の相対パスで、絶対パスやアーカイブ外を指すターゲットはありません。主要実行ファイルと全 11 個の Mach-O は x86_64 と arm64 を含む universal binary で、Info.plist と Sparkle appcast の両方が最低システムバージョンとして macOS 10.13 を宣言しています。アプリは LSUIElement のバックグラウンド UI ユーティリティです。キー入力やマウスイベントの読み取りには、初回起動後にユーザーがシステム設定で入力監視またはアクセシビリティ権限を許可する必要があり、plist にカメラ、マイクなどの用途文字列はありません。cask は auto_updates: true を宣言し、同梱の Sparkle アップデーターは keycastr.github.io/appcast.xml を使用します。README では Sparkle が唯一のネットワーク機構と説明されています。インストール時にアプリの起動、権限要求、入力キャプチャ、更新確認や更新のダウンロードは行われません。",
+            "ko": "이 항목은 안정 v0.11.1에 해당합니다. Homebrew cask에는 formula 종속성, 충돌, caveat가 없고 KeyCastr.app을 응용 프로그램 폴더로 복사만 하며, zap은 제거 정리 시에만 HTTP 저장소와 환경설정을 삭제합니다. ZIP SHA-256 다이제스트는 cask와 일치하고 아카이브 최상위에는 KeyCastr.app만 있습니다. 13개 심볼릭 링크는 모두 프레임워크 내부 상대 경로이며 절대 경로나 아카이브 외부 대상은 없습니다. 기본 실행 파일과 11개 Mach-O 파일은 모두 x86_64와 arm64를 포함하는 universal binary이고 Info.plist와 Sparkle appcast 모두 최소 시스템 버전으로 macOS 10.13을 선언합니다. 앱은 LSUIElement 백그라운드 인터페이스 유틸리티입니다. 키 입력이나 마우스 이벤트를 읽으려면 첫 실행 후 사용자가 시스템 설정에서 입력 모니터링 또는 손쉬운 사용 권한을 부여해야 하며, plist에는 카메라, 마이크 등 사용 문자열이 없습니다. cask는 auto_updates: true를 선언하고 번들된 Sparkle 업데이터는 keycastr.github.io/appcast.xml을 사용합니다. README는 Sparkle이 유일한 네트워크 메커니즘이라고 설명합니다. 설치 시 앱을 시작하거나 권한을 요청하거나 입력을 캡처하거나 업데이트를 확인·다운로드하지 않습니다.",
+        },
+    },
+    "flycut": {
+        "name": "Flycut", "publisher": "General Arcade and contributors", "category": "tools", "mark": "Fc", "accent": "#6886a4",
+        "repo": "TermiT/Flycut", "license": "MIT", "licenseFile": "license.txt", "licenseRef": "master/license.txt",
+        "homepage": "https://github.com/TermiT/Flycut", "cask": "flycut", "caskArchitectures": ["x86_64", "aarch64"],
+        "summary": {
+            "zh-CN": "简洁的开源 macOS 剪贴板管理器，记录复制历史，并通过快捷键搜索、选择和重新粘贴文本。",
+            "zh-TW": "簡潔的開源 macOS 剪貼簿管理器，記錄複製歷史，並透過快捷鍵搜尋、選擇和重新貼上文字。",
+            "en": "A clean open-source macOS clipboard manager that keeps copy history and lets you search, select and paste text again with hotkeys.",
+            "ja": "コピー履歴を保存し、ホットキーで検索・選択して再貼り付けできる、シンプルなオープンソースの macOS クリップボードマネージャー。",
+            "ko": "복사 기록을 저장하고 단축키로 검색·선택하여 다시 붙여넣을 수 있는 깔끔한 오픈 소스 macOS 클립보드 관리자.",
+        },
+        "extra": {
+            "zh-CN": "本条目对应稳定版 1.9.6，GitHub 的 /releases/tags/1.9.6 与 /releases/latest 返回同一非草稿、非预发布对象。Homebrew cask 无 formula 依赖、冲突或 caveat，只将 Flycut.app 复制到应用程序目录，zap 仅在卸载清理时移除偏好设置。ZIP 的 SHA-256 摘要已与 cask 核对，归档顶层只有 Flycut.app；3 个符号链接均为框架内部相对路径，无绝对路径或越界目标。主程序、CloudKit framework 和 LoginItem helper 共 3 个 Mach-O 均为含 x86_64 与 arm64 的 universal binary，Info.plist 声明最低 macOS 10.10。应用是 LSUIElement 后台工具；首次启动后，向其他应用粘贴历史内容需要用户在系统设置授予辅助功能权限，plist 的 NSAppleEventsUsageDescription 仅说明用于粘贴，源码通过 CGEvent 合成 Cmd-V。安装不会启动应用、请求权限、注册登录项或读取剪贴板。登录启动默认关闭，只能由用户在偏好设置中启用；iCloud/CloudKit 设置与剪贴记录同步也默认关闭，用户启用后才会访问 Apple CloudKit。源码和工程没有 Sparkle、appcast 或通用 URL 加载代码，cask 未声明自动更新。剪贴板历史可能包含敏感信息，可暂停跟踪、清除历史或配置密码项跳过。",
+            "zh-TW": "本條目對應穩定版 1.9.6，GitHub 的 /releases/tags/1.9.6 與 /releases/latest 傳回同一非草稿、非預先發布物件。Homebrew cask 無 formula 相依性、衝突或 caveat，只將 Flycut.app 複製到應用程式目錄，zap 僅在解除安裝清理時移除偏好設定。ZIP 的 SHA-256 摘要已與 cask 核對，封存檔頂層只有 Flycut.app；3 個符號連結均為框架內部相對路徑，無絕對路徑或越界目標。主程式、CloudKit framework 和 LoginItem helper 共 3 個 Mach-O 均為含 x86_64 與 arm64 的 universal binary，Info.plist 宣告最低 macOS 10.10。應用是 LSUIElement 背景工具；首次啟動後，向其他應用程式貼上歷史內容需要使用者在系統設定授予輔助使用權限，plist 的 NSAppleEventsUsageDescription 僅說明用於貼上，原始碼透過 CGEvent 合成 Cmd-V。安裝不會啟動應用程式、請求權限、註冊登入項目或讀取剪貼簿。登入啟動預設關閉，只能由使用者在偏好設定中啟用；iCloud/CloudKit 設定與剪貼記錄同步也預設關閉，使用者啟用後才會存取 Apple CloudKit。原始碼和專案沒有 Sparkle、appcast 或通用 URL 載入程式碼，cask 未宣告自動更新。剪貼簿歷史可能包含敏感資訊，可暫停追蹤、清除歷史或設定密碼項目略過。",
+            "en": "This entry corresponds to stable 1.9.6; GitHub's /releases/tags/1.9.6 and /releases/latest return the same non-draft, non-prerelease object. The Homebrew cask has no formula dependency, conflict or caveat; it only copies Flycut.app into Applications, and zap removes preferences only during uninstall cleanup. The ZIP SHA-256 digest matches the cask, the archive contains only Flycut.app at its top level, and all 3 symlinks are framework-internal relative paths with no absolute or archive-outside targets. The primary executable, CloudKit framework and LoginItem helper—all 3 Mach-O files—are universal binaries containing x86_64 and arm64; Info.plist declares macOS 10.10 as the minimum. The app is an LSUIElement background utility. After first launch, pasting history into other apps requires the user to grant Accessibility in System Settings; NSAppleEventsUsageDescription states only that Apple events are used for pasting, while source code synthesizes Cmd-V through CGEvent. Installation does not launch the app, request permission, register a login item or read the clipboard. Launch-at-login is off by default and can only be enabled by the user in preferences; iCloud/CloudKit settings and clippings sync are also off by default and use Apple CloudKit only after the user enables them. The source and project contain no Sparkle, appcast or generic URL-loading code, and the cask does not declare automatic updates. Clipboard history can contain sensitive data; tracking can be paused, history cleared, and password items configured to be skipped.",
+            "ja": "このエントリは安定版 1.9.6 に対応し、GitHub の /releases/tags/1.9.6 と /releases/latest は同一のドラフトでもプレリリースでもないオブジェクトを返します。Homebrew cask に formula 依存関係、競合、caveat はなく、Flycut.app をアプリケーションフォルダへコピーするだけです。zap はアンインストール時のクリーンアップでのみ環境設定を削除します。ZIP の SHA-256 ダイジェストは cask と一致し、アーカイブ最上位には Flycut.app のみが含まれます。3 個のシンボリックリンクはすべてフレームワーク内部の相対パスで、絶対パスやアーカイブ外を指すターゲットはありません。主要実行ファイル、CloudKit フレームワーク、LoginItem helper の全 3 個の Mach-O は x86_64 と arm64 を含む universal binary で、Info.plist の最低システム要件は macOS 10.10 です。アプリは LSUIElement のバックグラウンドユーティリティです。初回起動後、ほかのアプリへ履歴を貼り付けるには、ユーザーがシステム設定でアクセシビリティ権限を許可する必要があります。NSAppleEventsUsageDescription は貼り付け用途だけを示し、ソースコードは CGEvent で Cmd-V を合成します。インストール時にアプリの起動、権限要求、ログイン項目の登録、クリップボードの読み取りは行われません。ログイン時起動は既定で無効で、ユーザーが環境設定で有効にした場合のみ登録されます。iCloud/CloudKit の設定とクリッピング同期も既定で無効で、ユーザーが有効にした後にのみ Apple CloudKit へアクセスします。ソースとプロジェクトに Sparkle、appcast、汎用 URL 読み込みコードはなく、cask も自動更新を宣言していません。クリップボード履歴には機密情報が含まれる可能性があるため、追跡の一時停止、履歴の消去、パスワード項目のスキップ設定ができます。",
+            "ko": "이 항목은 안정 1.9.6에 해당하며 GitHub의 /releases/tags/1.9.6과 /releases/latest는 초안도 사전 릴리스도 아닌 동일한 객체를 반환합니다. Homebrew cask에는 formula 종속성, 충돌, caveat가 없고 Flycut.app을 응용 프로그램 폴더로 복사만 하며, zap은 제거 정리 시에만 환경설정을 삭제합니다. ZIP SHA-256 다이제스트는 cask와 일치하고 아카이브 최상위에는 Flycut.app만 있습니다. 3개 심볼릭 링크는 모두 프레임워크 내부 상대 경로이며 절대 경로나 아카이브 외부 대상은 없습니다. 주 실행 파일, CloudKit 프레임워크, LoginItem helper 등 Mach-O 3개는 모두 x86_64와 arm64를 포함하는 universal binary이고 Info.plist 최소 시스템 버전은 macOS 10.10입니다. 앱은 LSUIElement 백그라운드 유틸리티입니다. 첫 실행 후 다른 앱에 기록을 붙여넣으려면 사용자가 시스템 설정에서 손쉬운 사용 권한을 부여해야 합니다. NSAppleEventsUsageDescription은 붙여넣기 용도만 설명하고 소스 코드는 CGEvent로 Cmd-V를 합성합니다. 설치 시 앱을 시작하거나 권한을 요청하거나 로그인 항목을 등록하거나 클립보드를 읽지 않습니다. 로그인 시 시작은 기본적으로 꺼져 있고 사용자가 환경설정에서 활성화할 때만 등록됩니다. iCloud/CloudKit 설정 및 클리핑 동기화도 기본적으로 꺼져 있으며 사용자가 활성화한 후에만 Apple CloudKit에 접근합니다. 소스와 프로젝트에 Sparkle, appcast, 일반 URL 로딩 코드가 없고 cask도 자동 업데이트를 선언하지 않습니다. 클립보드 기록에는 민감한 정보가 포함될 수 있으므로 추적 일시정지, 기록 삭제, 비밀번호 항목 건너뛰기를 구성할 수 있습니다.",
+        },
+    },
+    "wailbrew": {
+        "name": "WailBrew", "publisher": "Nico Wickersheim and contributors", "category": "dev", "mark": "Wl", "accent": "#6387a4",
+        "repo": "wickenico/WailBrew", "license": "MIT", "licenseFile": "LICENSE", "licenseRef": "main/LICENSE",
+        "homepage": "https://github.com/wickenico/WailBrew", "cask": "wailbrew", "caskArchitectures": ["x86_64", "aarch64"],
+        "summary": {
+            "zh-CN": "开源 Homebrew 图形界面，使用 Wails、Go 和 React 管理 formula、cask、tap、服务、清理和 Brewfile。",
+            "zh-TW": "開源 Homebrew 圖形介面，使用 Wails、Go 和 React 管理 formula、cask、tap、服務、清理和 Brewfile。",
+            "en": "An open-source graphical Homebrew interface built with Wails, Go and React for formulae, casks, taps, services, cleanup and Brewfiles.",
+            "ja": "Wails、Go、React で構築された、formula、cask、tap、サービス、クリーンアップ、Brewfile を管理するオープンソースの Homebrew GUI。",
+            "ko": "Wails, Go, React로 구축된 오픈 소스 Homebrew 그래픽 인터페이스로 formula, cask, tap, 서비스, 정리 및 Brewfile을 관리합니다.",
+        },
+        "extra": {
+            "zh-CN": "本条目对应稳定版 v0.14.3，GitHub 标签发布与 latest 指向同一非草稿、非预发布对象；ZIP 摘要同时匹配 cask 和 GitHub 资产摘要，归档顶层只有 WailBrew.app，无符号链接或越界路径。唯一真实 Mach-O 是含 x86_64 与 arm64 的 universal binary；cask 元数据声明支持 macOS 11 Big Sur 及更新版本。cask 无 formula 依赖、冲突或 caveat，安装只复制 WailBrew.app，不启动应用、不请求权限、不注册登录项；zap 路径仅在卸载清理时使用。WailBrew 是已有 Homebrew 的前端，不会替用户安装 Homebrew。启动后会执行 brew update 及已装 formula、cask、tap、outdated、leaves 查询；安装、卸载、升级、tap/untap/trust、服务、doctor、cleanup 和 Brewfile 操作都来自显式 GUI 动作，生产命令使用 argv 数组而不是 shell 拼接。brew services start 只会把用户选择的 Homebrew 服务注册到 launchd，不会注册 WailBrew 自身。需要 sudo 时才通过模式 0700 的临时 askpass 脚本和 osascript 提示；NoQuarantine 默认关闭，启用后才会用 xattr 移除隔离属性，AutoRelaunch 默认开启但只影响升级中的 cask 应用。配置默认位于 ~/.config/wailbrew/config.json，并兼容 ~/.wailbrew/config.json 与 WAILBREW_CONFIG_FILE。Info.plist 无摄像头、麦克风等用途字符串，签名 SuperBlob 无 entitlement 槽；两个架构切片均开启 hardened runtime，嵌入式 CMS 叶证书主体为 Developer ID Application: Nico Wickersheim (2MC8SWF35Z)，但 Linux 无法运行 macOS spctl 或 stapler 在线评估。更新检查只运行 brew info --cask --json=v2 wailbrew，没有 Sparkle、appcast 或直接 GitHub API 自更新；发布页只能由用户手动打开。包详情会按需请求 formulae.brew.sh 公共安装统计，brew vulns 仅在用户安全扫描时访问 OSV.dev，代理测试和外部链接也都是显式操作；源码未发现生产遥测依赖。",
+            "zh-TW": "本條目對應穩定版 v0.14.3，GitHub 標籤發布與 latest 指向同一非草稿、非預先發布物件；ZIP 摘要同時符合 cask 和 GitHub 資產摘要，封存檔頂層只有 WailBrew.app，無符號連結或越界路徑。唯一真實 Mach-O 是含 x86_64 與 arm64 的 universal binary；cask 中繼資料宣告支援 macOS 11 Big Sur 與更新版本。cask 無 formula 相依性、衝突或 caveat，安裝只複製 WailBrew.app，不啟動應用程式、不請求權限、不註冊登入項目；zap 路徑僅在解除安裝清理時使用。WailBrew 是既有 Homebrew 的前端，不會替使用者安裝 Homebrew。啟動後會執行 brew update 及已安裝 formula、cask、tap、outdated、leaves 查詢；安裝、解除安裝、升級、tap/untap/trust、服務、doctor、cleanup 和 Brewfile 操作都來自明確 GUI 動作，生產命令使用 argv 陣列而不是 shell 串接。brew services start 只會把使用者選擇的 Homebrew 服務註冊到 launchd，不會註冊 WailBrew 本身。需要 sudo 時才透過模式 0700 的暫存 askpass 指令碼和 osascript 提示；NoQuarantine 預設關閉，啟用後才會用 xattr 移除隔離屬性，AutoRelaunch 預設開啟但只影響升級中的 cask 應用程式。設定預設位於 ~/.config/wailbrew/config.json，並相容 ~/.wailbrew/config.json 與 WAILBREW_CONFIG_FILE。Info.plist 無攝影機、麥克風等用途字串，簽章 SuperBlob 無 entitlement 槽；兩個架構切片均開啟 hardened runtime，內嵌 CMS 葉憑證主體為 Developer ID Application: Nico Wickersheim (2MC8SWF35Z)，但 Linux 無法執行 macOS spctl 或 stapler 線上評估。更新檢查只執行 brew info --cask --json=v2 wailbrew，沒有 Sparkle、appcast 或直接 GitHub API 自更新；發布頁只能由使用者手動開啟。套件詳情會依要求請求 formulae.brew.sh 公共安裝統計，brew vulns 僅在使用者安全掃描時存取 OSV.dev，代理測試和外部連結也都是明確操作；原始碼未發現生產遙測相依性。",
+            "en": "This entry corresponds to stable v0.14.3; the GitHub tag release and latest endpoint resolve to the same non-draft, non-prerelease object. The ZIP digest matches both the cask and GitHub asset digest, and the archive contains only WailBrew.app at its top level, with no symlinks or archive-outside paths. Its only real Mach-O is a universal binary containing x86_64 and arm64; cask metadata declares macOS 11 Big Sur and newer. The cask has no formula dependency, conflict or caveat. Installation only copies WailBrew.app; it does not launch the app, request permissions or register a login item, and zap paths are used only during uninstall cleanup. WailBrew is a front-end for an existing Homebrew installation and does not install Homebrew itself. After launch it runs brew update plus installed formula, cask, tap, outdated and leaves queries; install, uninstall, upgrade, tap/untap/trust, service, doctor, cleanup and Brewfile actions are explicit GUI operations, and production commands use argv arrays rather than shell concatenation. brew services start registers only the selected Homebrew service with launchd, not WailBrew itself. A mode-0700 temporary askpass script and osascript prompt are used only when sudo is required. NoQuarantine defaults off and uses xattr only when enabled; AutoRelaunch defaults on but affects only cask apps during upgrade. Config defaults to ~/.config/wailbrew/config.json, with legacy ~/.wailbrew/config.json and WAILBREW_CONFIG_FILE support. Info.plist has no camera, microphone or other usage strings, and the signature SuperBlob has no entitlement slot. Both architecture slices enable the hardened runtime; the embedded CMS leaf subject is Developer ID Application: Nico Wickersheim (2MC8SWF35Z), while Linux cannot perform macOS spctl or stapler online assessment. Update checks run only brew info --cask --json=v2 wailbrew; there is no Sparkle, appcast or direct GitHub API self-updater, and the release page opens only through manual user action. Package details fetch public formulae.brew.sh install statistics on demand, brew vulns reaches OSV.dev only during an explicit security scan, proxy tests and external links are explicit actions, and no production telemetry dependency was found in source.",
+            "ja": "このエントリは安定版 v0.14.3 に対応し、GitHub のタグリリースと latest エンドポイントはドラフトでもプレリリースでもない同一オブジェクトを返します。ZIP ダイジェストは cask と GitHub アセットの両方に一致し、アーカイブ最上位には WailBrew.app のみが含まれ、シンボリックリンクやアーカイブ外を指すパスはありません。唯一の実 Mach-O は x86_64 と arm64 を含む universal binary で、cask メタデータは macOS 11 Big Sur 以降を宣言しています。cask に formula 依存関係、競合、caveat はなく、インストールは WailBrew.app のコピーだけで、アプリの起動、権限要求、ログイン項目の登録は行いません。zap パスはアンインストール時のクリーンアップでのみ使用されます。WailBrew は既存 Homebrew のフロントエンドであり、Homebrew 自体をインストールしません。起動後は brew update に加え、インストール済み formula、cask、tap、outdated、leaves のクエリを実行します。インストール、アンインストール、アップグレード、tap/untap/trust、サービス、doctor、cleanup、Brewfile の操作はすべて明示的な GUI 操作で、本番コマンドはシェル連結ではなく argv 配列を使用します。brew services start は選択した Homebrew サービスだけを launchd に登録し、WailBrew 自体は登録しません。sudo が必要な場合に限り、モード 0700 の一時 askpass スクリプトと osascript プロンプトを使用します。NoQuarantine は既定で無効で、有効時のみ xattr で隔離属性を削除します。AutoRelaunch は既定で有効ですが、アップグレード中の cask アプリにのみ影響します。設定は既定で ~/.config/wailbrew/config.json にあり、従来の ~/.wailbrew/config.json と WAILBREW_CONFIG_FILE もサポートします。Info.plist にカメラ、マイクなどの用途文字列はなく、署名 SuperBlob に entitlement スロットもありません。両アーキテクチャスライスで hardened runtime が有効で、埋め込み CMS のリーフ主体は Developer ID Application: Nico Wickersheim (2MC8SWF35Z) ですが、Linux では macOS の spctl や stapler オンライン評価は実行できません。更新確認は brew info --cask --json=v2 wailbrew を実行するだけで、Sparkle、appcast、直接 GitHub API を使う自己更新機能はなく、リリースページは手動操作でのみ開きます。パッケージ詳細は必要時に formulae.brew.sh の公開インストール統計を取得し、brew vulns は明示的なセキュリティスキャン時のみ OSV.dev に到達します。プロキシテストと外部リンクも明示的操作であり、ソースから本番テレメトリ依存は見つかりませんでした。",
+            "ko": "이 항목은 안정 v0.14.3에 해당하며 GitHub 태그 릴리스와 latest 엔드포인트는 초안도 사전 릴리스도 아닌 동일한 객체를 반환합니다. ZIP 다이제스트는 cask와 GitHub 자산 다이제스트 모두에 일치하고 아카이브 최상위에는 WailBrew.app만 있으며 심볼릭 링크나 아카이브 외부 경로가 없습니다. 유일한 실제 Mach-O는 x86_64와 arm64를 포함하는 universal binary이고 cask 메타데이터는 macOS 11 Big Sur 이상을 선언합니다. cask에는 formula 종속성, 충돌, caveat가 없고 설치는 WailBrew.app 복사만 수행하며 앱 시작, 권한 요청, 로그인 항목 등록을 하지 않습니다. zap 경로는 제거 정리 시에만 사용됩니다. WailBrew는 기존 Homebrew의 프런트엔드이며 Homebrew 자체를 설치하지 않습니다. 실행 후 brew update와 설치된 formula, cask, tap, outdated, leaves 쿼리를 실행합니다. 설치, 제거, 업그레이드, tap/untap/trust, 서비스, doctor, cleanup, Brewfile 작업은 모두 명시적 GUI 동작이고 프로덕션 명령은 셸 연결이 아닌 argv 배열을 사용합니다. brew services start는 선택한 Homebrew 서비스만 launchd에 등록하며 WailBrew 자체를 등록하지 않습니다. sudo가 필요할 때만 모드 0700 임시 askpass 스크립트와 osascript 프롬프트를 사용합니다. NoQuarantine은 기본적으로 꺼져 있고 활성화할 때만 xattr으로 격리 속성을 제거합니다. AutoRelaunch는 기본적으로 켜져 있지만 업그레이드 중인 cask 앱에만 영향을 줍니다. 설정은 기본적으로 ~/.config/wailbrew/config.json에 저장되고 기존 ~/.wailbrew/config.json 및 WAILBREW_CONFIG_FILE을 지원합니다. Info.plist에는 카메라, 마이크 등 사용 문자열이 없고 서명 SuperBlob에는 entitlement 슬롯이 없습니다. 두 아키텍처 슬라이스 모두 hardened runtime이 활성화되어 있고 내장 CMS 리프 주체는 Developer ID Application: Nico Wickersheim (2MC8SWF35Z)이지만 Linux에서는 macOS spctl이나 stapler 온라인 평가를 실행할 수 없습니다. 업데이트 확인은 brew info --cask --json=v2 wailbrew만 실행하고 Sparkle, appcast, 직접 GitHub API 자동 업데이트는 없으며 릴리스 페이지는 사용자의 수동 동작으로만 열립니다. 패키지 세부 정보는 요청 시 formulae.brew.sh 공개 설치 통계를 가져오고 brew vulns는 명시적 보안 검사 시에만 OSV.dev에 접근하며 프록시 테스트와 외부 링크도 명시적 동작입니다. 소스에서 프로덕션 텔레메트리 의존성은 발견되지 않았습니다.",
+        },
+    },
+}
 
 def main() -> None:
     excluded_in_reviewed = EXCLUDED_APP_IDS.intersection(REVIEWED)
@@ -2102,7 +2481,7 @@ def main() -> None:
         path.write_text(json.dumps(category, ensure_ascii=False, indent=2) + "\n")
     index = ROOT / "catalog" / "index.json"
     document = json.loads(index.read_text())
-    document["catalogVersion"] = "2026.11.17-1"
+    document["catalogVersion"] = "2026.11.18-9"
     index.write_text(json.dumps(document, ensure_ascii=False, indent=2) + "\n")
     print(f"Added {len(REVIEWED)} reviewed applications")
 

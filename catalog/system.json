@@ -612,6 +612,51 @@
       ]
     },
     {
+      "name": "Hidden Bar",
+      "publisher": "Dwarves Foundation",
+      "category": "system",
+      "mark": "HB",
+      "accent": "#6387a4",
+      "license": "MIT",
+      "homepage": "https://github.com/consolelabs/hidden",
+      "summary": {
+        "zh-CN": "macOS 菜单栏图标隐藏工具，可折叠、搜索和分组管理其他应用的菜单栏项目。",
+        "zh-TW": "macOS 選單列圖示隱藏工具，可摺疊、搜尋和分組管理其他應用程式的選單列項目。",
+        "en": "A macOS menu-bar utility for hiding, revealing, searching and organizing other apps' menu-bar items.",
+        "ja": "ほかのアプリのメニューバー項目を非表示、表示、検索、整理できる macOS メニューバーユーティリティ。",
+        "ko": "다른 앱의 메뉴 막대 항목을 숨기고 표시하며 검색·정리할 수 있는 macOS 메뉴 막대 유틸리티."
+      },
+      "sourceRepository": "https://github.com/consolelabs/hidden",
+      "licenseUrl": "https://raw.githubusercontent.com/consolelabs/hidden/v1.13.0/LICENSE",
+      "id": "hidden",
+      "variants": [
+        {
+          "id": "hidden-macos",
+          "os": "macos",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "通过 Homebrew 安装 hiddenbar；需要已安装并配置 brew。 本条目对应稳定版 v1.13.0；GitHub 标签发布为非草稿、非预发布，/releases/latest 解析到同一发布 ID 446937244，appcast 条目没有 beta 或 dev channel。Homebrew cask hiddenbar 处于有效状态，无 formula 依赖、冲突或 caveat；安装只将 Hidden Bar.app 复制到 /Applications，不启动应用、不请求权限、不注册登录项；uninstall/zap 仅退出应用、反授权旧 LauncherApplication 记录并清理卸载数据。ZIP SHA-256 a811717d84faba478ea66caa224f3360a9e5d844a7a50fa09009f32d78131a44 同时匹配 cask 与 GitHub 资产。按 Mach-O 头验证，6 个唯一真实 Mach-O 均为含 x86_64 与 arm64 的 fat 文件，共 12 个切片；所有切片都包含 LC_CODE_SIGNATURE、启用 hardened runtime，签名者均为 Developer ID Application: Dwarves Foundation Company Limited (W777S7V8TN)。应用包内可静态解析到 s8ch v1 stapled ticket 容器和 g8tk trailer；这只是本地证据，不在 Linux 上声称在线 Gatekeeper 验收结果。最低系统为 macOS 13；主程序是 LSUIElement，bundle ID 为 com.dwarvesv.minimalbar，直接构建没有沙盒 entitlement，嵌入的 entitlement 字典为空。读取和隐藏菜单栏项目所需的 Accessibility 是首次启动并使用相关功能后的用户授权，缺失时才打开系统设置，安装阶段不会提示；Info.plist 没有摄像头、麦克风、屏幕录制或 AppleEvents 用途字符串，产品和源码均说明只读取菜单栏项目，不读取屏幕内容。登录项默认关闭，用户启用后通过 SMAppService.mainApp 注册主程序；旧 com.dwarvesv.LauncherApplication helper 已不随包提供，只会在升级时一次性反授权。GitHub/Homebrew 直接构建包含 Sparkle 2.10.1，通过 HTTPS 获取 GitHub appcast 并以 EdDSA 公钥 C7MH2NS46vKD4nNh9i4BmFzXLSAbP2jM5qZcaPw9u3w= 校验，系统画像发送保持关闭且不发送个人信息；Homebrew 安装本身不检查或下载更新，应用启动后才初始化 Sparkle 的计划或手动更新机制。未发现受支持的上游 Linux 或 Windows 包及制品，因此仅声明 macOS brew cask 路由。",
+            "zh-TW": "透過 Homebrew 安裝 hiddenbar；需要已安裝並設定 brew。 本條目對應穩定版 v1.13.0；GitHub 標籤發布為非草稿、非預先發布，/releases/latest 解析到同一發布 ID 446937244，appcast 條目沒有 beta 或 dev channel。Homebrew cask hiddenbar 處於有效狀態，無 formula 相依性、衝突或 caveat；安裝只將 Hidden Bar.app 複製到 /Applications，不啟動應用程式、不請求權限、不註冊登入項目；uninstall/zap 僅結束應用程式、反授權舊 LauncherApplication 記錄並清理解除安裝資料。ZIP SHA-256 a811717d84faba478ea66caa224f3360a9e5d844a7a50fa09009f32d78131a44 同時符合 cask 與 GitHub 資產。依 Mach-O 標頭驗證，6 個唯一真實 Mach-O 均為含 x86_64 與 arm64 的 fat 檔案，共 12 個切片；所有切片都包含 LC_CODE_SIGNATURE、啟用 hardened runtime，簽署者均為 Developer ID Application: Dwarves Foundation Company Limited (W777S7V8TN)。應用程式包內可靜態解析到 s8ch v1 stapled ticket 容器和 g8tk trailer；這只是本機證據，不在 Linux 上宣稱線上 Gatekeeper 驗收結果。最低系統為 macOS 13；主程式是 LSUIElement，bundle ID 為 com.dwarvesv.minimalbar，直接建置沒有沙盒 entitlement，嵌入的 entitlement 字典為空。讀取和隱藏選單列項目所需的 Accessibility 是首次啟動並使用相關功能後的使用者授權，缺失時才開啟系統設定，安裝階段不會提示；Info.plist 沒有攝影機、麥克風、螢幕錄製或 AppleEvents 用途字串，產品和原始碼均說明只讀取選單列項目，不讀取螢幕內容。登入項目預設關閉，使用者啟用後透過 SMAppService.mainApp 註冊主程式；舊 com.dwarvesv.LauncherApplication helper 已不隨包提供，只會在升級時一次性反授權。GitHub/Homebrew 直接建置包含 Sparkle 2.10.1，透過 HTTPS 取得 GitHub appcast 並以 EdDSA 公開金鑰 C7MH2NS46vKD4nNh9i4BmFzXLSAbP2jM5qZcaPw9u3w= 校驗，系統設定檔傳送保持關閉且不傳送個人資訊；Homebrew 安裝本身不檢查或下載更新，應用程式啟動後才初始化 Sparkle 的計劃或手動更新機制。未發現受支援的上游 Linux 或 Windows 套件及製品，因此僅宣告 macOS brew cask 路由。",
+            "en": "Installs hiddenbar with Homebrew. brew must already be installed and configured. This entry corresponds to stable v1.13.0. The GitHub tag release is non-draft and non-prerelease, /releases/latest resolves to the same release ID 446937244, and the appcast items have no beta or dev channel. The active Homebrew cask hiddenbar has no formula dependency, conflict or caveat. Installation only copies Hidden Bar.app into /Applications; it does not launch the app, request permissions or register a login item. Uninstall/zap only quits the app, deauthorizes the legacy LauncherApplication record and removes uninstall cleanup data. The ZIP SHA-256 a811717d84faba478ea66caa224f3360a9e5d844a7a50fa09009f32d78131a44 matches both the cask and GitHub asset. Mach-O headers prove that all 6 unique real Mach-O files are fat binaries containing x86_64 and arm64, for 12 slices total. Every slice contains LC_CODE_SIGNATURE, enables hardened runtime and is signed by Developer ID Application: Dwarves Foundation Company Limited (W777S7V8TN). The bundle contains a statically parseable s8ch v1 stapled-ticket container and g8tk trailer; this is local evidence, not an online Gatekeeper verdict obtained from Linux. It requires macOS 13 or newer. The main app is an LSUIElement with bundle ID com.dwarvesv.minimalbar; the direct build has no sandbox entitlement and its embedded entitlement dictionaries are empty. Accessibility for reading and hiding menu-bar items is a user grant after first launch and use, and System Settings opens only when that permission is missing; installation itself does not prompt. The Info.plist has no camera, microphone, screen-recording or AppleEvents usage strings, and both the product and source state that it reads menu-bar items but never screen contents. Start-at-login is off by default; when the user enables it, SMAppService.mainApp registers the main app. The legacy com.dwarvesv.LauncherApplication helper is no longer bundled and is only deauthorized once as migration cleanup. The GitHub/Homebrew direct build includes Sparkle 2.10.1, fetches a GitHub appcast over HTTPS, verifies it against EdDSA public key C7MH2NS46vKD4nNh9i4BmFzXLSAbP2jM5qZcaPw9u3w=, keeps system profiling disabled and sends no personal information. Homebrew installation itself checks for or downloads no update; Sparkle's scheduled or manual update behavior is initialized only after the app launches. No supported upstream Linux or Windows package or artifact exists, so only the macOS brew cask route is declared.",
+            "ja": "Homebrew で hiddenbar をインストールします。brew を事前にインストールして設定する必要があります。 このエントリは安定版 v1.13.0 に対応します。GitHub タグリリースはドラフトでもプレリリースでもなく、/releases/latest は同じリリース ID 446937244 を返し、appcast 項目に beta や dev チャネルはありません。有効な Homebrew cask hiddenbar に formula 依存関係、競合、caveat はありません。インストールは Hidden Bar.app を /Applications にコピーするだけで、アプリの起動、権限要求、ログイン項目の登録は行いません。uninstall/zap はアプリの終了、従来の LauncherApplication レコードの認証取り消し、アンインストール用クリーンアップデータの削除だけを行います。ZIP の SHA-256 a811717d84faba478ea66caa224f3360a9e5d844a7a50fa09009f32d78131a44 は cask と GitHub アセットの両方に一致します。Mach-O ヘッダーにより、6 個の一意な実 Mach-O はすべて x86_64 と arm64 を含む fat バイナリで、合計 12 スライスであることを確認済みです。すべてのスライスに LC_CODE_SIGNATURE があり、hardened runtime が有効で、署名者は Developer ID Application: Dwarves Foundation Company Limited (W777S7V8TN) です。アプリバンドルからは s8ch v1 stapled ticket コンテナと g8tk trailer を静的解析できます。これはローカル証拠であり、Linux からオンラインの Gatekeeper 判定を主張するものではありません。要件は macOS 13 以降です。メインアプリは LSUIElement、バンドル ID は com.dwarvesv.minimalbar で、直接ビルドにはサンドボックス entitlement がなく、埋め込み entitlement 辞書は空です。メニューバー項目の読み取りと非表示に必要な Accessibility は、初回起動後に機能を使う際のユーザー許可であり、権限がない場合にだけシステム設定を開きます。インストール時には要求しません。Info.plist にカメラ、マイク、画面収録、AppleEvents の用途文字列はなく、製品とソースはメニューバー項目を読むだけで画面内容は読まないと明記しています。ログイン時起動は既定で無効で、ユーザーが有効にした場合のみ SMAppService.mainApp がメインアプリを登録します。従来の com.dwarvesv.LauncherApplication ヘルパーは同梱されておらず、アップグレード時の移行クリーンアップで一度だけ認証を取り消します。GitHub/Homebrew の直接ビルドには Sparkle 2.10.1 が含まれ、HTTPS で GitHub appcast を取得し、EdDSA 公開鍵 C7MH2NS46vKD4nNh9i4BmFzXLSAbP2jM5qZcaPw9u3w= で検証します。システムプロファイル送信は無効で、個人情報も送信しません。Homebrew のインストール自体が更新確認やダウンロードを行うことはなく、Sparkle の定期または手動更新機能が初期化されるのはアプリ起動後です。サポートされる上流の Linux または Windows パッケージや成果物はないため、macOS の brew cask ルートのみを宣言します。",
+            "ko": "Homebrew로 hiddenbar를 설치합니다. brew가 미리 설치되어 설정되어 있어야 합니다. 이 항목은 안정 v1.13.0에 해당합니다. GitHub 태그 릴리스는 초안도 사전 릴리스도 아니고 /releases/latest는 동일한 릴리스 ID 446937244를 반환하며 appcast 항목에는 beta나 dev 채널이 없습니다. 활성 Homebrew cask hiddenbar에는 formula 종속성, 충돌, caveat가 없습니다. 설치는 Hidden Bar.app을 /Applications로 복사만 하고 앱 시작, 권한 요청, 로그인 항목 등록을 하지 않습니다. uninstall/zap은 앱 종료, 기존 LauncherApplication 기록 인증 해제, 제거 정리 데이터 삭제만 수행합니다. ZIP SHA-256 a811717d84faba478ea66caa224f3360a9e5d844a7a50fa09009f32d78131a44는 cask와 GitHub 자산 모두에 일치합니다. Mach-O 헤더 검증 결과 고유한 실제 Mach-O 6개는 모두 x86_64와 arm64를 포함하는 fat 바이너리이고 총 슬라이스는 12개입니다. 모든 슬라이스는 LC_CODE_SIGNATURE를 포함하고 hardened runtime이 활성화되어 있으며 Developer ID Application: Dwarves Foundation Company Limited (W777S7V8TN)으로 서명되었습니다. 앱 번들에서는 s8ch v1 stapled ticket 컨테이너와 g8tk trailer를 정적으로 분석할 수 있습니다. 이는 로컬 증거일 뿐 Linux에서 온라인 Gatekeeper 판정을 주장하지 않습니다. macOS 13 이상이 필요합니다. 주 앱은 LSUIElement이고 번들 ID는 com.dwarvesv.minimalbar이며 직접 빌드에는 샌드박스 entitlement가 없고 임베드된 entitlement 사전은 비어 있습니다. 메뉴 막대 항목을 읽고 숨기는 Accessibility는 첫 실행 후 관련 기능을 사용할 때 사용자가 부여하는 권한이며, 권한이 없을 때만 시스템 설정을 엽니다. 설치 단계에서는 프롬프트가 없습니다. Info.plist에는 카메라, 마이크, 화면 녹화, AppleEvents 사용 문자열이 없고 제품과 소스는 메뉴 막대 항목만 읽으며 화면 내용은 읽지 않는다고 명시합니다. 로그인 시 시작은 기본적으로 꺼져 있고 사용자가 활성화하면 SMAppService.mainApp이 주 앱을 등록합니다. 기존 com.dwarvesv.LauncherApplication 헬퍼는 더 이상 번들에 포함되지 않으며 업그레이드 마이그레이션 정리에서 한 번만 인증이 해제됩니다. GitHub/Homebrew 직접 빌드는 Sparkle 2.10.1을 포함하고 HTTPS로 GitHub appcast를 가져온 뒤 EdDSA 공개 키 C7MH2NS46vKD4nNh9i4BmFzXLSAbP2jM5qZcaPw9u3w=로 검증합니다. 시스템 프로파일 전송은 비활성화되어 있고 개인정보를 보내지 않습니다. Homebrew 설치 자체는 업데이트 확인이나 다운로드를 수행하지 않으며, Sparkle의 예약 또는 수동 업데이트 동작은 앱이 시작한 뒤에야 초기화됩니다. 지원되는 상류 Linux 또는 Windows 패키지나 산출물이 없으므로 macOS brew cask 경로만 선언합니다."
+          },
+          "sourceUrl": "https://github.com/consolelabs/hidden",
+          "method": {
+            "type": "package_manager",
+            "manager": "brew",
+            "packageId": "hiddenbar",
+            "cask": true
+          }
+        }
+      ]
+    },
+    {
       "name": "Karabiner-Elements",
       "publisher": "Fumihiko Takayama",
       "category": "system",
@@ -651,6 +696,51 @@
             "type": "package_manager",
             "manager": "brew",
             "packageId": "karabiner-elements",
+            "cask": true
+          }
+        }
+      ]
+    },
+    {
+      "name": "KeyCastr",
+      "publisher": "KeyCastr contributors",
+      "category": "system",
+      "mark": "Kc",
+      "accent": "#6d83a6",
+      "license": "BSD-3-Clause",
+      "homepage": "https://github.com/keycastr/keycastr",
+      "summary": {
+        "zh-CN": "开源按键可视化工具，在录屏、演示或协作时显示键盘输入和可选的鼠标点击。",
+        "zh-TW": "開源按鍵視覺化工具，在錄屏、演示或協作時顯示鍵盤輸入和可選的滑鼠點擊。",
+        "en": "An open-source keystroke visualizer for showing keyboard input and optional mouse clicks during screencasts, presentations and collaboration.",
+        "ja": "画面収録、プレゼンテーション、共同作業でキー入力と任意のマウスクリックを表示する、オープンソースのキーストローク可視化ツール。",
+        "ko": "화면 녹화, 발표, 협업 중 키보드 입력과 선택적 마우스 클릭을 표시하는 오픈 소스 키 입력 시각화 도구."
+      },
+      "sourceRepository": "https://github.com/keycastr/keycastr",
+      "licenseUrl": "https://raw.githubusercontent.com/keycastr/keycastr/main/LICENSE.md",
+      "id": "keycastr",
+      "variants": [
+        {
+          "id": "keycastr-macos",
+          "os": "macos",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "通过 Homebrew 安装 keycastr；需要已安装并配置 brew。 本条目对应稳定版 v0.11.1。Homebrew cask 无 formula 依赖、冲突或 caveat，只将 KeyCastr.app 复制到应用程序目录，zap 仅在卸载清理时移除 HTTPStorage 和偏好设置。ZIP 的 SHA-256 摘要已与 cask 核对，归档顶层只有 KeyCastr.app；13 个符号链接均为框架内部相对路径，无绝对路径或越界目标。主程序及全部 11 个 Mach-O 均为含 x86_64 与 arm64 的 universal binary，Info.plist 与 Sparkle appcast 均声明最低 macOS 10.13。应用是 LSUIElement 后台界面工具，读取按键或鼠标事件需要用户首次运行后在系统设置授予输入监控或辅助功能权限；Info.plist 没有摄像头、麦克风等用途字符串。cask 声明 auto_updates: true，应用内置 Sparkle，更新源为 keycastr.github.io/appcast.xml；README 说明 Sparkle 是其唯一网络机制。安装不启动应用、不请求权限、不捕获输入、不检查或下载更新。",
+            "zh-TW": "透過 Homebrew 安裝 keycastr；需要已安裝並設定 brew。 本條目對應穩定版 v0.11.1。Homebrew cask 無 formula 相依性、衝突或 caveat，只將 KeyCastr.app 複製到應用程式目錄，zap 僅在解除安裝清理時移除 HTTPStorage 和偏好設定。ZIP 的 SHA-256 摘要已與 cask 核對，封存檔頂層只有 KeyCastr.app；13 個符號連結均為框架內部相對路徑，無絕對路徑或越界目標。主程式及全部 11 個 Mach-O 均為含 x86_64 與 arm64 的 universal binary，Info.plist 與 Sparkle appcast 均宣告最低 macOS 10.13。應用是 LSUIElement 背景介面工具，讀取按鍵或滑鼠事件需要使用者首次執行後在系統設定授予輸入監控或輔助功能權限；Info.plist 沒有攝影機、麥克風等用途字串。cask 宣告 auto_updates: true，應用內建 Sparkle，更新來源為 keycastr.github.io/appcast.xml；README 說明 Sparkle 是其唯一網路機制。安裝不啟動應用程式、不請求權限、不擷取輸入、不檢查或下載更新。",
+            "en": "Installs keycastr with Homebrew. brew must already be installed and configured. This entry corresponds to stable v0.11.1. The Homebrew cask has no formula dependency, conflict or caveat; it only copies KeyCastr.app into Applications, and zap removes HTTP storage and preferences only during uninstall cleanup. The ZIP SHA-256 digest matches the cask, and the archive contains only KeyCastr.app at its top level. All 13 symlinks are framework-internal relative paths, with no absolute or archive-outside targets. The primary executable and all 11 Mach-O files are universal binaries containing x86_64 and arm64; both Info.plist and the Sparkle appcast declare macOS 10.13 as the minimum system version. The app is an LSUIElement background-interface utility. Reading keystroke or mouse events requires Input Monitoring or Accessibility permission granted by the user after first launch; the plist contains no camera, microphone or other usage strings. The cask declares auto_updates: true, and the bundled Sparkle updater uses keycastr.github.io/appcast.xml; the README states that Sparkle is its only networking mechanism. Installation launches no app, requests no permission, captures no input and checks for or downloads no update.",
+            "ja": "Homebrew で keycastr をインストールします。brew を事前にインストールして設定する必要があります。 このエントリは安定版 v0.11.1 に対応します。Homebrew cask に formula 依存関係、競合、caveat はなく、KeyCastr.app をアプリケーションフォルダへコピーするだけです。zap はアンインストール時のクリーンアップでのみ HTTP ストレージと設定を削除します。ZIP の SHA-256 ダイジェストは cask と一致し、アーカイブの最上位には KeyCastr.app のみが含まれます。13 個のシンボリックリンクはすべてフレームワーク内部の相対パスで、絶対パスやアーカイブ外を指すターゲットはありません。主要実行ファイルと全 11 個の Mach-O は x86_64 と arm64 を含む universal binary で、Info.plist と Sparkle appcast の両方が最低システムバージョンとして macOS 10.13 を宣言しています。アプリは LSUIElement のバックグラウンド UI ユーティリティです。キー入力やマウスイベントの読み取りには、初回起動後にユーザーがシステム設定で入力監視またはアクセシビリティ権限を許可する必要があり、plist にカメラ、マイクなどの用途文字列はありません。cask は auto_updates: true を宣言し、同梱の Sparkle アップデーターは keycastr.github.io/appcast.xml を使用します。README では Sparkle が唯一のネットワーク機構と説明されています。インストール時にアプリの起動、権限要求、入力キャプチャ、更新確認や更新のダウンロードは行われません。",
+            "ko": "Homebrew로 keycastr를 설치합니다. brew가 미리 설치되어 설정되어 있어야 합니다. 이 항목은 안정 v0.11.1에 해당합니다. Homebrew cask에는 formula 종속성, 충돌, caveat가 없고 KeyCastr.app을 응용 프로그램 폴더로 복사만 하며, zap은 제거 정리 시에만 HTTP 저장소와 환경설정을 삭제합니다. ZIP SHA-256 다이제스트는 cask와 일치하고 아카이브 최상위에는 KeyCastr.app만 있습니다. 13개 심볼릭 링크는 모두 프레임워크 내부 상대 경로이며 절대 경로나 아카이브 외부 대상은 없습니다. 기본 실행 파일과 11개 Mach-O 파일은 모두 x86_64와 arm64를 포함하는 universal binary이고 Info.plist와 Sparkle appcast 모두 최소 시스템 버전으로 macOS 10.13을 선언합니다. 앱은 LSUIElement 백그라운드 인터페이스 유틸리티입니다. 키 입력이나 마우스 이벤트를 읽으려면 첫 실행 후 사용자가 시스템 설정에서 입력 모니터링 또는 손쉬운 사용 권한을 부여해야 하며, plist에는 카메라, 마이크 등 사용 문자열이 없습니다. cask는 auto_updates: true를 선언하고 번들된 Sparkle 업데이터는 keycastr.github.io/appcast.xml을 사용합니다. README는 Sparkle이 유일한 네트워크 메커니즘이라고 설명합니다. 설치 시 앱을 시작하거나 권한을 요청하거나 입력을 캡처하거나 업데이트를 확인·다운로드하지 않습니다."
+          },
+          "sourceUrl": "https://github.com/keycastr/keycastr",
+          "method": {
+            "type": "package_manager",
+            "manager": "brew",
+            "packageId": "keycastr",
             "cask": true
           }
         }
@@ -831,6 +921,51 @@
             "manager": "brew",
             "packageId": "rectangle",
             "cask": true
+          }
+        }
+      ]
+    },
+    {
+      "name": "restic",
+      "publisher": "Alexander Neumann and restic contributors",
+      "category": "system",
+      "mark": "Re",
+      "accent": "#6587a4",
+      "license": "BSD-2-Clause",
+      "homepage": "https://restic.net/",
+      "summary": {
+        "zh-CN": "快速、安全的命令行备份程序，支持去重、加密、校验和本地或远程备份仓库。",
+        "zh-TW": "快速、安全的命令列備份程式，支援去重、加密、校驗和本機或遠端備份儲存庫。",
+        "en": "A fast, secure command-line backup program with deduplication, encryption, verification and local or remote backup repositories.",
+        "ja": "重複排除、暗号化、検証、ローカルまたはリモートのバックアップリポジトリを備えた、高速で安全なコマンドラインバックアッププログラム。",
+        "ko": "중복 제거, 암호화, 검증, 로컬 또는 원격 백업 리포지토리를 지원하는 빠르고 안전한 명령줄 백업 프로그램."
+      },
+      "sourceRepository": "https://github.com/restic/restic",
+      "licenseUrl": "https://raw.githubusercontent.com/restic/restic/master/LICENSE",
+      "id": "restic",
+      "variants": [
+        {
+          "id": "restic-macos",
+          "os": "macos",
+          "architectures": [
+            "x86_64",
+            "aarch64"
+          ],
+          "requiresAdmin": false,
+          "interactive": false,
+          "note": {
+            "zh-CN": "通过 Homebrew 安装 restic；需要已安装并配置 brew。 Homebrew formula 提供本目录已验证的 Apple Silicon 与 Intel macOS bottle。备份、恢复或仓库访问仅在用户显式执行命令时发生；安装不创建备份、不连接仓库。",
+            "zh-TW": "透過 Homebrew 安裝 restic；需要已安裝並設定 brew。 Homebrew formula 提供本目錄已驗證的 Apple Silicon 與 Intel macOS bottle。備份、還原或儲存庫存取僅在使用者明確執行命令時發生；安裝不建立備份、不連線儲存庫。",
+            "en": "Installs restic with Homebrew. brew must already be installed and configured. The Homebrew formula provides the Apple Silicon and Intel macOS bottles verified for this catalog. Backup, restore or repository access occurs only when the user runs an explicit command; installation creates no backup and connects to no repository.",
+            "ja": "Homebrew で restic をインストールします。brew を事前にインストールして設定する必要があります。 Homebrew formula は、このカタログで確認済みの Apple Silicon と Intel macOS bottle を提供します。バックアップ、復元、リポジトリへの接続はユーザーが明示的にコマンドを実行した場合のみ発生し、インストール時にバックアップは作成されずリポジトリにも接続しません。",
+            "ko": "Homebrew로 restic를 설치합니다. brew가 미리 설치되어 설정되어 있어야 합니다. Homebrew formula는 이 카탈로그에서 확인된 Apple Silicon 및 Intel macOS bottle을 제공합니다. 백업, 복원 또는 리포지토리 접근은 사용자가 명시적으로 명령을 실행할 때만 발생하며, 설치 시 백업을 만들거나 리포지토리에 연결하지 않습니다."
+          },
+          "sourceUrl": "https://restic.net/",
+          "method": {
+            "type": "package_manager",
+            "manager": "brew",
+            "packageId": "restic",
+            "cask": false
           }
         }
       ]
